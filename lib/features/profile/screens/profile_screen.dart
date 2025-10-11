@@ -78,7 +78,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Privacy & Security',
                   subtitle: 'Password and privacy settings',
                   onTap: () {
-                    // TODO: Navigate to privacy settings
+                    context.go('/profile/privacy-security');
                   },
                 ),
               ],
