@@ -445,8 +445,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       {'icon': Icons.event, 'label': 'Events'},
       {'icon': Icons.restaurant, 'label': 'Dining'},
       {'icon': Icons.explore, 'label': 'Experiences'},
-      {'icon': Icons.sports_soccer, 'label': 'Sports'},
       {'icon': Icons.nightlife, 'label': 'Nightlife'},
+      {'icon': Icons.hotel, 'label': 'Accommodation'},
       {'icon': Icons.shopping_bag, 'label': 'Shopping'},
     ];
 
@@ -959,12 +959,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       {'icon': Icons.event, 'label': 'Events'},
       {'icon': Icons.restaurant, 'label': 'Dining'},
       {'icon': Icons.explore, 'label': 'Experiences'},
-      {'icon': Icons.sports_soccer, 'label': 'Sports'},
       {'icon': Icons.nightlife, 'label': 'Nightlife'},
+      {'icon': Icons.hotel, 'label': 'Accommodation'},
       {'icon': Icons.shopping_bag, 'label': 'Shopping'},
       {'icon': Icons.landscape, 'label': 'National Parks'},
       {'icon': Icons.museum, 'label': 'Museums'},
-      {'icon': Icons.hotel, 'label': 'Accommodation'},
       {'icon': Icons.directions_car, 'label': 'Transport'},
       {'icon': Icons.terrain, 'label': 'Hiking'},
       {'icon': Icons.build, 'label': 'Services'},
