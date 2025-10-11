@@ -365,7 +365,9 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         label: const Text('View Details'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
+                          backgroundColor: AppTheme.backgroundColor,
                           side: BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -374,15 +376,17 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: ElevatedButton.icon(
+                      child: OutlinedButton.icon(
                         onPressed: () {
                           // TODO: Add to favorites
                         },
                         icon: const Icon(Icons.favorite_border, size: 16),
                         label: const Text('Favorite'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
+                        style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
+                          backgroundColor: AppTheme.primaryColor,
+                          side: BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
