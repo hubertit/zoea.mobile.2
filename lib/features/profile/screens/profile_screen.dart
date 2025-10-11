@@ -259,14 +259,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            icon: Icons.place,
-            title: 'Places',
-            value: '8',
-            subtitle: 'Visited',
-          ),
-        ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => context.go('/profile/visited-places'),
+                  child: _buildStatCard(
+                    icon: Icons.place,
+                    title: 'Places',
+                    value: '8',
+                    subtitle: 'Visited',
+                  ),
+                ),
+              ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
