@@ -444,20 +444,38 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final categories = [
       {'icon': Icons.event, 'label': 'Events'},
       {'icon': Icons.restaurant, 'label': 'Dining'},
-      {'icon': Icons.music_note, 'label': 'Music'},
+      {'icon': Icons.explore, 'label': 'Experiences'},
       {'icon': Icons.sports_soccer, 'label': 'Sports'},
-      {'icon': Icons.local_movies, 'label': 'Movies'},
+      {'icon': Icons.nightlife, 'label': 'Nightlife'},
       {'icon': Icons.shopping_bag, 'label': 'Shopping'},
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Categories',
-          style: AppTheme.headlineMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Categories',
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // TODO: Navigate to categories screen
+                // context.push('/categories');
+              },
+              child: Text(
+                'View More',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         GridView.builder(
