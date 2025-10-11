@@ -14,6 +14,7 @@ import '../../features/booking/screens/booking_confirmation_screen.dart';
 import '../../features/zoea_card/screens/zoea_card_screen.dart';
 import '../../features/zoea_card/screens/transaction_history_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/profile/screens/events_attended_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
@@ -117,6 +118,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/referrals',
         builder: (context, state) => const ReferralScreen(),
+      ),
+
+      // Profile Routes
+      GoRoute(
+        path: '/profile/events-attended',
+        builder: (context, state) => const EventsAttendedScreen(),
       ),
     ],
   );

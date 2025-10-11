@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 
@@ -247,11 +248,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard(
-            icon: Icons.event,
-            title: 'Events',
-            value: '12',
-            subtitle: 'Attended',
+          child: GestureDetector(
+            onTap: () => context.go('/profile/events-attended'),
+            child: _buildStatCard(
+              icon: Icons.event,
+              title: 'Events',
+              value: '12',
+              subtitle: 'Attended',
+            ),
           ),
         ),
         const SizedBox(width: 12),
