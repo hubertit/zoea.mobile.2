@@ -18,8 +18,10 @@ class Shell extends StatelessWidget {
     int currentIndex = 0;
     if (location.startsWith('/events')) {
       currentIndex = 1;
-    } else if (location.startsWith('/profile')) {
+    } else if (location.startsWith('/profile/my-bookings')) {
       currentIndex = 2;
+    } else if (location.startsWith('/profile')) {
+      currentIndex = 3;
     } else if (location.startsWith('/explore')) {
       currentIndex = 0;
     }
@@ -52,6 +54,11 @@ class Shell extends StatelessWidget {
             label: 'Events',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark_outlined),
+            activeIcon: Icon(Icons.bookmark),
+            label: 'Bookings',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Profile',
@@ -66,6 +73,9 @@ class Shell extends StatelessWidget {
               context.go('/events');
               break;
             case 2:
+              context.go('/profile/my-bookings');
+              break;
+            case 3:
               context.go('/profile');
               break;
           }
