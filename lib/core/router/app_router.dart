@@ -17,6 +17,7 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/events_attended_screen.dart';
 import '../../features/profile/screens/visited_places_screen.dart';
 import '../../features/profile/screens/reviews_written_screen.dart';
+import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
@@ -134,6 +135,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/reviews-written',
         builder: (context, state) => const ReviewsWrittenScreen(),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        builder: (context, state) => const EditProfileScreen(),
       ),
     ],
   );

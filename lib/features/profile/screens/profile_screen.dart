@@ -62,7 +62,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Edit Profile',
                   subtitle: 'Update your personal information',
                   onTap: () {
-                    // TODO: Navigate to edit profile
+                    context.go('/profile/edit');
                   },
                 ),
                 _buildMenuItem(
