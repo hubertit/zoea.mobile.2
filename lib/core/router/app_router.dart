@@ -22,6 +22,8 @@ import '../../features/profile/screens/privacy_security_screen.dart';
 import '../../features/profile/screens/my_bookings_screen.dart';
 import '../../features/profile/screens/favorites_screen.dart';
 import '../../features/profile/screens/reviews_ratings_screen.dart';
+import '../../features/profile/screens/help_center_screen.dart';
+import '../../features/profile/screens/about_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
@@ -159,6 +161,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/reviews-ratings',
         builder: (context, state) => const ReviewsRatingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/help-center',
+        builder: (context, state) => const HelpCenterScreen(),
+      ),
+      GoRoute(
+        path: '/profile/about',
+        builder: (context, state) => const AboutScreen(),
       ),
     ],
   );

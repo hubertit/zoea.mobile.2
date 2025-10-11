@@ -124,7 +124,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Help Center',
                   subtitle: 'Get help and support',
                   onTap: () {
-                    // TODO: Navigate to help
+                    context.go('/profile/help-center');
                   },
                 ),
                 _buildMenuItem(
@@ -132,7 +132,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'About',
                   subtitle: 'App version and information',
                   onTap: () {
-                    // TODO: Navigate to about
+                    context.go('/profile/about');
                   },
                 ),
                 _buildMenuItem(
@@ -455,8 +455,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Implement sign out logic
-              // context.go('/login');
+              // Navigate to login screen
+              context.go('/login');
             },
             child: Text(
               'Sign Out',
