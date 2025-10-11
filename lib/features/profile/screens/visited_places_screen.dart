@@ -44,9 +44,8 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.chevron_left),
           style: IconButton.styleFrom(
-            backgroundColor: AppTheme.dividerColor,
             foregroundColor: AppTheme.primaryTextColor,
           ),
         ),
