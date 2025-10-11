@@ -11,12 +11,76 @@ class ExploreScreen extends ConsumerStatefulWidget {
   ConsumerState<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends ConsumerState<ExploreScreen> {
+class _ExploreScreenState extends ConsumerState<ExploreScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
+  late AnimationController _greetingController;
+  late AnimationController _searchController_anim;
+  late Animation<double> _greetingFadeAnimation;
+  late Animation<double> _searchFadeAnimation;
+  bool _showGreeting = true;
+  bool _showSearch = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Greeting animation controller
+    _greetingController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    // Search animation controller
+    _searchController_anim = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    
+    
+    // Greeting fade animation
+    _greetingFadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _greetingController,
+      curve: Curves.easeInOut,
+    ));
+    
+    // Search fade animation
+    _searchFadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _searchController_anim,
+      curve: Curves.easeInOut,
+    ));
+    
+    
+    _startAnimationSequence();
+  }
+
+  void _startAnimationSequence() {
+    // Start greeting animation
+    _greetingController.forward();
+    
+    // Hide greeting and show search after 5 seconds
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _showGreeting = false;
+          _showSearch = true;
+        });
+        _searchController_anim.forward();
+      }
+    });
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _greetingController.dispose();
+    _searchController_anim.dispose();
     super.dispose();
   }
 
@@ -95,23 +159,51 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with greeting
-              _buildHeader(),
-              const SizedBox(height: 24),
+              // Animated Header with greeting
+              AnimatedBuilder(
+                animation: _greetingFadeAnimation,
+                builder: (context, child) {
+                  return _showGreeting
+                      ? Opacity(
+                          opacity: _greetingFadeAnimation.value,
+                          child: _buildHeader(),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
               
-              // Search bar
-              _buildSearchBar(),
+              // Animated Search bar
+              AnimatedBuilder(
+                animation: _searchFadeAnimation,
+                builder: (context, child) {
+                  return _showSearch
+                      ? Opacity(
+                          opacity: _searchFadeAnimation.value,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 8),
+                              _buildSearchBar(),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+              
+              // Weather and Currency Widgets (always visible)
+              const SizedBox(height: 16),
+              _buildQuickInfoWidgets(),
+              
+              // Categories section (always visible)
               const SizedBox(height: 32),
-              
-              // Categories section
               _buildCategoriesSection(),
               const SizedBox(height: 32),
               
-              // Notifications section
+              // Notifications section (always visible)
               _buildNotificationsSection(),
             ],
           ),
@@ -133,11 +225,148 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         const SizedBox(height: 4),
         Text(
           'What would you like to explore?',
-          style: AppTheme.displayMedium.copyWith(
-            fontWeight: FontWeight.w700,
+          style: AppTheme.headlineMedium.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildQuickInfoWidgets() {
+    return Row(
+      children: [
+        // Weather Widget
+        Expanded(
+          child: _buildWeatherWidget(),
+        ),
+        const SizedBox(width: 12),
+        // Currency Widget
+        Expanded(
+          child: _buildCurrencyWidget(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeatherWidget() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.blue[100]!),
+      ),
+      child: Column(
+        children: [
+          // First row: Icon + Location
+          Row(
+            children: [
+              Icon(
+                Icons.wb_sunny,
+                color: Colors.orange[600],
+                size: 16,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Kigali',
+                style: AppTheme.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blue[800],
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Second row: Temperature + Status
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '24°C',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.blue[900],
+                ),
+              ),
+              Text(
+                'Sunny',
+                style: AppTheme.bodySmall.copyWith(
+                  color: Colors.blue[700],
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrencyWidget() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.green[50],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.green[100]!),
+      ),
+      child: Column(
+        children: [
+          // First row: Icon + Currency Pair
+          Row(
+            children: [
+              Icon(
+                Icons.attach_money,
+                color: Colors.green[600],
+                size: 16,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'USD/RWF',
+                style: AppTheme.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.green[800],
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Second row: Rate + Trend
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '3,250',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.green[900],
+                ),
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.trending_up,
+                    color: Colors.green[600],
+                    size: 14,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    '+0.5%',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: Colors.green[700],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -151,7 +380,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search events, venues, experiences...',
+          hintText: 'Explore events, venues, experiences...',
           hintStyle: AppTheme.bodyMedium.copyWith(
             color: Colors.grey[500],
           ),
