@@ -18,8 +18,10 @@ class EventsScreen extends ConsumerStatefulWidget {
 }
 
 class _EventsScreenState extends ConsumerState<EventsScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  late AnimationController _shimmerController;
+  late Animation<double> _shimmerAnimation;
   EventFilter _currentFilter = const EventFilter();
 
   @override
@@ -27,6 +29,24 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_onTabChanged);
+    
+    // Shimmer animation controller
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    // Shimmer animation
+    _shimmerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _shimmerController,
+      curve: Curves.easeInOut,
+    ));
+    
+    // Start shimmer animation
+    _shimmerController.repeat();
   }
 
   void _onTabChanged() {
@@ -50,6 +70,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _shimmerController.dispose();
     super.dispose();
   }
 
@@ -126,10 +147,12 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
 
   Widget _buildEventsList(EventsState eventsState) {
     if (eventsState.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: AppTheme.primaryColor,
-        ),
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 5, // Show 5 skeleton cards
+        itemBuilder: (context, index) {
+          return _buildSkeletonEventCard();
+        },
       );
     }
 
@@ -209,6 +232,181 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         final event = eventsState.events[index];
         return _buildEventCard(event);
       },
+    );
+  }
+
+  Widget _buildSkeletonEventCard() {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Skeleton Image
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: AnimatedBuilder(
+              animation: _shimmerAnimation,
+              builder: (context, child) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.grey[300]!,
+                        Colors.grey[200]!,
+                        Colors.grey[300]!,
+                      ],
+                      stops: [
+                        0.0,
+                        _shimmerAnimation.value,
+                        1.0,
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Skeleton Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Event Name skeleton
+                Container(
+                  height: 24,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Date and Time skeleton
+                Row(
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 16,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Container(
+                      height: 16,
+                      width: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 16,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Location skeleton
+                Row(
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 16,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Organizer skeleton
+                Row(
+                  children: [
+                    Container(
+                      height: 24,
+                      width: 24,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 16,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Bottom row skeleton
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    Container(
+                      height: 16,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

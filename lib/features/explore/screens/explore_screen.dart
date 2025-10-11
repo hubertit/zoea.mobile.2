@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/events_provider.dart';
+import '../../../core/models/event.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -16,8 +20,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   final TextEditingController _searchController = TextEditingController();
   late AnimationController _greetingController;
   late AnimationController _searchController_anim;
+  late AnimationController _shimmerController;
   late Animation<double> _greetingFadeAnimation;
   late Animation<double> _searchFadeAnimation;
+  late Animation<double> _shimmerAnimation;
   bool _showGreeting = true;
   bool _showSearch = false;
 
@@ -37,6 +43,15 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       vsync: this,
     );
     
+    // Shimmer animation controller
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    // Start shimmer animation
+    _shimmerController.repeat();
+    
     
     // Greeting fade animation
     _greetingFadeAnimation = Tween<double>(
@@ -53,6 +68,15 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _searchController_anim,
+      curve: Curves.easeInOut,
+    ));
+    
+    // Shimmer animation
+    _shimmerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _shimmerController,
       curve: Curves.easeInOut,
     ));
     
@@ -81,6 +105,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     _searchController.dispose();
     _greetingController.dispose();
     _searchController_anim.dispose();
+    _shimmerController.dispose();
     super.dispose();
   }
 
@@ -203,8 +228,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               _buildCategoriesSection(),
               const SizedBox(height: 32),
               
-              // Notifications section (always visible)
-              _buildNotificationsSection(),
+              // Events section (always visible)
+              _buildEventsSection(),
             ],
           ),
         ),
@@ -497,122 +522,417 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
-  Widget _buildNotificationsSection() {
-    final notifications = [
-      {
-        'title': 'New Event Alert',
-        'subtitle': 'Summer Music Festival tickets are now available',
-        'time': '2 hours ago',
-        'isUnread': true,
-      },
-      {
-        'title': 'Booking Confirmed',
-        'subtitle': 'Your reservation at The Grand Hotel is confirmed',
-        'time': '1 day ago',
-        'isUnread': false,
-      },
-      {
-        'title': 'Special Offer',
-        'subtitle': 'Get 20% off on all dining experiences this weekend',
-        'time': '2 days ago',
-        'isUnread': false,
-      },
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildEventsSection() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final eventsState = ref.watch(eventsProvider);
+        
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Important Updates',
-              style: AppTheme.headlineMedium.copyWith(
-                fontWeight: FontWeight.w600,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Happening Now',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.push('/events');
+                  },
+                  child: Text(
+                    'View More',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            if (eventsState.isLoading)
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return _buildSkeletonEventCard();
+                  },
+                ),
+              )
+            else if (eventsState.error != null)
+              SizedBox(
+                height: 120,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppTheme.errorColor,
+                        size: 32,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Failed to load events',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.errorColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (eventsState.events.isEmpty)
+              SizedBox(
+                height: 120,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.event_available,
+                        color: AppTheme.secondaryTextColor,
+                        size: 32,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'No events today',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: eventsState.events.take(5).length,
+                  itemBuilder: (context, index) {
+                    final event = eventsState.events[index];
+                    return _buildEventCardFromData(event);
+                  },
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSkeletonEventCard() {
+    return Container(
+      width: 200,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[300],
+      ),
+      child: Stack(
+        children: [
+          // Skeleton shimmer effect
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _shimmerAnimation,
+              builder: (context, child) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.grey[300]!,
+                        Colors.grey[200]!,
+                        Colors.grey[300]!,
+                      ],
+                      stops: [
+                        0.0,
+                        _shimmerAnimation.value,
+                        1.0,
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Skeleton content
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 16,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 12,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 10,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
               ),
             ),
-            TextButton(
-              onPressed: () {
-                // TODO: Navigate to all notifications
-              },
-              child: Text(
-                'View All',
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w500,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEventCardFromData(Event event) {
+    final eventDetails = event.event;
+    final startDate = eventDetails.startDate;
+    final timeFormat = DateFormat('HH:mm');
+    final dateFormat = DateFormat('MMM dd');
+    
+    // Check if event is today
+    final now = DateTime.now();
+    final isToday = startDate.year == now.year && 
+                   startDate.month == now.month && 
+                   startDate.day == now.day;
+    
+    String timeText;
+    if (isToday) {
+      timeText = 'Today, ${timeFormat.format(startDate)}';
+    } else {
+      timeText = '${dateFormat.format(startDate)}, ${timeFormat.format(startDate)}';
+    }
+    
+    return GestureDetector(
+      onTap: () {
+        context.go('/event/${event.id}', extra: event);
+      },
+      child: Container(
+        width: 200,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            children: [
+              // Event image
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: eventDetails.flyer,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryColor,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.event,
+                      color: Colors.grey,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+              // Gradient overlay
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Event details
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        eventDetails.name,
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        eventDetails.locationName,
+                        style: AppTheme.bodySmall.copyWith(
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        timeText,
+                        style: AppTheme.labelSmall.copyWith(
+                          color: Colors.white.withOpacity(0.8),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventCard({
+    required String title,
+    required String subtitle,
+    required String time,
+    required String imageUrl,
+  }) {
+    return Container(
+      width: 200,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            // Event image
+            Positioned.fill(
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.image,
+                      color: Colors.grey,
+                      size: 40,
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Gradient overlay
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.7),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Event details
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: AppTheme.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      time,
+                      style: AppTheme.labelSmall.copyWith(
+                        color: Colors.white.withOpacity(0.8),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        ...notifications.map((notification) => _buildNotificationCard(
-          title: notification['title'] as String,
-          subtitle: notification['subtitle'] as String,
-          time: notification['time'] as String,
-          isUnread: notification['isUnread'] as bool,
-        )),
-      ],
-    );
-  }
-
-  Widget _buildNotificationCard({
-    required String title,
-    required String subtitle,
-    required String time,
-    required bool isUnread,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isUnread ? AppTheme.primaryColor.withOpacity(0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isUnread 
-              ? AppTheme.primaryColor.withOpacity(0.2)
-              : Colors.grey[200]!,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: isUnread ? AppTheme.primaryColor : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: isUnread ? FontWeight.w600 : FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  time,
-                  style: AppTheme.labelSmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
