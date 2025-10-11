@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/models/user.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -16,10 +17,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _bioController = TextEditingController();
-  final _locationController = TextEditingController();
 
   bool _isLoading = false;
+  UserRole _selectedUserRole = UserRole.explorer;
 
   @override
   void initState() {
@@ -28,8 +28,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _nameController.text = 'John Doe';
     _emailController.text = 'john.doe@example.com';
     _phoneController.text = '+250 788 123 456';
-    _bioController.text = 'Passionate traveler exploring Rwanda\'s beautiful landscapes and rich culture.';
-    _locationController.text = 'Kigali, Rwanda';
+    _selectedUserRole = UserRole.explorer;
   }
 
   @override
@@ -37,8 +36,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _bioController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
@@ -134,27 +131,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
             const SizedBox(height: 24),
             
-            // Location Information
-            _buildSectionHeader('Location'),
+            // Account Type
+            _buildSectionHeader('Account Type'),
             const SizedBox(height: 16),
-            _buildTextField(
-              controller: _locationController,
-              label: 'Current Location',
-              hint: 'Enter your current location',
-              icon: Icons.location_on,
-            ),
-            const SizedBox(height: 24),
-            
-            // Bio Section
-            _buildSectionHeader('About You'),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _bioController,
-              label: 'Bio',
-              hint: 'Tell us about yourself',
-              icon: Icons.info,
-              maxLines: 4,
-            ),
+            _buildUserRoleSelection(),
             const SizedBox(height: 32),
             
             // Save Button
@@ -243,6 +223,81 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         fontWeight: FontWeight.w600,
         color: AppTheme.primaryTextColor,
       ),
+    );
+  }
+
+  Widget _buildUserRoleSelection() {
+    return Column(
+      children: UserRole.values.where((role) => role != UserRole.admin).map((role) {
+        final isSelected = _selectedUserRole == role;
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                _selectedUserRole = role;
+              });
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : AppTheme.dividerColor,
+                border: Border.all(
+                  color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+                  width: isSelected ? 2 : 1,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+                        width: 2,
+                      ),
+                      color: isSelected ? AppTheme.primaryColor : Colors.transparent,
+                    ),
+                    child: isSelected
+                        ? const Icon(
+                            Icons.check,
+                            size: 12,
+                            color: Colors.white,
+                          )
+                        : null,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          role.displayName,
+                          style: AppTheme.titleMedium.copyWith(
+                            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          role.description,
+                          style: AppTheme.bodySmall.copyWith(
+                            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
