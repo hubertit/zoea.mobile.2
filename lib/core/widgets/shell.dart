@@ -12,6 +12,20 @@ class Shell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    
+    // Determine current index based on location
+    int currentIndex = 0;
+    if (location.startsWith('/events')) {
+      currentIndex = 1;
+    } else if (location.startsWith('/listings')) {
+      currentIndex = 2;
+    } else if (location.startsWith('/profile')) {
+      currentIndex = 3;
+    } else if (location.startsWith('/explore')) {
+      currentIndex = 0;
+    }
+    
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
@@ -19,6 +33,7 @@ class Shell extends StatelessWidget {
         backgroundColor: AppTheme.backgroundColor,
         selectedItemColor: AppTheme.primaryColor,
         unselectedItemColor: AppTheme.secondaryTextColor,
+        currentIndex: currentIndex,
         selectedLabelStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -29,22 +44,22 @@ class Shell extends StatelessWidget {
         ),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
+            icon: Icon(Icons.explore_outlined),
             activeIcon: Icon(Icons.explore),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
+            icon: Icon(Icons.event_outlined),
             activeIcon: Icon(Icons.event),
             label: 'Events',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(Icons.list_outlined),
             activeIcon: Icon(Icons.list),
             label: 'Listings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Profile',
           ),

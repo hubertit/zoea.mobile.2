@@ -19,7 +19,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   late AnimationController _greetingController;
-  late AnimationController _searchController_anim;
+  late AnimationController _searchAnimationController;
   late AnimationController _shimmerController;
   late Animation<double> _greetingFadeAnimation;
   late Animation<double> _searchFadeAnimation;
@@ -38,7 +38,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
     
     // Search animation controller
-    _searchController_anim = AnimationController(
+    _searchAnimationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
@@ -67,7 +67,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _searchController_anim,
+      parent: _searchAnimationController,
       curve: Curves.easeInOut,
     ));
     
@@ -95,7 +95,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           _showGreeting = false;
           _showSearch = true;
         });
-        _searchController_anim.forward();
+        _searchAnimationController.forward();
       }
     });
   }
@@ -104,7 +104,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   void dispose() {
     _searchController.dispose();
     _greetingController.dispose();
-    _searchController_anim.dispose();
+    _searchAnimationController.dispose();
     _shimmerController.dispose();
     super.dispose();
   }
