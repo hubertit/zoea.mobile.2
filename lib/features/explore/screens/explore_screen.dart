@@ -220,13 +220,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               ),
               
               // Weather and Currency Widgets (always visible)
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               _buildQuickInfoWidgets(),
               
               // Categories section (always visible)
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               _buildCategoriesSection(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               
               // Events section (always visible)
               _buildEventsSection(),
@@ -476,14 +476,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
             childAspectRatio: 1.1,
           ),
           itemCount: categories.length,
@@ -570,7 +570,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             if (eventsState.isLoading)
               SizedBox(
                 height: 120,
