@@ -373,26 +373,38 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(20),
       ),
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
           hintText: 'Explore events, venues, experiences...',
           hintStyle: AppTheme.bodyMedium.copyWith(
-            color: Colors.grey[500],
+            color: AppTheme.secondaryTextColor,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Colors.grey[500],
+            color: AppTheme.secondaryTextColor,
             size: 20,
           ),
-          border: InputBorder.none,
+          filled: true,
+          fillColor: Colors.grey[100],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: AppTheme.dividerColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: AppTheme.dividerColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: AppTheme.dividerColor),
+          ),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
+            horizontal: 20,
+            vertical: 20,
           ),
         ),
         style: AppTheme.bodyMedium,
