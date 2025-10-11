@@ -79,7 +79,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     final eventsState = ref.watch(eventsProvider);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,

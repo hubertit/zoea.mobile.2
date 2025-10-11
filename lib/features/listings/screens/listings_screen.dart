@@ -14,7 +14,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text('Listings'),
         backgroundColor: AppTheme.backgroundColor,
