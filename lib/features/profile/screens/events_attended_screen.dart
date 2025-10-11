@@ -43,7 +43,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
         centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () => context.pop(),
+          onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.arrow_back_ios),
           style: IconButton.styleFrom(
             backgroundColor: AppTheme.dividerColor,
