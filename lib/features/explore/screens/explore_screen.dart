@@ -464,8 +464,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to categories screen
-                // context.push('/categories');
+                _showCategoriesBottomSheet(context);
               },
               child: Text(
                 'View More',
@@ -948,6 +947,137 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   ],
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCategoriesBottomSheet(BuildContext context) {
+    final allCategories = [
+      {'icon': Icons.event, 'label': 'Events'},
+      {'icon': Icons.restaurant, 'label': 'Dining'},
+      {'icon': Icons.explore, 'label': 'Experiences'},
+      {'icon': Icons.sports_soccer, 'label': 'Sports'},
+      {'icon': Icons.nightlife, 'label': 'Nightlife'},
+      {'icon': Icons.shopping_bag, 'label': 'Shopping'},
+      {'icon': Icons.landscape, 'label': 'National Parks'},
+      {'icon': Icons.museum, 'label': 'Museums'},
+      {'icon': Icons.hotel, 'label': 'Accommodation'},
+      {'icon': Icons.directions_car, 'label': 'Transport'},
+      {'icon': Icons.terrain, 'label': 'Hiking'},
+      {'icon': Icons.build, 'label': 'Services'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppTheme.backgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppTheme.dividerColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'All Categories',
+                    style: AppTheme.titleLarge.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.dividerColor,
+                      foregroundColor: AppTheme.primaryTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Categories grid
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.1,
+                ),
+                itemCount: allCategories.length,
+                itemBuilder: (context, index) {
+                  final category = allCategories[index];
+                  return _buildBottomSheetCategoryCard(
+                    icon: category['icon'] as IconData,
+                    label: category['label'] as String,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSheetCategoryCard({
+    required IconData icon,
+    required String label,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        // TODO: Navigate to specific category
+        // context.push('/category/${label.toLowerCase()}');
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.dividerColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: AppTheme.primaryTextColor,
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: AppTheme.bodySmall.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppTheme.primaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
