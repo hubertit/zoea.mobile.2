@@ -93,7 +93,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'My Bookings',
                   subtitle: 'View your reservations',
                   onTap: () {
-                    // TODO: Navigate to bookings
+                    context.go('/profile/my-bookings');
                   },
                 ),
                 _buildMenuItem(
