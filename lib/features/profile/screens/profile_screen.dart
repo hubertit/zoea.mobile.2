@@ -101,7 +101,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Favorites',
                   subtitle: 'Your saved places and events',
                   onTap: () {
-                    // TODO: Navigate to favorites
+                    context.go('/profile/favorites');
                   },
                 ),
                 _buildMenuItem(
@@ -109,7 +109,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Reviews & Ratings',
                   subtitle: 'Your reviews and feedback',
                   onTap: () {
-                    // TODO: Navigate to reviews
+                    context.go('/profile/reviews-ratings');
                   },
                 ),
               ],

@@ -20,6 +20,8 @@ import '../../features/profile/screens/reviews_written_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/privacy_security_screen.dart';
 import '../../features/profile/screens/my_bookings_screen.dart';
+import '../../features/profile/screens/favorites_screen.dart';
+import '../../features/profile/screens/reviews_ratings_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
@@ -149,6 +151,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/my-bookings',
         builder: (context, state) => const MyBookingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/favorites',
+        builder: (context, state) => const FavoritesScreen(),
+      ),
+      GoRoute(
+        path: '/profile/reviews-ratings',
+        builder: (context, state) => const ReviewsRatingsScreen(),
       ),
     ],
   );
