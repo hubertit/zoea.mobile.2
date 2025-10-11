@@ -4,6 +4,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
+import '../../features/explore/screens/specials_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/events/screens/event_detail_screen.dart';
 import '../../core/models/event.dart';
@@ -169,6 +170,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/about',
         builder: (context, state) => const AboutScreen(),
+      ),
+
+      // Specials Route
+      GoRoute(
+        path: '/specials',
+        builder: (context, state) => const SpecialsScreen(),
       ),
     ],
   );

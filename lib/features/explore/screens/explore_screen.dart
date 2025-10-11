@@ -230,6 +230,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               
               // Events section (always visible)
               _buildEventsSection(),
+              const SizedBox(height: 16),
+              
+              // Near Me section (always visible)
+              _buildNearMeSection(),
+              const SizedBox(height: 16),
+              
+              // Specials section (always visible)
+              _buildSpecialsSection(),
             ],
           ),
         ),
@@ -1082,5 +1090,402 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildNearMeSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Near Me',
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // TODO: Navigate to map view
+                context.push('/map');
+              },
+              child: Text(
+                'View Map',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _getMockNearMePlaces().length,
+          itemBuilder: (context, index) {
+            final place = _getMockNearMePlaces()[index];
+            return _buildNearMeCard(place);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNearMeCard(Map<String, dynamic> place) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Image
+          ClipRRect(
+            borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+            child: CachedNetworkImage(
+              imageUrl: place['image'],
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                height: 80,
+                width: 80,
+                color: AppTheme.dividerColor,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                height: 80,
+                width: 80,
+                color: AppTheme.dividerColor,
+                child: const Icon(Icons.image_not_supported),
+              ),
+            ),
+          ),
+          
+          // Content
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  Text(
+                    place['name'],
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  
+                  // Distance and Category
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 12,
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        place['distance'],
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          place['category'],
+                          style: AppTheme.labelSmall.copyWith(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _getMockNearMePlaces() {
+    return [
+      {
+        'name': 'Kigali Convention Centre',
+        'distance': '0.5 km',
+        'category': 'Venue',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
+      },
+      {
+        'name': 'Kimisagara Market',
+        'distance': '1.2 km',
+        'category': 'Market',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
+      },
+      {
+        'name': 'Kigali Genocide Memorial',
+        'distance': '2.1 km',
+        'category': 'Memorial',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
+      },
+      {
+        'name': 'Kimisagara Restaurant',
+        'distance': '0.8 km',
+        'category': 'Dining',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
+      },
+      {
+        'name': 'Kigali City Tower',
+        'distance': '1.5 km',
+        'category': 'Shopping',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
+      },
+    ];
+  }
+
+  Widget _buildSpecialsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Special Offers',
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.push('/specials');
+              },
+              child: Text(
+                'View All',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _getMockSpecials().length,
+          itemBuilder: (context, index) {
+            final special = _getMockSpecials()[index];
+            return _buildSpecialCard(special);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSpecialCard(Map<String, dynamic> special) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Left content
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      special['badge'],
+                      style: AppTheme.labelSmall.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  
+                  // Title
+                  Text(
+                    special['title'],
+                    style: AppTheme.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Description
+                  Text(
+                    special['description'],
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  
+                  // Price and discount
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            special['originalPrice'],
+                            style: AppTheme.bodySmall.copyWith(
+                              color: AppTheme.secondaryTextColor,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            special['discountedPrice'],
+                            style: AppTheme.titleMedium.copyWith(
+                              color: AppTheme.primaryColor,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppTheme.successColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          special['discount'],
+                          style: AppTheme.labelSmall.copyWith(
+                            color: AppTheme.successColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Right content - Image
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 140,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                child: CachedNetworkImage(
+                  imageUrl: special['image'],
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: AppTheme.dividerColor,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: AppTheme.dividerColor,
+                    child: const Icon(Icons.image_not_supported),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _getMockSpecials() {
+    return [
+      {
+        'title': 'Gorilla Trekking',
+        'description': 'Experience the majestic mountain gorillas in their natural habitat',
+        'badge': 'LIMITED TIME',
+        'originalPrice': 'RWF 1,500',
+        'discountedPrice': 'RWF 1,200',
+        'discount': '20% OFF',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
+      },
+      {
+        'title': 'Cultural Village Tour',
+        'description': 'Discover Rwanda\'s rich cultural heritage and traditions',
+        'badge': 'POPULAR',
+        'originalPrice': 'RWF 800',
+        'discountedPrice': 'RWF 600',
+        'discount': '25% OFF',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
+      },
+      {
+        'title': 'Lake Kivu Boat Trip',
+        'description': 'Relax on a scenic boat trip across the beautiful Lake Kivu',
+        'badge': 'NEW',
+        'originalPrice': 'RWF 1,200',
+        'discountedPrice': 'RWF 900',
+        'discount': '25% OFF',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
+      },
+    ];
   }
 }
