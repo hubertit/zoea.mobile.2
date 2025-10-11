@@ -272,11 +272,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard(
-            icon: Icons.star,
-            title: 'Reviews',
-            value: '24',
-            subtitle: 'Written',
+          child: GestureDetector(
+            onTap: () => context.go('/profile/reviews-written'),
+            child: _buildStatCard(
+              icon: Icons.star,
+              title: 'Reviews',
+              value: '24',
+              subtitle: 'Written',
+            ),
           ),
         ),
       ],
