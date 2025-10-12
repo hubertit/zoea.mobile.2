@@ -35,6 +35,31 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
     _loadFavorites();
+    _setDefaultDatesAndTimes();
+  }
+
+  void _setDefaultDatesAndTimes() {
+    final now = DateTime.now();
+    final nextHour = now.hour + 1;
+    
+    // Set check-in to current date and next hour
+    _checkInDate = DateTime(now.year, now.month, now.day);
+    _checkInTime = TimeOfDay(hour: nextHour > 23 ? 0 : nextHour, minute: 0);
+    
+    // Set check-out to next day (24 hours later)
+    _checkOutDate = DateTime(now.year, now.month, now.day + 1);
+    _checkOutTime = _checkInTime;
+    
+    // Update the display string
+    _updateDatesDisplay();
+  }
+
+  void _updateDatesDisplay() {
+    if (_checkInDate != null && _checkOutDate != null) {
+      final checkInFormatted = '${_checkInDate!.day}/${_checkInDate!.month}/${_checkInDate!.year}';
+      final checkOutFormatted = '${_checkOutDate!.day}/${_checkOutDate!.month}/${_checkOutDate!.year}';
+      _selectedDates = '$checkInFormatted - $checkOutFormatted';
+    }
   }
 
   @override
@@ -1140,6 +1165,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         } else {
           _checkOutDate = picked;
         }
+        _updateDatesDisplay();
       });
     }
   }
