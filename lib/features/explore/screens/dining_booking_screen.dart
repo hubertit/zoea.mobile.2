@@ -243,6 +243,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey[300]!),
