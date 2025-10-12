@@ -418,7 +418,23 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
   }
 
   Widget _buildMenuTab(Map<String, dynamic> place) {
-    final menuCategories = place['menu'] as List<Map<String, dynamic>>;
+    final menuData = place['menu'];
+    if (menuData == null) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Text(
+            'No menu available for this place',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+    
+    final menuCategories = menuData as List<Map<String, dynamic>>;
     
     return ListView.builder(
       padding: const EdgeInsets.all(20),
@@ -639,6 +655,23 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
   }
 
   Widget _buildPhotosTab(Map<String, dynamic> place) {
+    final photos = place['photos'] as List<String>? ?? [];
+    
+    if (photos.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Text(
+            'No photos available for this place',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+    
     return GridView.builder(
       padding: const EdgeInsets.all(20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -647,12 +680,12 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         mainAxisSpacing: 12,
         childAspectRatio: 1,
       ),
-      itemCount: place['photos'].length,
+      itemCount: photos.length,
       itemBuilder: (context, index) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: CachedNetworkImage(
-            imageUrl: place['photos'][index],
+            imageUrl: photos[index],
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
               color: Colors.grey[200],
