@@ -195,7 +195,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   return _showGreeting
                       ? Opacity(
                           opacity: _greetingFadeAnimation.value,
-                          child: _buildHeader(),
+                          child: Column(
+                            children: [
+                              _buildHeader(),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
                         )
                       : const SizedBox.shrink();
                 },
