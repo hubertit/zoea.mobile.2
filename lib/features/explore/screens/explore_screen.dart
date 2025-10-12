@@ -22,9 +22,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   late AnimationController _greetingController;
   late AnimationController _searchAnimationController;
   late AnimationController _shimmerController;
+  late AnimationController _rewardsAnimationController;
   late Animation<double> _greetingFadeAnimation;
   late Animation<double> _searchFadeAnimation;
   late Animation<double> _shimmerAnimation;
+  late Animation<Color?> _rewardsColorAnimation;
   bool _showGreeting = true;
   bool _showSearch = false;
 
@@ -50,9 +52,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       vsync: this,
     );
     
+    // Rewards animation controller
+    _rewardsAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 2000), // Slow animation
+      vsync: this,
+    );
+    
     // Start shimmer animation
     _shimmerController.repeat();
     
+    // Start rewards animation (slow loop)
+    _rewardsAnimationController.repeat(reverse: true);
     
     // Greeting fade animation
     _greetingFadeAnimation = Tween<double>(
@@ -78,6 +88,15 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _shimmerController,
+      curve: Curves.easeInOut,
+    ));
+    
+    // Rewards color animation (orange theme)
+    _rewardsColorAnimation = ColorTween(
+      begin: Colors.orange[300], // Light orange
+      end: Colors.orange[700],   // Dark orange
+    ).animate(CurvedAnimation(
+      parent: _rewardsAnimationController,
       curve: Curves.easeInOut,
     ));
     
@@ -107,6 +126,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     _greetingController.dispose();
     _searchAnimationController.dispose();
     _shimmerController.dispose();
+    _rewardsAnimationController.dispose();
     super.dispose();
   }
 
@@ -140,43 +160,40 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               context.push('/search');
             },
           ),
-          // Rewards/Referral Icon
-          IconButton(
-            icon: const Icon(Icons.card_giftcard),
-            onPressed: () {
-              context.push('/referrals');
+          // Rewards/Referral Icon with Orange Animation
+          AnimatedBuilder(
+            animation: _rewardsColorAnimation,
+            builder: (context, child) {
+              return IconButton(
+                icon: Icon(
+                  Icons.card_giftcard,
+                  color: _rewardsColorAnimation.value,
+                ),
+                onPressed: () {
+                  context.push('/referrals');
+                },
+              );
             },
           ),
           // Notifications Icon with Badge
           Stack(
             children: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined),
+                onPressed: () {
                   context.push('/notifications');
                 },
               ),
-              // Badge for unread notifications
+              // Small badge for unread notifications
               Positioned(
                 right: 8,
                 top: 8,
                 child: Container(
-                  padding: const EdgeInsets.all(2),
+                  width: 8,
+                  height: 8,
                   decoration: BoxDecoration(
                     color: Colors.red,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: const Text(
-                    '3',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                    textAlign: TextAlign.center,
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
