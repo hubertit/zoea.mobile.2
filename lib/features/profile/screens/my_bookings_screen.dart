@@ -543,9 +543,11 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
 
   List<Map<String, dynamic>> _getMockBookings() {
     return [
+      // EVENTS - Upcoming
       {
         'id': 'BK001',
-        'eventName': 'Kigali Jazz Festival',
+        'type': 'event',
+        'eventName': 'Kigali Jazz Festival 2024',
         'location': 'Kigali Convention Centre',
         'eventDate': DateTime.now().add(const Duration(days: 15)),
         'bookingDate': DateTime.now().subtract(const Duration(days: 5)),
@@ -556,6 +558,85 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
       },
       {
         'id': 'BK002',
+        'type': 'event',
+        'eventName': 'Kwita Izina Gorilla Naming Ceremony',
+        'location': 'Kinigi, Musanze',
+        'eventDate': DateTime.now().add(const Duration(days: 8)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 3)),
+        'price': 50000,
+        'guests': 1,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop',
+      },
+      {
+        'id': 'BK003',
+        'type': 'event',
+        'eventName': 'Rwanda Cultural Festival',
+        'location': 'Amahoro Stadium, Kigali',
+        'eventDate': DateTime.now().add(const Duration(days: 25)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 7)),
+        'price': 15000,
+        'guests': 4,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+      },
+      
+      // ACCOMMODATION - Upcoming
+      {
+        'id': 'BK004',
+        'type': 'accommodation',
+        'eventName': 'Kigali Marriott Hotel',
+        'location': 'Kacyiru, Kigali',
+        'eventDate': DateTime.now().add(const Duration(days: 12)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 4)),
+        'price': 180000,
+        'guests': 2,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+      },
+      {
+        'id': 'BK005',
+        'type': 'accommodation',
+        'eventName': 'Sabyinyo Silverback Lodge',
+        'location': 'Kinigi, Musanze',
+        'eventDate': DateTime.now().add(const Duration(days: 20)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 6)),
+        'price': 450000,
+        'guests': 2,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop',
+      },
+      
+      // RESTAURANTS - Upcoming
+      {
+        'id': 'BK006',
+        'type': 'restaurant',
+        'eventName': 'Poivre Noir Restaurant',
+        'location': 'Kacyiru, Kigali',
+        'eventDate': DateTime.now().add(const Duration(days: 3)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 1)),
+        'price': 45000,
+        'guests': 2,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+      },
+      {
+        'id': 'BK007',
+        'type': 'restaurant',
+        'eventName': 'Heaven Restaurant',
+        'location': 'Kacyiru, Kigali',
+        'eventDate': DateTime.now().add(const Duration(days: 7)),
+        'bookingDate': DateTime.now().subtract(const Duration(days: 2)),
+        'price': 35000,
+        'guests': 3,
+        'status': 'upcoming',
+        'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
+      },
+      
+      // PAST BOOKINGS
+      {
+        'id': 'BK008',
+        'type': 'event',
         'eventName': 'Volcanoes National Park Tour',
         'location': 'Musanze, Northern Province',
         'eventDate': DateTime.now().subtract(const Duration(days: 10)),

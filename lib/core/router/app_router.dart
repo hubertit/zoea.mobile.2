@@ -79,6 +79,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const ListingsScreen(),
           ),
           GoRoute(
+            path: '/accommodation',
+            builder: (context, state) => const AccommodationScreen(),
+          ),
+          GoRoute(
+            path: '/my-bookings',
+            builder: (context, state) => const MyBookingsScreen(),
+          ),
+          GoRoute(
             path: '/profile',
             builder: (context, state) => const ProfileScreen(),
           ),
@@ -229,10 +237,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const NightlifeScreen(),
       ),
       GoRoute(
-        path: '/accommodation',
-        builder: (context, state) => const AccommodationScreen(),
-      ),
-      GoRoute(
         path: '/accommodation/:accommodationId',
         builder: (context, state) {
           final accommodationId = state.pathParameters['accommodationId']!;
@@ -271,11 +275,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // My Bookings Route
-      GoRoute(
-        path: '/my-bookings',
-        builder: (context, state) => const MyBookingsScreen(),
-      ),
 
       // Place Detail Route
       GoRoute(
