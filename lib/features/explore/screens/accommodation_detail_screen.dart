@@ -254,6 +254,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       color: AppTheme.backgroundColor,
       child: TabBar(
         controller: _tabController,
+        isScrollable: true,
         labelColor: AppTheme.primaryColor,
         unselectedLabelColor: AppTheme.secondaryTextColor,
         indicatorColor: AppTheme.primaryColor,
