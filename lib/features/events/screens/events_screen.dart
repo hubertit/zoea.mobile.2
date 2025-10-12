@@ -117,6 +117,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   labelColor: AppTheme.primaryColor,
                   unselectedLabelColor: AppTheme.secondaryTextColor,
                   indicatorColor: AppTheme.primaryColor,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
                   tabs: const [
                     Tab(text: 'Trending'),
                     Tab(text: 'Near Me'),

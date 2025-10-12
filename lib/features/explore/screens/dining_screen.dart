@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/place_card.dart';
-import 'place_detail_screen.dart';
 
 class DiningScreen extends ConsumerStatefulWidget {
   const DiningScreen({super.key});
@@ -68,6 +67,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           labelColor: AppTheme.primaryColor,
           unselectedLabelColor: AppTheme.secondaryTextColor,
           indicatorColor: AppTheme.primaryColor,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'Restaurants'),
