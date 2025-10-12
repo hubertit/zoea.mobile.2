@@ -13,9 +13,9 @@ class AccommodationScreen extends ConsumerStatefulWidget {
 class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final String _selectedLocation = 'Kigali';
-  final String _selectedDates = 'Any dates';
-  final int _guestCount = 1;
+  String _selectedLocation = 'Kigali';
+  String _selectedDates = 'Any dates';
+  int _guestCount = 1;
   Set<String> _favoriteAccommodations = {};
 
   final List<String> _tabs = [
@@ -107,83 +107,86 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.location_on,
-            color: AppTheme.primaryColor,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              _selectedLocation,
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryTextColor,
-                fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: _showSearchOptions,
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[300]!),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.location_on,
+              color: AppTheme.primaryColor,
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                _selectedLocation,
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.primaryTextColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          Container(
-            height: 20,
-            width: 1,
-            color: Colors.grey[300],
-          ),
-          const SizedBox(width: 12),
-          Icon(
-            Icons.calendar_today,
-            color: AppTheme.secondaryTextColor,
-            size: 18,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              _selectedDates,
+            Container(
+              height: 20,
+              width: 1,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(width: 12),
+            Icon(
+              Icons.calendar_today,
+              color: AppTheme.secondaryTextColor,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _selectedDates,
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ),
+            Container(
+              height: 20,
+              width: 1,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(width: 12),
+            Icon(
+              Icons.person,
+              color: AppTheme.secondaryTextColor,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
               style: AppTheme.bodyMedium.copyWith(
                 color: AppTheme.secondaryTextColor,
               ),
             ),
-          ),
-          Container(
-            height: 20,
-            width: 1,
-            color: Colors.grey[300],
-          ),
-          const SizedBox(width: 12),
-          Icon(
-            Icons.person,
-            color: AppTheme.secondaryTextColor,
-            size: 18,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
-            style: AppTheme.bodyMedium.copyWith(
+            const SizedBox(width: 8),
+            Icon(
+              Icons.arrow_drop_down,
               color: AppTheme.secondaryTextColor,
+              size: 20,
             ),
-          ),
-          const SizedBox(width: 8),
-          Icon(
-            Icons.arrow_drop_down,
-            color: AppTheme.secondaryTextColor,
-            size: 20,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -727,6 +730,290 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Map view coming soon!'),
+      ),
+    );
+  }
+
+  void _showSearchOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Search Options',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Location
+            _buildSearchOption(
+              icon: Icons.location_on,
+              title: 'Where',
+              subtitle: _selectedLocation,
+              onTap: _selectLocation,
+            ),
+            const SizedBox(height: 16),
+            
+            // Dates
+            _buildSearchOption(
+              icon: Icons.calendar_today,
+              title: 'Check-in & Check-out',
+              subtitle: _selectedDates,
+              onTap: _selectDates,
+            ),
+            const SizedBox(height: 16),
+            
+            // Guests
+            _buildSearchOption(
+              icon: Icons.person,
+              title: 'Guests',
+              subtitle: '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
+              onTap: _selectGuests,
+            ),
+            const SizedBox(height: 30),
+            
+            // Search button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Apply search filters
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  'Search Accommodations',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: AppTheme.primaryColor,
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: AppTheme.secondaryTextColor,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _selectLocation() {
+    Navigator.pop(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select Location',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...['Kigali', 'Musanze', 'Rubavu', 'Huye', 'Nyagatare', 'Rusizi'].map((location) => 
+              ListTile(
+                title: Text(location),
+                trailing: location == _selectedLocation 
+                  ? Icon(Icons.check, color: AppTheme.primaryColor)
+                  : null,
+                onTap: () {
+                  setState(() {
+                    _selectedLocation = location;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _selectDates() {
+    Navigator.pop(context);
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    ).then((selectedDate) {
+      if (selectedDate != null) {
+        setState(() {
+          _selectedDates = '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+        });
+      }
+    });
+  }
+
+  void _selectGuests() {
+    Navigator.pop(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Number of Guests',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Guests',
+                  style: AppTheme.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: _guestCount > 1 ? () {
+                        setState(() {
+                          _guestCount--;
+                        });
+                      } : null,
+                      icon: const Icon(Icons.remove),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.grey[100],
+                        shape: const CircleBorder(),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      '$_guestCount',
+                      style: AppTheme.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      onPressed: _guestCount < 10 ? () {
+                        setState(() {
+                          _guestCount++;
+                        });
+                      } : null,
+                      icon: const Icon(Icons.add),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: const CircleBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Done',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
