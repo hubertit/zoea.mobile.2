@@ -78,6 +78,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             onPressed: () => context.push('/search?category=accommodation'),
           ),
           IconButton(
+            icon: const Icon(Icons.sort),
+            onPressed: _showSortBottomSheet,
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilterBottomSheet,
           ),
@@ -521,7 +525,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       ),
       builder: (context) => Container(
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxHeight: MediaQuery.of(context).size.height * 0.9,
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -529,23 +533,112 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Filters',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Filters',
+                    style: AppTheme.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Clear all filters
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Clear All',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
-              // Price range
+              
+              // Price Range
               Text(
-                'Price Range',
+                'Price Range (RWF)',
                 style: AppTheme.bodyLarge.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 12),
-              // Add price range slider here
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Min: 10,000',
+                        style: AppTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Max: 200,000',
+                        style: AppTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
+              
+              // Rating
+              Text(
+                'Minimum Rating',
+                style: AppTheme.bodyLarge.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle rating selection
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text('${index + 1}+'),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 20),
+              
               // Amenities
               Text(
                 'Amenities',
@@ -554,20 +647,112 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 ),
               ),
               const SizedBox(height: 12),
-              // Add amenities checkboxes here
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  'WiFi',
+                  'Pool',
+                  'Spa',
+                  'Gym',
+                  'Restaurant',
+                  'Parking',
+                  'Air Conditioning',
+                  'Business Center',
+                  'Kitchen',
+                  'Garden',
+                ].map((amenity) => FilterChip(
+                  label: Text(amenity),
+                  selected: false,
+                  onSelected: (selected) {
+                    // Handle amenity selection
+                  },
+                  backgroundColor: AppTheme.backgroundColor,
+                  selectedColor: AppTheme.primaryColor.withOpacity(0.1),
+                  checkmarkColor: AppTheme.primaryColor,
+                  side: BorderSide(color: Colors.grey[300]!),
+                )).toList(),
+              ),
               const SizedBox(height: 20),
+              
+              // Property Type
+              Text(
+                'Property Type',
+                style: AppTheme.bodyLarge.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  'Hotels',
+                  'B&Bs',
+                  'Apartments',
+                  'Villas',
+                ].map((type) => FilterChip(
+                  label: Text(type),
+                  selected: false,
+                  onSelected: (selected) {
+                    // Handle property type selection
+                  },
+                  backgroundColor: AppTheme.backgroundColor,
+                  selectedColor: AppTheme.primaryColor.withOpacity(0.1),
+                  checkmarkColor: AppTheme.primaryColor,
+                  side: BorderSide(color: Colors.grey[300]!),
+                )).toList(),
+              ),
+              const SizedBox(height: 20),
+              
+              // Distance
+              Text(
+                'Distance from City Center',
+                style: AppTheme.bodyLarge.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  'Any',
+                  'Under 5km',
+                  '5-10km',
+                  '10-20km',
+                  'Over 20km',
+                ].map((distance) => Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    child: FilterChip(
+                      label: Text(distance),
+                      selected: false,
+                      onSelected: (selected) {
+                        // Handle distance selection
+                      },
+                      backgroundColor: AppTheme.backgroundColor,
+                      selectedColor: AppTheme.primaryColor.withOpacity(0.1),
+                      checkmarkColor: AppTheme.primaryColor,
+                      side: BorderSide(color: Colors.grey[300]!),
+                    ),
+                  ),
+                )).toList(),
+              ),
+              const SizedBox(height: 30),
+              
               // Apply button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    // Apply filters logic here
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: Text(
                     'Apply Filters',
@@ -590,6 +775,49 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Map view coming soon!'),
+      ),
+    );
+  }
+
+  void _showSortBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Sort by',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...['Recommended', 'Price: Low to High', 'Price: High to Low', 'Rating: High to Low', 'Distance', 'Popularity'].map((sortOption) => 
+              ListTile(
+                title: Text(
+                  sortOption,
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                trailing: sortOption == 'Recommended' 
+                  ? Icon(Icons.check, color: AppTheme.primaryColor)
+                  : null,
+                onTap: () {
+                  Navigator.pop(context);
+                  // Handle sort selection
+                },
+              ),
+            ).toList(),
+          ],
+        ),
       ),
     );
   }

@@ -10,6 +10,8 @@ import '../../features/explore/screens/dining_screen.dart';
 import '../../features/explore/screens/experiences_screen.dart';
 import '../../features/explore/screens/nightlife_screen.dart';
 import '../../features/explore/screens/accommodation_screen.dart';
+import '../../features/explore/screens/accommodation_detail_screen.dart';
+import '../../features/explore/screens/accommodation_booking_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
@@ -228,6 +230,20 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/accommodation',
         builder: (context, state) => const AccommodationScreen(),
+      ),
+      GoRoute(
+        path: '/accommodation/:accommodationId',
+        builder: (context, state) {
+          final accommodationId = state.pathParameters['accommodationId']!;
+          return AccommodationDetailScreen(accommodationId: accommodationId);
+        },
+      ),
+      GoRoute(
+        path: '/accommodation/:accommodationId/book',
+        builder: (context, state) {
+          final accommodationId = state.pathParameters['accommodationId']!;
+          return AccommodationBookingScreen(accommodationId: accommodationId);
+        },
       ),
 
 
