@@ -253,8 +253,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           ],
         ),
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           // Image with favorite button
           Stack(
             children: [
@@ -463,7 +463,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               ],
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
