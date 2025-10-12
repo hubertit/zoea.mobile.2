@@ -6,11 +6,19 @@ import '../../../core/theme/app_theme.dart';
 class AccommodationBookingScreen extends ConsumerStatefulWidget {
   final String accommodationId;
   final Map<String, Map<String, dynamic>>? selectedRooms;
+  final DateTime? checkInDate;
+  final DateTime? checkOutDate;
+  final TimeOfDay? checkInTime;
+  final int? guestCount;
 
   const AccommodationBookingScreen({
     super.key,
     required this.accommodationId,
     this.selectedRooms,
+    this.checkInDate,
+    this.checkOutDate,
+    this.checkInTime,
+    this.guestCount,
   });
 
   @override
@@ -18,10 +26,23 @@ class AccommodationBookingScreen extends ConsumerStatefulWidget {
 }
 
 class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookingScreen> {
-  DateTime? _checkInDate;
-  DateTime? _checkOutDate;
+  late DateTime? _checkInDate;
+  late DateTime? _checkOutDate;
+  late TimeOfDay? _checkInTime;
   int _guestCount = 1;
   int _roomCount = 1;
+  String _couponCode = '';
+  double _discountAmount = 0.0;
+  bool _isCouponApplied = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInDate = widget.checkInDate;
+    _checkOutDate = widget.checkOutDate;
+    _checkInTime = widget.checkInTime;
+    _guestCount = widget.guestCount ?? 1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +86,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             _buildPriceBreakdown(),
             const SizedBox(height: 24),
             _buildSpecialRequests(),
+            const SizedBox(height: 24),
+            _buildCouponSection(),
             const SizedBox(height: 40),
           ],
         ),
@@ -626,5 +649,194 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ],
       ),
     );
+  }
+
+  Widget _buildCouponSection() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.local_offer,
+                color: AppTheme.primaryColor,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Coupon Code',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _couponCode = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Enter coupon code',
+                    hintStyle: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: AppTheme.primaryColor),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: _couponCode.isNotEmpty ? _applyCoupon : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _couponCode.isNotEmpty 
+                      ? AppTheme.primaryColor 
+                      : Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                ),
+                child: Text(
+                  'Apply',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_isCouponApplied) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.successColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppTheme.successColor.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    color: AppTheme.successColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Coupon Applied!',
+                          style: AppTheme.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.successColor,
+                          ),
+                        ),
+                        Text(
+                          'You saved RWF ${_discountAmount.toStringAsFixed(0)}',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.successColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _removeCoupon,
+                    icon: Icon(
+                      Icons.close,
+                      color: AppTheme.successColor,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _applyCoupon() {
+    // Mock coupon validation
+    final validCoupons = {
+      'WELCOME10': 0.10, // 10% discount
+      'SAVE20': 0.20,    // 20% discount
+      'FIRST15': 0.15,   // 15% discount
+    };
+
+    if (validCoupons.containsKey(_couponCode.toUpperCase())) {
+      setState(() {
+        _isCouponApplied = true;
+        _discountAmount = _calculateTotalPrice() * validCoupons[_couponCode.toUpperCase()]!;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Coupon applied successfully!'),
+          backgroundColor: AppTheme.successColor,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid coupon code'),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
+    }
+  }
+
+  void _removeCoupon() {
+    setState(() {
+      _isCouponApplied = false;
+      _discountAmount = 0.0;
+      _couponCode = '';
+    });
+  }
+
+  double _calculateTotalPrice() {
+    // Mock calculation - in real app, this would calculate from selected rooms
+    return 150000.0; // Example total price
   }
 }

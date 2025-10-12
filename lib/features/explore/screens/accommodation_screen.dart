@@ -237,7 +237,13 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   Widget _buildAccommodationCard(Map<String, dynamic> accommodation) {
     return GestureDetector(
       onTap: () {
-        context.push('/accommodation/${accommodation['id']}');
+        final dateData = {
+          'checkInDate': _checkInDate,
+          'checkOutDate': _checkOutDate,
+          'checkInTime': _checkInTime,
+          'guestCount': _guestCount,
+        };
+        context.push('/accommodation/${accommodation['id']}', extra: dateData);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),

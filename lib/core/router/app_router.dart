@@ -235,17 +235,37 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/accommodation/:accommodationId',
         builder: (context, state) {
           final accommodationId = state.pathParameters['accommodationId']!;
-          return AccommodationDetailScreen(accommodationId: accommodationId);
+          final dateData = state.extra as Map<String, dynamic>?;
+          final checkInDate = dateData?['checkInDate'] as DateTime?;
+          final checkOutDate = dateData?['checkOutDate'] as DateTime?;
+          final checkInTime = dateData?['checkInTime'] as TimeOfDay?;
+          final guestCount = dateData?['guestCount'] as int?;
+          return AccommodationDetailScreen(
+            accommodationId: accommodationId,
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+            checkInTime: checkInTime,
+            guestCount: guestCount,
+          );
         },
       ),
       GoRoute(
         path: '/accommodation/:accommodationId/book',
         builder: (context, state) {
           final accommodationId = state.pathParameters['accommodationId']!;
-          final selectedRooms = state.extra as Map<String, Map<String, dynamic>>?;
+          final bookingData = state.extra as Map<String, dynamic>?;
+          final selectedRooms = bookingData?['selectedRooms'] as Map<String, Map<String, dynamic>>?;
+          final checkInDate = bookingData?['checkInDate'] as DateTime?;
+          final checkOutDate = bookingData?['checkOutDate'] as DateTime?;
+          final checkInTime = bookingData?['checkInTime'] as TimeOfDay?;
+          final guestCount = bookingData?['guestCount'] as int?;
           return AccommodationBookingScreen(
             accommodationId: accommodationId,
             selectedRooms: selectedRooms,
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+            checkInTime: checkInTime,
+            guestCount: guestCount,
           );
         },
       ),
