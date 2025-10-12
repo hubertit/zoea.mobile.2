@@ -300,67 +300,109 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildQuickInfoWidgets() {
-    return Row(
-      children: [
-        // Weather Widget
-        Expanded(
-          child: _buildWeatherWidget(),
-        ),
-        const SizedBox(width: 12),
-        // Currency Widget
-        Expanded(
-          child: _buildCurrencyWidget(),
-        ),
-      ],
+    return SizedBox(
+      height: 80,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          // Weather Widget
+          SizedBox(
+            width: 130,
+            child: _buildWeatherWidget(),
+          ),
+          const SizedBox(width: 8),
+          // Currency Widget
+          SizedBox(
+            width: 130,
+            child: _buildCurrencyWidget(),
+          ),
+          const SizedBox(width: 8),
+          // Quick Actions Widget
+          SizedBox(
+            width: 100,
+            child: _buildQuickActionsWidget(),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildWeatherWidget() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.blue[100]!),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // First row: Icon + Location
-          Row(
-            children: [
-              Icon(
-                Icons.wb_sunny,
-                color: Colors.orange[600],
-                size: 16,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Kigali',
-                style: AppTheme.bodySmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue[800],
-                  fontSize: 12,
-                ),
-              ),
-            ],
+          // Location
+          Text(
+            'Kigali',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppTheme.primaryTextColor,
+              fontSize: 11,
+            ),
           ),
           const SizedBox(height: 8),
-          // Second row: Temperature + Status
+          
+          // Temperature and weather info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '24°C',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.blue[900],
+              // Temperature
+              Flexible(
+                child: Text(
+                  '25°',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.primaryTextColor,
+                    fontSize: 18,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                'Sunny',
-                style: AppTheme.bodySmall.copyWith(
-                  color: Colors.blue[700],
-                  fontSize: 11,
+              
+              // Weather icon and details
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                  // Rain probability
+                  Column(
+                    children: [
+                  Icon(
+                    Icons.water_drop,
+                    color: Colors.grey[600],
+                    size: 16,
+                  ),
+                      Text(
+                        '10%',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: Colors.grey[600],
+                          fontSize: 8,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  
+                  // Main weather icon
+                  Icon(
+                    Icons.wb_sunny,
+                    color: Colors.orange[600],
+                    size: 24,
+                  ),
+                ],
                 ),
               ),
             ],
@@ -372,66 +414,377 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
   Widget _buildCurrencyWidget() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.green[50],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.green[100]!),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // First row: Icon + Currency Pair
+          // Top row: Currency pair and percentage
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                Icons.attach_money,
-                color: Colors.green[600],
-                size: 16,
+              // Currency pair
+              Flexible(
+                child: Text(
+                  'USD / RWF',
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryTextColor,
+                    fontSize: 10.8,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              const SizedBox(width: 6),
+              
+              // Percentage change
               Text(
-                'USD/RWF',
+                '-0.0080%',
                 style: AppTheme.bodySmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.green[800],
-                  fontSize: 12,
+                  color: Colors.red[600],
+                  fontSize: 7.2,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          // Second row: Rate + Trend
+          
+          // Bottom row: Exchange rate and trend icon
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '3,250',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.green[900],
+              // Exchange rate
+              Flexible(
+                child: Text(
+                  '1,444.33',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.primaryTextColor,
+                    fontSize: 18.48,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.trending_up,
-                    color: Colors.green[600],
-                    size: 14,
-                  ),
-                  const SizedBox(width: 3),
-                  Text(
-                    '+0.5%',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: Colors.green[700],
-                      fontWeight: FontWeight.w500,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
+              
+              // Trend icon
+              Container(
+                width: 19.2,
+                height: 19.2,
+                decoration: BoxDecoration(
+                  color: Colors.red[100],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.red[600],
+                  size: 12,
+                ),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionsWidget() {
+    return GestureDetector(
+      onTap: () => _showQuickActionsBottomSheet(),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title
+            Text(
+              'Quick Actions',
+              style: AppTheme.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppTheme.primaryTextColor,
+                fontSize: 10,
+              ),
+            ),
+            const SizedBox(height: 4),
+            
+            // Interesting action icon
+            Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(
+                  Icons.bolt,
+                  color: AppTheme.primaryColor,
+                  size: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showQuickActionsBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppTheme.backgroundColor,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Quick Actions',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Quick actions grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.2,
+              children: [
+                _buildQuickActionItem(
+                  icon: Icons.emergency,
+                  label: 'Emergency SOS',
+                  color: Colors.red[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Emergency SOS activated'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.local_taxi,
+                  label: 'Call Taxi',
+                  color: Colors.blue[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Finding nearby taxis...'),
+                        backgroundColor: Colors.blue,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.atm,
+                  label: 'Find ATM',
+                  color: Colors.green[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Finding nearby ATMs...'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.tour,
+                  label: 'Book Tour',
+                  color: Colors.orange[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push('/explore/experiences');
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.local_hospital,
+                  label: 'Find Hospital',
+                  color: Colors.red[400]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Finding nearby hospitals...'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.security,
+                  label: 'Tourist Police',
+                  color: Colors.blue[800]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Connecting to tourist police...'),
+                        backgroundColor: Colors.blue,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.translate,
+                  label: 'Translate',
+                  color: Colors.purple[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Opening translator...'),
+                        backgroundColor: Colors.purple,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.wifi,
+                  label: 'Find WiFi',
+                  color: Colors.cyan[600]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Finding nearby WiFi hotspots...'),
+                        backgroundColor: Colors.cyan,
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionItem(
+                  icon: Icons.phone,
+                  label: 'Emergency Call',
+                  color: Colors.red[700]!,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Dialing emergency services...'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Close button
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  side: BorderSide(color: AppTheme.primaryColor),
+                ),
+                child: Text(
+                  'Close',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: color.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: color,
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: AppTheme.bodySmall.copyWith(
+                color: color,
+                fontWeight: FontWeight.w500,
+                fontSize: 11,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
