@@ -88,8 +88,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     // Start greeting animation
     _greetingController.forward();
     
-    // Hide greeting and show search after 5 seconds
-    Future.delayed(const Duration(seconds: 5), () {
+    // Hide greeting and show search after 1 minute
+    Future.delayed(const Duration(seconds: 60), () {
       if (mounted) {
         setState(() {
           _showGreeting = false;
