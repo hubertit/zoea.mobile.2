@@ -64,11 +64,12 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
+          indicatorColor: AppTheme.primaryColor,
           labelColor: AppTheme.primaryColor,
           unselectedLabelColor: AppTheme.secondaryTextColor,
-          indicatorColor: AppTheme.primaryColor,
+          labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
-          tabAlignment: TabAlignment.start,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 16),
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'Tours'),
