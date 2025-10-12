@@ -151,7 +151,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               IconButton(
                 icon: const Icon(Icons.notifications_outlined),
                 onPressed: () {
-                  // TODO: Navigate to notifications screen
+                  context.push('/notifications');
                 },
               ),
               // Badge for unread notifications
@@ -517,7 +517,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: Colors.grey[200]!,
