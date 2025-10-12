@@ -324,6 +324,38 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   ),
                 ),
               ),
+              // Breakfast included badge
+              if (accommodation['breakfastIncluded'] == true)
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.successColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.restaurant,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Breakfast',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
           // Content
@@ -1287,6 +1319,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Pool, Spa, Restaurant',
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
+        'breakfastIncluded': true,
       },
       {
         'id': 'hotel_2',
@@ -1298,6 +1331,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Pool, Gym, Restaurant',
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500',
+        'breakfastIncluded': false,
       },
       {
         'id': 'hotel_3',
@@ -1309,6 +1343,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Pool, Spa, Restaurant, Business Center',
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
+        'breakfastIncluded': true,
       },
       // B&Bs
       {
@@ -1321,6 +1356,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Breakfast, Garden',
         'category': 'b&bs',
         'image': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500',
+        'breakfastIncluded': true,
       },
       // Apartments
       {
@@ -1333,6 +1369,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Kitchen, Balcony',
         'category': 'apartments',
         'image': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
+        'breakfastIncluded': false,
       },
       {
         'id': 'apartment_2',
@@ -1344,6 +1381,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Kitchen, Parking',
         'category': 'apartments',
         'image': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500',
+        'breakfastIncluded': false,
       },
       // Villas
       {
@@ -1356,6 +1394,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'amenities': 'WiFi, Pool, Garden, Security',
         'category': 'villas',
         'image': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=500',
+        'breakfastIncluded': true,
       },
     ];
 
