@@ -37,7 +37,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
   @override
   Widget build(BuildContext context) {
     // Mock place data - in real app, fetch by placeId
-    final place = _getMockPlaceData();
+    final place = _getMockPlaceData(widget.placeId);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -219,7 +219,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              '(${place['reviews']} reviews)',
+                              '(${place['reviewCount']} reviews)',
                               style: AppTheme.bodyMedium.copyWith(
                                 color: AppTheme.secondaryTextColor,
                               ),
@@ -278,33 +278,35 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  // Navigate to dining booking
-                  context.push('/dining-booking', extra: {
-                    'placeId': widget.placeId,
-                    'placeName': place['name'],
-                    'placeLocation': place['location'],
-                    'placeImage': place['image'],
-                    'placeRating': place['rating'],
-                    'priceRange': place['priceRange'],
-                  });
-                },
-                icon: const Icon(Icons.calendar_today, size: 18),
-                label: const Text('Reserve Table'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.primaryColor,
-                  backgroundColor: AppTheme.backgroundColor,
-                  side: const BorderSide(color: AppTheme.primaryColor),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            if (_shouldShowReserveButton(place['category'])) ...[
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    // Navigate to dining booking
+                    context.push('/dining-booking', extra: {
+                      'placeId': widget.placeId,
+                      'placeName': place['name'],
+                      'placeLocation': place['location'],
+                      'placeImage': place['image'],
+                      'placeRating': place['rating'],
+                      'priceRange': place['priceRange'],
+                    });
+                  },
+                  icon: const Icon(Icons.calendar_today, size: 18),
+                  label: const Text('Reserve Table'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.primaryColor,
+                    backgroundColor: AppTheme.backgroundColor,
+                    side: const BorderSide(color: AppTheme.primaryColor),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
+              const SizedBox(width: 12),
+            ],
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -668,114 +670,172 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     );
   }
 
-  Map<String, dynamic> _getMockPlaceData() {
-    return {
-      'name': 'The Hut Restaurant',
-      'location': 'Kigali, Rwanda',
-      'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
-      'rating': 4.5,
-      'reviews': 128,
-      'priceRange': '\$\$',
-      'category': 'Restaurant',
-      'description': 'Experience authentic Rwandan cuisine in a cozy atmosphere. Our restaurant offers traditional dishes with a modern twist, using locally sourced ingredients. Perfect for family dinners, romantic dates, or business meetings.',
-      'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Delivery'],
-      'openingHours': [
-        {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
-        {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
-        {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
-        {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
-        {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
-        {'day': 'Saturday', 'time': '9:00 AM - 11:00 PM'},
-        {'day': 'Sunday', 'time': '9:00 AM - 9:00 PM'},
-      ],
-      'photos': [
-        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
-        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
-        'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
-        'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
-      ],
-      'menu': [
-        {
-          'name': 'Appetizers',
-          'items': [
+  bool _shouldShowReserveButton(String category) {
+    return category.toLowerCase().contains('restaurant') || 
+           category.toLowerCase().contains('dining') ||
+           category.toLowerCase().contains('cafe') ||
+           category.toLowerCase().contains('food');
+  }
+
+  Map<String, dynamic> _getMockPlaceData(String placeId) {
+    // Return different data based on place ID
+    switch (placeId) {
+      case 'near_me_1': // Kigali Convention Centre
+        return {
+          'name': 'Kigali Convention Centre',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.8,
+          'reviewCount': 245,
+          'priceRange': 'Venue',
+          'category': 'Venue',
+          'description': 'A world-class convention center in the heart of Kigali, hosting international conferences, exhibitions, and events. Features state-of-the-art facilities and modern architecture.',
+          'features': ['WiFi', 'Parking', 'Accessibility', 'Air Conditioning', 'Event Planning'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 5:00 PM'},
+            {'day': 'Sunday', 'time': 'Closed'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          ],
+          'reviews': [
             {
-              'name': 'Grilled Plantains',
-              'description': 'Traditional Rwandan plantains grilled to perfection',
-              'price': 'RWF 3,000',
-              'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-              'isVegetarian': true,
-              'isSpicy': false,
-            },
-            {
-              'name': 'Beef Brochettes',
-              'description': 'Tender beef skewers marinated in local spices',
-              'price': 'RWF 8,000',
-              'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
-              'isVegetarian': false,
-              'isSpicy': true,
-            },
-            {
-              'name': 'Fish Samosas',
-              'description': 'Crispy samosas filled with fresh fish and vegetables',
-              'price': 'RWF 4,500',
-              'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
-              'isVegetarian': false,
-              'isSpicy': false,
+              'user': 'Conference Organizer',
+              'rating': 5,
+              'date': '1 week ago',
+              'comment': 'Excellent facilities and professional staff. Perfect for international events.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
             },
           ],
-        },
-        {
-          'name': 'Main Courses',
-          'items': [
+        };
+      
+      case 'near_me_2': // Kimisagara Market
+        return {
+          'name': 'Kimisagara Market',
+          'location': 'Kimisagara, Kigali',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.2,
+          'reviewCount': 89,
+          'priceRange': 'Market',
+          'category': 'Market',
+          'description': 'A vibrant local market offering fresh produce, traditional crafts, and authentic Rwandan goods. Experience the local culture and find unique souvenirs.',
+          'features': ['Fresh Produce', 'Local Crafts', 'Traditional Goods', 'Cultural Experience'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
             {
-              'name': 'Ugali with Fish',
-              'description': 'Traditional maize meal served with grilled fish and vegetables',
-              'price': 'RWF 12,000',
-              'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200',
-              'isVegetarian': false,
-              'isSpicy': false,
-            },
-            {
-              'name': 'Chicken Pilau',
-              'description': 'Aromatic rice with tender chicken and local spices',
-              'price': 'RWF 10,000',
-              'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-              'isVegetarian': false,
-              'isSpicy': true,
-            },
-            {
-              'name': 'Vegetable Curry',
-              'description': 'Mixed vegetables in coconut curry sauce',
-              'price': 'RWF 7,500',
-              'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
-              'isVegetarian': true,
-              'isSpicy': true,
+              'user': 'Local Shopper',
+              'rating': 4,
+              'date': '3 days ago',
+              'comment': 'Great place to find fresh vegetables and local crafts. Very authentic experience.',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
             },
           ],
-        },
-        {
-          'name': 'Desserts',
-          'items': [
+        };
+      
+      case 'near_me_4': // Kimisagara Restaurant
+        return {
+          'name': 'Kimisagara Restaurant',
+          'location': 'Kimisagara, Kigali',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.6,
+          'reviewCount': 156,
+          'priceRange': '\$\$',
+          'category': 'Restaurant',
+          'description': 'Authentic Rwandan restaurant serving traditional dishes in a warm, family-friendly atmosphere. Experience the rich flavors of local cuisine.',
+          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Family Friendly'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Tuesday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Wednesday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Thursday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Friday', 'time': '7:00 AM - 11:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 11:00 PM'},
+            {'day': 'Sunday', 'time': '8:00 AM - 9:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
+          ],
+          'menu': [
             {
-              'name': 'Passion Fruit Mousse',
-              'description': 'Light and creamy mousse made with local passion fruit',
-              'price': 'RWF 4,000',
-              'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
-              'isVegetarian': true,
-              'isSpicy': false,
-            },
-            {
-              'name': 'Banana Fritters',
-              'description': 'Sweet banana fritters served with honey',
-              'price': 'RWF 3,500',
-              'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-              'isVegetarian': true,
-              'isSpicy': false,
+              'name': 'Traditional Dishes',
+              'items': [
+                {
+                  'name': 'Ugali with Fish',
+                  'description': 'Traditional maize meal with grilled fish',
+                  'price': 'RWF 5,000',
+                  'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': false,
+                },
+                {
+                  'name': 'Beef Brochettes',
+                  'description': 'Tender beef skewers with local spices',
+                  'price': 'RWF 7,000',
+                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': true,
+                },
+              ],
             },
           ],
-        },
-      ],
-    };
+          'reviews': [
+            {
+              'user': 'Food Lover',
+              'rating': 5,
+              'date': '2 days ago',
+              'comment': 'Amazing traditional food! The beef brochettes are the best in Kigali.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      default: // Default restaurant data
+        return {
+          'name': 'The Hut Restaurant',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+          'rating': 4.5,
+          'reviewCount': 128,
+          'priceRange': '\$\$',
+          'category': 'Restaurant',
+          'description': 'Experience authentic Rwandan cuisine in a cozy atmosphere. Our restaurant offers traditional dishes with a modern twist, using locally sourced ingredients. Perfect for family dinners, romantic dates, or business meetings.',
+          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Delivery'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 11:00 PM'},
+            {'day': 'Sunday', 'time': '9:00 AM - 9:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
+            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+          ],
+        };
+    }
   }
 
   List<Map<String, dynamic>> _getMockReviews() {
