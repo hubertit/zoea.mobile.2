@@ -226,11 +226,15 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Text(
               'Filter Nightlife',
               style: AppTheme.headlineSmall.copyWith(
@@ -332,6 +336,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               ],
             ),
           ],
+          ),
         ),
       ),
     );
@@ -345,11 +350,15 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.6,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Text(
               'Sort Nightlife',
               style: AppTheme.headlineSmall.copyWith(
@@ -398,6 +407,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               ],
             ),
           ],
+          ),
         ),
       ),
     );
