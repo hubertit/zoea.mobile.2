@@ -6,6 +6,8 @@ import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/explore/screens/map_screen.dart';
+import '../../features/explore/screens/dining_screen.dart';
+import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/search/screens/search_screen.dart';
@@ -200,6 +202,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/map',
         builder: (context, state) => const MapScreen(),
+      ),
+
+      // Dining Route
+      GoRoute(
+        path: '/dining',
+        builder: (context, state) => const DiningScreen(),
+      ),
+
+      // Place Detail Route
+      GoRoute(
+        path: '/place/:placeId',
+        builder: (context, state) {
+          final placeId = state.pathParameters['placeId']!;
+          return PlaceDetailScreen(placeId: placeId);
+        },
       ),
     ],
   );

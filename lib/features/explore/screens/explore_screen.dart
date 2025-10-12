@@ -515,7 +515,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to category screen
+        if (label == 'Events') {
+          context.go('/events');
+        } else if (label == 'Dining') {
+          context.push('/dining');
+        }
+        // TODO: Navigate to other category screens
       },
       child: Container(
         decoration: BoxDecoration(
