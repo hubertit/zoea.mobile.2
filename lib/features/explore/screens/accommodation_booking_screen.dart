@@ -28,7 +28,6 @@ class AccommodationBookingScreen extends ConsumerStatefulWidget {
 class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookingScreen> {
   late DateTime? _checkInDate;
   late DateTime? _checkOutDate;
-  late TimeOfDay? _checkInTime;
   int _guestCount = 1;
   int _roomCount = 1;
   String _couponCode = '';
@@ -40,7 +39,6 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     super.initState();
     _checkInDate = widget.checkInDate;
     _checkOutDate = widget.checkOutDate;
-    _checkInTime = widget.checkInTime;
     _guestCount = widget.guestCount ?? 1;
   }
 
