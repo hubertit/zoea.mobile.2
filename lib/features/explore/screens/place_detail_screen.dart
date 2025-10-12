@@ -783,6 +783,41 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           ],
         };
       
+      case 'near_me_3': // Kigali Genocide Memorial
+        return {
+          'name': 'Kigali Genocide Memorial',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.9,
+          'reviewCount': 1203,
+          'priceRange': 'Memorial',
+          'category': 'Memorial',
+          'description': 'A powerful memorial dedicated to the victims of the 1994 genocide against the Tutsi. A place of remembrance, education, and reflection on Rwanda\'s journey of reconciliation and healing.',
+          'features': ['Educational Tours', 'Guided Visits', 'Memorial Gardens', 'Museum', 'Peace Education'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Sunday', 'time': '8:00 AM - 5:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Visitor',
+              'rating': 5,
+              'date': '1 week ago',
+              'comment': 'A deeply moving and educational experience. Essential visit for understanding Rwanda\'s history.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
       case 'near_me_4': // Kimisagara Restaurant
         return {
           'name': 'Kimisagara Restaurant',
@@ -836,6 +871,41 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
               'rating': 5,
               'date': '2 days ago',
               'comment': 'Amazing traditional food! The beef brochettes are the best in Kigali.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'near_me_5': // Kigali City Tower
+        return {
+          'name': 'Kigali City Tower',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.3,
+          'reviewCount': 456,
+          'priceRange': 'Shopping',
+          'category': 'Shopping',
+          'description': 'A modern shopping and business complex in the heart of Kigali. Features retail stores, restaurants, offices, and entertainment facilities with panoramic city views.',
+          'features': ['Shopping Mall', 'Restaurants', 'Entertainment', 'Business Center', 'City Views'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 9:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 9:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 9:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 9:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 10:00 PM'},
+            {'day': 'Sunday', 'time': '9:00 AM - 8:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Shopper',
+              'rating': 4,
+              'date': '2 days ago',
+              'comment': 'Great shopping experience with good variety of stores and restaurants.',
               'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
             },
           ],
