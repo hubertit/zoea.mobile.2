@@ -26,6 +26,7 @@ class AccommodationDetailScreen extends ConsumerStatefulWidget {
 class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late ScrollController _scrollController;
   bool _isFavorite = false;
   int _selectedImageIndex = 0;
   Map<String, Map<String, dynamic>> _selectedRooms = {}; // roomType -> {roomType, quantity}
@@ -34,11 +35,13 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this, initialIndex: 1); // Rooms tab is index 1
+    _scrollController = ScrollController();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -49,6 +52,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           _buildSliverAppBar(accommodation),
           SliverToBoxAdapter(
@@ -478,9 +482,18 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   }
 
   Widget _buildRoomsTab(Map<String, dynamic> accommodation) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
+    return GestureDetector(
+      onTap: () {
+        // Scroll to top when tapping anywhere on the room types tab
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -513,6 +526,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           ],
         ],
       ),
+    ),
     );
   }
 
