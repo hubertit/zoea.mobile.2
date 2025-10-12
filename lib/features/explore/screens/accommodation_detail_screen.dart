@@ -306,6 +306,20 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             ),
           ),
           const SizedBox(height: 20),
+          // Room Types Section
+          if (accommodation['roomTypes'] != null) ...[
+            Text(
+              'Room Types',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...accommodation['roomTypes'].map<Widget>((roomType) => 
+              _buildRoomTypeCard(roomType)
+            ).toList(),
+            const SizedBox(height: 20),
+          ],
           Text(
             'Check-in & Check-out',
             style: AppTheme.headlineSmall.copyWith(
@@ -615,6 +629,22 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         {'name': 'Parking', 'icon': Icons.local_parking},
         {'name': 'Airport Shuttle', 'icon': Icons.airport_shuttle},
       ],
+      'roomTypes': [
+        {
+          'type': 'Deluxe Room',
+          'price': '120,000',
+          'available': 3,
+          'maxGuests': 2,
+          'amenities': 'King bed, City view, WiFi',
+        },
+        {
+          'type': 'Executive Suite',
+          'price': '180,000',
+          'available': 1,
+          'maxGuests': 4,
+          'amenities': 'King bed, Living area, City view, WiFi',
+        },
+      ],
       'reviewList': [
         {
           'userName': 'John Doe',
@@ -639,5 +669,85 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         },
       ],
     };
+  }
+
+  Widget _buildRoomTypeCard(Map<String, dynamic> roomType) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  roomType['type'],
+                  style: AppTheme.headlineSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'RWF ${roomType['price']}',
+                  style: AppTheme.bodySmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.bed,
+                size: 16,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${roomType['maxGuests']} guests',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.hotel,
+                size: 16,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${roomType['available']} available',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            roomType['amenities'],
+            style: AppTheme.bodySmall.copyWith(
+              color: AppTheme.secondaryTextColor,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
