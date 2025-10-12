@@ -18,17 +18,27 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
   String _selectedFilter = 'All';
   String _selectedSort = 'Popular';
   Set<String> _favoritePlaces = {};
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text;
+    });
   }
 
   @override
@@ -79,13 +89,64 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _buildDiningList('All'),
-          _buildDiningList('Restaurants'),
-          _buildDiningList('Cafes'),
-          _buildDiningList('Fast Food'),
+          // Search Bar
+          Container(
+            padding: const EdgeInsets.all(16),
+            color: AppTheme.backgroundColor,
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search restaurants, cafes...',
+                hintStyle: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+                prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
+                filled: true,
+                fillColor: Colors.grey[50],
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: AppTheme.primaryColor,
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Tab Content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildDiningList('All'),
+                _buildDiningList('Restaurants'),
+                _buildDiningList('Cafes'),
+                _buildDiningList('Fast Food'),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -93,16 +154,24 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
 
   Widget _buildDiningList(String category) {
     final diningPlaces = _getMockDiningPlaces(category);
+    final filteredPlaces = _searchQuery.isEmpty
+        ? diningPlaces
+        : diningPlaces.where((place) {
+            final name = place['name'].toString().toLowerCase();
+            final location = place['location'].toString().toLowerCase();
+            final query = _searchQuery.toLowerCase();
+            return name.contains(query) || location.contains(query);
+          }).toList();
 
-    if (diningPlaces.isEmpty) {
+    if (filteredPlaces.isEmpty) {
       return _buildEmptyState(category);
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: diningPlaces.length,
+      itemCount: filteredPlaces.length,
       itemBuilder: (context, index) {
-        final place = diningPlaces[index];
+        final place = filteredPlaces[index];
         return PlaceCard(
           name: place['name'],
           location: place['location'],

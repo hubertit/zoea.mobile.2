@@ -18,17 +18,27 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
   String _selectedFilter = 'All';
   String _selectedSort = 'Popular';
   Set<String> _favoriteExperiences = {};
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text;
+    });
   }
 
   @override
@@ -80,14 +90,65 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _buildExperiencesList('All'),
-          _buildExperiencesList('Tours'),
-          _buildExperiencesList('Adventures'),
-          _buildExperiencesList('Cultural'),
-          _buildTourOperatorsList(),
+          // Search Bar
+          Container(
+            padding: const EdgeInsets.all(16),
+            color: AppTheme.backgroundColor,
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search tours, adventures, experiences...',
+                hintStyle: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+                prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
+                filled: true,
+                fillColor: Colors.grey[50],
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: AppTheme.primaryColor,
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Tab Content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildExperiencesList('All'),
+                _buildExperiencesList('Tours'),
+                _buildExperiencesList('Adventures'),
+                _buildExperiencesList('Cultural'),
+                _buildTourOperatorsList(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -95,16 +156,24 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
 
   Widget _buildExperiencesList(String category) {
     final experiences = _getMockExperiences(category);
+    final filteredExperiences = _searchQuery.isEmpty
+        ? experiences
+        : experiences.where((experience) {
+            final name = experience['name'].toString().toLowerCase();
+            final location = experience['location'].toString().toLowerCase();
+            final query = _searchQuery.toLowerCase();
+            return name.contains(query) || location.contains(query);
+          }).toList();
 
-    if (experiences.isEmpty) {
+    if (filteredExperiences.isEmpty) {
       return _buildEmptyState(category);
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: experiences.length,
+      itemCount: filteredExperiences.length,
       itemBuilder: (context, index) {
-        final experience = experiences[index];
+        final experience = filteredExperiences[index];
         return PlaceCard(
           name: experience['name'],
           location: experience['location'],
@@ -133,12 +202,20 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
 
   Widget _buildTourOperatorsList() {
     final operators = _getMockTourOperators();
+    final filteredOperators = _searchQuery.isEmpty
+        ? operators
+        : operators.where((operator) {
+            final name = operator['name'].toString().toLowerCase();
+            final location = operator['location'].toString().toLowerCase();
+            final query = _searchQuery.toLowerCase();
+            return name.contains(query) || location.contains(query);
+          }).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: operators.length,
+      itemCount: filteredOperators.length,
       itemBuilder: (context, index) {
-        final operator = operators[index];
+        final operator = filteredOperators[index];
         return _buildTourOperatorCard(operator);
       },
     );
