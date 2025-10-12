@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/events_provider.dart';
 import '../../../core/models/event.dart';
+import '../../../core/constants/assets.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -118,17 +119,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Zoea',
-            style: TextStyle(
-              fontSize: 31,
-              fontWeight: FontWeight.w800,
-              color: AppTheme.primaryColor,
-              letterSpacing: -0.5,
+        leadingWidth: 200,
+        leading: Row(
+          children: [
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Image.asset(
+                AppAssets.logoDark,
+                height: 30,
+              ),
             ),
-          ),
+          ],
         ),
         actions: [
           // Search Icon
@@ -304,18 +306,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       height: 80,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: [
-          // Weather Widget
+      children: [
+        // Weather Widget
           SizedBox(
             width: 130,
-            child: _buildWeatherWidget(),
-          ),
+          child: _buildWeatherWidget(),
+        ),
           const SizedBox(width: 8),
-          // Currency Widget
+        // Currency Widget
           SizedBox(
             width: 130,
-            child: _buildCurrencyWidget(),
-          ),
+          child: _buildCurrencyWidget(),
+        ),
           const SizedBox(width: 8),
           // Quick Actions Widget
           SizedBox(
@@ -345,13 +347,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Location
-          Text(
-            'Kigali',
+              Text(
+                'Kigali',
             style: AppTheme.bodyMedium.copyWith(
-              fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w600,
               color: AppTheme.primaryTextColor,
               fontSize: 11,
-            ),
+                ),
           ),
           const SizedBox(height: 8),
           
@@ -364,7 +366,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 child: Text(
                   '25°',
                   style: AppTheme.headlineMedium.copyWith(
-                    fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w700,
                     color: AppTheme.primaryTextColor,
                     fontSize: 18,
                   ),
@@ -384,10 +386,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     Icons.water_drop,
                     color: Colors.grey[600],
                     size: 16,
-                  ),
-                      Text(
+              ),
+              Text(
                         '10%',
-                        style: AppTheme.bodySmall.copyWith(
+                style: AppTheme.bodySmall.copyWith(
                           color: Colors.grey[600],
                           fontSize: 8,
                         ),
@@ -517,7 +519,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
-            Text(
+              Text(
               'Quick Actions',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
@@ -580,7 +582,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             // Title
             Text(
               'Quick Actions',
-              style: AppTheme.headlineSmall.copyWith(
+                style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -783,24 +785,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
+                children: [
+                  Icon(
               icon,
               color: AppTheme.primaryColor,
               size: 24,
             ),
             const SizedBox(height: 8),
-            Text(
+                  Text(
               label,
-              style: AppTheme.bodySmall.copyWith(
+                    style: AppTheme.bodySmall.copyWith(
                 color: AppTheme.primaryTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 11,
-              ),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                    ),
               textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -1398,71 +1400,52 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.grey[50], // Match quick actions background
       builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Handle bar
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppTheme.dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'All Categories',
-                    style: AppTheme.titleLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.dividerColor,
-                      foregroundColor: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Categories grid
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.1,
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                itemCount: allCategories.length,
-                itemBuilder: (context, index) {
-                  final category = allCategories[index];
-                  return _buildBottomSheetCategoryCard(
-                    icon: category['icon'] as IconData,
-                    label: category['label'] as String,
-                  );
-                },
               ),
             ),
             const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'All Categories',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Categories grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.2,
+              children: allCategories.map((category) {
+                return _buildBottomSheetCategoryCard(
+                  icon: category['icon'] as IconData,
+                  label: category['label'] as String,
+                );
+              }).toList(),
+            ),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
           ],
         ),
       ),
@@ -1480,25 +1463,36 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         // context.push('/category/${label.toLowerCase()}');
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppTheme.dividerColor,
+          color: Colors.white, // Match quick actions white background
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.grey[200]!, // Match quick actions border
+            width: 1,
+          ),
+          boxShadow: [ // Add shadow like quick actions
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: AppTheme.primaryTextColor,
+              color: AppTheme.primaryColor, // Match quick actions icon color
               size: 24,
             ),
             const SizedBox(height: 8),
             Text(
               label,
               style: AppTheme.bodySmall.copyWith(
+                color: AppTheme.primaryTextColor, // Match quick actions text color
                 fontWeight: FontWeight.w500,
-                color: AppTheme.primaryTextColor,
+                fontSize: 11,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

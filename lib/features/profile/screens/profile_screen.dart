@@ -12,6 +12,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  // User preferences state
+  String _selectedCurrency = 'USD';
+  String _selectedCountry = 'Rwanda';
+  String _selectedLocation = 'Kigali';
+  String _selectedLanguage = 'English';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,6 +85,45 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   subtitle: 'Password and privacy settings',
                   onTap: () {
                     context.go('/profile/privacy-security');
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            
+            _buildMenuSection(
+              title: 'Preferences',
+              items: [
+                _buildMenuItem(
+                  icon: Icons.attach_money_outlined,
+                  title: 'Currency',
+                  subtitle: _selectedCurrency,
+                  onTap: () {
+                    _showCurrencyBottomSheet(context);
+                  },
+                ),
+                _buildMenuItem(
+                  icon: Icons.public_outlined,
+                  title: 'Country',
+                  subtitle: _selectedCountry,
+                  onTap: () {
+                    _showCountryBottomSheet(context);
+                  },
+                ),
+                _buildMenuItem(
+                  icon: Icons.location_on_outlined,
+                  title: 'Location',
+                  subtitle: _selectedLocation,
+                  onTap: () {
+                    _showLocationBottomSheet(context);
+                  },
+                ),
+                _buildMenuItem(
+                  icon: Icons.language_outlined,
+                  title: 'Language',
+                  subtitle: _selectedLanguage,
+                  onTap: () {
+                    _showLanguageBottomSheet(context);
                   },
                 ),
               ],
@@ -467,6 +512,392 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showCurrencyBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[50],
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Select Currency',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Currency options
+            _buildCurrencyOption('USD', 'United States Dollar', _selectedCurrency == 'USD'),
+            _buildCurrencyOption('RWF', 'Rwandan Franc', _selectedCurrency == 'RWF'),
+            _buildCurrencyOption('EUR', 'Euro', _selectedCurrency == 'EUR'),
+            _buildCurrencyOption('GBP', 'British Pound', _selectedCurrency == 'GBP'),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCountryBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[50],
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Select Country',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Country options
+            _buildCountryOption('Rwanda', '🇷🇼', _selectedCountry == 'Rwanda'),
+            _buildCountryOption('Kenya', '🇰🇪', _selectedCountry == 'Kenya'),
+            _buildCountryOption('Uganda', '🇺🇬', _selectedCountry == 'Uganda'),
+            _buildCountryOption('Tanzania', '🇹🇿', _selectedCountry == 'Tanzania'),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLocationBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[50],
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Select Location',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Location options
+            _buildLocationOption('Kigali', 'Capital city', _selectedLocation == 'Kigali'),
+            _buildLocationOption('Butare', 'University town', _selectedLocation == 'Butare'),
+            _buildLocationOption('Gisenyi', 'Lake town', _selectedLocation == 'Gisenyi'),
+            _buildLocationOption('Ruhengeri', 'Mountain region', _selectedLocation == 'Ruhengeri'),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLanguageBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[50],
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Select Language',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Language options
+            _buildLanguageOption('Kinyarwanda', 'Ikinyarwanda', _selectedLanguage == 'Kinyarwanda'),
+            _buildLanguageOption('English', 'English', _selectedLanguage == 'English'),
+            _buildLanguageOption('French', 'Français', _selectedLanguage == 'French'),
+            _buildLanguageOption('Swahili', 'Kiswahili', _selectedLanguage == 'Swahili'),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCurrencyOption(String code, String name, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        title: Text(
+          code,
+          style: AppTheme.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+          ),
+        ),
+        subtitle: Text(
+          name,
+          style: AppTheme.bodySmall.copyWith(
+            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+          ),
+        ),
+        trailing: isSelected ? Icon(
+          Icons.check_circle,
+          color: AppTheme.primaryColor,
+          size: 20,
+        ) : null,
+        onTap: () {
+          setState(() {
+            _selectedCurrency = code;
+          });
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Currency changed to $code',
+                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+              ),
+              backgroundColor: AppTheme.primaryColor,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCountryOption(String name, String flag, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        leading: Text(
+          flag,
+          style: const TextStyle(fontSize: 24),
+        ),
+        title: Text(
+          name,
+          style: AppTheme.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+          ),
+        ),
+        trailing: isSelected ? Icon(
+          Icons.check_circle,
+          color: AppTheme.primaryColor,
+          size: 20,
+        ) : null,
+        onTap: () {
+          setState(() {
+            _selectedCountry = name;
+          });
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Country changed to $name',
+                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+              ),
+              backgroundColor: AppTheme.primaryColor,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLocationOption(String name, String description, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        leading: Icon(
+          Icons.location_on,
+          color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+        ),
+        title: Text(
+          name,
+          style: AppTheme.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+          ),
+        ),
+        subtitle: Text(
+          description,
+          style: AppTheme.bodySmall.copyWith(
+            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+          ),
+        ),
+        trailing: isSelected ? Icon(
+          Icons.check_circle,
+          color: AppTheme.primaryColor,
+          size: 20,
+        ) : null,
+        onTap: () {
+          setState(() {
+            _selectedLocation = name;
+          });
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Location changed to $name',
+                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+              ),
+              backgroundColor: AppTheme.primaryColor,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(String name, String nativeName, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        title: Text(
+          name,
+          style: AppTheme.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+          ),
+        ),
+        subtitle: Text(
+          nativeName,
+          style: AppTheme.bodySmall.copyWith(
+            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+          ),
+        ),
+        trailing: isSelected ? Icon(
+          Icons.check_circle,
+          color: AppTheme.primaryColor,
+          size: 20,
+        ) : null,
+        onTap: () {
+          setState(() {
+            _selectedLanguage = name;
+          });
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Language changed to $name',
+                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+              ),
+              backgroundColor: AppTheme.primaryColor,
+            ),
+          );
+        },
       ),
     );
   }
