@@ -933,7 +933,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -942,9 +942,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               'Select Dates & Times',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                fontSize: 18,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             
             // Check-in Date
             _buildDateTimeSelector(
@@ -954,7 +955,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               onDateTap: () => _selectDate(true),
               onTimeTap: () => _selectTime(true),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             
             // Check-out Date
             _buildDateTimeSelector(
@@ -964,7 +965,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               onDateTap: () => _selectDate(false),
               onTimeTap: () => _selectTime(false),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
             
             // Done button
             SizedBox(
@@ -978,12 +979,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 child: Text(
                   'Done',
                   style: AppTheme.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -1006,38 +1009,43 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       children: [
         Text(
           title,
-          style: AppTheme.bodyLarge.copyWith(
+          style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
+            fontSize: 14,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: onDateTap,
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.calendar_today,
-                        size: 16,
+                        size: 14,
                         color: AppTheme.primaryColor,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        date != null
-                            ? '${date.day}/${date.month}/${date.year}'
-                            : 'Select date',
-                        style: AppTheme.bodyMedium.copyWith(
-                          color: date != null 
-                              ? AppTheme.primaryTextColor 
-                              : AppTheme.secondaryTextColor,
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          date != null
+                              ? '${date.day}/${date.month}/${date.year}'
+                              : 'Select date',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: date != null 
+                                ? AppTheme.primaryTextColor 
+                                : AppTheme.secondaryTextColor,
+                            fontSize: 12,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -1045,32 +1053,36 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: GestureDetector(
                 onTap: onTimeTap,
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.access_time,
-                        size: 16,
+                        size: 14,
                         color: AppTheme.primaryColor,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        time != null
-                            ? '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
-                            : 'Select time',
-                        style: AppTheme.bodyMedium.copyWith(
-                          color: time != null 
-                              ? AppTheme.primaryTextColor 
-                              : AppTheme.secondaryTextColor,
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          time != null
+                              ? '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
+                              : 'Select time',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: time != null 
+                                ? AppTheme.primaryTextColor 
+                                : AppTheme.secondaryTextColor,
+                            fontSize: 12,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
