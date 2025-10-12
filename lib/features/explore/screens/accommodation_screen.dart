@@ -15,6 +15,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   late TabController _tabController;
   String _selectedLocation = 'Kigali';
   String _selectedDates = 'Any dates';
+  DateTime? _checkInDate;
+  DateTime? _checkOutDate;
+  TimeOfDay? _checkInTime;
+  TimeOfDay? _checkOutTime;
   int _guestCount = 1;
   Set<String> _favoriteAccommodations = {};
 
@@ -155,7 +159,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                _selectedDates,
+                _getDateRangeText(),
                 style: AppTheme.bodyMedium.copyWith(
                   color: AppTheme.secondaryTextColor,
                 ),
@@ -905,20 +909,224 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     );
   }
 
+  String _getDateRangeText() {
+    if (_checkInDate == null && _checkOutDate == null) {
+      return 'Any dates';
+    } else if (_checkInDate != null && _checkOutDate == null) {
+      return '${_checkInDate!.day}/${_checkInDate!.month}/${_checkInDate!.year} - Select checkout';
+    } else if (_checkInDate != null && _checkOutDate != null) {
+      return '${_checkInDate!.day}/${_checkInDate!.month} - ${_checkOutDate!.day}/${_checkOutDate!.month}';
+    }
+    return 'Any dates';
+  }
+
   void _selectDates() {
     Navigator.pop(context);
-    showDatePicker(
+    _showDateRangePicker();
+  }
+
+  void _showDateRangePicker() {
+    showModalBottomSheet(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select Dates & Times',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Check-in Date
+            _buildDateTimeSelector(
+              title: 'Check-in',
+              date: _checkInDate,
+              time: _checkInTime,
+              onDateTap: () => _selectDate(true),
+              onTimeTap: () => _selectTime(true),
+            ),
+            const SizedBox(height: 16),
+            
+            // Check-out Date
+            _buildDateTimeSelector(
+              title: 'Check-out',
+              date: _checkOutDate,
+              time: _checkOutTime,
+              onDateTap: () => _selectDate(false),
+              onTimeTap: () => _selectTime(false),
+            ),
+            const SizedBox(height: 30),
+            
+            // Done button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Done',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateTimeSelector({
+    required String title,
+    required DateTime? date,
+    required TimeOfDay? time,
+    required VoidCallback onDateTap,
+    required VoidCallback onTimeTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppTheme.bodyLarge.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: onDateTap,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: AppTheme.primaryColor,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        date != null
+                            ? '${date.day}/${date.month}/${date.year}'
+                            : 'Select date',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: date != null 
+                              ? AppTheme.primaryTextColor 
+                              : AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: GestureDetector(
+                onTap: onTimeTap,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: AppTheme.primaryColor,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        time != null
+                            ? '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
+                            : 'Select time',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: time != null 
+                              ? AppTheme.primaryTextColor 
+                              : AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _selectDate(bool isCheckIn) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: isCheckIn
+          ? (_checkInDate ?? DateTime.now())
+          : (_checkOutDate ?? (_checkInDate?.add(const Duration(days: 1)) ?? DateTime.now().add(const Duration(days: 1)))),
+      firstDate: isCheckIn ? DateTime.now() : (_checkInDate ?? DateTime.now()),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-    ).then((selectedDate) {
-      if (selectedDate != null) {
-        setState(() {
-          _selectedDates = '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
-        });
-      }
-    });
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isCheckIn) {
+          _checkInDate = picked;
+          // Reset check-out if it's before check-in
+          if (_checkOutDate != null && _checkOutDate!.isBefore(_checkInDate!.add(const Duration(days: 1)))) {
+            _checkOutDate = null;
+            _checkOutTime = null;
+          }
+        } else {
+          _checkOutDate = picked;
+        }
+      });
+    }
+  }
+
+  Future<void> _selectTime(bool isCheckIn) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: isCheckIn
+          ? (_checkInTime ?? const TimeOfDay(hour: 15, minute: 0))
+          : (_checkOutTime ?? const TimeOfDay(hour: 11, minute: 0)),
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isCheckIn) {
+          _checkInTime = picked;
+        } else {
+          _checkOutTime = picked;
+        }
+      });
+    }
   }
 
   void _selectGuests() {
