@@ -250,7 +250,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Good morning',
+          'Good morning, Hubert',
           style: AppTheme.bodyLarge.copyWith(
             color: AppTheme.secondaryTextColor,
           ),
@@ -972,6 +972,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       {'icon': Icons.nightlife, 'label': 'Nightlife'},
       {'icon': Icons.hotel, 'label': 'Accommodation'},
       {'icon': Icons.shopping_bag, 'label': 'Shopping'},
+      {'icon': Icons.sports_soccer, 'label': 'Sports'},
       {'icon': Icons.landscape, 'label': 'National Parks'},
       {'icon': Icons.museum, 'label': 'Museums'},
       {'icon': Icons.directions_car, 'label': 'Transport'},

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
@@ -32,7 +33,7 @@ class EventDetailScreen extends ConsumerWidget {
             backgroundColor: AppTheme.backgroundColor,
             leading: IconButton(
               icon: const Icon(Icons.chevron_left, color: Colors.white, size: 28),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.go('/events'),
             ),
             actions: [
               IconButton(
