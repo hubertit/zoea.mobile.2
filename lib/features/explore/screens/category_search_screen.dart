@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../widgets/place_card.dart';
+import '../../../core/widgets/place_card.dart';
 
 class CategorySearchScreen extends ConsumerStatefulWidget {
   final String category;
@@ -261,7 +261,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           priceRange: place['priceRange'],
           category: place['category'],
           isFavorite: place['isFavorite'] ?? false,
-          onFavoriteToggle: () {
+          onFavorite: () {
             setState(() {
               if (place['isFavorite'] == true) {
                 place['isFavorite'] = false;
