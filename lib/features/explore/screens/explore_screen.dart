@@ -148,9 +148,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           // Notifications Icon with Badge
           Stack(
             children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined),
-                onPressed: () {
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {
                   context.push('/notifications');
                 },
               ),
@@ -250,20 +250,48 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Good morning, Hubert',
+          _getTimeBasedGreeting(),
           style: AppTheme.bodyLarge.copyWith(
             color: AppTheme.secondaryTextColor,
           ),
         ),
         const SizedBox(height: 4),
         Text(
-          'What would you like to explore?',
+          _getFriendlyMessage(),
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
+  }
+
+  String _getTimeBasedGreeting() {
+    final hour = DateTime.now().hour;
+    
+    if (hour >= 5 && hour < 12) {
+      return 'Good morning, Hubert';
+    } else if (hour >= 12 && hour < 17) {
+      return 'Good afternoon, Hubert';
+    } else if (hour >= 17 && hour < 21) {
+      return 'Good evening, Hubert';
+    } else {
+      return 'Good night, Hubert';
+    }
+  }
+
+  String _getFriendlyMessage() {
+    final hour = DateTime.now().hour;
+    
+    if (hour >= 5 && hour < 12) {
+      return 'Ready to start your day?';
+    } else if (hour >= 12 && hour < 17) {
+      return 'How can we help you today?';
+    } else if (hour >= 17 && hour < 21) {
+      return 'What would you like to explore?';
+    } else {
+      return 'Planning for tomorrow?';
+    }
   }
 
   Widget _buildQuickInfoWidgets() {
@@ -641,10 +669,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         size: 32,
                       ),
                       const SizedBox(height: 8),
-                      Text(
+            Text(
                         'No events today',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                color: AppTheme.secondaryTextColor,
                         ),
                       ),
                     ],
