@@ -119,6 +119,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   unselectedLabelColor: AppTheme.secondaryTextColor,
                   labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
                   isScrollable: true,
+                  tabAlignment: TabAlignment.start,
                   labelPadding: const EdgeInsets.symmetric(horizontal: 16),
                   tabs: const [
                     Tab(text: 'Trending'),

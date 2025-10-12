@@ -69,6 +69,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           unselectedLabelColor: AppTheme.secondaryTextColor,
           labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
+          tabAlignment: TabAlignment.start,
           labelPadding: const EdgeInsets.symmetric(horizontal: 16),
           tabs: const [
             Tab(text: 'All'),
