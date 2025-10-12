@@ -33,8 +33,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
   String _specialRequests = '';
   String _contactNumber = '';
   String _email = '';
-  String _firstName = '';
-  String _lastName = '';
+  String _fullName = '';
   String _couponCode = '';
   double _discountAmount = 0.0;
   bool _isCouponApplied = false;
@@ -419,52 +418,24 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  onChanged: (value) => setState(() => _firstName = value),
-                  decoration: InputDecoration(
-                    labelText: 'First Name',
-                    hintText: 'John',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppTheme.primaryColor),
-                    ),
-                  ),
-                ),
+          TextField(
+            onChanged: (value) => setState(() => _fullName = value),
+            decoration: InputDecoration(
+              labelText: 'Full Name',
+              hintText: 'John Doe',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: TextField(
-                  onChanged: (value) => setState(() => _lastName = value),
-                  decoration: InputDecoration(
-                    labelText: 'Last Name',
-                    hintText: 'Doe',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppTheme.primaryColor),
-                    ),
-                  ),
-                ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
-            ],
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppTheme.primaryColor),
+              ),
+            ),
           ),
           const SizedBox(height: 16),
           TextField(
@@ -710,8 +681,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
   Widget _buildBottomBar() {
     final canBook = _selectedDate != null && 
                     _selectedTimeSlot != null && 
-                    _firstName.isNotEmpty && 
-                    _lastName.isNotEmpty &&
+                    _fullName.isNotEmpty &&
                     _contactNumber.isNotEmpty && 
                     _email.isNotEmpty;
 
@@ -882,7 +852,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             Text('Date: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
             Text('Time: $_selectedTimeSlot'),
             Text('Guests: $_guestCount'),
-            Text('Name: $_firstName $_lastName'),
+            Text('Name: $_fullName'),
             Text('Phone: $_contactNumber'),
             Text('Email: $_email'),
             if (_specialRequests.isNotEmpty) Text('Special Requests: $_specialRequests'),
@@ -903,8 +873,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 'date': _selectedDate,
                 'time': _selectedTimeSlot,
                 'guests': _guestCount,
-                'firstName': _firstName,
-                'lastName': _lastName,
+                'fullName': _fullName,
                 'phone': _contactNumber,
                 'email': _email,
                 'specialRequests': _specialRequests,

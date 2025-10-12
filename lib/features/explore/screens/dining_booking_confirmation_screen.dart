@@ -10,8 +10,7 @@ class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
   final DateTime? date;
   final String time;
   final int guests;
-  final String firstName;
-  final String lastName;
+  final String fullName;
   final String phone;
   final String email;
   final String specialRequests;
@@ -23,8 +22,7 @@ class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
     this.date,
     required this.time,
     required this.guests,
-    required this.firstName,
-    required this.lastName,
+    required this.fullName,
     required this.phone,
     required this.email,
     required this.specialRequests,
@@ -250,7 +248,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           _buildDetailRow(
             icon: Icons.person,
             label: 'Name',
-            value: '${widget.firstName} ${widget.lastName}',
+            value: widget.fullName,
           ),
           const SizedBox(height: 12),
           _buildDetailRow(
