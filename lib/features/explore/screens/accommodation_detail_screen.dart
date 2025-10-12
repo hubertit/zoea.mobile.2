@@ -793,86 +793,101 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           ),
           const SizedBox(height: 12),
           // Quantity selector
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Quantity:',
-                style: AppTheme.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: quantity > 0 ? () {
-                        setState(() {
-                          if (quantity > 1) {
-                            _selectedRooms[roomTypeKey] = {
-                              'roomType': roomType,
-                              'quantity': quantity - 1,
-                            };
-                          } else {
-                            _selectedRooms.remove(roomTypeKey);
-                          }
-                        });
-                      } : null,
-                      icon: Icon(
-                        Icons.remove,
-                        size: 16,
-                        color: quantity > 0 ? AppTheme.primaryColor : Colors.grey[400],
-                      ),
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.all(8),
-                        minimumSize: const Size(32, 32),
-                      ),
+              Row(
+                children: [
+                  Text(
+                    'Quantity:',
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: Text(
-                        quantity.toString(),
-                        style: AppTheme.bodyMedium.copyWith(
-                          fontWeight: FontWeight.w600,
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: quantity > 0 ? () {
+                            setState(() {
+                              if (quantity > 1) {
+                                _selectedRooms[roomTypeKey] = {
+                                  'roomType': roomType,
+                                  'quantity': quantity - 1,
+                                };
+                              } else {
+                                _selectedRooms.remove(roomTypeKey);
+                              }
+                            });
+                          } : null,
+                          icon: Icon(
+                            Icons.remove,
+                            size: 16,
+                            color: quantity > 0 ? AppTheme.primaryColor : Colors.grey[400],
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(8),
+                            minimumSize: const Size(32, 32),
+                          ),
                         ),
-                      ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Text(
+                            quantity.toString(),
+                            style: AppTheme.bodyMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: quantity < maxAvailable ? () {
+                            setState(() {
+                              _selectedRooms[roomTypeKey] = {
+                                'roomType': roomType,
+                                'quantity': quantity + 1,
+                              };
+                            });
+                          } : null,
+                          icon: Icon(
+                            Icons.add,
+                            size: 16,
+                            color: quantity < maxAvailable ? AppTheme.primaryColor : Colors.grey[400],
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(8),
+                            minimumSize: const Size(32, 32),
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: quantity < maxAvailable ? () {
-                        setState(() {
-                          _selectedRooms[roomTypeKey] = {
-                            'roomType': roomType,
-                            'quantity': quantity + 1,
-                          };
-                        });
-                      } : null,
-                      icon: Icon(
-                        Icons.add,
-                        size: 16,
-                        color: quantity < maxAvailable ? AppTheme.primaryColor : Colors.grey[400],
-                      ),
-                      style: IconButton.styleFrom(
-                        padding: const EdgeInsets.all(8),
-                        minimumSize: const Size(32, 32),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const Spacer(),
-              if (quantity > 0)
-                Text(
-                  'Total: RWF ${(int.parse(roomType['price'].replaceAll(',', '')) * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.primaryColor,
+              if (quantity > 0) ...[
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'Total: RWF ${(int.parse(roomType['price'].replaceAll(',', '')) * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
+              ],
             ],
           ),
         ],
