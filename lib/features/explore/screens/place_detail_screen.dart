@@ -65,6 +65,12 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                 },
               ),
               IconButton(
+                icon: const Icon(Icons.rate_review, color: Colors.white),
+                onPressed: () {
+                  _showReviewBottomSheet();
+                },
+              ),
+              IconButton(
                 icon: const Icon(Icons.share, color: Colors.white),
                 onPressed: () {
                   // TODO: Implement share functionality
@@ -1316,5 +1322,218 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         'comment': 'Excellent traditional Rwandan cuisine! Highly recommend the grilled fish and plantains.',
       },
     ];
+  }
+
+  void _showReviewBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _ReviewBottomSheet(),
+    );
+  }
+}
+
+class _ReviewBottomSheet extends StatefulWidget {
+  @override
+  _ReviewBottomSheetState createState() => _ReviewBottomSheetState();
+}
+
+class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
+  int _selectedRating = 5;
+  final TextEditingController _reviewController = TextEditingController();
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle bar
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Title
+          Text(
+            'Write a Review',
+            style: AppTheme.headlineMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Rating selection
+          Text(
+            'How was your experience?',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          Row(
+            children: List.generate(5, (index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedRating = index + 1;
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    index < _selectedRating ? Icons.star : Icons.star_border,
+                    color: index < _selectedRating 
+                        ? Colors.amber 
+                        : Colors.grey[400],
+                    size: 32,
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 20),
+          
+          // Review text field
+          Text(
+            'Tell us about your experience',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          TextField(
+            controller: _reviewController,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: 'Share your thoughts about this place...',
+              hintStyle: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.primaryColor),
+              ),
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Submit button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _isSubmitting ? null : _submitReview,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: _isSubmitting
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      'Submit Review',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submitReview() async {
+    if (_reviewController.text.trim().isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please write a review before submitting'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    // Simulate API call
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Thank you for your review!'),
+          backgroundColor: AppTheme.successColor,
+          action: SnackBarAction(
+            label: 'View',
+            textColor: Colors.white,
+            onPressed: () {
+              // TODO: Navigate to reviews tab
+            },
+          ),
+        ),
+      );
+
+      // Close bottom sheet
+      Navigator.pop(context);
+    }
   }
 }
