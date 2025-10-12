@@ -519,6 +519,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           context.go('/events');
         } else if (label == 'Dining') {
           context.push('/dining');
+        } else if (label == 'Experiences') {
+          context.push('/experiences');
         }
         // TODO: Navigate to other category screens
       },

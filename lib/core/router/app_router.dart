@@ -7,6 +7,7 @@ import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/explore/screens/map_screen.dart';
 import '../../features/explore/screens/dining_screen.dart';
+import '../../features/explore/screens/experiences_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
@@ -208,6 +209,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/dining',
         builder: (context, state) => const DiningScreen(),
+      ),
+
+      // Experiences Route
+      GoRoute(
+        path: '/experiences',
+        builder: (context, state) => const ExperiencesScreen(),
       ),
 
       // Place Detail Route
