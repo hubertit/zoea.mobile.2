@@ -20,7 +20,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   late TabController _tabController;
   bool _isFavorite = false;
   int _selectedImageIndex = 0;
-  Map<String, dynamic>? _selectedRoomType;
+  Map<String, Map<String, dynamic>> _selectedRooms = {}; // roomType -> {roomType, quantity}
 
   @override
   void initState() {
@@ -587,18 +587,14 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _selectedRoomType != null 
-                      ? 'RWF ${_selectedRoomType!['price']}'
-                      : 'RWF ${accommodation['price']}',
+                  _getTotalPrice(),
                   style: AppTheme.headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppTheme.primaryColor,
                   ),
                 ),
                 Text(
-                  _selectedRoomType != null 
-                      ? '${_selectedRoomType!['type']} - per night'
-                      : 'per night',
+                  _getPriceDescription(),
                   style: AppTheme.bodySmall.copyWith(
                     color: AppTheme.secondaryTextColor,
                   ),
@@ -610,11 +606,11 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           Expanded(
             flex: 2,
             child: ElevatedButton(
-              onPressed: _selectedRoomType != null ? () {
+              onPressed: _selectedRooms.isNotEmpty ? () {
                 context.push('/accommodation/${widget.accommodationId}/book');
               } : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: _selectedRoomType != null 
+                backgroundColor: _selectedRooms.isNotEmpty 
                     ? AppTheme.primaryColor 
                     : Colors.grey[300],
                 shape: RoundedRectangleBorder(
@@ -706,102 +702,216 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   }
 
   Widget _buildSelectableRoomTypeCard(Map<String, dynamic> roomType) {
-    final isSelected = _selectedRoomType != null && 
-        _selectedRoomType!['type'] == roomType['type'];
+    final roomTypeKey = roomType['type'];
+    final isSelected = _selectedRooms.containsKey(roomTypeKey);
+    final quantity = _selectedRooms[roomTypeKey]?['quantity'] ?? 0;
+    final maxAvailable = roomType['available'] as int;
     
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedRoomType = roomType;
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    roomType['type'],
-                    style: AppTheme.headlineSmall.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    'RWF ${roomType['price']}',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (isSelected)
-                  Icon(
-                    Icons.check_circle,
-                    color: AppTheme.primaryColor,
-                    size: 20,
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.bed,
-                  size: 16,
-                  color: AppTheme.secondaryTextColor,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${roomType['maxGuests']} guests',
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Icon(
-                  Icons.hotel,
-                  size: 16,
-                  color: AppTheme.secondaryTextColor,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${roomType['available']} available',
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              roomType['amenities'],
-              style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
-              ),
-            ),
-          ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          width: isSelected ? 2 : 1,
         ),
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  roomType['type'],
+                  style: AppTheme.headlineSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'RWF ${roomType['price']}',
+                  style: AppTheme.bodySmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              if (isSelected)
+                Icon(
+                  Icons.check_circle,
+                  color: AppTheme.primaryColor,
+                  size: 20,
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.bed,
+                size: 16,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${roomType['maxGuests']} guests',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.hotel,
+                size: 16,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${roomType['available']} available',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            roomType['amenities'],
+            style: AppTheme.bodySmall.copyWith(
+              color: AppTheme.secondaryTextColor,
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Quantity selector
+          Row(
+            children: [
+              Text(
+                'Quantity:',
+                style: AppTheme.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: quantity > 0 ? () {
+                        setState(() {
+                          if (quantity > 1) {
+                            _selectedRooms[roomTypeKey] = {
+                              'roomType': roomType,
+                              'quantity': quantity - 1,
+                            };
+                          } else {
+                            _selectedRooms.remove(roomTypeKey);
+                          }
+                        });
+                      } : null,
+                      icon: Icon(
+                        Icons.remove,
+                        size: 16,
+                        color: quantity > 0 ? AppTheme.primaryColor : Colors.grey[400],
+                      ),
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(8),
+                        minimumSize: const Size(32, 32),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Text(
+                        quantity.toString(),
+                        style: AppTheme.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: quantity < maxAvailable ? () {
+                        setState(() {
+                          _selectedRooms[roomTypeKey] = {
+                            'roomType': roomType,
+                            'quantity': quantity + 1,
+                          };
+                        });
+                      } : null,
+                      icon: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: quantity < maxAvailable ? AppTheme.primaryColor : Colors.grey[400],
+                      ),
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(8),
+                        minimumSize: const Size(32, 32),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              if (quantity > 0)
+                Text(
+                  'Total: RWF ${(int.parse(roomType['price'].replaceAll(',', '')) * quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
+  }
+
+  String _getTotalPrice() {
+    final accommodation = _getAccommodationDetails(widget.accommodationId);
+    
+    if (_selectedRooms.isEmpty) {
+      return 'RWF ${accommodation['price']}';
+    }
+    
+    int total = 0;
+    for (var roomSelection in _selectedRooms.values) {
+      final roomType = roomSelection['roomType'] as Map<String, dynamic>;
+      final quantity = roomSelection['quantity'] as int;
+      final price = int.parse(roomType['price'].toString().replaceAll(',', ''));
+      total += price * quantity;
+    }
+    
+    return 'RWF ${total.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+  }
+
+  String _getPriceDescription() {
+    if (_selectedRooms.isEmpty) {
+      return 'per night';
+    }
+    
+    int totalRooms = 0;
+    for (var roomSelection in _selectedRooms.values) {
+      totalRooms += roomSelection['quantity'] as int;
+    }
+    
+    if (totalRooms == 1) {
+      return '1 room - per night';
+    } else {
+      return '$totalRooms rooms - per night';
+    }
   }
 }
