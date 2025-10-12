@@ -5,10 +5,12 @@ import '../../../core/theme/app_theme.dart';
 
 class AccommodationBookingScreen extends ConsumerStatefulWidget {
   final String accommodationId;
+  final Map<String, Map<String, dynamic>>? selectedRooms;
 
   const AccommodationBookingScreen({
     super.key,
     required this.accommodationId,
+    this.selectedRooms,
   });
 
   @override
@@ -50,6 +52,10 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           children: [
             _buildAccommodationCard(),
             const SizedBox(height: 24),
+            if (widget.selectedRooms != null && widget.selectedRooms!.isNotEmpty) ...[
+              _buildSelectedRoomsSection(),
+              const SizedBox(height: 24),
+            ],
             _buildDateSelection(),
             const SizedBox(height: 24),
             _buildGuestSelection(),
@@ -521,5 +527,104 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         }
       });
     }
+  }
+
+  Widget _buildSelectedRoomsSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.hotel,
+                color: AppTheme.primaryColor,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Selected Rooms',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...widget.selectedRooms!.entries.map((entry) {
+            final roomType = entry.value['roomType'] as Map<String, dynamic>;
+            final quantity = entry.value['quantity'] as int;
+            final totalPrice = int.parse(roomType['price'].toString().replaceAll(',', '')) * quantity;
+            
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          roomType['type'],
+                          style: AppTheme.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${roomType['maxGuests']} guests • ${roomType['amenities']}',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Qty: $quantity',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'RWF ${totalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                        style: AppTheme.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
+      ),
+    );
   }
 }

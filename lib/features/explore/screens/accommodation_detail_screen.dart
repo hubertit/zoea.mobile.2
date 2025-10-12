@@ -607,7 +607,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             flex: 2,
             child: ElevatedButton(
               onPressed: _selectedRooms.isNotEmpty ? () {
-                context.push('/accommodation/${widget.accommodationId}/book');
+                context.push('/accommodation/${widget.accommodationId}/book', extra: _selectedRooms);
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: _selectedRooms.isNotEmpty 

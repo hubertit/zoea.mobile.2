@@ -242,7 +242,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/accommodation/:accommodationId/book',
         builder: (context, state) {
           final accommodationId = state.pathParameters['accommodationId']!;
-          return AccommodationBookingScreen(accommodationId: accommodationId);
+          final selectedRooms = state.extra as Map<String, Map<String, dynamic>>?;
+          return AccommodationBookingScreen(
+            accommodationId: accommodationId,
+            selectedRooms: selectedRooms,
+          );
         },
       ),
 
