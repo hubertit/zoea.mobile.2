@@ -25,7 +25,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left, size: 28),
           onPressed: () => Navigator.of(context).pop(),
           style: IconButton.styleFrom(
             foregroundColor: AppTheme.primaryTextColor,

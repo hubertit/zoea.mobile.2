@@ -42,7 +42,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left, size: 28),
           style: IconButton.styleFrom(
             foregroundColor: AppTheme.primaryTextColor,
           ),

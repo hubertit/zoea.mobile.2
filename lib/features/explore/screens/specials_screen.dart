@@ -17,6 +17,7 @@ class SpecialsScreen extends StatelessWidget {
           icon: Icon(
             Icons.chevron_left,
             color: AppTheme.primaryTextColor,
+            size: 28,
           ),
           onPressed: () => context.pop(),
         ),
