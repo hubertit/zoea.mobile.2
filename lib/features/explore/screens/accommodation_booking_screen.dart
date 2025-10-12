@@ -492,7 +492,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         color: AppTheme.backgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

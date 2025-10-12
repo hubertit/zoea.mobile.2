@@ -40,8 +40,8 @@ class PlaceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryTextColor.withOpacity(0.05),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
@@ -84,8 +84,8 @@ class PlaceCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
                         ],
