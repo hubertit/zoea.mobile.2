@@ -169,12 +169,98 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               ),
             ),
             const SizedBox(height: 20),
-            // Add filter options here
+            
+            // Price Range Filter
             Text(
-              'Filter options coming soon...',
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+              'Price Range',
+              style: AppTheme.titleMedium.copyWith(
+                fontWeight: FontWeight.w600,
               ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildFilterChip('Under RWF 10,000', false),
+                _buildFilterChip('RWF 10,000 - 20,000', false),
+                _buildFilterChip('RWF 20,000 - 30,000', false),
+                _buildFilterChip('Above RWF 30,000', false),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Rating Filter
+            Text(
+              'Minimum Rating',
+              style: AppTheme.titleMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildFilterChip('4.0+ Stars', false),
+                _buildFilterChip('4.5+ Stars', false),
+                _buildFilterChip('5.0 Stars', false),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Features Filter
+            Text(
+              'Features',
+              style: AppTheme.titleMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildFilterChip('Live Music', false),
+                _buildFilterChip('Dance Floor', false),
+                _buildFilterChip('Outdoor Seating', false),
+                _buildFilterChip('VIP Section', false),
+                _buildFilterChip('Parking', false),
+                _buildFilterChip('WiFi', false),
+              ],
+            ),
+            
+            const SizedBox(height: 30),
+            
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.primaryColor,
+                      side: BorderSide(color: AppTheme.primaryColor),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text('Clear All'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text('Apply Filters'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -202,14 +288,116 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               ),
             ),
             const SizedBox(height: 20),
-            // Add sort options here
-            Text(
-              'Sort options coming soon...',
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
-              ),
+            
+            // Sort Options
+            _buildSortOption('Distance', Icons.location_on, true),
+            _buildSortOption('Rating', Icons.star, false),
+            _buildSortOption('Price: Low to High', Icons.arrow_upward, false),
+            _buildSortOption('Price: High to Low', Icons.arrow_downward, false),
+            _buildSortOption('Most Popular', Icons.trending_up, false),
+            _buildSortOption('Newest', Icons.schedule, false),
+            _buildSortOption('Name A-Z', Icons.sort_by_alpha, false),
+            
+            const SizedBox(height: 20),
+            
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.primaryColor,
+                      side: BorderSide(color: AppTheme.primaryColor),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text('Apply'),
+                  ),
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, bool isSelected) {
+    return FilterChip(
+      label: Text(
+        label,
+        style: AppTheme.bodySmall.copyWith(
+          color: isSelected ? Colors.white : AppTheme.primaryTextColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      selected: isSelected,
+      onSelected: (selected) {
+        // Handle filter selection
+      },
+      selectedColor: AppTheme.primaryColor,
+      backgroundColor: AppTheme.backgroundColor,
+      side: BorderSide(
+        color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    );
+  }
+
+  Widget _buildSortOption(String label, IconData icon, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () {
+          // Handle sort selection
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (isSelected)
+                Icon(
+                  Icons.check,
+                  size: 20,
+                  color: AppTheme.primaryColor,
+                ),
+            ],
+          ),
         ),
       ),
     );
