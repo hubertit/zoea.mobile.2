@@ -361,6 +361,109 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               ),
             ],
           ),
+          const SizedBox(height: 24),
+          Text(
+            'Booking Policies',
+            style: AppTheme.headlineSmall.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildPolicyCard(
+            icon: Icons.cancel_outlined,
+            title: 'Cancellation',
+            description: 'Free cancellation until 24 hours before check-in',
+            color: AppTheme.successColor,
+          ),
+          const SizedBox(height: 12),
+          _buildPolicyCard(
+            icon: Icons.money_off,
+            title: 'Refund Policy',
+            description: 'Full refund if cancelled 24+ hours before check-in',
+            color: AppTheme.primaryColor,
+          ),
+          const SizedBox(height: 12),
+          _buildPolicyCard(
+            icon: Icons.pets,
+            title: 'Pet Policy',
+            description: 'Pets allowed with additional fee of RWF 15,000 per night',
+            color: AppTheme.secondaryTextColor,
+          ),
+          const SizedBox(height: 12),
+          _buildPolicyCard(
+            icon: Icons.smoking_rooms,
+            title: 'Smoking Policy',
+            description: 'Non-smoking property. Smoking allowed in designated areas only',
+            color: AppTheme.errorColor,
+          ),
+          const SizedBox(height: 12),
+          _buildPolicyCard(
+            icon: Icons.child_care,
+            title: 'Children Policy',
+            description: 'Children of all ages welcome. Extra beds available on request',
+            color: AppTheme.primaryColor,
+          ),
+          const SizedBox(height: 12),
+          _buildPolicyCard(
+            icon: Icons.credit_card,
+            title: 'Payment Policy',
+            description: 'Credit card required for booking. Payment due at check-in',
+            color: AppTheme.secondaryTextColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPolicyCard({
+    required IconData icon,
+    required String title,
+    required String description,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: AppTheme.bodySmall.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
