@@ -10,6 +10,7 @@ import '../../features/explore/screens/map_screen.dart';
 import '../../features/explore/screens/dining_screen.dart';
 import '../../features/explore/screens/experiences_screen.dart';
 import '../../features/explore/screens/nightlife_screen.dart';
+import '../../features/explore/screens/shopping_screen.dart';
 import '../../features/explore/screens/accommodation_screen.dart';
 import '../../features/explore/screens/accommodation_detail_screen.dart';
 import '../../features/explore/screens/accommodation_booking_screen.dart';
@@ -237,6 +238,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/nightlife',
         builder: (context, state) => const NightlifeScreen(),
+      ),
+
+      // Shopping Route
+      GoRoute(
+        path: '/shopping',
+        builder: (context, state) => const ShoppingScreen(),
       ),
       GoRoute(
         path: '/accommodation/:accommodationId',

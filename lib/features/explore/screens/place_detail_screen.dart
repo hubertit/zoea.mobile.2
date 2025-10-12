@@ -1268,6 +1268,343 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           ],
         };
       
+      // Shopping places
+      case 'shop_1': // Kigali City Tower
+        return {
+          'name': 'Kigali City Tower',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.3,
+          'reviewCount': 456,
+          'priceRange': 'Shopping',
+          'category': 'Mall',
+          'description': 'Modern shopping mall in the heart of Kigali with international and local brands, restaurants, and entertainment options.',
+          'features': ['WiFi', 'Parking', 'Air Conditioning', 'ATM', 'Food Court'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '9:00 AM - 9:00 PM'},
+            {'day': 'Tuesday', 'time': '9:00 AM - 9:00 PM'},
+            {'day': 'Wednesday', 'time': '9:00 AM - 9:00 PM'},
+            {'day': 'Thursday', 'time': '9:00 AM - 9:00 PM'},
+            {'day': 'Friday', 'time': '9:00 AM - 10:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 10:00 PM'},
+            {'day': 'Sunday', 'time': '10:00 AM - 8:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1555529902-1c0a6a2b5b5b?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Sarah M.',
+              'rating': 5,
+              'comment': 'Great shopping experience with good variety of stores.',
+              'date': '2 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'John K.',
+              'rating': 4,
+              'comment': 'Clean and modern mall with good parking facilities.',
+              'date': '1 week ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_2': // Kimisagara Market
+        return {
+          'name': 'Kimisagara Market',
+          'location': 'Kimisagara, Kigali',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.2,
+          'reviewCount': 89,
+          'priceRange': 'Market',
+          'category': 'Market',
+          'description': 'Traditional local market offering fresh produce, crafts, and local goods. Experience authentic Rwandan market culture.',
+          'features': ['Fresh Produce', 'Local Crafts', 'Bargaining', 'Local Experience'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Marie R.',
+              'rating': 5,
+              'comment': 'Authentic market experience with fresh local produce.',
+              'date': '3 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'David L.',
+              'rating': 4,
+              'comment': 'Great place to buy local crafts and souvenirs.',
+              'date': '1 week ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_3': // Rwanda Fashion House
+        return {
+          'name': 'Rwanda Fashion House',
+          'location': 'Nyarutarama, Kigali',
+          'image': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+          'rating': 4.6,
+          'reviewCount': 123,
+          'priceRange': 'Boutique',
+          'category': 'Boutique',
+          'description': 'High-end fashion boutique featuring contemporary African designs and international brands. Perfect for special occasions.',
+          'features': ['Fashion', 'Designer Clothes', 'Personal Styling', 'Alterations'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Tuesday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Wednesday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Thursday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Friday', 'time': '9:00 AM - 8:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 8:00 PM'},
+            {'day': 'Sunday', 'time': '10:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Grace N.',
+              'rating': 5,
+              'comment': 'Beautiful designs and excellent customer service.',
+              'date': '1 day ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'Paul M.',
+              'rating': 5,
+              'comment': 'Great selection of African fashion and accessories.',
+              'date': '5 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_4': // Kigali Heights Mall
+        return {
+          'name': 'Kigali Heights Mall',
+          'location': 'Kigali Heights, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1555529902-1c0a6a2b5b5b?w=800',
+          'rating': 4.4,
+          'reviewCount': 234,
+          'priceRange': 'Mall',
+          'category': 'Mall',
+          'description': 'Premium shopping destination with luxury brands, fine dining, and entertainment. The ultimate shopping experience in Kigali.',
+          'features': ['Luxury Brands', 'Fine Dining', 'Cinema', 'Parking', 'WiFi'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '10:00 AM - 9:00 PM'},
+            {'day': 'Tuesday', 'time': '10:00 AM - 9:00 PM'},
+            {'day': 'Wednesday', 'time': '10:00 AM - 9:00 PM'},
+            {'day': 'Thursday', 'time': '10:00 AM - 9:00 PM'},
+            {'day': 'Friday', 'time': '10:00 AM - 10:00 PM'},
+            {'day': 'Saturday', 'time': '10:00 AM - 10:00 PM'},
+            {'day': 'Sunday', 'time': '11:00 AM - 8:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1555529902-1c0a6a2b5b5b?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Anna K.',
+              'rating': 5,
+              'comment': 'Luxury shopping at its finest with great restaurants.',
+              'date': '2 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'Michael T.',
+              'rating': 4,
+              'comment': 'Excellent mall with good variety of stores and dining.',
+              'date': '1 week ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_5': // Nyabugogo Market
+        return {
+          'name': 'Nyabugogo Market',
+          'location': 'Nyabugogo, Kigali',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.1,
+          'reviewCount': 156,
+          'priceRange': 'Market',
+          'category': 'Market',
+          'description': 'One of Kigali\'s largest traditional markets offering everything from fresh produce to household goods and local crafts.',
+          'features': ['Fresh Produce', 'Household Goods', 'Local Crafts', 'Bargaining'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Tuesday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Wednesday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Thursday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Friday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Saturday', 'time': '5:00 AM - 7:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Claire U.',
+              'rating': 4,
+              'comment': 'Huge market with everything you need at good prices.',
+              'date': '4 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'Robert H.',
+              'rating': 4,
+              'comment': 'Authentic local market experience, great for souvenirs.',
+              'date': '1 week ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_6': // Rwanda Crafts Boutique
+        return {
+          'name': 'Rwanda Crafts Boutique',
+          'location': 'Kacyiru, Kigali',
+          'image': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+          'rating': 4.7,
+          'reviewCount': 78,
+          'priceRange': 'Boutique',
+          'category': 'Boutique',
+          'description': 'Specialized boutique featuring authentic Rwandan crafts, traditional art, and handmade souvenirs. Supporting local artisans.',
+          'features': ['Local Crafts', 'Traditional Art', 'Handmade Items', 'Artisan Support'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '9:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '9:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '9:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '9:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 7:00 PM'},
+            {'day': 'Sunday', 'time': '10:00 AM - 5:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Linda S.',
+              'rating': 5,
+              'comment': 'Beautiful authentic crafts, perfect for gifts.',
+              'date': '1 day ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+            {
+              'user': 'James W.',
+              'rating': 5,
+              'comment': 'Amazing selection of traditional Rwandan art.',
+              'date': '3 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_7': // Kigali Convention Centre Shops
+        return {
+          'name': 'Kigali Convention Centre Shops',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.0,
+          'reviewCount': 67,
+          'priceRange': 'Mall',
+          'category': 'Mall',
+          'description': 'Convenient shopping area within the convention centre featuring international brands, souvenirs, and business essentials.',
+          'features': ['International Brands', 'Souvenirs', 'Business Essentials', 'WiFi'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 5:00 PM'},
+            {'day': 'Sunday', 'time': 'Closed'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1555529902-1c0a6a2b5b5b?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Business Traveler',
+              'rating': 4,
+              'comment': 'Convenient shopping for business travelers.',
+              'date': '2 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+            {
+              'user': 'Conference Attendee',
+              'rating': 4,
+              'comment': 'Good selection of souvenirs and essentials.',
+              'date': '1 week ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+          ],
+        };
+      
+      case 'shop_8': // Kimironko Market
+        return {
+          'name': 'Kimironko Market',
+          'location': 'Kimironko, Kigali',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.3,
+          'reviewCount': 98,
+          'priceRange': 'Market',
+          'category': 'Market',
+          'description': 'Vibrant local market known for fresh produce, textiles, and household items. A great place to experience local culture and find unique items.',
+          'features': ['Fresh Produce', 'Textiles', 'Household Items', 'Local Culture'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Tourist Guide',
+              'rating': 5,
+              'comment': 'Authentic market experience with friendly vendors.',
+              'date': '3 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+            {
+              'user': 'Local Shopper',
+              'rating': 4,
+              'comment': 'Great prices and fresh produce, very convenient.',
+              'date': '5 days ago',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+          ],
+        };
+      
       default: // Default restaurant data
         return {
           'name': 'The Hut Restaurant',
