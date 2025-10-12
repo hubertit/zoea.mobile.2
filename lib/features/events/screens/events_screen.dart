@@ -259,32 +259,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       ),
                     ),
                     const Spacer(),
-                    if (event['isFree'] == true)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'FREE',
-                          style: AppTheme.bodySmall.copyWith(
-                            color: Colors.green,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
-                    else
-                      Text(
-                        event['price'],
-                        style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    // No pricing information for MICE events
                   ],
                 ),
                 if (event['description'] != null) ...[
@@ -871,8 +846,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 2-3, 2025',
         'category': 'Summit',
         'image': 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=500',
-        'price': 'RWF 400,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The inaugural Championing Women in Cybersecurity Conference is a pivotal step towards advancing women in cybersecurity.',
       },
       {
@@ -881,8 +856,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 5-9, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=500',
-        'price': 'RWF 600,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The ISO Annual Meeting is a unique convening opportunity for timely discussion on emerging trends in international standards.',
       },
       {
@@ -891,8 +866,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 15-17, 2025',
         'category': 'Symposium',
         'image': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500',
-        'price': 'RWF 300,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Symposium on Genomics in Africa bringing together researchers, students, and professionals in genomics.',
       },
       {
@@ -901,8 +876,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 20-24, 2025',
         'category': 'Congress',
         'image': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500',
-        'price': 'RWF 500,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The World Congress on Agroforestry is an international event that brings together agroforestry experts from around the world.',
       },
       {
@@ -911,8 +886,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 21-23, 2025',
         'category': 'Congress',
         'image': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
-        'price': 'RWF 800,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'With 5G connections growing from two million in 2022, to a predicted 358 million by 2030, MWC Kigali explores the future of mobile technology.',
       },
       {
@@ -921,8 +896,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 21-23, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500',
-        'price': 'RWF 400,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The International Association of Universities (IAU) International Conference is an annual event bringing together university leaders globally.',
       },
       {
@@ -931,8 +906,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 13-15, 2025',
         'category': 'Summit',
         'image': 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=500',
-        'price': 'RWF 700,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Now in its fourth edition, the Africa HealthTech Summit brings together Ministers of Health and technology leaders.',
       },
       {
@@ -941,8 +916,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 14-17, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500',
-        'price': 'RWF 350,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'This year\'s theme will explore how Africa-led innovation and AI are shaping the next generation of African development.',
       },
       {
@@ -951,8 +926,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'October 18, 2025',
         'category': 'Sports',
         'image': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500',
-        'price': 'RWF 50,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Professional Fighters League (PFL) is a global powerhouse in MMA and the fastest-growing sports league in the world.',
       },
       {
@@ -961,8 +936,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 7-9, 2025',
         'category': 'Festival',
         'image': 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=500',
-        'price': 'RWF 600,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The Africa Blockchain Festival (ABF) is a continent-wide gathering of visionaries, builders, and innovators in blockchain technology.',
       },
       {
@@ -971,8 +946,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 3-5, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500',
-        'price': 'RWF 200,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The African Federation of Sign Language Interpreters (AFSLI) is a Pan-African organization advancing sign language interpretation across Africa.',
       },
       {
@@ -981,8 +956,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 4-6, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500',
-        'price': 'RWF 300,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The ANAPRI Stakeholders Conference is an annual event that convenes a diverse range of stakeholders in African development.',
       },
       {
@@ -991,8 +966,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 12-15, 2025',
         'category': 'Forum',
         'image': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500',
-        'price': 'RWF 400,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The Africa Forum represents a fundamental pillar in the ongoing success of our organization across the African continent.',
       },
       {
@@ -1001,8 +976,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 13-15, 2025',
         'category': 'Summit',
         'image': 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=500',
-        'price': 'RWF 500,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'African Summit on Entrepreneurship and Innovation (ASENTI) is a Pan African annual forum that brings together entrepreneurs and innovators.',
       },
       {
@@ -1011,8 +986,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 19-21, 2025',
         'category': 'Meeting',
         'image': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500',
-        'price': 'RWF 700,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The OIF\'s Ministerial Conference (Conférence Ministérielle de la Francophonie, CMF) is a pivotal gathering of French-speaking nations.',
       },
       {
@@ -1021,8 +996,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 20-21, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500',
-        'price': 'RWF 350,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Africa/Week brings together the continent\'s leading stakeholders in technology and innovation.',
       },
       {
@@ -1031,8 +1006,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 25-27, 2025',
         'category': 'Expo',
         'image': 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=500',
-        'price': 'RWF 400,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Africa Energy Expo features have been carefully designed to bring together experienced industry professionals in the energy sector.',
       },
       {
@@ -1041,8 +1016,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 26-28, 2025',
         'category': 'Conference',
         'image': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-        'price': 'RWF 800,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'Theme: Adapting to Global Market Shifts: Strategies for Resilience and Growth in African Capital Markets.',
       },
       {
@@ -1051,8 +1026,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'November 14, 2025',
         'category': 'Summit',
         'image': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500',
-        'price': 'RWF 600,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'The Africa Global Leadership Summit & Impact Awards (AGLSIA) is an annual flagship Leadership development and recognition event.',
       },
       {
@@ -1061,8 +1036,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         'date': 'September 4-5, 2025',
         'category': 'Summit',
         'image': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=500',
-        'price': 'RWF 800,000',
-        'isFree': false,
+        'price': null,
+        'isFree': null,
         'description': 'A premier gathering of top executives and officials in the airline industry across Africa.',
       },
     ];
