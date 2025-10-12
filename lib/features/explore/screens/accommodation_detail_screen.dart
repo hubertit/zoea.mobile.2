@@ -25,7 +25,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 5, vsync: this, initialIndex: 4); // Rooms tab is index 4
   }
 
   @override
