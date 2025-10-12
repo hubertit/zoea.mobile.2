@@ -60,7 +60,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
 
   Widget _buildSliverAppBar(Map<String, dynamic> accommodation) {
     return SliverAppBar(
-      expandedHeight: 300,
+      expandedHeight: 200,
       pinned: true,
       backgroundColor: AppTheme.backgroundColor,
       leading: IconButton(
