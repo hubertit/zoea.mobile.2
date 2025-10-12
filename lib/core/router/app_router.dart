@@ -7,6 +7,7 @@ import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/search/screens/search_screen.dart';
 import '../../features/events/screens/event_detail_screen.dart';
 import '../../core/models/event.dart';
 import '../../features/listings/screens/listing_detail_screen.dart';
@@ -183,6 +184,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsScreen(),
+      ),
+
+      // Search Route
+      GoRoute(
+        path: '/search',
+        builder: (context, state) {
+          final query = state.uri.queryParameters['q'];
+          return SearchScreen(initialQuery: query);
+        },
       ),
     ],
   );

@@ -142,7 +142,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: Navigate to search screen
+              context.push('/search');
             },
           ),
           // Notifications Icon with Badge
@@ -442,7 +442,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         ),
         style: AppTheme.bodyMedium,
         onSubmitted: (value) {
-          // TODO: Navigate to search results
+          if (value.trim().isNotEmpty) {
+            context.push('/search?q=${Uri.encodeComponent(value)}');
+          }
         },
       ),
     );
