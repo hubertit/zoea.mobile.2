@@ -94,7 +94,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       body: Column(
         children: [
           _buildSearchBar(),
-          _buildQuickFilters(),
           _buildTabBar(),
           Expanded(
             child: TabBarView(
@@ -189,53 +188,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     );
   }
 
-  Widget _buildQuickFilters() {
-    final filters = [
-      {'name': 'Price', 'icon': Icons.attach_money},
-      {'name': 'Rating', 'icon': Icons.star},
-      {'name': 'Distance', 'icon': Icons.location_on},
-      {'name': 'Amenities', 'icon': Icons.wifi},
-    ];
-
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length,
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          return Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: FilterChip(
-              label: Text(
-                filter['name'] as String,
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryTextColor,
-                ),
-              ),
-              avatar: Icon(
-                filter['icon'] as IconData,
-                size: 16,
-                color: AppTheme.primaryColor,
-              ),
-              selected: false,
-              onSelected: (selected) {
-                // Handle filter selection
-              },
-              backgroundColor: AppTheme.backgroundColor,
-              selectedColor: AppTheme.primaryColor.withOpacity(0.1),
-              checkmarkColor: AppTheme.primaryColor,
-              side: BorderSide(
-                color: Colors.grey[300]!,
-                width: 1,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   Widget _buildTabBar() {
     return Container(
