@@ -557,7 +557,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: Colors.grey[50],
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -598,13 +598,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.emergency,
                   label: 'Emergency SOS',
-                  color: Colors.red[600]!,
                   onTap: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Emergency SOS activated'),
-                        backgroundColor: Colors.red,
+                      SnackBar(
+                        content: Text(
+                          'Emergency SOS activated',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: AppTheme.primaryColor,
                       ),
                     );
                   },
@@ -612,13 +616,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.local_taxi,
                   label: 'Call Taxi',
-                  color: Colors.blue[600]!,
                   onTap: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Finding nearby taxis...'),
-                        backgroundColor: Colors.blue,
+                      SnackBar(
+                        content: Text(
+                          'Finding nearby taxis...',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: AppTheme.primaryColor,
                       ),
                     );
                   },
@@ -626,13 +634,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.atm,
                   label: 'Find ATM',
-                  color: Colors.green[600]!,
                   onTap: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Finding nearby ATMs...'),
-                        backgroundColor: Colors.green,
+                      SnackBar(
+                        content: Text(
+                          'Finding nearby ATMs...',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: AppTheme.primaryColor,
                       ),
                     );
                   },
@@ -640,7 +652,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.tour,
                   label: 'Book Tour',
-                  color: Colors.orange[600]!,
                   onTap: () {
                     Navigator.pop(context);
                     context.push('/explore/experiences');
@@ -649,95 +660,94 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.local_hospital,
                   label: 'Find Hospital',
-                  color: Colors.red[400]!,
                   onTap: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Finding nearby hospitals...'),
-                        backgroundColor: Colors.red,
+                      SnackBar(
+                        content: Text(
+                          'Finding nearby hospitals...',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: AppTheme.primaryColor,
                       ),
                     );
                   },
                 ),
-                _buildQuickActionItem(
-                  icon: Icons.security,
-                  label: 'Tourist Police',
-                  color: Colors.blue[800]!,
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Connecting to tourist police...'),
-                        backgroundColor: Colors.blue,
+                      _buildQuickActionItem(
+                        icon: Icons.security,
+                        label: 'Police',
+                        onTap: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Connecting to police...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                _buildQuickActionItem(
-                  icon: Icons.translate,
-                  label: 'Translate',
-                  color: Colors.purple[600]!,
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Opening translator...'),
-                        backgroundColor: Colors.purple,
+                      _buildQuickActionItem(
+                        icon: Icons.local_pharmacy,
+                        label: 'Pharmacy',
+                        onTap: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Finding nearby pharmacies...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                _buildQuickActionItem(
-                  icon: Icons.wifi,
-                  label: 'Find WiFi',
-                  color: Colors.cyan[600]!,
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Finding nearby WiFi hotspots...'),
-                        backgroundColor: Colors.cyan,
+                      _buildQuickActionItem(
+                        icon: Icons.car_repair,
+                        label: 'Roadside Assistance',
+                        onTap: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Connecting to roadside assistance...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                _buildQuickActionItem(
-                  icon: Icons.phone,
-                  label: 'Emergency Call',
-                  color: Colors.red[700]!,
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Dialing emergency services...'),
-                        backgroundColor: Colors.red,
+                      _buildQuickActionItem(
+                        icon: Icons.airplane_ticket,
+                        label: 'Flight Info',
+                        onTap: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Checking flight information...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ],
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Close button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () => Navigator.pop(context),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(color: AppTheme.primaryColor),
-                ),
-                child: Text(
-                  'Close',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
             ),
             
             // Add bottom padding for safe area
@@ -751,33 +761,39 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildQuickActionItem({
     required IconData icon,
     required String label,
-    required Color color,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: color.withOpacity(0.3),
+            color: Colors.grey[200]!,
             width: 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: color,
+              color: AppTheme.primaryColor,
               size: 24,
             ),
             const SizedBox(height: 8),
             Text(
               label,
               style: AppTheme.bodySmall.copyWith(
-                color: color,
+                color: AppTheme.primaryTextColor,
                 fontWeight: FontWeight.w500,
                 fontSize: 11,
               ),
