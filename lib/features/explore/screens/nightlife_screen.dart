@@ -50,7 +50,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () => context.push('/search/nightlife'),
+            onPressed: () => context.push('/search?category=nightlife'),
           ),
           IconButton(
             icon: const Icon(Icons.filter_list),

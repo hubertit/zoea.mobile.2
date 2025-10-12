@@ -5,10 +5,12 @@ import '../../../core/theme/app_theme.dart';
 
 class SearchScreen extends StatefulWidget {
   final String? initialQuery;
+  final String? category;
   
   const SearchScreen({
     super.key,
     this.initialQuery,
+    this.category,
   });
 
   @override
@@ -357,30 +359,35 @@ class _SearchScreenState extends State<SearchScreen> {
       final title = item['title'].toLowerCase();
       final subtitle = item['subtitle'].toLowerCase();
       final searchQuery = query.toLowerCase();
+      
+      // Filter by category if specified
+      if (widget.category != null) {
+        final itemCategory = item['category']?.toLowerCase();
+        if (itemCategory != widget.category?.toLowerCase()) {
+          return false;
+        }
+      }
+      
       return title.contains(searchQuery) || subtitle.contains(searchQuery);
     }).toList();
   }
 
   List<Map<String, dynamic>> _getAllSearchableItems() {
     return [
+      // Experiences
       {
         'title': 'Gorilla Trekking Experience',
         'subtitle': 'Volcanoes National Park, Musanze',
         'type': 'event',
+        'category': 'experiences',
         'rating': 4.8,
         'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'title': 'Kigali Genocide Memorial',
-        'subtitle': 'Gisozi, Kigali',
-        'type': 'place',
-        'rating': 4.9,
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
       },
       {
         'title': 'Cultural Village Tour',
         'subtitle': 'Iby\'iwacu Cultural Village, Musanze',
         'type': 'event',
+        'category': 'experiences',
         'rating': 4.7,
         'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
       },
@@ -388,13 +395,77 @@ class _SearchScreenState extends State<SearchScreen> {
         'title': 'Lake Kivu Boat Trip',
         'subtitle': 'Rubavu, Western Province',
         'type': 'event',
+        'category': 'experiences',
         'rating': 4.6,
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
+      },
+      
+      // Dining
+      {
+        'title': 'The Hut Restaurant',
+        'subtitle': 'Kigali Heights, Kigali',
+        'type': 'place',
+        'category': 'dining',
+        'rating': 4.5,
+        'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200',
+      },
+      {
+        'title': 'Bourbon Coffee',
+        'subtitle': 'Kacyiru, Kigali',
+        'type': 'place',
+        'category': 'dining',
+        'rating': 4.3,
+        'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
+      },
+      {
+        'title': 'Pizza Corner',
+        'subtitle': 'Remera, Kigali',
+        'type': 'place',
+        'category': 'dining',
+        'rating': 4.1,
+        'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+      },
+      
+      // Nightlife
+      {
+        'title': 'Sky Lounge',
+        'subtitle': 'Kigali Heights, Kigali',
+        'type': 'place',
+        'category': 'nightlife',
+        'rating': 4.5,
+        'image': 'https://images.unsplash.com/photo-1533174072545-7bd46c006744?w=200',
+      },
+      {
+        'title': 'Club Amahoro',
+        'subtitle': 'Remera, Kigali',
+        'type': 'place',
+        'category': 'nightlife',
+        'rating': 4.2,
+        'image': 'https://images.unsplash.com/photo-1598032790856-ce216b72780b?w=200',
+      },
+      {
+        'title': 'Rooftop Bar',
+        'subtitle': 'Kiyovu, Kigali',
+        'type': 'place',
+        'category': 'nightlife',
+        'rating': 4.7,
+        'image': 'https://images.unsplash.com/photo-1514933651105-0646ef958e0e?w=200',
+      },
+      
+      // General Places
+      {
+        'title': 'Kigali Genocide Memorial',
+        'subtitle': 'Gisozi, Kigali',
+        'type': 'place',
+        'category': 'places',
+        'rating': 4.9,
         'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
       },
       {
         'title': 'Nyungwe Forest National Park',
         'subtitle': 'Nyungwe, Southern Province',
         'type': 'place',
+        'category': 'places',
         'rating': 4.8,
         'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
       },
@@ -402,6 +473,7 @@ class _SearchScreenState extends State<SearchScreen> {
         'title': 'Akagera National Park',
         'subtitle': 'Eastern Province',
         'type': 'place',
+        'category': 'places',
         'rating': 4.5,
         'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
       },

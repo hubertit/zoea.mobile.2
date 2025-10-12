@@ -55,7 +55,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () => context.push('/search/dining'),
+            onPressed: () => context.push('/search?category=dining'),
           ),
           IconButton(
             icon: const Icon(Icons.filter_list),

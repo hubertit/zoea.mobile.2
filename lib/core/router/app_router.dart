@@ -9,7 +9,6 @@ import '../../features/explore/screens/map_screen.dart';
 import '../../features/explore/screens/dining_screen.dart';
 import '../../features/explore/screens/experiences_screen.dart';
 import '../../features/explore/screens/nightlife_screen.dart';
-import '../../features/explore/screens/category_search_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
@@ -197,7 +196,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/search',
         builder: (context, state) {
           final query = state.uri.queryParameters['q'];
-          return SearchScreen(initialQuery: query);
+          final category = state.uri.queryParameters['category'];
+          return SearchScreen(initialQuery: query, category: category);
         },
       ),
 
@@ -225,19 +225,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const NightlifeScreen(),
       ),
 
-      // Category Search Routes
-      GoRoute(
-        path: '/search/dining',
-        builder: (context, state) => const CategorySearchScreen(category: 'dining'),
-      ),
-      GoRoute(
-        path: '/search/nightlife',
-        builder: (context, state) => const CategorySearchScreen(category: 'nightlife'),
-      ),
-      GoRoute(
-        path: '/search/experiences',
-        builder: (context, state) => const CategorySearchScreen(category: 'experiences'),
-      ),
 
       // Place Detail Route
       GoRoute(
