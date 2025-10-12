@@ -834,55 +834,154 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
   }
 
   void _confirmBooking() {
-    // Show confirmation dialog
-    showDialog(
+    // Show confirmation bottom sheet
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Confirm Booking',
-          style: AppTheme.headlineSmall.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        content: Column(
+      isScrollControlled: true,
+      backgroundColor: AppTheme.backgroundColor,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Restaurant: ${widget.placeName}'),
-            Text('Date: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
-            Text('Time: $_selectedTimeSlot'),
-            Text('Guests: $_guestCount'),
-            Text('Name: $_fullName'),
-            Text('Phone: $_contactNumber'),
-            Text('Email: $_email'),
-            if (_specialRequests.isNotEmpty) Text('Special Requests: $_specialRequests'),
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Confirm Booking',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Booking details
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDetailRow('Restaurant', widget.placeName),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Date', '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Time', _selectedTimeSlot ?? 'Not selected'),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Guests', _guestCount.toString()),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Name', _fullName),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Phone', _contactNumber),
+                  const SizedBox(height: 12),
+                  _buildDetailRow('Email', _email),
+                  if (_specialRequests.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _buildDetailRow('Special Requests', _specialRequests),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: BorderSide(color: AppTheme.primaryColor),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      // Navigate to confirmation screen
+                      context.push('/dining-booking-confirmation', extra: {
+                        'placeName': widget.placeName,
+                        'placeLocation': widget.placeLocation,
+                        'date': _selectedDate,
+                        'time': _selectedTimeSlot,
+                        'guests': _guestCount,
+                        'fullName': _fullName,
+                        'phone': _contactNumber,
+                        'email': _email,
+                        'specialRequests': _specialRequests,
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Confirm',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Navigate to confirmation screen
-              context.push('/dining-booking-confirmation', extra: {
-                'placeName': widget.placeName,
-                'placeLocation': widget.placeLocation,
-                'date': _selectedDate,
-                'time': _selectedTimeSlot,
-                'guests': _guestCount,
-                'fullName': _fullName,
-                'phone': _contactNumber,
-                'email': _email,
-                'specialRequests': _specialRequests,
-              });
-            },
-            child: Text('Confirm'),
-          ),
-        ],
       ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 80,
+          child: Text(
+            '$label:',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[600],
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: AppTheme.bodyMedium,
+          ),
+        ),
+      ],
     );
   }
 }

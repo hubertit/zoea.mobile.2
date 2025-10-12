@@ -809,35 +809,124 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   }
 
   void _showSearchDialog(BuildContext context) {
-    showDialog(
+    final TextEditingController searchController = TextEditingController();
+    
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Search Events'),
-        content: TextField(
-          decoration: const InputDecoration(
-            hintText: 'Search for events...',
-            border: OutlineInputBorder(),
-          ),
-          onSubmitted: (query) {
-            if (query.isNotEmpty) {
-              ref.read(eventsProvider.notifier).searchEvents(query);
-              Navigator.pop(context);
-            }
-          },
+      isScrollControlled: true,
+      backgroundColor: AppTheme.backgroundColor,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Search Events',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Search field
+            TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search for events...',
+                hintStyle: AppTheme.bodyMedium.copyWith(
+                  color: Colors.grey[500],
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey[500],
+                ),
+              ),
+              onSubmitted: (query) {
+                if (query.isNotEmpty) {
+                  ref.read(eventsProvider.notifier).searchEvents(query);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            const SizedBox(height: 24),
+            
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: BorderSide(color: AppTheme.primaryColor),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final query = searchController.text.trim();
+                      if (query.isNotEmpty) {
+                        ref.read(eventsProvider.notifier).searchEvents(query);
+                        Navigator.pop(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Search',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Handle search
-              Navigator.pop(context);
-            },
-            child: const Text('Search'),
-          ),
-        ],
       ),
     );
   }
