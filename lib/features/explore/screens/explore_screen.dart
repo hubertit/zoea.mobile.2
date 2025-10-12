@@ -131,18 +131,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           ),
         ),
         actions: [
-          // Rewards/Referral Icon
-          IconButton(
-            icon: const Icon(Icons.card_giftcard),
-            onPressed: () {
-              context.push('/referrals');
-            },
-          ),
           // Search Icon
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
               context.push('/search');
+            },
+          ),
+          // Rewards/Referral Icon
+          IconButton(
+            icon: const Icon(Icons.card_giftcard),
+            onPressed: () {
+              context.push('/referrals');
             },
           ),
           // Notifications Icon with Badge

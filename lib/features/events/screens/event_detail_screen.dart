@@ -32,7 +32,7 @@ class EventDetailScreen extends ConsumerWidget {
             pinned: true,
             backgroundColor: AppTheme.backgroundColor,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.white, size: 28),
+              icon: const Icon(Icons.chevron_left, color: Colors.white, size: 32),
               onPressed: () => context.go('/events'),
             ),
             actions: [

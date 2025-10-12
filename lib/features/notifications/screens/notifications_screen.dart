@@ -16,7 +16,7 @@ class NotificationsScreen extends StatelessWidget {
           icon: Icon(
             Icons.chevron_left,
             color: AppTheme.primaryTextColor,
-            size: 28,
+            size: 32,
           ),
           onPressed: () => context.pop(),
         ),

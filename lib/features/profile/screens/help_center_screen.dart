@@ -34,7 +34,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
-          icon: const Icon(Icons.chevron_left, size: 28),
+          icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
             foregroundColor: AppTheme.primaryTextColor,
           ),
