@@ -14,6 +14,8 @@ import '../../features/explore/screens/accommodation_screen.dart';
 import '../../features/explore/screens/accommodation_detail_screen.dart';
 import '../../features/explore/screens/accommodation_booking_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
+import '../../features/explore/screens/dining_booking_screen.dart';
+import '../../features/explore/screens/dining_booking_confirmation_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/search/screens/search_screen.dart';
@@ -282,6 +284,42 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final placeId = state.pathParameters['placeId']!;
           return PlaceDetailScreen(placeId: placeId);
+        },
+      ),
+
+      // Dining Booking Route
+      GoRoute(
+        path: '/dining-booking',
+        builder: (context, state) {
+          final bookingData = state.extra as Map<String, dynamic>?;
+          return DiningBookingScreen(
+            placeId: bookingData?['placeId'] ?? '',
+            placeName: bookingData?['placeName'] ?? '',
+            placeLocation: bookingData?['placeLocation'] ?? '',
+            placeImage: bookingData?['placeImage'] ?? '',
+            placeRating: bookingData?['placeRating'] ?? 0.0,
+            priceRange: bookingData?['priceRange'] ?? '',
+          );
+        },
+      ),
+
+      // Dining Booking Confirmation Route
+      GoRoute(
+        path: '/dining-booking-confirmation',
+        builder: (context, state) {
+          final confirmationData = state.extra as Map<String, dynamic>?;
+          return DiningBookingConfirmationScreen(
+            placeName: confirmationData?['placeName'] ?? '',
+            placeLocation: confirmationData?['placeLocation'] ?? '',
+            date: confirmationData?['date'] as DateTime?,
+            time: confirmationData?['time'] ?? '',
+            guests: confirmationData?['guests'] ?? 2,
+            firstName: confirmationData?['firstName'] ?? '',
+            lastName: confirmationData?['lastName'] ?? '',
+            phone: confirmationData?['phone'] ?? '',
+            email: confirmationData?['email'] ?? '',
+            specialRequests: confirmationData?['specialRequests'] ?? '',
+          );
         },
       ),
     ],

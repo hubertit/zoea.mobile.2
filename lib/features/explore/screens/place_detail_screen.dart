@@ -281,10 +281,18 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // TODO: Navigate to booking
+                  // Navigate to dining booking
+                  context.push('/dining-booking', extra: {
+                    'placeId': widget.placeId,
+                    'placeName': place['name'],
+                    'placeLocation': place['location'],
+                    'placeImage': place['image'],
+                    'placeRating': place['rating'],
+                    'priceRange': place['priceRange'],
+                  });
                 },
                 icon: const Icon(Icons.calendar_today, size: 18),
-                label: const Text('Book Now'),
+                label: const Text('Reserve Table'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.primaryColor,
                   backgroundColor: AppTheme.backgroundColor,
