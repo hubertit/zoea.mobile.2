@@ -911,6 +911,357 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           ],
         };
       
+      // Dining places (IDs 1-6)
+      case '1': // The Hut Restaurant (Dining)
+        return {
+          'name': 'The Hut Restaurant',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+          'rating': 4.5,
+          'reviewCount': 128,
+          'priceRange': '\$\$',
+          'category': 'Restaurant',
+          'description': 'Experience authentic Rwandan cuisine in a cozy atmosphere. Our restaurant offers traditional dishes with a modern twist, using locally sourced ingredients. Perfect for family dinners, romantic dates, or business meetings.',
+          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Delivery'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
+            {'day': 'Saturday', 'time': '9:00 AM - 11:00 PM'},
+            {'day': 'Sunday', 'time': '9:00 AM - 9:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
+            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Appetizers',
+              'items': [
+                {
+                  'name': 'Grilled Plantains',
+                  'description': 'Traditional Rwandan plantains grilled to perfection',
+                  'price': 'RWF 3,000',
+                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+                {
+                  'name': 'Beef Brochettes',
+                  'description': 'Tender beef skewers marinated in local spices',
+                  'price': 'RWF 8,000',
+                  'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': true,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Jean Paul',
+              'rating': 5,
+              'date': '2 days ago',
+              'comment': 'Amazing food and great service! The beef brochettes were incredible.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '2': // Bourbon Coffee
+        return {
+          'name': 'Bourbon Coffee',
+          'location': 'Kigali Heights, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800',
+          'rating': 4.2,
+          'reviewCount': 95,
+          'priceRange': '\$',
+          'category': 'Cafe',
+          'description': 'Premium coffee experience with locally roasted beans and a cozy atmosphere. Perfect for meetings, studying, or enjoying a quiet cup of coffee.',
+          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Coffee Roasting'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 AM - 9:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 9:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 9:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 9:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 10:00 PM'},
+            {'day': 'Saturday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Sunday', 'time': '7:00 AM - 8:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
+            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Coffee & Drinks',
+              'items': [
+                {
+                  'name': 'Rwandan Coffee',
+                  'description': 'Premium locally roasted coffee',
+                  'price': 'RWF 2,500',
+                  'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+                {
+                  'name': 'Cappuccino',
+                  'description': 'Rich espresso with steamed milk',
+                  'price': 'RWF 3,000',
+                  'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Coffee Lover',
+              'rating': 4,
+              'date': '1 week ago',
+              'comment': 'Great coffee and atmosphere. Perfect for work meetings.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '3': // KFC Kigali
+        return {
+          'name': 'KFC Kigali',
+          'location': 'Kigali City Center',
+          'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800',
+          'rating': 4.0,
+          'reviewCount': 67,
+          'priceRange': '\$',
+          'category': 'Fast Food',
+          'description': 'Famous fried chicken and fast food in the heart of Kigali. Quick service and familiar flavors for a satisfying meal on the go.',
+          'features': ['WiFi', 'Parking', 'Takeaway', 'Delivery', 'Drive Through'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 11:00 PM'},
+            {'day': 'Sunday', 'time': '8:00 AM - 10:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Chicken & Meals',
+              'items': [
+                {
+                  'name': 'Original Recipe Chicken',
+                  'description': 'Crispy fried chicken with secret herbs and spices',
+                  'price': 'RWF 4,500',
+                  'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': true,
+                },
+                {
+                  'name': 'Chicken Burger',
+                  'description': 'Crispy chicken fillet with fresh vegetables',
+                  'price': 'RWF 3,500',
+                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': false,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Fast Food Fan',
+              'rating': 4,
+              'date': '3 days ago',
+              'comment': 'Good fried chicken, quick service. Great for a quick meal.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '4': // Sole Luna Restaurant
+        return {
+          'name': 'Sole Luna Restaurant',
+          'location': 'Kimisagara, Kigali',
+          'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',
+          'rating': 4.7,
+          'reviewCount': 203,
+          'priceRange': '\$\$\$',
+          'category': 'Restaurant',
+          'description': 'Upscale dining experience with Italian and international cuisine. Elegant atmosphere perfect for special occasions and business dinners.',
+          'features': ['WiFi', 'Parking', 'Fine Dining', 'Wine Selection', 'Private Dining'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 PM - 11:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 PM - 11:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 PM - 11:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 PM - 11:00 PM'},
+            {'day': 'Friday', 'time': '6:00 PM - 12:00 AM'},
+            {'day': 'Saturday', 'time': '6:00 PM - 12:00 AM'},
+            {'day': 'Sunday', 'time': '6:00 PM - 10:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Italian Specialties',
+              'items': [
+                {
+                  'name': 'Pasta Carbonara',
+                  'description': 'Creamy pasta with pancetta and parmesan',
+                  'price': 'RWF 12,000',
+                  'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': false,
+                },
+                {
+                  'name': 'Margherita Pizza',
+                  'description': 'Classic pizza with tomato, mozzarella, and basil',
+                  'price': 'RWF 15,000',
+                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Food Critic',
+              'rating': 5,
+              'date': '1 week ago',
+              'comment': 'Exceptional Italian cuisine! The pasta was perfectly cooked and the atmosphere was elegant.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '5': // Café Neo
+        return {
+          'name': 'Café Neo',
+          'location': 'Nyarutarama, Kigali',
+          'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800',
+          'rating': 4.3,
+          'reviewCount': 89,
+          'priceRange': '\$\$',
+          'category': 'Cafe',
+          'description': 'Modern café with specialty coffee, light meals, and a vibrant atmosphere. Popular among young professionals and students.',
+          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Student Friendly', 'Coffee Art'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '7:00 AM - 9:00 PM'},
+            {'day': 'Tuesday', 'time': '7:00 AM - 9:00 PM'},
+            {'day': 'Wednesday', 'time': '7:00 AM - 9:00 PM'},
+            {'day': 'Thursday', 'time': '7:00 AM - 9:00 PM'},
+            {'day': 'Friday', 'time': '7:00 AM - 10:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Sunday', 'time': '8:00 AM - 8:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400',
+            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Coffee & Light Meals',
+              'items': [
+                {
+                  'name': 'Latte Art',
+                  'description': 'Beautifully crafted latte with artistic foam',
+                  'price': 'RWF 3,500',
+                  'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+                {
+                  'name': 'Avocado Toast',
+                  'description': 'Fresh avocado on artisan bread',
+                  'price': 'RWF 4,500',
+                  'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
+                  'isVegetarian': true,
+                  'isSpicy': false,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Student',
+              'rating': 4,
+              'date': '2 days ago',
+              'comment': 'Great place to study! Good coffee and WiFi. Very student-friendly.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '6': // Pizza Inn
+        return {
+          'name': 'Pizza Inn',
+          'location': 'Kacyiru, Kigali',
+          'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800',
+          'rating': 4.1,
+          'reviewCount': 156,
+          'priceRange': '\$\$',
+          'category': 'Fast Food',
+          'description': 'Family-friendly pizza restaurant with a variety of pizzas, pasta, and Italian dishes. Great for casual dining with friends and family.',
+          'features': ['WiFi', 'Parking', 'Family Friendly', 'Takeaway', 'Delivery'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '11:00 AM - 10:00 PM'},
+            {'day': 'Tuesday', 'time': '11:00 AM - 10:00 PM'},
+            {'day': 'Wednesday', 'time': '11:00 AM - 10:00 PM'},
+            {'day': 'Thursday', 'time': '11:00 AM - 10:00 PM'},
+            {'day': 'Friday', 'time': '11:00 AM - 11:00 PM'},
+            {'day': 'Saturday', 'time': '11:00 AM - 11:00 PM'},
+            {'day': 'Sunday', 'time': '11:00 AM - 10:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+          ],
+          'menu': [
+            {
+              'name': 'Pizza & Pasta',
+              'items': [
+                {
+                  'name': 'Pepperoni Pizza',
+                  'description': 'Classic pizza with pepperoni and cheese',
+                  'price': 'RWF 8,500',
+                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': true,
+                },
+                {
+                  'name': 'Spaghetti Bolognese',
+                  'description': 'Traditional pasta with meat sauce',
+                  'price': 'RWF 7,000',
+                  'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
+                  'isVegetarian': false,
+                  'isSpicy': false,
+                },
+              ],
+            },
+          ],
+          'reviews': [
+            {
+              'user': 'Pizza Lover',
+              'rating': 4,
+              'date': '5 days ago',
+              'comment': 'Good pizza and family atmosphere. Kids loved it!',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
       default: // Default restaurant data
         return {
           'name': 'The Hut Restaurant',
