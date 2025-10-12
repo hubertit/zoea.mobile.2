@@ -16,27 +16,17 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   final Set<String> _favoritePlaces = {};
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _searchController.dispose();
     super.dispose();
-  }
-
-  void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text;
-    });
   }
 
   @override
@@ -58,6 +48,10 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => context.push('/search/nightlife'),
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilterBottomSheet,
@@ -84,64 +78,13 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
           ],
         ),
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: AppTheme.backgroundColor,
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search bars, clubs, lounges...',
-                hintStyle: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                ),
-                prefixIcon: const Icon(Icons.search, size: 20),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, size: 20),
-                        onPressed: () {
-                          _searchController.clear();
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.grey[50],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: AppTheme.primaryColor,
-                    width: 1,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Tab Content
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildNightlifeList('All'),
-                _buildNightlifeList('Bars'),
-                _buildNightlifeList('Clubs'),
-                _buildNightlifeList('Lounges'),
-              ],
-            ),
-          ),
+          _buildNightlifeList('All'),
+          _buildNightlifeList('Bars'),
+          _buildNightlifeList('Clubs'),
+          _buildNightlifeList('Lounges'),
         ],
       ),
     );
@@ -149,16 +92,8 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
 
   Widget _buildNightlifeList(String category) {
     final places = _getMockNightlifePlaces(category);
-    final filteredPlaces = _searchQuery.isEmpty
-        ? places
-        : places.where((place) {
-            final name = place['name'].toString().toLowerCase();
-            final location = place['location'].toString().toLowerCase();
-            final query = _searchQuery.toLowerCase();
-            return name.contains(query) || location.contains(query);
-          }).toList();
     
-    if (filteredPlaces.isEmpty) {
+    if (places.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -189,9 +124,9 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: filteredPlaces.length,
+      itemCount: places.length,
       itemBuilder: (context, index) {
-        final place = filteredPlaces[index];
+        final place = places[index];
         return PlaceCard(
           name: place['name'],
           location: place['location'],
