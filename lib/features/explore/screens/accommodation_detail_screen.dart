@@ -255,6 +255,8 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       child: TabBar(
         controller: _tabController,
         isScrollable: true,
+        tabAlignment: TabAlignment.start,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 20),
         labelColor: AppTheme.primaryColor,
         unselectedLabelColor: AppTheme.secondaryTextColor,
         indicatorColor: AppTheme.primaryColor,
