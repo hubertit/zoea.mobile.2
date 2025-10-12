@@ -271,6 +271,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
+      // My Bookings Route
+      GoRoute(
+        path: '/my-bookings',
+        builder: (context, state) => const MyBookingsScreen(),
+      ),
 
       // Place Detail Route
       GoRoute(

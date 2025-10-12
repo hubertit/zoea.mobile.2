@@ -20,8 +20,10 @@ class Shell extends StatelessWidget {
       currentIndex = 1;
     } else if (location.startsWith('/accommodation')) {
       currentIndex = 2;
-    } else if (location.startsWith('/profile')) {
+    } else if (location.startsWith('/my-bookings')) {
       currentIndex = 3;
+    } else if (location.startsWith('/profile')) {
+      currentIndex = 4;
     } else if (location.startsWith('/explore')) {
       currentIndex = 0;
     }
@@ -59,6 +61,11 @@ class Shell extends StatelessWidget {
             label: 'Stay',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.book_online_outlined),
+            activeIcon: Icon(Icons.book_online),
+            label: 'Bookings',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Profile',
@@ -76,6 +83,9 @@ class Shell extends StatelessWidget {
               context.go('/accommodation');
               break;
             case 3:
+              context.go('/my-bookings');
+              break;
+            case 4:
               context.go('/profile');
               break;
           }
