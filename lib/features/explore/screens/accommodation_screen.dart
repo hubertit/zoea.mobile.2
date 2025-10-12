@@ -21,7 +21,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   final List<String> _tabs = [
     'All',
     'Hotels',
-    'Hostels',
     'B&Bs',
     'Apartments',
     'Villas',
@@ -620,17 +619,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500',
       },
-      // Hostels
       {
-        'id': 'hostel_1',
-        'name': 'Discover Rwanda Hostel',
-        'location': 'Nyamirambo, Kigali',
-        'rating': 4.2,
-        'reviews': 156,
-        'price': '15,000',
-        'amenities': 'WiFi, Kitchen, Common Area',
-        'category': 'hostels',
-        'image': 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500',
+        'id': 'hotel_3',
+        'name': 'Kigali Serena Hotel',
+        'location': 'Kacyiru, Kigali',
+        'rating': 4.9,
+        'reviews': 1203,
+        'price': '150,000',
+        'amenities': 'WiFi, Pool, Spa, Restaurant, Business Center',
+        'category': 'hotels',
+        'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
       },
       // B&Bs
       {
