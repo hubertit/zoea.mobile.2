@@ -1149,20 +1149,24 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildNearMeCard(Map<String, dynamic> place) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
+    return GestureDetector(
+      onTap: () {
+        context.push('/place/${place['id']}');
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
         children: [
           // Image
           ClipRRect(
@@ -1245,36 +1249,42 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           ),
         ],
       ),
+      ),
     );
   }
 
   List<Map<String, dynamic>> _getMockNearMePlaces() {
     return [
       {
+        'id': 'near_me_1',
         'name': 'Kigali Convention Centre',
         'distance': '0.5 km',
         'category': 'Venue',
         'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
       },
       {
+        'id': 'near_me_2',
         'name': 'Kimisagara Market',
         'distance': '1.2 km',
         'category': 'Market',
         'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
       },
       {
+        'id': 'near_me_3',
         'name': 'Kigali Genocide Memorial',
         'distance': '2.1 km',
         'category': 'Memorial',
         'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
       },
       {
+        'id': 'near_me_4',
         'name': 'Kimisagara Restaurant',
         'distance': '0.8 km',
         'category': 'Dining',
         'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
       },
       {
+        'id': 'near_me_5',
         'name': 'Kigali City Tower',
         'distance': '1.5 km',
         'category': 'Shopping',
