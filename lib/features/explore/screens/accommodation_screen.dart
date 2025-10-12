@@ -356,6 +356,38 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     ),
                   ),
                 ),
+              // Room availability indicator
+              if (accommodation['roomTypes'] != null)
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.bed,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${_getTotalAvailableRooms(accommodation)} rooms',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
           // Content
@@ -1306,6 +1338,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     );
   }
 
+  int _getTotalAvailableRooms(Map<String, dynamic> accommodation) {
+    if (accommodation['roomTypes'] == null) return 0;
+    
+    int total = 0;
+    for (var roomType in accommodation['roomTypes']) {
+      total += roomType['available'] as int;
+    }
+    return total;
+  }
+
   List<Map<String, dynamic>> _getMockAccommodations(String category) {
     final allAccommodations = [
       // Hotels
@@ -1320,6 +1362,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
         'breakfastIncluded': true,
+        'roomTypes': [
+          {
+            'type': 'Deluxe Room',
+            'price': '120,000',
+            'available': 3,
+            'maxGuests': 2,
+            'amenities': 'King bed, City view, WiFi',
+          },
+          {
+            'type': 'Executive Suite',
+            'price': '180,000',
+            'available': 1,
+            'maxGuests': 4,
+            'amenities': 'King bed, Living area, City view, WiFi',
+          },
+        ],
       },
       {
         'id': 'hotel_2',
@@ -1332,6 +1390,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500',
         'breakfastIncluded': false,
+        'roomTypes': [
+          {
+            'type': 'Standard Room',
+            'price': '95,000',
+            'available': 5,
+            'maxGuests': 2,
+            'amenities': 'Queen bed, WiFi, Air conditioning',
+          },
+          {
+            'type': 'Superior Room',
+            'price': '125,000',
+            'available': 2,
+            'maxGuests': 3,
+            'amenities': 'King bed, Pool view, WiFi, Air conditioning',
+          },
+        ],
       },
       {
         'id': 'hotel_3',
@@ -1344,6 +1418,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'hotels',
         'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
         'breakfastIncluded': true,
+        'roomTypes': [
+          {
+            'type': 'Deluxe Room',
+            'price': '150,000',
+            'available': 4,
+            'maxGuests': 2,
+            'amenities': 'King bed, Garden view, WiFi, Minibar',
+          },
+          {
+            'type': 'Presidential Suite',
+            'price': '300,000',
+            'available': 1,
+            'maxGuests': 6,
+            'amenities': 'King bed, Living room, Dining area, Garden view, WiFi, Minibar',
+          },
+        ],
       },
       // B&Bs
       {
@@ -1357,6 +1447,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'b&bs',
         'image': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500',
         'breakfastIncluded': true,
+        'roomTypes': [
+          {
+            'type': 'Standard Room',
+            'price': '45,000',
+            'available': 6,
+            'maxGuests': 2,
+            'amenities': 'Double bed, Garden view, WiFi, Breakfast',
+          },
+          {
+            'type': 'Family Room',
+            'price': '65,000',
+            'available': 2,
+            'maxGuests': 4,
+            'amenities': 'Twin beds, Garden view, WiFi, Breakfast',
+          },
+        ],
       },
       // Apartments
       {
@@ -1370,6 +1476,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'apartments',
         'image': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
         'breakfastIncluded': false,
+        'roomTypes': [
+          {
+            'type': '1-Bedroom Apartment',
+            'price': '80,000',
+            'available': 3,
+            'maxGuests': 2,
+            'amenities': 'Kitchen, Balcony, WiFi, Living area',
+          },
+          {
+            'type': '2-Bedroom Apartment',
+            'price': '120,000',
+            'available': 1,
+            'maxGuests': 4,
+            'amenities': 'Kitchen, Balcony, WiFi, Living area, 2 bedrooms',
+          },
+        ],
       },
       {
         'id': 'apartment_2',
@@ -1382,6 +1504,15 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'apartments',
         'image': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500',
         'breakfastIncluded': false,
+        'roomTypes': [
+          {
+            'type': 'Studio Apartment',
+            'price': '65,000',
+            'available': 4,
+            'maxGuests': 2,
+            'amenities': 'Kitchen, WiFi, Parking, Modern design',
+          },
+        ],
       },
       // Villas
       {
@@ -1395,6 +1526,22 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         'category': 'villas',
         'image': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=500',
         'breakfastIncluded': true,
+        'roomTypes': [
+          {
+            'type': '3-Bedroom Villa',
+            'price': '200,000',
+            'available': 1,
+            'maxGuests': 6,
+            'amenities': '3 bedrooms, Pool, Garden, WiFi, Security, Breakfast',
+          },
+          {
+            'type': '5-Bedroom Villa',
+            'price': '350,000',
+            'available': 1,
+            'maxGuests': 10,
+            'amenities': '5 bedrooms, Pool, Garden, WiFi, Security, Breakfast, Staff',
+          },
+        ],
       },
     ];
 
