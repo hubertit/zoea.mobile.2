@@ -1568,40 +1568,45 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildRecommendCard(int index) {
-    // Sample recommendation data
+    // Sample recommendation data with real images and IDs
     final recommendations = [
       {
+        'id': '1',
         'title': 'Volcanoes National Park',
         'subtitle': 'Gorilla Trekking Experience',
-        'image': 'assets/images/gorilla.jpg',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
         'rating': 4.9,
         'category': 'Wildlife',
       },
       {
+        'id': '2',
         'title': 'Nyungwe Forest',
         'subtitle': 'Canopy Walk Adventure',
-        'image': 'assets/images/canopy.jpg',
+        'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
         'rating': 4.8,
         'category': 'Nature',
       },
       {
+        'id': '3',
         'title': 'Lake Kivu',
         'subtitle': 'Relaxing Boat Cruise',
-        'image': 'assets/images/lake_kivu.jpg',
+        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
         'rating': 4.7,
         'category': 'Water',
       },
       {
+        'id': '4',
         'title': 'Kigali Genocide Memorial',
         'subtitle': 'Historical Tour',
-        'image': 'assets/images/memorial.jpg',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
         'rating': 4.9,
         'category': 'History',
       },
       {
+        'id': '5',
         'title': 'Akagera National Park',
         'subtitle': 'Safari Experience',
-        'image': 'assets/images/safari.jpg',
+        'image': 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400',
         'rating': 4.6,
         'category': 'Wildlife',
       },
@@ -1609,144 +1614,170 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
     final recommendation = recommendations[index % recommendations.length];
 
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image placeholder
-          Container(
-            height: 100,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              color: Colors.grey[200],
+    return GestureDetector(
+      onTap: () {
+        context.push('/place/${recommendation['id']}');
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-            child: Stack(
-              children: [
-                // Placeholder for image
-                Center(
-                  child: Icon(
-                    Icons.image,
-                    color: Colors.grey[400],
-                    size: 40,
-                  ),
-                ),
-                // Category badge
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      recommendation['category'] as String,
-                      style: AppTheme.bodySmall.copyWith(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-                // Rating
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          recommendation['rating'].toString(),
-                          style: AppTheme.bodySmall.copyWith(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image with real cover
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                color: Colors.grey[200],
+              ),
+              child: Stack(
+                children: [
+                  // Real image
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    child: Image.network(
+                      recommendation['image'] as String,
+                      width: double.infinity,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 100,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  recommendation['title'] as String,
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  recommendation['subtitle'] as String,
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      recommendation['category'] as String,
-                      style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // TODO: Add to favorites
+                        );
                       },
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: AppTheme.secondaryTextColor,
-                        size: 16,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 100,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: Icon(Icons.image, color: Colors.grey),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  // Category badge
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        recommendation['category'] as String,
+                        style: AppTheme.bodySmall.copyWith(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  // Rating
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 12,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            recommendation['rating'].toString(),
+                            style: AppTheme.bodySmall.copyWith(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recommendation['title'] as String,
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    recommendation['subtitle'] as String,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        recommendation['category'] as String,
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // TODO: Add to favorites
+                        },
+                        child: Icon(
+                          Icons.favorite_border,
+                          color: AppTheme.secondaryTextColor,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
