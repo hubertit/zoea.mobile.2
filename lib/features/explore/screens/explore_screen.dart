@@ -940,20 +940,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }) {
     return GestureDetector(
       onTap: () {
-        if (label == 'Events') {
-          context.go('/events');
-        } else if (label == 'Dining') {
-          context.push('/dining');
-        } else if (label == 'Experiences') {
-          context.push('/experiences');
-        } else if (label == 'Nightlife') {
-          context.push('/nightlife');
-        } else if (label == 'Accommodation') {
-          context.push('/accommodation');
-        } else if (label == 'Shopping') {
-          context.push('/shopping');
-        }
-        // TODO: Navigate to other category screens
+        context.push('/category/${label.toLowerCase()}');
       },
       child: Container(
         decoration: BoxDecoration(
