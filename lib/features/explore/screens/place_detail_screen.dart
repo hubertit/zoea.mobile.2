@@ -20,17 +20,34 @@ class PlaceDetailScreen extends ConsumerStatefulWidget {
 class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late ScrollController _scrollController;
   bool _isFavorite = false;
+  bool _isScrolled = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 200 && !_isScrolled) {
+      setState(() {
+        _isScrolled = true;
+      });
+    } else if (_scrollController.offset <= 200 && _isScrolled) {
+      setState(() {
+        _isScrolled = false;
+      });
+    }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -42,21 +59,26 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // App Bar with Image
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            backgroundColor: AppTheme.backgroundColor,
+            backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.white, size: 32),
+              icon: Icon(
+                Icons.chevron_left, 
+                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white, 
+                size: 32
+              ),
               onPressed: () => context.pop(),
             ),
             actions: [
               IconButton(
                 icon: Icon(
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.white,
+                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
                 ),
                 onPressed: () {
                   setState(() {
@@ -65,13 +87,19 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.rate_review, color: Colors.white),
+                icon: Icon(
+                  Icons.rate_review, 
+                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white
+                ),
                 onPressed: () {
                   _showReviewBottomSheet();
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.share, color: Colors.white),
+                icon: Icon(
+                  Icons.share, 
+                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white
+                ),
                 onPressed: () {
                   // TODO: Implement share functionality
                 },
