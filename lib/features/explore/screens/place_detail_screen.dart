@@ -991,223 +991,131 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           'priceRange': 'From \$200',
           'category': 'Nature',
           'description': 'Explore one of Africa\'s oldest rainforests with its incredible biodiversity. Walk across the famous canopy walkway and spot chimpanzees, colobus monkeys, and over 300 bird species.',
-          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Coffee Roasting'],
+          'features': ['Canopy Walk', 'Chimpanzee Tracking', 'Bird Watching', 'Hiking Trails', 'Guided Tours'],
           'openingHours': [
-            {'day': 'Monday', 'time': '6:00 AM - 9:00 PM'},
-            {'day': 'Tuesday', 'time': '6:00 AM - 9:00 PM'},
-            {'day': 'Wednesday', 'time': '6:00 AM - 9:00 PM'},
-            {'day': 'Thursday', 'time': '6:00 AM - 9:00 PM'},
-            {'day': 'Friday', 'time': '6:00 AM - 10:00 PM'},
-            {'day': 'Saturday', 'time': '7:00 AM - 10:00 PM'},
-            {'day': 'Sunday', 'time': '7:00 AM - 8:00 PM'},
+            {'day': 'Monday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
           ],
           'photos': [
-            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
-            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400',
-          ],
-          'menu': [
-            {
-              'name': 'Coffee & Drinks',
-              'items': [
-                {
-                  'name': 'Rwandan Coffee',
-                  'description': 'Premium locally roasted coffee',
-                  'price': 'RWF 2,500',
-                  'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-                {
-                  'name': 'Cappuccino',
-                  'description': 'Rich espresso with steamed milk',
-                  'price': 'RWF 3,000',
-                  'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-              ],
-            },
+            'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
           ],
           'reviews': [
             {
-              'user': 'Coffee Lover',
-              'rating': 4,
-              'date': '1 week ago',
-              'comment': 'Great coffee and atmosphere. Perfect for work meetings.',
-              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
-            },
-          ],
-        };
-      
-      case '3': // KFC Kigali
-        return {
-          'name': 'KFC Kigali',
-          'location': 'Kigali City Center',
-          'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800',
-          'rating': 4.0,
-          'reviewCount': 67,
-          'priceRange': '\$',
-          'category': 'Fast Food',
-          'description': 'Famous fried chicken and fast food in the heart of Kigali. Quick service and familiar flavors for a satisfying meal on the go.',
-          'features': ['WiFi', 'Parking', 'Takeaway', 'Delivery', 'Drive Through'],
-          'openingHours': [
-            {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
-            {'day': 'Saturday', 'time': '8:00 AM - 11:00 PM'},
-            {'day': 'Sunday', 'time': '8:00 AM - 10:00 PM'},
-          ],
-          'photos': [
-            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
-            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
-          ],
-          'menu': [
-            {
-              'name': 'Chicken & Meals',
-              'items': [
-                {
-                  'name': 'Original Recipe Chicken',
-                  'description': 'Crispy fried chicken with secret herbs and spices',
-                  'price': 'RWF 4,500',
-                  'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
-                  'isVegetarian': false,
-                  'isSpicy': true,
-                },
-                {
-                  'name': 'Chicken Burger',
-                  'description': 'Crispy chicken fillet with fresh vegetables',
-                  'price': 'RWF 3,500',
-                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-                  'isVegetarian': false,
-                  'isSpicy': false,
-                },
-              ],
-            },
-          ],
-          'reviews': [
-            {
-              'user': 'Fast Food Fan',
-              'rating': 4,
-              'date': '3 days ago',
-              'comment': 'Good fried chicken, quick service. Great for a quick meal.',
-              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
-            },
-          ],
-        };
-      
-      case '4': // Sole Luna Restaurant
-        return {
-          'name': 'Sole Luna Restaurant',
-          'location': 'Kimisagara, Kigali',
-          'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',
-          'rating': 4.7,
-          'reviewCount': 203,
-          'priceRange': '\$\$\$',
-          'category': 'Restaurant',
-          'description': 'Upscale dining experience with Italian and international cuisine. Elegant atmosphere perfect for special occasions and business dinners.',
-          'features': ['WiFi', 'Parking', 'Fine Dining', 'Wine Selection', 'Private Dining'],
-          'openingHours': [
-            {'day': 'Monday', 'time': '6:00 PM - 11:00 PM'},
-            {'day': 'Tuesday', 'time': '6:00 PM - 11:00 PM'},
-            {'day': 'Wednesday', 'time': '6:00 PM - 11:00 PM'},
-            {'day': 'Thursday', 'time': '6:00 PM - 11:00 PM'},
-            {'day': 'Friday', 'time': '6:00 PM - 12:00 AM'},
-            {'day': 'Saturday', 'time': '6:00 PM - 12:00 AM'},
-            {'day': 'Sunday', 'time': '6:00 PM - 10:00 PM'},
-          ],
-          'photos': [
-            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
-            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
-          ],
-          'menu': [
-            {
-              'name': 'Italian Specialties',
-              'items': [
-                {
-                  'name': 'Pasta Carbonara',
-                  'description': 'Creamy pasta with pancetta and parmesan',
-                  'price': 'RWF 12,000',
-                  'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200',
-                  'isVegetarian': false,
-                  'isSpicy': false,
-                },
-                {
-                  'name': 'Margherita Pizza',
-                  'description': 'Classic pizza with tomato, mozzarella, and basil',
-                  'price': 'RWF 15,000',
-                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-              ],
-            },
-          ],
-          'reviews': [
-            {
-              'user': 'Food Critic',
+              'user': 'Nature Lover',
               'rating': 5,
               'date': '1 week ago',
-              'comment': 'Exceptional Italian cuisine! The pasta was perfectly cooked and the atmosphere was elegant.',
-              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+              'comment': 'The canopy walk was breathtaking! The forest is so peaceful and full of life.',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
             },
           ],
         };
       
-      case '5': // Café Neo
+      case '3': // Lake Kivu
         return {
-          'name': 'Café Neo',
-          'location': 'Nyarutarama, Kigali',
-          'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800',
-          'rating': 4.3,
-          'reviewCount': 89,
-          'priceRange': '\$\$',
-          'category': 'Cafe',
-          'description': 'Modern café with specialty coffee, light meals, and a vibrant atmosphere. Popular among young professionals and students.',
-          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Student Friendly', 'Coffee Art'],
+          'name': 'Lake Kivu',
+          'location': 'Rubavu, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+          'rating': 4.7,
+          'reviewCount': 654,
+          'priceRange': 'From \$80',
+          'category': 'Water',
+          'description': 'Relax on the shores of one of Africa\'s great lakes. Enjoy boat cruises, fishing, and stunning sunsets over the water. Perfect for a peaceful getaway.',
+          'features': ['Boat Cruises', 'Fishing', 'Swimming', 'Sunset Views', 'Water Sports'],
           'openingHours': [
-            {'day': 'Monday', 'time': '7:00 AM - 9:00 PM'},
-            {'day': 'Tuesday', 'time': '7:00 AM - 9:00 PM'},
-            {'day': 'Wednesday', 'time': '7:00 AM - 9:00 PM'},
-            {'day': 'Thursday', 'time': '7:00 AM - 9:00 PM'},
-            {'day': 'Friday', 'time': '7:00 AM - 10:00 PM'},
-            {'day': 'Saturday', 'time': '8:00 AM - 10:00 PM'},
+            {'day': 'Monday', 'time': '8:00 AM - 8:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 8:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 8:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 8:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 8:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 8:00 PM'},
             {'day': 'Sunday', 'time': '8:00 AM - 8:00 PM'},
           ],
           'photos': [
-            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400',
-            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
-          ],
-          'menu': [
-            {
-              'name': 'Coffee & Light Meals',
-              'items': [
-                {
-                  'name': 'Latte Art',
-                  'description': 'Beautifully crafted latte with artistic foam',
-                  'price': 'RWF 3,500',
-                  'image': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-                {
-                  'name': 'Avocado Toast',
-                  'description': 'Fresh avocado on artisan bread',
-                  'price': 'RWF 4,500',
-                  'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-              ],
-            },
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+            'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
           ],
           'reviews': [
             {
-              'user': 'Student',
+              'user': 'Lake Explorer',
               'rating': 4,
-              'date': '2 days ago',
-              'comment': 'Great place to study! Good coffee and WiFi. Very student-friendly.',
+              'date': '3 days ago',
+              'comment': 'Beautiful lake with amazing views. The boat cruise was very relaxing.',
+              'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+            },
+          ],
+        };
+      
+      case '4': // Kigali Genocide Memorial
+        return {
+          'name': 'Kigali Genocide Memorial',
+          'location': 'Kigali, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
+          'rating': 4.9,
+          'reviewCount': 2156,
+          'priceRange': 'Free',
+          'category': 'History',
+          'description': 'A powerful memorial dedicated to the victims of the 1994 genocide against the Tutsi. A place of remembrance, education, and reflection on Rwanda\'s journey of reconciliation and healing.',
+          'features': ['Educational Tours', 'Guided Visits', 'Memorial Gardens', 'Museum', 'Peace Education'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Tuesday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Wednesday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Thursday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Friday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Saturday', 'time': '8:00 AM - 5:00 PM'},
+            {'day': 'Sunday', 'time': '8:00 AM - 5:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Visitor',
+              'rating': 5,
+              'date': '1 week ago',
+              'comment': 'A deeply moving and educational experience. Essential for understanding Rwanda\'s history.',
+              'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100',
+            },
+          ],
+        };
+      
+      case '5': // Akagera National Park
+        return {
+          'name': 'Akagera National Park',
+          'location': 'Eastern Rwanda',
+          'image': 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800',
+          'rating': 4.6,
+          'reviewCount': 743,
+          'priceRange': 'From \$300',
+          'category': 'Wildlife',
+          'description': 'Experience a classic African safari in Rwanda\'s only savanna national park. Spot the Big Five, including lions, elephants, and rhinos, in their natural habitat.',
+          'features': ['Safari Drives', 'Big Five Viewing', 'Bird Watching', 'Game Drives', 'Wildlife Photography'],
+          'openingHours': [
+            {'day': 'Monday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '6:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '6:00 AM - 6:00 PM'},
+          ],
+          'photos': [
+            'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400',
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+          ],
+          'reviews': [
+            {
+              'user': 'Safari Enthusiast',
+              'rating': 4,
+              'date': '5 days ago',
+              'comment': 'Amazing wildlife viewing! Saw lions, elephants, and many other animals. Great safari experience.',
               'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
             },
           ],
