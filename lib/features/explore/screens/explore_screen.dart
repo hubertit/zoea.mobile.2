@@ -1467,8 +1467,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        // TODO: Navigate to specific category
-        // context.push('/category/${label.toLowerCase()}');
+        context.push('/category/${label.toLowerCase()}');
       },
       child: Container(
         decoration: BoxDecoration(
