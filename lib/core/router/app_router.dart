@@ -17,6 +17,7 @@ import '../../features/explore/screens/accommodation_booking_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/explore/screens/dining_booking_screen.dart';
 import '../../features/explore/screens/dining_booking_confirmation_screen.dart';
+import '../../features/explore/screens/recommendations_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/search/screens/search_screen.dart';
@@ -327,6 +328,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             specialRequests: confirmationData?['specialRequests'] ?? '',
           );
         },
+      ),
+
+      // Recommendations Route
+      GoRoute(
+        path: '/recommendations',
+        builder: (context, state) => const RecommendationsScreen(),
       ),
     ],
   );

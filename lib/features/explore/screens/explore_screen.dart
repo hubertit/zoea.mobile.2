@@ -999,7 +999,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Happening Now',
+                  'Happening',
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -1540,8 +1540,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to recommendations page
-                // context.push('/recommendations');
+                context.push('/recommendations');
               },
               child: Text(
                 'View More',
@@ -1576,7 +1575,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         'subtitle': 'Gorilla Trekking Experience',
         'image': 'assets/images/gorilla.jpg',
         'rating': 4.9,
-        'price': '\$1,500',
         'category': 'Wildlife',
       },
       {
@@ -1584,7 +1582,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         'subtitle': 'Canopy Walk Adventure',
         'image': 'assets/images/canopy.jpg',
         'rating': 4.8,
-        'price': '\$200',
         'category': 'Nature',
       },
       {
@@ -1592,7 +1589,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         'subtitle': 'Relaxing Boat Cruise',
         'image': 'assets/images/lake_kivu.jpg',
         'rating': 4.7,
-        'price': '\$80',
         'category': 'Water',
       },
       {
@@ -1600,7 +1596,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         'subtitle': 'Historical Tour',
         'image': 'assets/images/memorial.jpg',
         'rating': 4.9,
-        'price': 'Free',
         'category': 'History',
       },
       {
@@ -1608,7 +1603,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         'subtitle': 'Safari Experience',
         'image': 'assets/images/safari.jpg',
         'rating': 4.6,
-        'price': '\$300',
         'category': 'Wildlife',
       },
     ];
@@ -1731,10 +1725,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      recommendation['price'] as String,
-                      style: AppTheme.bodyMedium.copyWith(
+                      recommendation['category'] as String,
+                      style: AppTheme.bodySmall.copyWith(
                         color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     GestureDetector(
