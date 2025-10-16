@@ -256,6 +256,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               _buildEventsSection(),
               const SizedBox(height: 16),
               
+              // Recommend section (always visible)
+              _buildRecommendSection(),
+              const SizedBox(height: 16),
+              
               // Near Me section (always visible)
               _buildNearMeSection(),
               const SizedBox(height: 16),
@@ -1517,6 +1521,238 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Recommend',
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // TODO: Navigate to recommendations page
+                // context.push('/recommendations');
+              },
+              child: Text(
+                'View More',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 5, // Show 5 recommended items
+            itemBuilder: (context, index) {
+              return _buildRecommendCard(index);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecommendCard(int index) {
+    // Sample recommendation data
+    final recommendations = [
+      {
+        'title': 'Volcanoes National Park',
+        'subtitle': 'Gorilla Trekking Experience',
+        'image': 'assets/images/gorilla.jpg',
+        'rating': 4.9,
+        'price': '\$1,500',
+        'category': 'Wildlife',
+      },
+      {
+        'title': 'Nyungwe Forest',
+        'subtitle': 'Canopy Walk Adventure',
+        'image': 'assets/images/canopy.jpg',
+        'rating': 4.8,
+        'price': '\$200',
+        'category': 'Nature',
+      },
+      {
+        'title': 'Lake Kivu',
+        'subtitle': 'Relaxing Boat Cruise',
+        'image': 'assets/images/lake_kivu.jpg',
+        'rating': 4.7,
+        'price': '\$80',
+        'category': 'Water',
+      },
+      {
+        'title': 'Kigali Genocide Memorial',
+        'subtitle': 'Historical Tour',
+        'image': 'assets/images/memorial.jpg',
+        'rating': 4.9,
+        'price': 'Free',
+        'category': 'History',
+      },
+      {
+        'title': 'Akagera National Park',
+        'subtitle': 'Safari Experience',
+        'image': 'assets/images/safari.jpg',
+        'rating': 4.6,
+        'price': '\$300',
+        'category': 'Wildlife',
+      },
+    ];
+
+    final recommendation = recommendations[index % recommendations.length];
+
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image placeholder
+          Container(
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              color: Colors.grey[200],
+            ),
+            child: Stack(
+              children: [
+                // Placeholder for image
+                Center(
+                  child: Icon(
+                    Icons.image,
+                    color: Colors.grey[400],
+                    size: 40,
+                  ),
+                ),
+                // Category badge
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      recommendation['category'] as String,
+                      style: AppTheme.bodySmall.copyWith(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                // Rating
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          recommendation['rating'].toString(),
+                          style: AppTheme.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  recommendation['title'] as String,
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  recommendation['subtitle'] as String,
+                  style: AppTheme.bodySmall.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      recommendation['price'] as String,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // TODO: Add to favorites
+                      },
+                      child: Icon(
+                        Icons.favorite_border,
+                        color: AppTheme.secondaryTextColor,
+                        size: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
