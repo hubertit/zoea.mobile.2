@@ -946,76 +946,51 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         };
       
       // Dining places (IDs 1-6)
-      case '1': // The Hut Restaurant (Dining)
+      case '1': // Volcanoes National Park
         return {
-          'name': 'The Hut Restaurant',
-          'location': 'Kigali, Rwanda',
-          'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
-          'rating': 4.5,
-          'reviewCount': 128,
-          'priceRange': '\$\$',
-          'category': 'Restaurant',
-          'description': 'Experience authentic Rwandan cuisine in a cozy atmosphere. Our restaurant offers traditional dishes with a modern twist, using locally sourced ingredients. Perfect for family dinners, romantic dates, or business meetings.',
-          'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Delivery'],
+          'name': 'Volcanoes National Park',
+          'location': 'Musanze, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
+          'rating': 4.9,
+          'reviewCount': 1247,
+          'priceRange': 'From \$1,500',
+          'category': 'Wildlife',
+          'description': 'Home to the endangered mountain gorillas, Volcanoes National Park offers one of the most incredible wildlife experiences on Earth. Trek through dense forests to encounter these magnificent creatures in their natural habitat.',
+          'features': ['Gorilla Trekking', 'Guided Tours', 'Photography', 'Wildlife Viewing', 'Hiking'],
           'openingHours': [
-            {'day': 'Monday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Tuesday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Wednesday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Thursday', 'time': '8:00 AM - 10:00 PM'},
-            {'day': 'Friday', 'time': '8:00 AM - 11:00 PM'},
-            {'day': 'Saturday', 'time': '9:00 AM - 11:00 PM'},
-            {'day': 'Sunday', 'time': '9:00 AM - 9:00 PM'},
+            {'day': 'Monday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Tuesday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Wednesday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Thursday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Friday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Saturday', 'time': '7:00 AM - 6:00 PM'},
+            {'day': 'Sunday', 'time': '7:00 AM - 6:00 PM'},
           ],
           'photos': [
-            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
-            'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
-            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
-            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
-          ],
-          'menu': [
-            {
-              'name': 'Appetizers',
-              'items': [
-                {
-                  'name': 'Grilled Plantains',
-                  'description': 'Traditional Rwandan plantains grilled to perfection',
-                  'price': 'RWF 3,000',
-                  'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-                  'isVegetarian': true,
-                  'isSpicy': false,
-                },
-                {
-                  'name': 'Beef Brochettes',
-                  'description': 'Tender beef skewers marinated in local spices',
-                  'price': 'RWF 8,000',
-                  'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200',
-                  'isVegetarian': false,
-                  'isSpicy': true,
-                },
-              ],
-            },
+            'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
+            'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400',
           ],
           'reviews': [
             {
-              'user': 'Jean Paul',
+              'user': 'Wildlife Enthusiast',
               'rating': 5,
               'date': '2 days ago',
-              'comment': 'Amazing food and great service! The beef brochettes were incredible.',
+              'comment': 'Absolutely incredible experience! Seeing the gorillas up close was a once-in-a-lifetime moment.',
               'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
             },
           ],
         };
       
-      case '2': // Bourbon Coffee
+      case '2': // Nyungwe Forest
         return {
-          'name': 'Bourbon Coffee',
-          'location': 'Kigali Heights, Rwanda',
-          'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800',
-          'rating': 4.2,
-          'reviewCount': 95,
-          'priceRange': '\$',
-          'category': 'Cafe',
-          'description': 'Premium coffee experience with locally roasted beans and a cozy atmosphere. Perfect for meetings, studying, or enjoying a quiet cup of coffee.',
+          'name': 'Nyungwe Forest',
+          'location': 'Nyungwe, Rwanda',
+          'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
+          'rating': 4.8,
+          'reviewCount': 892,
+          'priceRange': 'From \$200',
+          'category': 'Nature',
+          'description': 'Explore one of Africa\'s oldest rainforests with its incredible biodiversity. Walk across the famous canopy walkway and spot chimpanzees, colobus monkeys, and over 300 bird species.',
           'features': ['WiFi', 'Parking', 'Outdoor Seating', 'Takeaway', 'Coffee Roasting'],
           'openingHours': [
             {'day': 'Monday', 'time': '6:00 AM - 9:00 PM'},
