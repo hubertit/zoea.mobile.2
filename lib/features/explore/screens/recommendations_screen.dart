@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/place_card.dart';
 
 class RecommendationsScreen extends StatefulWidget {
   const RecommendationsScreen({super.key});
@@ -8,436 +10,402 @@ class RecommendationsScreen extends StatefulWidget {
   State<RecommendationsScreen> createState() => _RecommendationsScreenState();
 }
 
-class _RecommendationsScreenState extends State<RecommendationsScreen> {
-  String _selectedCategory = 'All';
-  String _selectedSortBy = 'Popular';
+class _RecommendationsScreenState extends State<RecommendationsScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+  final Set<String> _favoritePlaces = {};
 
-  final List<String> _categories = [
-    'All',
-    'Wildlife',
-    'Nature',
-    'History',
-    'Water',
-    'Adventure',
-    'Culture',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 7, vsync: this);
+  }
 
-  final List<String> _sortOptions = [
-    'Popular',
-    'Rating',
-    'Price',
-    'Distance',
-  ];
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(
-          'Recommendations',
-          style: AppTheme.titleLarge,
-        ),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
-        centerTitle: false,
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32),
+          onPressed: () => context.pop(),
+          color: AppTheme.primaryTextColor,
+        ),
+        title: Text(
+          'Recommendations',
+          style: AppTheme.headlineSmall.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         actions: [
           IconButton(
-            onPressed: () {
-              // TODO: Add filter functionality
-            },
+            icon: const Icon(Icons.search),
+            onPressed: () => context.push('/search?category=recommendations'),
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_list),
-            style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
-            ),
+            onPressed: _showFilterBottomSheet,
           ),
-          const SizedBox(width: 16),
+          IconButton(
+            icon: const Icon(Icons.sort),
+            onPressed: _showSortBottomSheet,
+          ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: AppTheme.primaryColor,
+          labelColor: AppTheme.primaryColor,
+          unselectedLabelColor: AppTheme.secondaryTextColor,
+          labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+          tabs: const [
+            Tab(text: 'All'),
+            Tab(text: 'Wildlife'),
+            Tab(text: 'Nature'),
+            Tab(text: 'History'),
+            Tab(text: 'Water'),
+            Tab(text: 'Adventure'),
+            Tab(text: 'Culture'),
+          ],
+        ),
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          // Category Filter
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                final category = _categories[index];
-                final isSelected = _selectedCategory == category;
-                
-                return Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedCategory = category;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.primaryColor : Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isSelected ? AppTheme.primaryColor : Colors.grey[300]!,
-                        ),
-                      ),
-                      child: Text(
-                        category,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: isSelected ? Colors.white : AppTheme.primaryTextColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          
-          // Sort Options
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            child: Row(
-              children: [
-                Text(
-                  'Sort by:',
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedSortBy,
-                      isExpanded: true,
-                      style: AppTheme.bodyMedium,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedSortBy = newValue!;
-                        });
-                      },
-                      items: _sortOptions.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Recommendations List
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: 20, // Show 20 recommendations
-              itemBuilder: (context, index) {
-                return _buildRecommendationCard(index);
-              },
-            ),
-          ),
+          _buildRecommendationsList('All'),
+          _buildRecommendationsList('Wildlife'),
+          _buildRecommendationsList('Nature'),
+          _buildRecommendationsList('History'),
+          _buildRecommendationsList('Water'),
+          _buildRecommendationsList('Adventure'),
+          _buildRecommendationsList('Culture'),
         ],
       ),
     );
   }
 
-  Widget _buildRecommendationCard(int index) {
-    // Sample recommendation data
-    final recommendations = [
+  Widget _buildRecommendationsList(String category) {
+    final places = _getMockRecommendations(category);
+    
+    if (places.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.explore,
+              size: 64,
+              color: AppTheme.secondaryTextColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No recommendations found',
+              style: AppTheme.headlineSmall.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Check back later for new recommendations',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: places.length,
+      itemBuilder: (context, index) {
+        final place = places[index];
+        return PlaceCard(
+          name: place['name'],
+          location: place['location'],
+          image: place['image'],
+          rating: place['rating'],
+          reviews: place['reviews'],
+          priceRange: place['priceRange'],
+          category: place['category'],
+          isFavorite: _favoritePlaces.contains(place['id']),
+          onTap: () {
+            context.push('/place/${place['id']}');
+          },
+          onFavorite: () {
+            setState(() {
+              if (_favoritePlaces.contains(place['id'])) {
+                _favoritePlaces.remove(place['id']);
+              } else {
+                _favoritePlaces.add(place['id']);
+              }
+            });
+          },
+        );
+      },
+    );
+  }
+
+  List<Map<String, dynamic>> _getMockRecommendations(String category) {
+    final allRecommendations = [
       {
-        'title': 'Volcanoes National Park',
-        'subtitle': 'Gorilla Trekking Experience',
-        'image': 'assets/images/gorilla.jpg',
+        'id': '1',
+        'name': 'Volcanoes National Park',
+        'location': 'Musanze, Rwanda',
+        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
         'rating': 4.9,
+        'reviews': 1247,
+        'priceRange': 'From \$1,500',
         'category': 'Wildlife',
-        'distance': '2.5 km',
-        'duration': 'Full Day',
       },
       {
-        'title': 'Nyungwe Forest',
-        'subtitle': 'Canopy Walk Adventure',
-        'image': 'assets/images/canopy.jpg',
+        'id': '2',
+        'name': 'Nyungwe Forest',
+        'location': 'Nyungwe, Rwanda',
+        'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
         'rating': 4.8,
+        'reviews': 892,
+        'priceRange': 'From \$200',
         'category': 'Nature',
-        'distance': '5.2 km',
-        'duration': 'Half Day',
       },
       {
-        'title': 'Lake Kivu',
-        'subtitle': 'Relaxing Boat Cruise',
-        'image': 'assets/images/lake_kivu.jpg',
+        'id': '3',
+        'name': 'Lake Kivu',
+        'location': 'Rubavu, Rwanda',
+        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
         'rating': 4.7,
+        'reviews': 654,
+        'priceRange': 'From \$80',
         'category': 'Water',
-        'distance': '1.8 km',
-        'duration': '3 Hours',
       },
       {
-        'title': 'Kigali Genocide Memorial',
-        'subtitle': 'Historical Tour',
-        'image': 'assets/images/memorial.jpg',
+        'id': '4',
+        'name': 'Kigali Genocide Memorial',
+        'location': 'Kigali, Rwanda',
+        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',
         'rating': 4.9,
+        'reviews': 2156,
+        'priceRange': 'Free',
         'category': 'History',
-        'distance': '0.5 km',
-        'duration': '2 Hours',
       },
       {
-        'title': 'Akagera National Park',
-        'subtitle': 'Safari Experience',
-        'image': 'assets/images/safari.jpg',
+        'id': '5',
+        'name': 'Akagera National Park',
+        'location': 'Eastern Rwanda',
+        'image': 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800',
         'rating': 4.6,
+        'reviews': 743,
+        'priceRange': 'From \$300',
         'category': 'Wildlife',
-        'distance': '120 km',
-        'duration': 'Full Day',
+      },
+      {
+        'id': '6',
+        'name': 'Mount Karisimbi',
+        'location': 'Volcanoes National Park',
+        'image': 'https://images.unsplash.com/photo-1464822759844-d150baec1b4b?w=800',
+        'rating': 4.8,
+        'reviews': 456,
+        'priceRange': 'From \$400',
+        'category': 'Adventure',
+      },
+      {
+        'id': '7',
+        'name': 'Inema Arts Center',
+        'location': 'Kigali, Rwanda',
+        'image': 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800',
+        'rating': 4.5,
+        'reviews': 234,
+        'priceRange': 'From \$10',
+        'category': 'Culture',
       },
     ];
 
-    final recommendation = recommendations[index % recommendations.length];
+    if (category == 'All') {
+      return allRecommendations;
+    }
+    
+    return allRecommendations.where((place) => place['category'] == category).toList();
+  }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              color: Colors.grey[200],
-            ),
-            child: Stack(
-              children: [
-                // Placeholder for image
-                Center(
-                  child: Icon(
-                    Icons.image,
-                    color: Colors.grey[400],
-                    size: 60,
-                  ),
+      builder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.6,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Filter Recommendations',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
-                // Category badge
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      recommendation['category'] as String,
-                      style: AppTheme.bodySmall.copyWith(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+              ),
+              const SizedBox(height: 20),
+              
+              // Rating Filter
+              Text(
+                'Minimum Rating',
+                style: AppTheme.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
-                // Rating
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          recommendation['rating'].toString(),
-                          style: AppTheme.bodySmall.copyWith(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _buildFilterChip('4.0+ Stars', false),
+                  _buildFilterChip('4.5+ Stars', false),
+                  _buildFilterChip('5.0 Stars', false),
+                ],
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Features Filter
+              Text(
+                'Features',
+                style: AppTheme.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
-                // Favorite button
-                Positioned(
-                  bottom: 12,
-                  right: 12,
-                  child: GestureDetector(
-                    onTap: () {
-                      // TODO: Add to favorites
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _buildFilterChip('Family Friendly', false),
+                  _buildFilterChip('Photography', false),
+                  _buildFilterChip('Guided Tours', false),
+                  _buildFilterChip('Accessible', false),
+                  _buildFilterChip('Parking', false),
+                  _buildFilterChip('Restrooms', false),
+                ],
+              ),
+              
+              const SizedBox(height: 30),
+              
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: AppTheme.secondaryTextColor,
-                        size: 20,
-                      ),
+                      child: const Text('Clear All'),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  recommendation['title'] as String,
-                  style: AppTheme.headlineSmall.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  recommendation['subtitle'] as String,
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                
-                // Details row
-                Row(
-                  children: [
-                    // Duration
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            size: 14,
-                            color: AppTheme.secondaryTextColor,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            recommendation['duration'] as String,
-                            style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // Distance
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 14,
-                            color: AppTheme.secondaryTextColor,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            recommendation['distance'] as String,
-                            style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                
-                // View Details button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      recommendation['category'] as String,
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // TODO: Navigate to place details
-                      },
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primaryColor,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: Text(
-                        'View Details',
-                        style: AppTheme.bodySmall.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      child: const Text('Apply Filters'),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  void _showSortBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.6,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Sort Recommendations',
+                style: AppTheme.headlineSmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+              _buildSortOption('Popular', true),
+              _buildSortOption('Rating (High to Low)', false),
+              _buildSortOption('Rating (Low to High)', false),
+              _buildSortOption('Distance (Near to Far)', false),
+              _buildSortOption('Distance (Far to Near)', false),
+              _buildSortOption('Name (A to Z)', false),
+              _buildSortOption('Name (Z to A)', false),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, bool isSelected) {
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (selected) {
+        // Handle filter selection
+      },
+      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
+      checkmarkColor: AppTheme.primaryColor,
+      labelStyle: AppTheme.bodySmall.copyWith(
+        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+      ),
+    );
+  }
+
+  Widget _buildSortOption(String label, bool isSelected) {
+    return ListTile(
+      title: Text(
+        label,
+        style: AppTheme.bodyMedium,
+      ),
+      trailing: isSelected ? Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      onTap: () {
+        Navigator.pop(context);
+        // Handle sort selection
+      },
     );
   }
 }
