@@ -821,7 +821,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
     return GestureDetector(
       onTap: () {
-        if (slug.isNotEmpty) {
+        // Navigate to Stay tab if Accommodation category
+        if (slug == 'accommodation' || name.toLowerCase() == 'accommodation') {
+          context.go('/accommodation');
+        } else if (slug.isNotEmpty) {
           context.push('/category/$slug');
         } else {
           context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
@@ -1441,7 +1444,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        if (slug.isNotEmpty) {
+        // Navigate to Stay tab if Accommodation category
+        if (slug == 'accommodation' || name.toLowerCase() == 'accommodation') {
+          context.go('/accommodation');
+        } else if (slug.isNotEmpty) {
           context.push('/category/$slug');
         } else {
           context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
