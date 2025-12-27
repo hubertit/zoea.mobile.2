@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/events_provider.dart';
+import '../../../core/providers/listings_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/constants/assets.dart';
+import '../../../core/config/app_config.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -1512,97 +1514,106 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildRecommendSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Consumer(
+      builder: (context, ref, child) {
+        final featuredAsync = ref.watch(featuredListingsProvider);
+        
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Recommend',
-              style: AppTheme.headlineMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recommend',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.push('/recommendations');
+                  },
+                  child: Text(
+                    'View More',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                context.push('/recommendations');
-              },
-              child: Text(
-                'View More',
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w500,
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 200,
+              child: featuredAsync.when(
+                data: (listings) {
+                  if (listings.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No featured listings',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: listings.length > 5 ? 5 : listings.length,
+                    itemBuilder: (context, index) {
+                      return _buildRecommendCardFromData(listings[index]);
+                    },
+                  );
+                },
+                loading: () => ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return _buildSkeletonRecommendCard();
+                  },
+                ),
+                error: (error, stack) => Center(
+                  child: Text(
+                    'Failed to load recommendations',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.errorColor,
+                    ),
+                  ),
                 ),
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 5, // Show 5 recommended items
-            itemBuilder: (context, index) {
-              return _buildRecommendCard(index);
-            },
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget _buildRecommendCard(int index) {
-    // Sample recommendation data with real images and IDs
-    final recommendations = [
-      {
-        'id': '1',
-        'title': 'Volcanoes National Park',
-        'subtitle': 'Gorilla Trekking Experience',
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400',
-        'rating': 4.9,
-        'category': 'Wildlife',
-      },
-      {
-        'id': '2',
-        'title': 'Nyungwe Forest',
-        'subtitle': 'Canopy Walk Adventure',
-        'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
-        'rating': 4.8,
-        'category': 'Nature',
-      },
-      {
-        'id': '3',
-        'title': 'Lake Kivu',
-        'subtitle': 'Relaxing Boat Cruise',
-        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
-        'rating': 4.7,
-        'category': 'Water',
-      },
-      {
-        'id': '4',
-        'title': 'Kigali Genocide Memorial',
-        'subtitle': 'Historical Tour',
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-        'rating': 4.9,
-        'category': 'History',
-      },
-      {
-        'id': '5',
-        'title': 'Akagera National Park',
-        'subtitle': 'Safari Experience',
-        'image': 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400',
-        'rating': 4.6,
-        'category': 'Wildlife',
-      },
-    ];
+  Widget _buildRecommendCardFromData(Map<String, dynamic> listing) {
+    // Extract image URL
+    String? imageUrl;
+    if (listing['images'] != null && listing['images'] is List && (listing['images'] as List).isNotEmpty) {
+      final firstImage = (listing['images'] as List).first;
+      if (firstImage is Map && firstImage['media'] != null) {
+        imageUrl = firstImage['media']['url'] ?? firstImage['media']['thumbnailUrl'];
+      }
+    }
 
-    final recommendation = recommendations[index % recommendations.length];
+    // Extract data
+    final name = listing['name'] ?? 'Unknown';
+    final address = listing['address'] ?? listing['city']?['name'] ?? '';
+    final rating = listing['rating'] != null 
+        ? (listing['rating'] is String 
+            ? double.tryParse(listing['rating']) 
+            : listing['rating']?.toDouble())
+        : 0.0;
+    final category = listing['category']?['name'] ?? listing['type'] ?? 'Place';
+    final id = listing['id'] ?? '';
 
     return GestureDetector(
       onTap: () {
-        context.push('/place/${recommendation['id']}');
+        context.push('/listing/$id');
       },
       child: Container(
         width: 160,
@@ -1621,7 +1632,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image with real cover
+            // Image
             Container(
               height: 100,
               decoration: BoxDecoration(
@@ -1630,34 +1641,32 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               ),
               child: Stack(
                 children: [
-                  // Real image
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                    child: Image.network(
-                      recommendation['image'] as String,
-                      width: double.infinity,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 100,
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
+                    child: imageUrl != null
+                        ? CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            width: double.infinity,
+                            height: 100,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              height: 100,
+                              color: Colors.grey[200],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              height: 100,
+                              color: Colors.grey[200],
+                              child: const Icon(Icons.image, color: Colors.grey),
+                            ),
+                          )
+                        : Container(
+                            height: 100,
+                            color: Colors.grey[200],
+                            child: const Icon(Icons.image, color: Colors.grey),
                           ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 100,
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: Icon(Icons.image, color: Colors.grey),
-                          ),
-                        );
-                      },
-                    ),
                   ),
                   // Category badge
                   Positioned(
@@ -1670,46 +1679,49 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        recommendation['category'] as String,
+                        category,
                         style: AppTheme.bodySmall.copyWith(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                   // Rating
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 12,
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            recommendation['rating'].toString(),
-                            style: AppTheme.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
+                  if (rating > 0)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 12,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 2),
+                            Text(
+                              rating.toStringAsFixed(1),
+                              style: AppTheme.bodySmall.copyWith(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -1720,7 +1732,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    recommendation['title'] as String,
+                    name,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -1728,23 +1740,28 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    recommendation['subtitle'] as String,
-                    style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                  if (address.isNotEmpty)
+                    Text(
+                      address,
+                      style: AppTheme.bodySmall.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        recommendation['category'] as String,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Text(
+                          category,
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       GestureDetector(
@@ -1768,52 +1785,163 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
-  Widget _buildNearMeSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Near Me',
-              style: AppTheme.headlineMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+  Widget _buildSkeletonRecommendCard() {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[300],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              color: Colors.grey[300],
             ),
-            TextButton(
-              onPressed: () {
-                // TODO: Navigate to map view
-                context.push('/map');
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 16,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 12,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNearMeSection() {
+    return Consumer(
+      builder: (context, ref, child) {
+        // Use default Kigali coordinates for nearby listings
+        final nearbyAsync = ref.watch(
+          nearbyListingsProvider({
+            'latitude': AppConfig.defaultMapLatitude,
+            'longitude': AppConfig.defaultMapLongitude,
+            'radiusKm': 10.0,
+            'limit': 5,
+          }),
+        );
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Near Me',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.push('/map');
+                  },
+                  child: Text(
+                    'View Map',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            nearbyAsync.when(
+              data: (listings) {
+                if (listings.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'No nearby listings',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: listings.length,
+                  itemBuilder: (context, index) {
+                    return _buildNearMeCardFromData(listings[index]);
+                  },
+                );
               },
-              child: Text(
-                'View Map',
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w500,
+              loading: () => ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return _buildSkeletonNearMeCard();
+                },
+              ),
+              error: (error, stack) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Failed to load nearby listings',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.errorColor,
+                    ),
+                  ),
                 ),
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 8),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _getMockNearMePlaces().length,
-          itemBuilder: (context, index) {
-            final place = _getMockNearMePlaces()[index];
-            return _buildNearMeCard(place);
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget _buildNearMeCard(Map<String, dynamic> place) {
+  Widget _buildNearMeCardFromData(Map<String, dynamic> listing) {
+    // Extract image URL
+    String? imageUrl;
+    if (listing['images'] != null && listing['images'] is List && (listing['images'] as List).isNotEmpty) {
+      final firstImage = (listing['images'] as List).first;
+      if (firstImage is Map && firstImage['media'] != null) {
+        imageUrl = firstImage['media']['url'] ?? firstImage['media']['thumbnailUrl'];
+      }
+    }
+
+    // Extract data
+    final name = listing['name'] ?? 'Unknown';
+    final address = listing['address'] ?? listing['city']?['name'] ?? '';
+    final category = listing['category']?['name'] ?? listing['type'] ?? 'Place';
+    final id = listing['id'] ?? '';
+
     return GestureDetector(
       onTap: () {
-        context.push('/place/${place['id']}');
+        context.push('/listing/$id');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -1829,81 +1957,141 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           ],
         ),
         child: Row(
-        children: [
-          // Image
-          ClipRRect(
-            borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-            child: CachedNetworkImage(
-              imageUrl: place['image'],
-              height: 80,
-              width: 80,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                height: 80,
-                width: 80,
-                color: AppTheme.dividerColor,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+          children: [
+            // Image
+            ClipRRect(
+              borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+              child: imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        height: 80,
+                        width: 80,
+                        color: AppTheme.dividerColor,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        height: 80,
+                        width: 80,
+                        color: AppTheme.dividerColor,
+                        child: const Icon(Icons.image_not_supported),
+                      ),
+                    )
+                  : Container(
+                      height: 80,
+                      width: 80,
+                      color: AppTheme.dividerColor,
+                      child: const Icon(Icons.image_not_supported),
+                    ),
+            ),
+            
+            // Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      name,
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    
+                    // Address and Category
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 12,
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            address,
+                            style: AppTheme.bodySmall.copyWith(
+                              color: AppTheme.secondaryTextColor,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            category,
+                            style: AppTheme.labelSmall.copyWith(
+                              color: AppTheme.primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              errorWidget: (context, url, error) => Container(
-                height: 80,
-                width: 80,
-                color: AppTheme.dividerColor,
-                child: const Icon(Icons.image_not_supported),
-              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonNearMeCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 80,
+            width: 80,
+            color: Colors.grey[400],
           ),
-          
-          // Content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
-                  Text(
-                    place['name'],
-                    style: AppTheme.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Container(
+                    height: 16,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
-                  
-                  // Distance and Category
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        size: 12,
-                        color: AppTheme.secondaryTextColor,
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        place['distance'],
-                        style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          place['category'],
-                          style: AppTheme.labelSmall.copyWith(
-                            color: AppTheme.primaryColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 12,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ],
               ),
@@ -1911,48 +2099,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           ),
         ],
       ),
-      ),
     );
-  }
-
-  List<Map<String, dynamic>> _getMockNearMePlaces() {
-    return [
-      {
-        'id': 'near_me_1',
-        'name': 'Kigali Convention Centre',
-        'distance': '0.5 km',
-        'category': 'Venue',
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'id': 'near_me_2',
-        'name': 'Kimisagara Market',
-        'distance': '1.2 km',
-        'category': 'Market',
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
-      },
-      {
-        'id': 'near_me_3',
-        'name': 'Kigali Genocide Memorial',
-        'distance': '2.1 km',
-        'category': 'Memorial',
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'id': 'near_me_4',
-        'name': 'Kimisagara Restaurant',
-        'distance': '0.8 km',
-        'category': 'Dining',
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
-      },
-      {
-        'id': 'near_me_5',
-        'name': 'Kigali City Tower',
-        'distance': '1.5 km',
-        'category': 'Shopping',
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-    ];
   }
 
   Widget _buildSpecialsSection() {

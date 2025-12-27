@@ -1,4 +1,11 @@
 class PhoneValidator {
+  /// Cleans a phone number by removing spaces, +, and special characters
+  /// Keeps only digits
+  static String cleanPhoneNumber(String phoneNumber) {
+    // Remove all non-digit characters (spaces, +, -, (, ), etc.)
+    return phoneNumber.replaceAll(RegExp(r'\D'), '');
+  }
+
   static String? validateInternationalPhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your phone number';

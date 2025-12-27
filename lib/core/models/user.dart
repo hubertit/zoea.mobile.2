@@ -28,8 +28,60 @@ class User {
     this.preferences,
   });
 
-  // factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-  // // Map<String, dynamic> toJson() => _$UserToJson(this);
+  // Convert User to JSON for caching
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'fullName': fullName,
+      'phoneNumber': phoneNumber,
+      'profileImage': profileImage,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isVerified': isVerified,
+      'role': role.name,
+      'preferences': preferences?.toJson(),
+    };
+  }
+
+  // Create User from JSON (for cached data)
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id']?.toString() ?? '',
+      email: json['email'] ?? '',
+      fullName: json['fullName'] ?? '',
+      phoneNumber: json['phoneNumber'],
+      profileImage: json['profileImage'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt']) ?? DateTime.now()
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt']) ?? DateTime.now()
+          : DateTime.now(),
+      isVerified: json['isVerified'] ?? false,
+      role: _parseRole(json['role']),
+      preferences: json['preferences'] != null
+          ? UserPreferences.fromJson(json['preferences'])
+          : null,
+    );
+  }
+
+  static UserRole _parseRole(dynamic role) {
+    if (role == null) return UserRole.explorer;
+    final roleString = role.toString().toLowerCase();
+    switch (roleString) {
+      case 'merchant':
+        return UserRole.merchant;
+      case 'event_organizer':
+      case 'eventorganizer':
+      case 'organizer':
+        return UserRole.eventOrganizer;
+      case 'admin':
+        return UserRole.admin;
+      default:
+        return UserRole.explorer;
+    }
+  }
 
   String get initials {
     final names = fullName.split(' ');
@@ -58,9 +110,27 @@ class UserPreferences {
     this.interests = const [],
   });
 
-  // factory UserPreferences.fromJson(Map<String, dynamic> json) => 
-  //     _$UserPreferencesFromJson(json);
-  // // Map<String, dynamic> toJson() => _$UserPreferencesToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'language': language,
+      'currency': currency,
+      'notificationsEnabled': notificationsEnabled,
+      'locationEnabled': locationEnabled,
+      'interests': interests,
+    };
+  }
+
+  factory UserPreferences.fromJson(Map<String, dynamic> json) {
+    return UserPreferences(
+      language: json['language'],
+      currency: json['currency'],
+      notificationsEnabled: json['notificationsEnabled'] ?? true,
+      locationEnabled: json['locationEnabled'] ?? true,
+      interests: json['interests'] != null
+          ? List<String>.from(json['interests'])
+          : [],
+    );
+  }
 }
 
 enum UserRole {

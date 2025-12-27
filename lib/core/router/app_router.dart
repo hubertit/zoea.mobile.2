@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
+import '../../features/auth/screens/splash_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/explore/screens/map_screen.dart';
@@ -44,15 +45,84 @@ import '../../features/profile/screens/about_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
+import '../providers/auth_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
-    initialLocation: '/explore',
+  final isLoggedIn = ref.watch(isLoggedInProvider);
+  
+  // Create a refresh notifier for GoRouter
+  final refreshNotifier = ValueNotifier<bool>(isLoggedIn);
+  
+  // Update refresh notifier when auth state changes
+  ref.listen<bool>(isLoggedInProvider, (previous, next) {
+    if (previous != next) {
+      refreshNotifier.value = next;
+    }
+  });
+  
+  // Set initial location based on auth state - skip splash if already logged in
+  final initialLocation = isLoggedIn ? '/explore' : '/splash';
+  
+  final router = GoRouter(
+    refreshListenable: refreshNotifier,
+    initialLocation: initialLocation,
     redirect: (context, state) {
-      // No authentication required - users can browse freely
-      return null;
+      // If user is logged in, never allow navigation to splash - redirect to explore
+      if (isLoggedIn && state.matchedLocation == '/splash') {
+        return '/explore';
+      }
+      
+      // Don't redirect from splash screen if user is not logged in - let it handle navigation
+      if (!isLoggedIn && state.matchedLocation == '/splash') {
+        return null;
+      }
+      
+      final isAuthRoute = state.matchedLocation == '/login' || 
+                          state.matchedLocation == '/register' || 
+                          state.matchedLocation == '/onboarding';
+      
+      // Define protected routes that require authentication
+      final protectedRoutes = [
+        '/profile',
+        '/my-bookings',
+        '/zoea-card',
+        '/transactions',
+        '/referrals',
+        '/notifications',
+        '/dining-booking',
+        '/dining-booking-confirmation',
+        '/booking',
+        '/booking-confirmation',
+        '/settings',
+      ];
+      
+      final isProtectedRoute = protectedRoutes.any((route) => 
+        state.matchedLocation.startsWith(route) ||
+        state.matchedLocation.startsWith('/profile/') ||
+        state.matchedLocation.startsWith('/booking/') ||
+        state.matchedLocation.startsWith('/booking-confirmation/') ||
+        state.matchedLocation.contains('/book') // Accommodation booking
+      );
+      
+      // If user is not logged in and trying to access protected route
+      if (!isLoggedIn && isProtectedRoute) {
+        return '/login';
+      }
+      
+      // If user is logged in and trying to access auth routes, redirect to explore
+      if (isLoggedIn && isAuthRoute) {
+        return '/explore';
+      }
+      
+      return null; // No redirect needed
     },
     routes: [
+      // Splash Screen (initial route)
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      
       // Auth Routes
       GoRoute(
         path: '/onboarding',
@@ -347,4 +417,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  
+  return router;
 });

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class AppConfig {
   static const String appName = 'Zoea Africa';
   static const String appVersion = '2.0.0';
-  static const String apiBaseUrl = 'https://api.zoea.africa/v1';
+  static const String apiBaseUrl = 'https://zoea-africa.qtsoftwareltd.com/api';
 
   // API Endpoints
   static const String authEndpoint = '/auth';
@@ -160,5 +160,11 @@ class AppConfig {
     }
 
     return dio;
+  }
+
+  // Helper method to create Dio instance without token interceptor
+  // (for use in AuthService where we add token interceptor manually)
+  static Dio dioInstanceWithoutInterceptors() {
+    return dioInstance();
   }
 }

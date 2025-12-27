@@ -53,10 +53,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     try {
       final authService = ref.read(authServiceProvider);
       final user = await authService.signUpWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-        _fullNameController.text.trim(),
-        _selectedUserRole,
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        fullName: _fullNameController.text.trim(),
       );
 
       if (user != null && mounted) {
@@ -70,9 +69,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final errorMessage = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           AppTheme.errorSnackBar(
-            message: 'An error occurred. Please try again.',
+            message: errorMessage.isNotEmpty ? errorMessage : 'An error occurred. Please try again.',
           ),
         );
       }

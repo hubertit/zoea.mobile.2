@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/user_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -12,11 +14,60 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  // User preferences state
-  String _selectedCurrency = 'USD';
+  // User preferences state - will be loaded from user data
+  String _selectedCurrency = 'RWF';
   String _selectedCountry = 'Rwanda';
   String _selectedLocation = 'Kigali';
   String _selectedLanguage = 'English';
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadUserPreferences();
+  }
+  
+  void _loadUserPreferences() {
+    final user = ref.read(currentUserProvider);
+    if (user?.preferences != null) {
+      setState(() {
+        _selectedCurrency = user!.preferences!.currency ?? 'RWF';
+        // Map language codes to display names
+        final langCode = user.preferences!.language ?? 'en';
+        _selectedLanguage = _mapLanguageCodeToName(langCode);
+      });
+    }
+  }
+  
+  String _mapLanguageCodeToName(String code) {
+    switch (code.toLowerCase()) {
+      case 'en':
+        return 'English';
+      case 'rw':
+      case 'kin':
+        return 'Kinyarwanda';
+      case 'fr':
+        return 'French';
+      case 'sw':
+        return 'Swahili';
+      default:
+        return 'English';
+    }
+  }
+  
+  String _mapLanguageNameToCode(String name) {
+    switch (name) {
+      case 'Kinyarwanda':
+        return 'rw';
+      case 'English':
+        return 'en';
+      case 'French':
+        return 'fr';
+      case 'Swahili':
+        return 'sw';
+      default:
+        return 'en';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +249,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
+    final user = ref.watch(currentUserProvider);
+    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -228,11 +281,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: const Icon(
-              Icons.person,
-              size: 40,
-              color: Colors.white,
-            ),
+            child: user?.profileImage != null
+                ? ClipOval(
+                    child: Image.network(
+                      user!.profileImage!,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(
+                          child: Text(
+                            user.initials,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      user?.initials ?? 'U',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
           ),
           const SizedBox(width: 16),
           
@@ -242,33 +321,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'John Doe',
+                  user?.fullName ?? 'User',
                   style: AppTheme.titleLarge.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'john.doe@example.com',
+                  user?.email ?? '',
                   style: AppTheme.bodyMedium.copyWith(
                     color: AppTheme.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Verified Traveler',
-                    style: AppTheme.labelSmall.copyWith(
-                      color: AppTheme.primaryColor,
-                      fontWeight: FontWeight.w500,
+                if (user?.isVerified == true)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Verified Traveler',
+                      style: AppTheme.labelSmall.copyWith(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -276,7 +356,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // Edit Button
           IconButton(
             onPressed: () {
-              // TODO: Navigate to edit profile
+              context.go('/profile/edit');
             },
             icon: const Icon(Icons.edit_outlined),
             style: IconButton.styleFrom(
@@ -290,44 +370,66 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildQuickStats() {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => context.go('/profile/events-attended'),
-            child: _buildStatCard(
-              icon: Icons.event,
-              title: 'Events',
-              value: '12',
-              subtitle: 'Attended',
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => context.go('/profile/visited-places'),
-                  child: _buildStatCard(
-                    icon: Icons.place,
-                    title: 'Places',
-                    value: '8',
-                    subtitle: 'Visited',
-                  ),
-                ),
+    final userStats = ref.watch(userStatsProvider);
+    
+    return userStats.when(
+      data: (stats) => Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => context.go('/profile/events-attended'),
+              child: _buildStatCard(
+                icon: Icons.event,
+                title: 'Events',
+                value: '0', // Events not in stats yet
+                subtitle: 'Attended',
               ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => context.go('/profile/reviews-written'),
-            child: _buildStatCard(
-              icon: Icons.star,
-              title: 'Reviews',
-              value: '24',
-              subtitle: 'Written',
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => context.go('/profile/visited-places'),
+              child: _buildStatCard(
+                icon: Icons.place,
+                title: 'Places',
+                value: '${stats['visitedPlaces'] ?? 0}',
+                subtitle: 'Visited',
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => context.go('/profile/reviews-written'),
+              child: _buildStatCard(
+                icon: Icons.star,
+                title: 'Reviews',
+                value: '${stats['reviews'] ?? 0}',
+                subtitle: 'Written',
+              ),
+            ),
+          ),
+        ],
+      ),
+      loading: () => Row(
+        children: [
+          Expanded(child: _buildStatCard(icon: Icons.event, title: 'Events', value: '...', subtitle: 'Attended')),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard(icon: Icons.place, title: 'Places', value: '...', subtitle: 'Visited')),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard(icon: Icons.star, title: 'Reviews', value: '...', subtitle: 'Written')),
+        ],
+      ),
+      error: (_, __) => Row(
+        children: [
+          Expanded(child: _buildStatCard(icon: Icons.event, title: 'Events', value: '0', subtitle: 'Attended')),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard(icon: Icons.place, title: 'Places', value: '0', subtitle: 'Visited')),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard(icon: Icons.star, title: 'Reviews', value: '0', subtitle: 'Written')),
+        ],
+      ),
     );
   }
 
@@ -498,10 +600,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
+              // Sign out using auth service
+              final authService = ref.read(authServiceProvider);
+              await authService.signOut();
               // Navigate to login screen
-              context.go('/login');
+              if (context.mounted) {
+                context.go('/login');
+              }
             },
             child: Text(
               'Sign Out',
@@ -734,20 +841,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           color: AppTheme.primaryColor,
           size: 20,
         ) : null,
-        onTap: () {
+        onTap: () async {
+          Navigator.pop(context);
           setState(() {
             _selectedCurrency = code;
           });
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Currency changed to $code',
-                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
-              ),
-              backgroundColor: AppTheme.primaryColor,
-            ),
-          );
+          
+          // Update preferences in API
+          try {
+            final userService = ref.read(userServiceProvider);
+            await userService.updatePreferences(currency: code);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Currency changed to $code',
+                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  backgroundColor: AppTheme.primaryColor,
+                ),
+              );
+            }
+          } catch (e) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Failed to update currency: ${e.toString().replaceFirst('Exception: ', '')}',
+                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  backgroundColor: AppTheme.errorColor,
+                ),
+              );
+            }
+          }
         },
       ),
     );
@@ -883,20 +1010,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           color: AppTheme.primaryColor,
           size: 20,
         ) : null,
-        onTap: () {
+        onTap: () async {
+          Navigator.pop(context);
           setState(() {
             _selectedLanguage = name;
           });
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Language changed to $name',
-                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
-              ),
-              backgroundColor: AppTheme.primaryColor,
-            ),
-          );
+          
+          // Update preferences in API
+          try {
+            final userService = ref.read(userServiceProvider);
+            final langCode = _mapLanguageNameToCode(name);
+            await userService.updatePreferences(language: langCode);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Language changed to $name',
+                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  backgroundColor: AppTheme.primaryColor,
+                ),
+              );
+            }
+          } catch (e) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Failed to update language: ${e.toString().replaceFirst('Exception: ', '')}',
+                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  backgroundColor: AppTheme.errorColor,
+                ),
+              );
+            }
+          }
         },
       ),
     );

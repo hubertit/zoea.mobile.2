@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/user_provider.dart';
 
 class PrivacySecurityScreen extends ConsumerStatefulWidget {
   const PrivacySecurityScreen({super.key});
@@ -315,89 +316,275 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
   }
 
   void _showChangePasswordDialog() {
+    final _formKey = GlobalKey<FormState>();
+    final _currentPasswordController = TextEditingController();
+    final _newPasswordController = TextEditingController();
+    final _confirmPasswordController = TextEditingController();
+    bool _isLoading = false;
+    bool _obscureCurrentPassword = true;
+    bool _obscureNewPassword = true;
+    bool _obscureConfirmPassword = true;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppTheme.backgroundColor,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            
-            // Title
-            Text(
-              'Change Password',
-              style: AppTheme.titleMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 20),
-            
-            // Content
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue[200]!),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: Colors.blue[600],
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'This feature will be available soon. You will be able to change your password securely.',
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.blue[800],
-                      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // OK button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(
-                  'OK',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
+                const SizedBox(height: 20),
+                
+                // Title
+                Text(
+                  'Change Password',
+                  style: AppTheme.titleMedium.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+                const SizedBox(height: 20),
+                
+                // Current Password
+                TextFormField(
+                  controller: _currentPasswordController,
+                  obscureText: _obscureCurrentPassword,
+                  decoration: InputDecoration(
+                    labelText: 'Current Password',
+                    hintText: 'Enter your current password',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureCurrentPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setModalState(() {
+                          _obscureCurrentPassword = !_obscureCurrentPassword;
+                        });
+                      },
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.dividerColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your current password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                
+                // New Password
+                TextFormField(
+                  controller: _newPasswordController,
+                  obscureText: _obscureNewPassword,
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                    hintText: 'Enter your new password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureNewPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setModalState(() {
+                          _obscureNewPassword = !_obscureNewPassword;
+                        });
+                      },
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.dividerColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a new password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                
+                // Confirm Password
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscureConfirmPassword,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm New Password',
+                    hintText: 'Confirm your new password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setModalState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.dividerColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your new password';
+                    }
+                    if (value != _newPasswordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                
+                // Action buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _isLoading ? null : () {
+                          Navigator.pop(context);
+                          _currentPasswordController.dispose();
+                          _newPasswordController.dispose();
+                          _confirmPasswordController.dispose();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: BorderSide(color: AppTheme.secondaryTextColor),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : () async {
+                          if (_formKey.currentState!.validate()) {
+                            setModalState(() {
+                              _isLoading = true;
+                            });
+
+                            try {
+                              final userService = ref.read(userServiceProvider);
+                              await userService.changePassword(
+                                currentPassword: _currentPasswordController.text,
+                                newPassword: _newPasswordController.text,
+                              );
+
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Password changed successfully!',
+                                      style: AppTheme.bodyMedium.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    backgroundColor: AppTheme.successColor,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                final errorMessage = e.toString().replaceFirst('Exception: ', '');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      errorMessage.isNotEmpty 
+                                          ? errorMessage 
+                                          : 'Failed to change password. Please try again.',
+                                      style: AppTheme.bodyMedium.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    backgroundColor: AppTheme.errorColor,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            } finally {
+                              if (context.mounted) {
+                                setModalState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                              _currentPasswordController.dispose();
+                              _newPasswordController.dispose();
+                              _confirmPasswordController.dispose();
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                'Change Password',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            
-            // Add bottom padding for safe area
-            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
-          ],
+          ),
         ),
       ),
     );

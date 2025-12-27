@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/user.dart';
+import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/user_provider.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -19,16 +21,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _phoneController = TextEditingController();
 
   bool _isLoading = false;
-  UserRole _selectedUserRole = UserRole.explorer;
+  String? _profileImagePath;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with current user data (mock for now)
-    _nameController.text = 'John Doe';
-    _emailController.text = 'john.doe@example.com';
-    _phoneController.text = '+250 788 123 456';
-    _selectedUserRole = UserRole.explorer;
+    _loadUserData();
+  }
+
+  void _loadUserData() {
+    final user = ref.read(currentUserProvider);
+    if (user != null) {
+      setState(() {
+        _nameController.text = user.fullName;
+        _emailController.text = user.email;
+        _phoneController.text = user.phoneNumber ?? '';
+      });
+    }
   }
 
   @override
@@ -128,12 +137,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 24),
-            
-            // Account Type
-            _buildSectionHeader('Account Type'),
-            const SizedBox(height: 16),
-            _buildUserRoleSelection(),
             const SizedBox(height: 32),
             
             // Save Button
@@ -146,6 +149,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildProfilePictureSection() {
+    final user = ref.watch(currentUserProvider);
+    final imageUrl = _profileImagePath != null 
+        ? null 
+        : user?.profileImage;
+    
     return Center(
       child: Column(
         children: [
@@ -162,18 +170,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
                 child: ClipOval(
-                  child: Image.network(
-                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: AppTheme.dividerColor,
-                      child: const Icon(
-                        Icons.person,
-                        size: 60,
-                        color: AppTheme.secondaryTextColor,
-                      ),
-                    ),
-                  ),
+                  child: _profileImagePath != null
+                      ? Image.asset(
+                          _profileImagePath!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(user),
+                        )
+                      : imageUrl != null
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(user),
+                            )
+                          : _buildPlaceholderImage(user),
                 ),
               ),
               Positioned(
@@ -225,78 +234,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _buildUserRoleSelection() {
-    return Column(
-      children: UserRole.values.where((role) => role != UserRole.admin).map((role) {
-        final isSelected = _selectedUserRole == role;
-        return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _selectedUserRole = role;
-              });
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : AppTheme.dividerColor,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
-                  width: isSelected ? 2 : 1,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
-                        width: 2,
-                      ),
-                      color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-                    ),
-                    child: isSelected
-                        ? const Icon(
-                            Icons.check,
-                            size: 12,
-                            color: Colors.white,
-                          )
-                        : null,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          role.displayName,
-                          style: AppTheme.titleMedium.copyWith(
-                            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          role.description,
-                          style: AppTheme.bodySmall.copyWith(
-                            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+  Widget _buildPlaceholderImage(User? user) {
+    return Container(
+      color: AppTheme.dividerColor,
+      child: Center(
+        child: Text(
+          user?.initials ?? 'U',
+          style: const TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.secondaryTextColor,
           ),
-        );
-      }).toList(),
+        ),
+      ),
     );
   }
 
@@ -499,8 +449,38 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     });
 
     try {
-      // TODO: Implement actual profile update logic
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      final userService = ref.read(userServiceProvider);
+      final currentUser = ref.read(currentUserProvider);
+      
+      if (currentUser == null) {
+        throw Exception('User not found. Please login again.');
+      }
+
+      // Check what changed
+      final nameChanged = _nameController.text.trim() != currentUser.fullName;
+      final emailChanged = _emailController.text.trim() != currentUser.email;
+      final phoneChanged = _phoneController.text.trim() != (currentUser.phoneNumber ?? '');
+
+      // Update profile (name and phone)
+      if (nameChanged || phoneChanged) {
+        await userService.updateProfile(
+          fullName: nameChanged ? _nameController.text.trim() : null,
+          phoneNumber: phoneChanged ? _phoneController.text.trim() : null,
+        );
+      }
+
+      // Update email separately if changed
+      if (emailChanged) {
+        await userService.updateEmail(_emailController.text.trim());
+      }
+
+      // Update profile image if changed
+      if (_profileImagePath != null) {
+        await userService.updateProfileImage(_profileImagePath!);
+      }
+
+      // Refresh user data - invalidate providers to refetch
+      ref.invalidate(currentUserProfileProvider);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -524,15 +504,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final errorMessage = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Failed to update profile. Please try again.',
+              errorMessage.isNotEmpty 
+                  ? errorMessage 
+                  : 'Failed to update profile. Please try again.',
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.white,
               ),
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: AppTheme.errorColor,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),

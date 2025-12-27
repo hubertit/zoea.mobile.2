@@ -88,8 +88,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       String identifier;
       if (_isPhoneLogin) {
-        // Use phone with country code
-        identifier = '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}';
+        // Clean phone number: remove spaces, +, and special characters
+        final phoneNumber = '${_selectedCountry.phoneCode}${_phoneController.text.trim()}';
+        identifier = PhoneValidator.cleanPhoneNumber(phoneNumber);
       } else {
         // Use email
         identifier = _emailController.text.trim();
@@ -102,6 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (user != null && mounted) {
+        // Use replace to prevent going back to login/splash
         context.go('/explore');
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,9 +114,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final errorMessage = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           AppTheme.errorSnackBar(
-            message: 'An error occurred. Please try again.',
+            message: errorMessage.isNotEmpty ? errorMessage : 'An error occurred. Please try again.',
           ),
         );
       }
@@ -418,23 +421,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
                       ),
+                      elevation: _isLoading ? 0 : 2,
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (_isLoading) ...[
+                          SizedBox(
                             width: 20,
+                            height: 20,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                              strokeWidth: 2.5,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
-                          )
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
                           ),
+                          const SizedBox(width: 12),
+                        ],
+                        Text(
+                          _isLoading ? 'Signing In...' : 'Sign In',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: AppTheme.spacing16),
                   // Register Link

@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/search_provider.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   final String? initialQuery;
   final String? category;
   
@@ -14,50 +17,51 @@ class SearchScreen extends StatefulWidget {
   });
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   late TextEditingController _searchController;
   String _currentQuery = '';
-  List<Map<String, dynamic>> _searchResults = [];
-  bool _isSearching = false;
+  String _searchQuery = ''; // This is the actual query used for API calls (after debounce)
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController(text: widget.initialQuery ?? '');
     _currentQuery = widget.initialQuery ?? '';
-    if (_currentQuery.isNotEmpty) {
-      _performSearch(_currentQuery);
-    }
+    _searchQuery = widget.initialQuery ?? '';
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
   void _performSearch(String query) {
+    _debounceTimer?.cancel();
+    
+    // Update current query immediately for UI
+    setState(() {
+      _currentQuery = query;
+    });
+
     if (query.trim().isEmpty) {
+      // Clear search query immediately if empty
       setState(() {
-        _searchResults = [];
-        _isSearching = false;
+        _searchQuery = '';
       });
       return;
     }
 
-    setState(() {
-      _isSearching = true;
-    });
-
-    // Simulate search delay
-    Future.delayed(const Duration(milliseconds: 500), () {
+    // Debounce search to avoid too many API calls
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) {
         setState(() {
-          _searchResults = _getSearchResults(query);
-          _isSearching = false;
+          _searchQuery = query.trim();
         });
       }
     });
@@ -98,6 +102,11 @@ class _SearchScreenState extends State<SearchScreen> {
             });
             _performSearch(value);
           },
+          onSubmitted: (value) {
+            if (value.trim().isNotEmpty) {
+              _performSearch(value);
+            }
+          },
         ),
         actions: [
           if (_currentQuery.isNotEmpty)
@@ -108,9 +117,10 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               onPressed: () {
                 _searchController.clear();
+                _debounceTimer?.cancel();
                 setState(() {
                   _currentQuery = '';
-                  _searchResults = [];
+                  _searchQuery = '';
                 });
               },
             ),
@@ -121,19 +131,39 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildBody() {
-    if (_currentQuery.isEmpty) {
+    if (_searchQuery.isEmpty) {
       return _buildEmptyState();
     }
 
-    if (_isSearching) {
-      return _buildLoadingState();
-    }
+    // Watch search provider with the debounced search query
+    // Create a stable search params object to prevent unnecessary rebuilds
+    final searchParams = SearchParams(
+      query: _searchQuery,
+      category: widget.category,
+    );
+    
+    final searchAsync = ref.watch(searchProvider(searchParams));
 
-    if (_searchResults.isEmpty) {
-      return _buildNoResultsState();
-    }
+    return searchAsync.when(
+      data: (results) {
+        final listings = results['listings'] as List? ?? [];
+        final events = results['events'] as List? ?? [];
+        final tours = results['tours'] as List? ?? [];
+        
+        final allResults = <Map<String, dynamic>>[];
+        allResults.addAll(listings.map((e) => {...e, 'type': 'listing'}));
+        allResults.addAll(events.map((e) => {...e, 'type': 'event'}));
+        allResults.addAll(tours.map((e) => {...e, 'type': 'tour'}));
 
-    return _buildSearchResults();
+        if (allResults.isEmpty) {
+          return _buildNoResultsState();
+        }
+
+        return _buildSearchResults(allResults);
+      },
+      loading: () => _buildLoadingState(),
+      error: (error, stack) => _buildErrorState(error),
+    );
   }
 
   Widget _buildEmptyState() {
@@ -203,18 +233,95 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildSearchResults() {
+  Widget _buildSearchResults(List<Map<String, dynamic>> results) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: _searchResults.length,
+      itemCount: results.length,
       itemBuilder: (context, index) {
-        final result = _searchResults[index];
+        final result = results[index];
         return _buildSearchResultCard(result);
       },
     );
   }
 
+  Widget _buildErrorState(Object error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: AppTheme.errorColor,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Search failed',
+            style: AppTheme.headlineSmall.copyWith(
+              color: AppTheme.errorColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error.toString().replaceFirst('Exception: ', ''),
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.secondaryTextColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSearchResultCard(Map<String, dynamic> result) {
+    // Extract image URL from API response structure
+    String? imageUrl;
+    if (result['images'] != null && result['images'] is List && (result['images'] as List).isNotEmpty) {
+      final firstImage = (result['images'] as List).first;
+      if (firstImage is Map && firstImage['media'] != null) {
+        imageUrl = firstImage['media']['url'] ?? firstImage['media']['thumbnailUrl'];
+      } else if (firstImage is String) {
+        imageUrl = firstImage;
+      }
+    } else if (result['image'] != null) {
+      imageUrl = result['image'] is String ? result['image'] : result['image']['url'];
+    } else if (result['flyer'] != null) {
+      imageUrl = result['flyer'];
+    }
+
+    // Extract name/title
+    final name = result['name'] ?? result['title'] ?? 'Unknown';
+    
+    // Extract location/address
+    final location = result['address'] ?? 
+                     result['locationName'] ?? 
+                     result['city']?['name'] ?? 
+                     result['subtitle'] ?? 
+                     '';
+
+    // Extract rating
+    final rating = result['rating'] != null 
+        ? (result['rating'] is String 
+            ? double.tryParse(result['rating']) 
+            : result['rating']?.toDouble())
+        : null;
+
+    // Determine type icon
+    final resultType = result['type'] ?? '';
+    IconData typeIcon;
+    String typeLabel;
+    if (resultType == 'event' || result['event'] != null) {
+      typeIcon = Icons.event;
+      typeLabel = 'Event';
+    } else if (resultType == 'tour') {
+      typeIcon = Icons.explore;
+      typeLabel = 'Tour';
+    } else {
+      typeIcon = Icons.place;
+      typeLabel = 'Place';
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -232,60 +339,78 @@ class _SearchScreenState extends State<SearchScreen> {
         contentPadding: const EdgeInsets.all(12),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
-            imageUrl: result['image'],
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              width: 50,
-              height: 50,
-              color: AppTheme.dividerColor,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              width: 50,
-              height: 50,
-              color: AppTheme.dividerColor,
-              child: const Icon(Icons.image_not_supported),
-            ),
-          ),
+          child: imageUrl != null
+              ? CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: 50,
+                    height: 50,
+                    color: AppTheme.dividerColor,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 50,
+                    height: 50,
+                    color: AppTheme.dividerColor,
+                    child: Icon(
+                      typeIcon,
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 50,
+                  height: 50,
+                  color: AppTheme.dividerColor,
+                  child: Icon(
+                    typeIcon,
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                ),
         ),
         title: Text(
-          result['title'],
+          name,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text(
-              result['subtitle'],
-              style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+            if (location.isNotEmpty)
+              Text(
+                location,
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
             const SizedBox(height: 4),
             Row(
               children: [
                 Icon(
-                  result['type'] == 'event' ? Icons.event : Icons.place,
+                  typeIcon,
                   size: 12,
                   color: AppTheme.secondaryTextColor,
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  result['type'] == 'event' ? 'Event' : 'Place',
+                  typeLabel,
                   style: AppTheme.labelSmall.copyWith(
                     color: AppTheme.secondaryTextColor,
                   ),
                 ),
-                const SizedBox(width: 8),
-                if (result['rating'] != null) ...[
+                if (rating != null) ...[
+                  const SizedBox(width: 8),
                   Icon(
                     Icons.star,
                     size: 12,
@@ -293,7 +418,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const SizedBox(width: 2),
                   Text(
-                    result['rating'].toString(),
+                    rating.toStringAsFixed(1),
                     style: AppTheme.labelSmall.copyWith(
                       color: AppTheme.primaryColor,
                       fontWeight: FontWeight.w500,
@@ -305,7 +430,14 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
         onTap: () {
-          // TODO: Navigate to detail screen
+          final id = result['id'] ?? '';
+          if (resultType == 'event' || result['event'] != null) {
+            context.push('/event/$id');
+          } else if (resultType == 'tour') {
+            context.push('/tour/$id');
+          } else {
+            context.push('/listing/$id');
+          }
         },
       ),
     );
@@ -326,6 +458,9 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         onTap: () {
           _searchController.text = search;
+          setState(() {
+            _currentQuery = search;
+          });
           _performSearch(search);
         },
       ),
@@ -347,138 +482,15 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         onTap: () {
           _searchController.text = search;
+          setState(() {
+            _currentQuery = search;
+          });
           _performSearch(search);
         },
       ),
     );
   }
 
-  List<Map<String, dynamic>> _getSearchResults(String query) {
-    final allResults = _getAllSearchableItems();
-    return allResults.where((item) {
-      final title = item['title'].toLowerCase();
-      final subtitle = item['subtitle'].toLowerCase();
-      final searchQuery = query.toLowerCase();
-      
-      // Filter by category if specified
-      if (widget.category != null) {
-        final itemCategory = item['category']?.toLowerCase();
-        if (itemCategory != widget.category?.toLowerCase()) {
-          return false;
-        }
-      }
-      
-      return title.contains(searchQuery) || subtitle.contains(searchQuery);
-    }).toList();
-  }
-
-  List<Map<String, dynamic>> _getAllSearchableItems() {
-    return [
-      // Experiences
-      {
-        'title': 'Gorilla Trekking Experience',
-        'subtitle': 'Volcanoes National Park, Musanze',
-        'type': 'event',
-        'category': 'experiences',
-        'rating': 4.8,
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'title': 'Cultural Village Tour',
-        'subtitle': 'Iby\'iwacu Cultural Village, Musanze',
-        'type': 'event',
-        'category': 'experiences',
-        'rating': 4.7,
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'title': 'Lake Kivu Boat Trip',
-        'subtitle': 'Rubavu, Western Province',
-        'type': 'event',
-        'category': 'experiences',
-        'rating': 4.6,
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
-      },
-      
-      // Dining
-      {
-        'title': 'The Hut Restaurant',
-        'subtitle': 'Kigali Heights, Kigali',
-        'type': 'place',
-        'category': 'dining',
-        'rating': 4.5,
-        'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200',
-      },
-      {
-        'title': 'Bourbon Coffee',
-        'subtitle': 'Kacyiru, Kigali',
-        'type': 'place',
-        'category': 'dining',
-        'rating': 4.3,
-        'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200',
-      },
-      {
-        'title': 'Pizza Corner',
-        'subtitle': 'Remera, Kigali',
-        'type': 'place',
-        'category': 'dining',
-        'rating': 4.1,
-        'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200',
-      },
-      
-      // Nightlife
-      {
-        'title': 'Sky Lounge',
-        'subtitle': 'Kigali Heights, Kigali',
-        'type': 'place',
-        'category': 'nightlife',
-        'rating': 4.5,
-        'image': 'https://images.unsplash.com/photo-1533174072545-7bd46c006744?w=200',
-      },
-      {
-        'title': 'Club Amahoro',
-        'subtitle': 'Remera, Kigali',
-        'type': 'place',
-        'category': 'nightlife',
-        'rating': 4.2,
-        'image': 'https://images.unsplash.com/photo-1598032790856-ce216b72780b?w=200',
-      },
-      {
-        'title': 'Rooftop Bar',
-        'subtitle': 'Kiyovu, Kigali',
-        'type': 'place',
-        'category': 'nightlife',
-        'rating': 4.7,
-        'image': 'https://images.unsplash.com/photo-1514933651105-0646ef958e0e?w=200',
-      },
-      
-      // General Places
-      {
-        'title': 'Kigali Genocide Memorial',
-        'subtitle': 'Gisozi, Kigali',
-        'type': 'place',
-        'category': 'places',
-        'rating': 4.9,
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
-      },
-      {
-        'title': 'Nyungwe Forest National Park',
-        'subtitle': 'Nyungwe, Southern Province',
-        'type': 'place',
-        'category': 'places',
-        'rating': 4.8,
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=200',
-      },
-      {
-        'title': 'Akagera National Park',
-        'subtitle': 'Eastern Province',
-        'type': 'place',
-        'category': 'places',
-        'rating': 4.5,
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200',
-      },
-    ];
-  }
 
   List<String> _getRecentSearches() {
     return [
