@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
+import '../../../core/providers/categories_provider.dart';
 import '../../../core/models/event.dart';
+import '../../../core/models/listing.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
 
@@ -878,61 +880,188 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildCategoriesSection() {
-    final categories = [
-      {'icon': Icons.event, 'label': 'Events'},
-      {'icon': Icons.restaurant, 'label': 'Dining'},
-      {'icon': Icons.explore, 'label': 'Experiences'},
-      {'icon': Icons.nightlife, 'label': 'Nightlife'},
-      {'icon': Icons.hotel, 'label': 'Accommodation'},
-      {'icon': Icons.shopping_bag, 'label': 'Shopping'},
-    ];
+    final categoriesAsync = ref.watch(categoriesProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return categoriesAsync.when(
+      data: (categories) {
+        // Filter only active categories and sort by sortOrder
+        final activeCategories = categories
+            .where((cat) => cat['isActive'] == true)
+            .toList()
+          ..sort((a, b) => (a['sortOrder'] as int? ?? 0).compareTo(b['sortOrder'] as int? ?? 0));
+
+        if (activeCategories.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Categories',
-              style: AppTheme.headlineMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                _showCategoriesBottomSheet(context);
-              },
-              child: Text(
-                'View More',
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w500,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Categories',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
+                TextButton(
+                  onPressed: () {
+                    _showCategoriesBottomSheet(context);
+                  },
+                  child: Text(
+                    'View More',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1.1,
               ),
+              itemCount: activeCategories.length > 6 ? 6 : activeCategories.length,
+              itemBuilder: (context, index) {
+                final category = activeCategories[index];
+                return _buildCategoryCardFromApi(category);
+              },
             ),
           ],
-        ),
-        const SizedBox(height: 8),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 1.1,
+        );
+      },
+      loading: () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Categories',
+            style: AppTheme.headlineMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return _buildCategoryCard(
-              icon: category['icon'] as IconData,
-              label: category['label'] as String,
-            );
-          },
+          const SizedBox(height: 8),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 1.1,
+            ),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      error: (error, stack) => const SizedBox.shrink(), // Hide on error
+    );
+  }
+
+  IconData _getIconForCategory(String? iconName) {
+    // Map icon names from API to Flutter icons
+    switch (iconName?.toLowerCase()) {
+      case 'hotel':
+        return Icons.hotel;
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'local_bar':
+      case 'nightlife':
+        return Icons.nightlife;
+      case 'explore':
+      case 'tours':
+        return Icons.explore;
+      case 'event':
+      case 'events':
+        return Icons.event;
+      case 'shopping_bag':
+      case 'shopping':
+        return Icons.shopping_bag;
+      case 'attractions':
+        return Icons.attractions;
+      default:
+        return Icons.category;
+    }
+  }
+
+  Widget _buildCategoryCardFromApi(Map<String, dynamic> category) {
+    final name = category['name'] as String? ?? 'Category';
+    final slug = category['slug'] as String? ?? '';
+    final iconName = category['icon'] as String?;
+    final icon = _getIconForCategory(iconName);
+    final count = category['_count'] as Map<String, dynamic>?;
+    final listingsCount = count?['listings'] as int? ?? 0;
+    final toursCount = count?['tours'] as int? ?? 0;
+    final totalCount = listingsCount + toursCount;
+
+    return GestureDetector(
+      onTap: () {
+        if (slug.isNotEmpty) {
+          context.push('/category/$slug');
+        } else {
+          context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.grey[200]!,
+            width: 1,
+          ),
         ),
-      ],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: AppTheme.primaryTextColor,
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: AppTheme.bodySmall.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppTheme.primaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (totalCount > 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                '$totalCount',
+                style: AppTheme.labelSmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -1392,21 +1521,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   void _showCategoriesBottomSheet(BuildContext context) {
-    final allCategories = [
-      {'icon': Icons.event, 'label': 'Events'},
-      {'icon': Icons.restaurant, 'label': 'Dining'},
-      {'icon': Icons.explore, 'label': 'Experiences'},
-      {'icon': Icons.nightlife, 'label': 'Nightlife'},
-      {'icon': Icons.hotel, 'label': 'Accommodation'},
-      {'icon': Icons.shopping_bag, 'label': 'Shopping'},
-      {'icon': Icons.sports_soccer, 'label': 'Sports'},
-      {'icon': Icons.landscape, 'label': 'National Parks'},
-      {'icon': Icons.museum, 'label': 'Museums'},
-      {'icon': Icons.directions_car, 'label': 'Transport'},
-      {'icon': Icons.terrain, 'label': 'Hiking'},
-      {'icon': Icons.build, 'label': 'Services'},
-    ];
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1439,23 +1553,110 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
             const SizedBox(height: 20),
             // Categories grid
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.2,
-              children: allCategories.map((category) {
-                return _buildBottomSheetCategoryCard(
-                  icon: category['icon'] as IconData,
-                  label: category['label'] as String,
+            Consumer(
+              builder: (context, ref, child) {
+                final categoriesAsync = ref.watch(categoriesProvider);
+                
+                return categoriesAsync.when(
+                  data: (categories) {
+                    final activeCategories = categories
+                        .where((cat) => cat['isActive'] == true)
+                        .toList()
+                      ..sort((a, b) => (a['sortOrder'] as int? ?? 0).compareTo(b['sortOrder'] as int? ?? 0));
+                    
+                    return GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1.2,
+                      children: activeCategories.map((category) {
+                        return _buildBottomSheetCategoryCardFromApi(category);
+                      }).toList(),
+                    );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                    child: Text('Failed to load categories'),
+                  ),
                 );
-              }).toList(),
+              },
             ),
             
             // Add bottom padding for safe area
             SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSheetCategoryCardFromApi(Map<String, dynamic> category) {
+    final name = category['name'] as String? ?? 'Category';
+    final slug = category['slug'] as String? ?? '';
+    final iconName = category['icon'] as String?;
+    final icon = _getIconForCategory(iconName);
+    final count = category['_count'] as Map<String, dynamic>?;
+    final listingsCount = count?['listings'] as int? ?? 0;
+    final toursCount = count?['tours'] as int? ?? 0;
+    final totalCount = listingsCount + toursCount;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        if (slug.isNotEmpty) {
+          context.push('/category/$slug');
+        } else {
+          context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.grey[200]!,
+            width: 1,
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: AppTheme.primaryColor,
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: AppTheme.bodySmall.copyWith(
+                color: AppTheme.primaryTextColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 11,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (totalCount > 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                '$totalCount places',
+                style: AppTheme.labelSmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                  fontSize: 9,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -1838,12 +2039,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       builder: (context, ref, child) {
         // Use default Kigali coordinates for nearby listings
         final nearbyAsync = ref.watch(
-          nearbyListingsProvider({
-            'latitude': AppConfig.defaultMapLatitude,
-            'longitude': AppConfig.defaultMapLongitude,
-            'radiusKm': 10.0,
-            'limit': 5,
-          }),
+          nearbyListingsProvider(
+            const NearbyListingsParams(
+              latitude: AppConfig.defaultMapLatitude,
+              longitude: AppConfig.defaultMapLongitude,
+              radiusKm: 10.0,
+              limit: 5,
+            ),
+          ),
         );
 
         return Column(

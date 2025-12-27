@@ -23,7 +23,6 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   Future<void> _init() async {
     try {
       final tokenStorage = await TokenStorageService.getInstance();
-      final isLoggedIn = await tokenStorage.isLoggedIn();
       
       // Get auth service
       _authService = _ref.read(authServiceProvider);
@@ -35,33 +34,61 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         }
       });
       
-      // If user has tokens stored, they should be considered logged in
-      // even if user data is missing (we can fetch it from API if needed)
-      if (isLoggedIn) {
+      // Check if user has valid tokens
+      final accessToken = await tokenStorage.getAccessToken();
+      final refreshToken = await tokenStorage.getRefreshToken();
+      final isLoggedIn = await tokenStorage.isLoggedIn();
+      
+      // If user has tokens, they should be considered logged in
+      // The auth service will validate tokens and load user data
+      if (isLoggedIn && accessToken != null && refreshToken != null) {
+        // Wait a bit for auth service to load user (it runs in background)
+        // Check auth service current user
+        await Future.delayed(const Duration(milliseconds: 100));
+        
         final cachedUser = await tokenStorage.getUserData();
-        if (cachedUser != null) {
-          state = AsyncValue.data(cachedUser);
+        final serviceUser = _authService?.currentUser;
+        
+        // Use service user if available, otherwise cached user
+        final user = serviceUser ?? cachedUser;
+        
+        if (user != null) {
+          state = AsyncValue.data(user);
         } else {
-          // User has tokens but no user data - keep them logged in
-          // The app can fetch user data from profile endpoint if needed
+          // User has tokens but no user data yet - keep them logged in
+          // Auth service will fetch user data in background
           state = const AsyncValue.data(null);
         }
       } else {
-        // No tokens and not logged in
+        // No tokens or not logged in
         state = const AsyncValue.data(null);
       }
     } catch (e, stack) {
-      // On error, don't force logout - keep existing state if possible
-      state = AsyncValue.error(e, stack);
+      // On error, check if we have tokens - if yes, keep session
+      try {
+        final tokenStorage = await TokenStorageService.getInstance();
+        final accessToken = await tokenStorage.getAccessToken();
+        final refreshToken = await tokenStorage.getRefreshToken();
+        
+        if (accessToken != null && refreshToken != null) {
+          // Have tokens, keep session even if init had error
+          final cachedUser = await tokenStorage.getUserData();
+          state = AsyncValue.data(cachedUser);
+        } else {
+          state = AsyncValue.error(e, stack);
+        }
+      } catch (_) {
+        state = AsyncValue.error(e, stack);
+      }
     }
   }
 
   /// Check if user is logged in by checking tokens directly
   Future<bool> isUserLoggedIn() async {
     try {
-      final tokenStorage = await TokenStorageService.getInstance();
-      final isLoggedIn = await tokenStorage.isLoggedIn();
-      return isLoggedIn;
+      // Use auth service to check for valid session
+      final authService = _ref.read(authServiceProvider);
+      return await authService.hasValidSession();
     } catch (e) {
       return false;
     }

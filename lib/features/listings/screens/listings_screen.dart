@@ -27,12 +27,14 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
     final listingsAsync = ref.watch(
-      listingsProvider({
-        'page': _currentPage,
-        'limit': _pageSize,
-        'type': widget.type,
-        'category': widget.category,
-      }),
+      listingsProvider(
+        ListingsParams(
+          page: _currentPage,
+          limit: _pageSize,
+          type: widget.type,
+          category: widget.category,
+        ),
+      ),
     );
 
     return Scaffold(
@@ -146,12 +148,14 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  ref.invalidate(listingsProvider({
-                    'page': _currentPage,
-                    'limit': _pageSize,
-                    'type': widget.type,
-                    'category': widget.category,
-                  }));
+                  ref.invalidate(listingsProvider(
+                    ListingsParams(
+                      page: _currentPage,
+                      limit: _pageSize,
+                      type: widget.type,
+                      category: widget.category,
+                    ),
+                  ));
                 },
                 child: const Text('Retry'),
               ),

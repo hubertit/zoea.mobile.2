@@ -38,10 +38,18 @@ class AuthService {
         onError: (error, handler) async {
           // Handle 401 errors - token expired
           if (error.response?.statusCode == 401) {
+            // Skip refresh if this is already a refresh token request to avoid infinite loop
+            if (error.requestOptions.path.contains('/refresh')) {
+              // Refresh token request failed - session expired
+              await signOut();
+              handler.next(error);
+              return;
+            }
+            
             // Try to refresh token
             final refreshed = await _refreshToken();
             if (refreshed) {
-              // Retry the original request
+              // Retry the original request with new token
               final opts = error.requestOptions;
               final token = await _tokenStorage?.getAccessToken();
               if (token != null) {
@@ -51,15 +59,16 @@ class AuthService {
                   handler.resolve(response);
                   return;
                 } catch (e) {
-                  // Refresh failed, logout user
-                  await signOut();
+                  // Retry failed even after refresh - might be a different error
+                  // Don't logout, just pass the error
                   handler.next(error);
                   return;
                 }
               }
+            } else {
+              // Refresh token failed - session expired, logout user
+              await signOut();
             }
-            // Refresh failed, logout user
-            await signOut();
           }
           handler.next(error);
         },
@@ -72,29 +81,72 @@ class AuthService {
       // Ensure token storage is initialized
       _tokenStorage ??= await TokenStorageService.getInstance();
       final isLoggedIn = await _tokenStorage?.isLoggedIn() ?? false;
+      
       if (isLoggedIn) {
-        // First, load cached user data for immediate display
-        final cachedUser = await _tokenStorage?.getUserData();
-        if (cachedUser != null) {
-          _currentUser = cachedUser;
-          _authController.add(cachedUser);
-        }
+        // Check if we have valid tokens
+        final accessToken = await _tokenStorage?.getAccessToken();
+        final refreshToken = await _tokenStorage?.getRefreshToken();
         
-        // Then, try to refresh user data from API in the background
-        // This ensures we have the latest data but don't block the UI
-        try {
-          await getCurrentUser();
-        } catch (e) {
-          // If API call fails but we have cached data, keep using cached data
-          // Only clear if we don't have cached data
-          if (cachedUser == null) {
-            await signOut();
+        // If we have tokens, restore the session
+        if (accessToken != null && refreshToken != null) {
+          // First, load cached user data for immediate display
+          final cachedUser = await _tokenStorage?.getUserData();
+          if (cachedUser != null) {
+            _currentUser = cachedUser;
+            _authController.add(cachedUser);
           }
+          
+          // Then, validate tokens by trying to get current user from API
+          // This ensures tokens are still valid and gets latest user data
+          try {
+            await getCurrentUser();
+          } catch (e) {
+            // If getCurrentUser fails with 401, try to refresh token
+            if (e is DioException && e.response?.statusCode == 401) {
+              final refreshed = await _refreshToken();
+              if (refreshed) {
+                // Token refreshed successfully, try to get user again
+                try {
+                  await getCurrentUser();
+                } catch (e2) {
+                  // If still fails after refresh, but we have cached user, keep session
+                  // User might be offline or API temporarily unavailable
+                  if (cachedUser != null) {
+                    // Keep using cached user - session is still valid
+                    return;
+                  } else {
+                    // No cached user and can't fetch - clear session
+                    await signOut();
+                  }
+                }
+              } else {
+                // Refresh token failed - session expired
+                // Only logout if refresh token is also invalid
+                await signOut();
+              }
+            } else {
+              // Network error or other issue - keep session if we have cached user
+              // User might be offline, but session is still valid
+              if (cachedUser == null) {
+                // No cached user and can't fetch - might be first time login
+                // Don't logout, let user try again later
+              }
+            }
+          }
+        } else {
+          // No tokens found - clear login state
+          await signOut();
         }
       }
     } catch (e) {
-      // If loading fails completely, clear stored data
-      await signOut();
+      // If loading fails completely, only clear if we don't have valid tokens
+      final accessToken = await _tokenStorage?.getAccessToken();
+      final refreshToken = await _tokenStorage?.getRefreshToken();
+      
+      if (accessToken == null || refreshToken == null) {
+        await signOut();
+      }
+      // Otherwise, keep the session - might be a temporary error
     }
   }
 
@@ -103,19 +155,44 @@ class AuthService {
       final refreshToken = await _tokenStorage?.getRefreshToken();
       if (refreshToken == null) return false;
 
-      final response = await _dio.post(
+      // Create a new Dio instance without interceptors to avoid infinite loop
+      final dioWithoutInterceptors = Dio(
+        BaseOptions(
+          baseUrl: AppConfig.apiBaseUrl,
+          connectTimeout: const Duration(milliseconds: AppConfig.connectionTimeout),
+          receiveTimeout: const Duration(milliseconds: AppConfig.receiveTimeout),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      final response = await dioWithoutInterceptors.post(
         '${AppConfig.authEndpoint}/refresh',
         data: {'refreshToken': refreshToken},
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data;
-        await _tokenStorage?.saveTokens(
-          data['accessToken'],
-          data['refreshToken'],
-        );
-        return true;
+        
+        // Extract tokens from response
+        // API might return tokens directly or nested in a 'data' field
+        final accessToken = data['accessToken'] ?? data['data']?['accessToken'];
+        final newRefreshToken = data['refreshToken'] ?? data['data']?['refreshToken'] ?? refreshToken;
+        
+        if (accessToken != null) {
+          await _tokenStorage?.saveTokens(accessToken, newRefreshToken);
+          return true;
+        }
       }
+      return false;
+    } on DioException catch (e) {
+      // If refresh token is invalid (401), return false
+      if (e.response?.statusCode == 401) {
+        return false;
+      }
+      // For other errors (network, etc.), return false
       return false;
     } catch (e) {
       return false;
@@ -263,11 +340,16 @@ class AuthService {
       final response = await _dio.get('${AppConfig.authEndpoint}/profile');
 
       if (response.statusCode == 200) {
-        final userData = response.data;
+        // Extract user data from response (might be nested in 'data' field)
+        final userData = response.data is Map && response.data['data'] != null
+            ? response.data['data']
+            : response.data;
+        
         final user = _parseUserFromResponse(userData);
         
         // Cache updated user data
         await _tokenStorage?.saveUserData(user);
+        await _tokenStorage?.setLoggedIn(true);
         
         _currentUser = user;
         _authController.add(user);
@@ -276,8 +358,13 @@ class AuthService {
       return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        // Token expired or invalid, logout
-        await signOut();
+        // Token expired or invalid - try to refresh
+        final refreshed = await _refreshToken();
+        if (!refreshed) {
+          // Refresh failed - session expired, logout
+          await signOut();
+        }
+        // If refresh succeeded, don't return null - let caller retry
       }
       return null;
     } catch (e) {
@@ -379,6 +466,21 @@ class AuthService {
     await _tokenStorage?.clearUserData();
     _currentUser = null;
     _authController.add(null);
+  }
+
+  /// Check if user has a valid session (has tokens)
+  Future<bool> hasValidSession() async {
+    try {
+      _tokenStorage ??= await TokenStorageService.getInstance();
+      final accessToken = await _tokenStorage?.getAccessToken();
+      final refreshToken = await _tokenStorage?.getRefreshToken();
+      final isLoggedIn = await _tokenStorage?.isLoggedIn() ?? false;
+      
+      // User has valid session if they have both tokens and isLoggedIn flag is true
+      return isLoggedIn && accessToken != null && refreshToken != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Check if a string is likely a phone number (contains only digits or starts with +)

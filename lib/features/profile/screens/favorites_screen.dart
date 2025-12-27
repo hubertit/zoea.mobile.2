@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/config/app_config.dart';
+import '../../../core/providers/favorites_provider.dart';
 
 class FavoritesScreen extends ConsumerStatefulWidget {
   const FavoritesScreen({super.key});
@@ -75,74 +77,187 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
   }
 
   Widget _buildAllFavorites() {
-    final allFavorites = [
-      ..._getMockEvents(),
-      ..._getMockPlaces(),
-    ];
+    final favoritesAsync = ref.watch(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
 
-    if (allFavorites.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.favorite_border,
-        title: 'No Favorites Yet',
-        subtitle: 'Start exploring and save your favorite events and places',
-        actionText: 'Explore Now',
-        onAction: () => context.go('/explore'),
-      );
-    }
+    return favoritesAsync.when(
+      data: (response) {
+        final favorites = response['data'] as List? ?? [];
+        
+        if (favorites.isEmpty) {
+          return _buildEmptyState(
+            icon: Icons.favorite_border,
+            title: 'No Favorites Yet',
+            subtitle: 'Start exploring and save your favorite events and places',
+            actionText: 'Explore Now',
+            onAction: () => context.go('/explore'),
+          );
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: allFavorites.length,
-      itemBuilder: (context, index) {
-        final item = allFavorites[index];
-        return _buildFavoriteCard(item);
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: favorites.length,
+            itemBuilder: (context, index) {
+              final favorite = favorites[index];
+              return _buildFavoriteCardFromApi(favorite);
+            },
+          ),
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load favorites',
+              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString().replaceFirst('Exception: ', ''),
+              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildEventFavorites() {
-    final eventFavorites = _getMockEvents();
+    final favoritesAsync = ref.watch(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
 
-    if (eventFavorites.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.event,
-        title: 'No Favorite Events',
-        subtitle: 'Save events you\'re interested in to see them here',
-        actionText: 'Browse Events',
-        onAction: () => context.go('/events'),
-      );
-    }
+    return favoritesAsync.when(
+      data: (response) {
+        final favorites = response['data'] as List? ?? [];
+        final eventFavorites = favorites.where((f) => f['eventId'] != null && f['event'] != null).toList();
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: eventFavorites.length,
-      itemBuilder: (context, index) {
-        final event = eventFavorites[index];
-        return _buildEventFavoriteCard(event);
+        if (eventFavorites.isEmpty) {
+          return _buildEmptyState(
+            icon: Icons.event,
+            title: 'No Favorite Events',
+            subtitle: 'Save events you\'re interested in to see them here',
+            actionText: 'Browse Events',
+            onAction: () => context.go('/events'),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: eventFavorites.length,
+            itemBuilder: (context, index) {
+              final favorite = eventFavorites[index];
+              return _buildEventFavoriteCardFromApi(favorite);
+            },
+          ),
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load favorites',
+              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString().replaceFirst('Exception: ', ''),
+              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildPlaceFavorites() {
-    final placeFavorites = _getMockPlaces();
+    final favoritesAsync = ref.watch(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
 
-    if (placeFavorites.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.place,
-        title: 'No Favorite Places',
-        subtitle: 'Save places you want to visit to see them here',
-        actionText: 'Explore Places',
-        onAction: () => context.go('/explore'),
-      );
-    }
+    return favoritesAsync.when(
+      data: (response) {
+        final favorites = response['data'] as List? ?? [];
+        final placeFavorites = favorites.where((f) => f['listingId'] != null && f['listing'] != null).toList();
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: placeFavorites.length,
-      itemBuilder: (context, index) {
-        final place = placeFavorites[index];
-        return _buildPlaceFavoriteCard(place);
+        if (placeFavorites.isEmpty) {
+          return _buildEmptyState(
+            icon: Icons.place,
+            title: 'No Favorite Places',
+            subtitle: 'Save places you want to visit to see them here',
+            actionText: 'Explore Places',
+            onAction: () => context.go('/explore'),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: placeFavorites.length,
+            itemBuilder: (context, index) {
+              final favorite = placeFavorites[index];
+              return _buildPlaceFavoriteCardFromApi(favorite);
+            },
+          ),
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load favorites',
+              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString().replaceFirst('Exception: ', ''),
+              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -565,6 +680,387 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFavoriteCardFromApi(Map<String, dynamic> favorite) {
+    final isEvent = favorite['eventId'] != null && favorite['event'] != null;
+    final isListing = favorite['listingId'] != null && favorite['listing'] != null;
+    
+    if (isEvent) {
+      return _buildEventFavoriteCardFromApi(favorite);
+    } else if (isListing) {
+      return _buildPlaceFavoriteCardFromApi(favorite);
+    }
+    
+    // Fallback for unknown types
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildEventFavoriteCardFromApi(Map<String, dynamic> favorite) {
+    final event = favorite['event'] as Map<String, dynamic>?;
+    if (event == null) return const SizedBox.shrink();
+    
+    final eventName = event['name'] ?? 'Unknown Event';
+    final location = event['locationName'] ?? event['address'] ?? 'Unknown Location';
+    final flyer = event['flyer'] ?? '';
+    final startDate = event['startDate'] != null 
+        ? DateTime.tryParse(event['startDate']) 
+        : null;
+    
+    String dateText = 'Date TBA';
+    if (startDate != null) {
+      dateText = '${startDate.day}/${startDate.month}/${startDate.year}';
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: CachedNetworkImage(
+              imageUrl: flyer,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                height: 200,
+                color: AppTheme.dividerColor,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+              errorWidget: (context, url, error) => Container(
+                height: 200,
+                color: AppTheme.dividerColor,
+                child: const Icon(Icons.event, size: 50),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Event',
+                    style: AppTheme.labelSmall.copyWith(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  eventName,
+                  style: AppTheme.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  location,
+                  style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.event, size: 16, color: AppTheme.secondaryTextColor),
+                    const SizedBox(width: 4),
+                    Text(
+                      dateText,
+                      style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          final eventId = favorite['eventId']?.toString();
+                          if (eventId != null) {
+                            context.push('/event/$eventId');
+                          }
+                        },
+                        icon: const Icon(Icons.visibility_outlined, size: 18),
+                        label: const Text('View Event'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppTheme.primaryColor,
+                          backgroundColor: AppTheme.backgroundColor,
+                          side: const BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showRemoveFavoriteDialogFromApi(favorite);
+                        },
+                        icon: const Icon(Icons.favorite, size: 18),
+                        label: const Text('Remove'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: AppTheme.errorColor,
+                          side: const BorderSide(color: AppTheme.errorColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceFavoriteCardFromApi(Map<String, dynamic> favorite) {
+    final listing = favorite['listing'] as Map<String, dynamic>?;
+    if (listing == null) return const SizedBox.shrink();
+    
+    final listingName = listing['name'] ?? 'Unknown Place';
+    final address = listing['address'] ?? listing['city']?['name'] ?? 'Unknown Location';
+    final category = listing['type'] ?? 'Place';
+    
+    // Extract image URL
+    String? imageUrl;
+    final images = listing['images'] as List?;
+    if (images != null && images.isNotEmpty) {
+      final firstImage = images[0];
+      if (firstImage is Map && firstImage['media'] != null) {
+        imageUrl = firstImage['media']['url'] ?? firstImage['media']['thumbnailUrl'];
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: imageUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 200,
+                      color: AppTheme.dividerColor,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 200,
+                      color: AppTheme.dividerColor,
+                      child: const Icon(Icons.place, size: 50),
+                    ),
+                  )
+                : Container(
+                    height: 200,
+                    color: AppTheme.dividerColor,
+                    child: const Icon(Icons.place, size: 50),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.successColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Place',
+                    style: AppTheme.labelSmall.copyWith(
+                      color: AppTheme.successColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  listingName,
+                  style: AppTheme.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  address,
+                  style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.place, size: 16, color: AppTheme.secondaryTextColor),
+                    const SizedBox(width: 4),
+                    Text(
+                      category,
+                      style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          final listingId = favorite['listingId']?.toString();
+                          if (listingId != null) {
+                            context.push('/listing/$listingId');
+                          }
+                        },
+                        icon: const Icon(Icons.visibility_outlined, size: 18),
+                        label: const Text('View Place'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppTheme.primaryColor,
+                          backgroundColor: AppTheme.backgroundColor,
+                          side: const BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showRemoveFavoriteDialogFromApi(favorite);
+                        },
+                        icon: const Icon(Icons.favorite, size: 18),
+                        label: const Text('Remove'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: AppTheme.errorColor,
+                          side: const BorderSide(color: AppTheme.errorColor),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showRemoveFavoriteDialogFromApi(Map<String, dynamic> favorite) {
+    final favoriteId = favorite['id']?.toString();
+    if (favoriteId == null) return;
+    
+    final listing = favorite['listing'] as Map<String, dynamic>?;
+    final event = favorite['event'] as Map<String, dynamic>?;
+    final itemName = listing?['name'] ?? event?['name'] ?? 'this item';
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Remove from Favorites',
+          style: AppTheme.titleMedium,
+        ),
+        content: Text(
+          'Are you sure you want to remove "$itemName" from your favorites?',
+          style: AppTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                final favoritesService = ref.read(favoritesServiceProvider);
+                await favoritesService.removeFromFavorites(favoriteId);
+                
+                // Invalidate to refresh
+                ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+                
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    AppTheme.successSnackBar(
+                      message: AppConfig.favoriteRemovedMessage,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    AppTheme.errorSnackBar(
+                      message: 'Failed to remove favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                    ),
+                  );
+                }
+              }
+            },
+            child: Text(
+              'Remove',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
