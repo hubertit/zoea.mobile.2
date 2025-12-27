@@ -944,7 +944,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
 
     return Container(
       color: AppTheme.backgroundColor,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           if (listingType == 'restaurant' || listingType == 'hotel') ...[
@@ -960,9 +960,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   foregroundColor: AppTheme.primaryColor,
                   backgroundColor: AppTheme.backgroundColor,
                   side: const BorderSide(color: AppTheme.primaryColor),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
@@ -981,9 +981,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: AppTheme.primaryColor,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
