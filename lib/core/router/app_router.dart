@@ -46,6 +46,7 @@ import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
 import '../widgets/shell.dart';
 import '../providers/auth_provider.dart';
+import '../providers/listings_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final isLoggedIn = ref.watch(isLoggedInProvider);
@@ -184,7 +185,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/listing/:id',
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return ListingDetailScreen(listingId: id);
+          // Check if this is an accommodation listing and route accordingly
+          return _ListingDetailRouter(listingId: id);
         },
       ),
       GoRoute(
@@ -420,3 +422,45 @@ final routerProvider = Provider<GoRouter>((ref) {
   
   return router;
 });
+
+/// Widget that routes to the appropriate detail screen based on listing category
+class _ListingDetailRouter extends ConsumerWidget {
+  final String listingId;
+
+  const _ListingDetailRouter({required this.listingId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listingAsync = ref.watch(listingByIdProvider(listingId));
+
+    return listingAsync.when(
+      data: (listing) {
+        // Check if this is an accommodation listing
+        final category = listing['category'] as Map<String, dynamic>?;
+        final categorySlug = category?['slug'] as String?;
+        final categoryName = category?['name'] as String?;
+        
+        final isAccommodation = categorySlug == 'accommodation' || 
+                               categoryName?.toLowerCase() == 'accommodation';
+        
+        if (isAccommodation) {
+          // Redirect to accommodation detail screen
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/accommodation/$listingId');
+          });
+          // Show loading while redirecting
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        
+        // Use regular listing detail screen for non-accommodation listings
+        return ListingDetailScreen(listingId: listingId);
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => ListingDetailScreen(listingId: listingId),
+    );
+  }
+}

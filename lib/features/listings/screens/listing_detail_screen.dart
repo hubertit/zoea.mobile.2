@@ -418,12 +418,44 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     String description,
     Map<String, dynamic>? operatingHours,
   ) {
+    // Extract location details
+    final address = listing['address'] as String? ?? '';
+    final city = listing['city'] as Map<String, dynamic>?;
+    final cityName = city?['name'] as String? ?? '';
+    final country = listing['country'] as Map<String, dynamic>?;
+    final countryName = country?['name'] as String? ?? '';
+    final locationText = address.isNotEmpty
+        ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}${countryName.isNotEmpty && cityName.isEmpty ? ', $countryName' : ''}'
+        : cityName.isNotEmpty
+            ? '$cityName${countryName.isNotEmpty ? ', $countryName' : ''}'
+            : countryName.isNotEmpty
+                ? countryName
+                : 'Location not available';
+    
+    // Extract contact info
+    final contactPhone = listing['contactPhone'] as String?;
+    final contactEmail = listing['contactEmail'] as String?;
+    final website = listing['website'] as String?;
+    
+    // Extract category and type
+    final category = listing['category'] as Map<String, dynamic>?;
+    final categoryName = category?['name'] as String?;
+    final listingType = listing['type'] as String?;
+    
+    // Generate description if missing
+    final displayDescription = description.isNotEmpty
+        ? description
+        : categoryName != null
+            ? 'Experience ${categoryName.toLowerCase()}${listingType != null ? ' - ${listingType}' : ''} in ${cityName.isNotEmpty ? cityName : countryName.isNotEmpty ? countryName : 'Rwanda'}.'
+            : '';
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (description.isNotEmpty) ...[
+          // About/Description Section
+          if (displayDescription.isNotEmpty) ...[
             Text(
               'About',
               style: AppTheme.headlineSmall.copyWith(
@@ -432,13 +464,43 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             ),
             const SizedBox(height: 12),
             Text(
-              description,
+              displayDescription,
               style: AppTheme.bodyMedium.copyWith(
                 height: 1.6,
+                color: AppTheme.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 24),
           ],
+          
+          // Location Section
+          Text(
+            'Location',
+            style: AppTheme.headlineSmall.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.location_on,
+                size: 20,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  locationText,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
           if (operatingHours != null) ...[
             Text(
               'Opening Hours',
@@ -480,8 +542,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               );
             }),
           ],
-          if (listing['contactPhone'] != null || listing['website'] != null) ...[
-            const SizedBox(height: 24),
+          // Contact Information Section
+          if (contactPhone != null || contactEmail != null || website != null) ...[
             Text(
               'Contact Information',
               style: AppTheme.headlineSmall.copyWith(
@@ -489,44 +551,75 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               ),
             ),
             const SizedBox(height: 12),
-            if (listing['contactPhone'] != null)
+            if (contactPhone != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
                     Icon(
                       Icons.phone,
-                      size: 18,
+                      size: 20,
                       color: AppTheme.secondaryTextColor,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      listing['contactPhone'],
-                      style: AppTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-            if (listing['website'] != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.language,
-                      size: 18,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      listing['website'],
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryColor,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        contactPhone,
+                        style: AppTheme.bodyMedium,
                       ),
                     ),
                   ],
                 ),
               ),
+            if (contactEmail != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.email,
+                      size: 20,
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        contactEmail,
+                        style: AppTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (website != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      size: 20,
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          // TODO: Open website URL
+                        },
+                        child: Text(
+                          website,
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.primaryColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 24),
           ],
         ],
       ),
@@ -534,49 +627,218 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
   }
 
   Widget _buildAmenitiesTab(List amenities) {
-    if (amenities.isEmpty) {
-      return const Center(
+    // Extract amenity data from nested structure
+    final amenityList = amenities
+        .map((item) {
+          if (item is Map<String, dynamic>) {
+            // API returns: { listingId, amenityId, amenity: { id, name, icon, description, category } }
+            final amenity = item['amenity'] as Map<String, dynamic>?;
+            if (amenity != null) {
+              return {
+                'name': amenity['name'] as String? ?? '',
+                'icon': amenity['icon'] as String?,
+                'description': amenity['description'] as String?,
+                'category': amenity['category'] as String?,
+              };
+            }
+            // Fallback: try direct access (for backward compatibility)
+            if (item['name'] != null) {
+              return {
+                'name': item['name'] as String? ?? '',
+                'icon': item['icon'] as String?,
+                'description': item['description'] as String?,
+                'category': item['category'] as String?,
+              };
+            }
+          }
+          return null;
+        })
+        .whereType<Map<String, dynamic>>()
+        .where((a) => a['name'] != null && (a['name'] as String).isNotEmpty)
+        .toList();
+
+    if (amenityList.isEmpty) {
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            'No amenities listed',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.hotel_outlined,
+                size: 64,
+                color: AppTheme.secondaryTextColor,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No amenities listed',
+                style: AppTheme.headlineSmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Amenities information will be available soon',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       );
     }
 
+    // Group amenities by category if available
+    final Map<String, List<Map<String, dynamic>>> groupedAmenities = {};
+    for (final amenity in amenityList) {
+      final category = amenity['category'] as String? ?? 'general';
+      if (!groupedAmenities.containsKey(category)) {
+        groupedAmenities[category] = [];
+      }
+      groupedAmenities[category]!.add(amenity);
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: amenities.map<Widget>((amenity) {
-          final amenityName = amenity is Map
-              ? (amenity['name'] ?? amenity['id'] ?? '')
-              : amenity.toString();
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Show all amenities in a grid if no categories, or grouped by category
+          if (groupedAmenities.length == 1)
+            // Single category - show as grid
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: amenityList.map<Widget>((amenity) {
+                return _buildAmenityChip(amenity);
+              }).toList(),
+            )
+          else
+            // Multiple categories - show grouped
+            ...groupedAmenities.entries.map<Widget>((entry) {
+              final category = entry.key;
+              final categoryAmenities = entry.value;
+              
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      category[0].toUpperCase() + category.substring(1),
+                      style: AppTheme.headlineSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: categoryAmenities.map<Widget>((amenity) {
+                        return _buildAmenityChip(amenity);
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              );
+            }),
+        ],
+      ),
+    );
+  }
 
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
+  Widget _buildAmenityChip(Map<String, dynamic> amenity) {
+    final name = amenity['name'] as String? ?? '';
+    final iconName = amenity['icon'] as String?;
+    final description = amenity['description'] as String?;
+    
+    // Map icon names to Material icons
+    IconData getIconForName(String? iconName) {
+      if (iconName == null) return Icons.star;
+      
+      switch (iconName.toLowerCase()) {
+        case 'wifi':
+        case 'wi-fi':
+          return Icons.wifi;
+        case 'pool':
+          return Icons.pool;
+        case 'spa':
+          return Icons.spa;
+        case 'restaurant':
+        case 'dining':
+          return Icons.restaurant;
+        case 'fitness':
+        case 'gym':
+          return Icons.fitness_center;
+        case 'parking':
+          return Icons.local_parking;
+        case 'business':
+          return Icons.business;
+        case 'airport':
+        case 'shuttle':
+          return Icons.airport_shuttle;
+        case 'room':
+        case 'service':
+          return Icons.room_service;
+        case 'bar':
+          return Icons.local_bar;
+        case 'breakfast':
+          return Icons.free_breakfast;
+        default:
+          return Icons.star;
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            getIconForName(iconName),
+            size: 20,
+            color: AppTheme.primaryColor,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  name,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (description != null && description.isNotEmpty)
+                  Text(
+                    description,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
             ),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              amenityName,
-              style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
-        }).toList(),
+          ),
+        ],
       ),
     );
   }

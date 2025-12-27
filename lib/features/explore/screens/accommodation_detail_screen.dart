@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/listings_provider.dart';
+import '../../../core/providers/favorites_provider.dart';
+import '../../../core/providers/reviews_provider.dart';
+import '../../../core/config/app_config.dart';
 
 class AccommodationDetailScreen extends ConsumerStatefulWidget {
   final String accommodationId;
@@ -27,8 +31,8 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     with TickerProviderStateMixin {
   late TabController _tabController;
   late ScrollController _scrollController;
-  bool _isFavorite = false;
   int _selectedImageIndex = 0;
+  bool _isScrolled = false;
   Map<String, Map<String, dynamic>> _selectedRooms = {}; // roomType -> {roomType, quantity}
 
   @override
@@ -36,10 +40,106 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     super.initState();
     _tabController = TabController(length: 5, vsync: this, initialIndex: 1); // Rooms tab is index 1
     _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 150 && !_isScrolled) {
+      setState(() {
+        _isScrolled = true;
+      });
+    } else if (_scrollController.offset <= 150 && _isScrolled) {
+      setState(() {
+        _isScrolled = false;
+      });
+    }
+  }
+
+  // Helper methods to extract data from API response
+  List<String> _extractImages(Map<String, dynamic> listing) {
+    final images = listing['images'] as List? ?? [];
+    return images.map((img) {
+      if (img is Map<String, dynamic>) {
+        final media = img['media'] as Map<String, dynamic>?;
+        return media?['url'] as String? ?? media?['thumbnailUrl'] as String? ?? '';
+      }
+      return img.toString();
+    }).where((url) => url.isNotEmpty).toList();
+  }
+
+  String _extractLocation(Map<String, dynamic> listing) {
+    final address = listing['address'] as String? ?? '';
+    final city = listing['city'] as Map<String, dynamic>?;
+    final cityName = city?['name'] as String? ?? '';
+    final country = listing['country'] as Map<String, dynamic>?;
+    final countryName = country?['name'] as String? ?? '';
+    
+    if (address.isNotEmpty) {
+      return '$address${cityName.isNotEmpty ? ', $cityName' : ''}${countryName.isNotEmpty && cityName.isEmpty ? ', $countryName' : ''}';
+    } else if (cityName.isNotEmpty) {
+      return '$cityName${countryName.isNotEmpty ? ', $countryName' : ''}';
+    } else if (countryName.isNotEmpty) {
+      return countryName;
+    }
+    return 'Location not available';
+  }
+
+  double _extractRating(Map<String, dynamic> listing) {
+    final rating = listing['rating'];
+    if (rating == null) return 0.0;
+    if (rating is String) return double.tryParse(rating) ?? 0.0;
+    return (rating as num?)?.toDouble() ?? 0.0;
+  }
+
+  int _extractReviewCount(Map<String, dynamic> listing) {
+    final count = listing['_count'] as Map<String, dynamic>?;
+    return count?['reviews'] as int? ?? 0;
+  }
+
+  String _extractPrice(Map<String, dynamic> listing) {
+    final minPrice = listing['minPrice'];
+    
+    if (minPrice == null) return 'Price not available';
+    
+    double minPriceValue = 0.0;
+    if (minPrice is String) {
+      minPriceValue = double.tryParse(minPrice) ?? 0.0;
+    } else if (minPrice is num) {
+      minPriceValue = minPrice.toDouble();
+    }
+    
+    if (minPriceValue == 0.0) return 'Price not available';
+    
+    final maxPrice = listing['maxPrice'];
+    if (maxPrice != null) {
+      double maxPriceValue = 0.0;
+      if (maxPrice is String) {
+        maxPriceValue = double.tryParse(maxPrice) ?? 0.0;
+      } else if (maxPrice is num) {
+        maxPriceValue = maxPrice.toDouble();
+      }
+      if (maxPriceValue > minPriceValue) {
+        return '${minPriceValue.toStringAsFixed(0)} - ${maxPriceValue.toStringAsFixed(0)}';
+      }
+    }
+    
+    return minPriceValue.toStringAsFixed(0);
+  }
+
+  List<String> _extractQuickAmenities(Map<String, dynamic> listing) {
+    final amenities = listing['amenities'] as List? ?? [];
+    return amenities.take(4).map((a) {
+      if (a is Map<String, dynamic>) {
+        final amenity = a['amenity'] as Map<String, dynamic>?;
+        return amenity?['name'] as String? ?? '';
+      }
+      return '';
+    }).where((name) => name.isNotEmpty).toList();
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _tabController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -47,128 +147,247 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
 
   @override
   Widget build(BuildContext context) {
-    final accommodation = _getAccommodationDetails(widget.accommodationId);
+    final listingAsync = ref.watch(listingByIdProvider(widget.accommodationId));
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          _buildSliverAppBar(accommodation),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildAccommodationInfo(accommodation),
-                _buildTabBar(),
-                _buildTabContent(accommodation),
-              ],
-            ),
+      body: listingAsync.when(
+        data: (listing) {
+          return CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              _buildSliverAppBar(listing),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    _buildAccommodationInfo(listing),
+                    _buildTabBar(),
+                    _buildTabContent(listing),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: AppTheme.errorColor,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Failed to load accommodation',
+                style: AppTheme.headlineSmall.copyWith(
+                  color: AppTheme.errorColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                error.toString().replaceFirst('Exception: ', ''),
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  ref.invalidate(listingByIdProvider(widget.accommodationId));
+                },
+                child: const Text('Retry'),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-      bottomNavigationBar: _buildBottomBar(accommodation),
+      bottomNavigationBar: listingAsync.when(
+        data: (listing) => _buildBottomBar(listing),
+        loading: () => const SizedBox.shrink(),
+        error: (_, __) => const SizedBox.shrink(),
+      ),
     );
   }
 
-  Widget _buildSliverAppBar(Map<String, dynamic> accommodation) {
+  Widget _buildSliverAppBar(Map<String, dynamic> listing) {
+    final images = _extractImages(listing);
+    final listingId = listing['id'] as String? ?? widget.accommodationId;
+    final isFavoritedAsync = ref.watch(isListingFavoritedProvider(listingId));
+
     return SliverAppBar(
       expandedHeight: 200,
       pinned: true,
-      backgroundColor: AppTheme.backgroundColor,
-      leading: IconButton(
-        onPressed: () => context.pop(),
-        icon: const Icon(Icons.chevron_left, size: 32),
-        style: IconButton.styleFrom(
-          foregroundColor: AppTheme.primaryTextColor,
+      backgroundColor: _isScrolled ? AppTheme.backgroundColor : Colors.transparent,
+      leading: Container(
+        width: 36,
+        height: 36,
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: _isScrolled ? Colors.transparent : Colors.black.withOpacity(0.3),
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(
+            Icons.chevron_left,
+            size: 18,
+            color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+          ),
+          padding: EdgeInsets.zero,
+          alignment: Alignment.center,
         ),
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.share),
-          onPressed: () {
-            // Share functionality
-          },
-        ),
-        IconButton(
-          icon: Icon(
-            _isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: _isFavorite ? Colors.red : AppTheme.primaryTextColor,
-          ),
-          onPressed: () {
-            setState(() {
-              _isFavorite = !_isFavorite;
-            });
-          },
-        ),
-      ],
+      actions: const [], // Remove from app bar, will be positioned in flexibleSpace
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
           children: [
-            PageView.builder(
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedImageIndex = index;
-                });
-              },
-              itemCount: accommodation['images'].length,
-              itemBuilder: (context, index) {
-                return Image.network(
-                  accommodation['images'][index],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[200],
-                      child: Icon(
-                        Icons.image_not_supported,
-                        color: Colors.grey[400],
-                        size: 48,
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+            if (images.isNotEmpty)
+              PageView.builder(
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedImageIndex = index;
+                  });
+                },
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  return Image.network(
+                    images[index],
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey[400],
+                          size: 48,
+                        ),
+                      );
+                    },
+                  );
+                },
+              )
+            else
+              Container(
+                color: Colors.grey[200],
+                child: Icon(
+                  Icons.image_not_supported,
+                  color: Colors.grey[400],
+                  size: 48,
+                ),
+              ),
             // Image indicators
-            Positioned(
-              bottom: 16,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  accommodation['images'].length,
-                  (index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _selectedImageIndex == index
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.5),
+            if (images.length > 1)
+              Positioned(
+                bottom: 16,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    images.length,
+                    (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _selectedImageIndex == index
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // Price badge
+            // Action buttons at top right
             Positioned(
-              top: 100,
+              top: 50,
               right: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  'RWF ${accommodation['price']}',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Share button
+                  Container(
+                    width: 36,
+                    height: 36,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.share,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        // Share functionality
+                      },
+                    ),
                   ),
-                ),
+                  // Favorite button
+                  Container(
+                    width: 36,
+                    height: 36,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: isFavoritedAsync.when(
+                        data: (isFavorited) => Icon(
+                          isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorited ? Colors.red : Colors.white,
+                          size: 18,
+                        ),
+                        loading: () => const Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        error: (_, __) => const Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        try {
+                          final favoritesService = ref.read(favoritesServiceProvider);
+                          await favoritesService.toggleFavorite(listingId: listingId);
+                          ref.invalidate(isListingFavoritedProvider(listingId));
+                          ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              AppTheme.successSnackBar(
+                                message: isFavoritedAsync.value ?? false
+                                    ? AppConfig.favoriteRemovedMessage
+                                    : AppConfig.favoriteAddedMessage,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              AppTheme.errorSnackBar(
+                                message: e.toString().replaceFirst('Exception: ', ''),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -177,7 +396,13 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     );
   }
 
-  Widget _buildAccommodationInfo(Map<String, dynamic> accommodation) {
+  Widget _buildAccommodationInfo(Map<String, dynamic> listing) {
+    final name = listing['name'] as String? ?? 'Accommodation';
+    final rating = _extractRating(listing);
+    final reviewCount = _extractReviewCount(listing);
+    final location = _extractLocation(listing);
+    final quickAmenities = _extractQuickAmenities(listing);
+
     return Container(
       color: AppTheme.backgroundColor,
       padding: const EdgeInsets.all(20),
@@ -188,34 +413,36 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             children: [
               Expanded(
                 child: Text(
-                  accommodation['name'],
+                  name,
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    accommodation['rating'].toString(),
-                    style: AppTheme.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w600,
+              if (rating > 0)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                      size: 20,
                     ),
-                  ),
-                  Text(
-                    ' (${accommodation['reviews']} reviews)',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                    const SizedBox(width: 4),
+                    Text(
+                      rating.toStringAsFixed(1),
+                      style: AppTheme.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    if (reviewCount > 0)
+                      Text(
+                        ' ($reviewCount reviews)',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                  ],
+                ),
             ],
           ),
           const SizedBox(height: 8),
@@ -227,35 +454,39 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                 color: AppTheme.secondaryTextColor,
               ),
               const SizedBox(width: 4),
-              Text(
-                accommodation['location'],
-                style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+              Expanded(
+                child: Text(
+                  location,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // Quick amenities
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: accommodation['quickAmenities'].map<Widget>((amenity) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  amenity,
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.primaryTextColor,
+          if (quickAmenities.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            // Quick amenities
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: quickAmenities.map<Widget>((amenity) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
+                  child: Text(
+                    amenity,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.primaryTextColor,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
         ],
       ),
     );
@@ -481,7 +712,9 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     );
   }
 
-  Widget _buildRoomsTab(Map<String, dynamic> accommodation) {
+  Widget _buildRoomsTab(Map<String, dynamic> listing) {
+    final roomTypes = listing['roomTypes'] as List? ?? [];
+    
     return GestureDetector(
       onTap: () {
         // Scroll to top when tapping anywhere on the room types tab
@@ -494,43 +727,63 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Available Rooms',
-            style: AppTheme.headlineSmall.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (accommodation['roomTypes'] != null) ...[
-            ...accommodation['roomTypes'].map<Widget>((roomType) => 
-              _buildSelectableRoomTypeCard(roomType)
-            ).toList(),
-          ] else ...[
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Available Rooms',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              child: Center(
-                child: Text(
-                  'No room types available',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+            ),
+            const SizedBox(height: 16),
+            if (roomTypes.isNotEmpty) ...[
+              ...roomTypes.map<Widget>((roomType) {
+                // Convert API roomType structure to expected format
+                final roomTypeData = roomType is Map<String, dynamic> ? roomType : <String, dynamic>{};
+                final name = roomTypeData['name'] as String? ?? 'Room';
+                final basePrice = roomTypeData['basePrice'];
+                final priceValue = basePrice is String
+                    ? double.tryParse(basePrice) ?? 0.0
+                    : (basePrice as num?)?.toDouble() ?? 0.0;
+                final maxOccupancy = roomTypeData['maxOccupancy'] as int? ?? 2;
+                final totalRooms = roomTypeData['totalRooms'] as int? ?? 0;
+                final bedType = roomTypeData['bedType'] as String? ?? '';
+                final description = roomTypeData['description'] as String? ?? '';
+                
+                return _buildSelectableRoomTypeCard({
+                  'type': name,
+                  'price': priceValue.toStringAsFixed(0),
+                  'available': totalRooms,
+                  'maxGuests': maxOccupancy,
+                  'amenities': description.isNotEmpty ? description : bedType,
+                });
+              }).toList(),
+            ] else ...[
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    'No room types available',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
-    ),
     );
   }
 
-  Widget _buildAmenitiesTab(Map<String, dynamic> accommodation) {
+  Widget _buildAmenitiesTab(Map<String, dynamic> listing) {
+    final amenities = listing['amenities'] as List? ?? [];
+    
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -543,126 +796,325 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             ),
           ),
           const SizedBox(height: 16),
-          ...accommodation['amenities'].map<Widget>((amenity) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                children: [
-                  Icon(
-                    amenity['icon'],
-                    size: 20,
-                    color: AppTheme.primaryColor,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    amenity['name'],
-                    style: AppTheme.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w500,
+          if (amenities.isNotEmpty) ...[
+            ...amenities.map<Widget>((item) {
+              if (item is Map<String, dynamic>) {
+                final amenity = item['amenity'] as Map<String, dynamic>?;
+                if (amenity != null) {
+                  final name = amenity['name'] as String? ?? 'Amenity';
+                  final iconName = amenity['icon'] as String?;
+                  final icon = _getAmenityIcon(iconName);
+                  
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        Icon(
+                          icon,
+                          size: 20,
+                          color: AppTheme.primaryColor,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            name,
+                            style: AppTheme.bodyMedium.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewsTab(Map<String, dynamic> accommodation) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Reviews',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '${accommodation['reviews']} reviews',
-                style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ...accommodation['reviewList'].map<Widget>((review) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              padding: const EdgeInsets.all(16),
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            }).toList(),
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(review['userImage']),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              review['userName'],
-                              style: AppTheme.bodyMedium.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                ...List.generate(5, (index) {
-                                  return Icon(
-                                    Icons.star,
-                                    size: 16,
-                                    color: index < review['rating']
-                                        ? Colors.amber
-                                        : Colors.grey[300],
-                                  );
-                                }),
-                                const SizedBox(width: 8),
-                                Text(
-                                  review['date'],
-                                  style: AppTheme.bodySmall.copyWith(
-                                    color: AppTheme.secondaryTextColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+              child: Center(
+                child: Text(
+                  'No amenities listed',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.secondaryTextColor,
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    review['comment'],
-                    style: AppTheme.bodyMedium.copyWith(
-                      height: 1.4,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            );
-          }).toList(),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildPhotosTab(Map<String, dynamic> accommodation) {
+  IconData _getAmenityIcon(String? iconName) {
+    switch (iconName?.toLowerCase()) {
+      case 'wifi':
+        return Icons.wifi;
+      case 'pool':
+        return Icons.pool;
+      case 'spa':
+        return Icons.spa;
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'parking':
+        return Icons.local_parking;
+      case 'fitness center':
+      case 'fitness':
+        return Icons.fitness_center;
+      case 'bar':
+        return Icons.local_bar;
+      case 'cafe':
+        return Icons.coffee;
+      case 'room service':
+        return Icons.room_service;
+      case 'air conditioning':
+      case 'ac':
+        return Icons.ac_unit;
+      case 'tv':
+        return Icons.tv;
+      case 'minibar':
+        return Icons.local_drink;
+      case 'balcony':
+        return Icons.balcony;
+      case 'garden':
+        return Icons.yard;
+      case 'security':
+        return Icons.security;
+      case 'laundry':
+        return Icons.local_laundry_service;
+      case 'pet friendly':
+      case 'pets':
+        return Icons.pets;
+      case 'wheelchair accessible':
+      case 'accessible':
+        return Icons.accessible;
+      default:
+        return Icons.star;
+    }
+  }
+
+  Widget _buildReviewsTab(Map<String, dynamic> listing) {
+    final listingId = listing['id'] as String? ?? widget.accommodationId;
+    final reviewCount = _extractReviewCount(listing);
+    final reviewsAsync = ref.watch(listingReviewsProvider(ListingReviewsParams(
+      listingId: listingId,
+      page: 1,
+      limit: 20,
+    )));
+
+    return reviewsAsync.when(
+      data: (reviewsData) {
+        final reviews = reviewsData['data'] as List? ?? [];
+        
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Reviews',
+                    style: AppTheme.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '$reviewCount reviews',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              if (reviews.isNotEmpty) ...[
+                ...reviews.map<Widget>((review) {
+                  if (review is Map<String, dynamic>) {
+                    final user = review['user'] as Map<String, dynamic>?;
+                    final userName = user?['firstName'] != null && user?['lastName'] != null
+                        ? '${user!['firstName']} ${user['lastName']}'
+                        : user?['email'] as String? ?? 'Anonymous';
+                    final userImage = user?['profileImage'] as String?;
+                    final rating = review['rating'] != null
+                        ? (review['rating'] is String
+                            ? double.tryParse(review['rating']) ?? 0.0
+                            : (review['rating'] as num?)?.toDouble() ?? 0.0)
+                        : 0.0;
+                    final comment = review['comment'] as String? ?? '';
+                    final createdAt = review['createdAt'] as String?;
+                    final dateText = createdAt != null
+                        ? _formatDate(createdAt)
+                        : 'Recently';
+                    
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage: userImage != null
+                                    ? NetworkImage(userImage)
+                                    : null,
+                                child: userImage == null
+                                    ? Text(
+                                        userName.isNotEmpty ? userName[0].toUpperCase() : 'A',
+                                        style: AppTheme.bodyMedium.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      userName,
+                                      style: AppTheme.bodyMedium.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        ...List.generate(5, (index) {
+                                          return Icon(
+                                            Icons.star,
+                                            size: 16,
+                                            color: index < rating.round()
+                                                ? Colors.amber
+                                                : Colors.grey[300],
+                                          );
+                                        }),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          dateText,
+                                          style: AppTheme.bodySmall.copyWith(
+                                            color: AppTheme.secondaryTextColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (comment.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Text(
+                              comment,
+                              style: AppTheme.bodyMedium.copyWith(
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }).toList(),
+              ] else ...[
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'No reviews yet',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(child: Padding(
+        padding: EdgeInsets.all(20),
+        child: CircularProgressIndicator(),
+      )),
+      error: (error, stack) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            'Failed to load reviews: ${error.toString()}',
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.errorColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+      
+      if (difference.inDays == 0) {
+        return 'Today';
+      } else if (difference.inDays == 1) {
+        return 'Yesterday';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} days ago';
+      } else if (difference.inDays < 30) {
+        final weeks = (difference.inDays / 7).floor();
+        return '$weeks ${weeks == 1 ? 'week' : 'weeks'} ago';
+      } else if (difference.inDays < 365) {
+        final months = (difference.inDays / 30).floor();
+        return '$months ${months == 1 ? 'month' : 'months'} ago';
+      } else {
+        final years = (difference.inDays / 365).floor();
+        return '$years ${years == 1 ? 'year' : 'years'} ago';
+      }
+    } catch (e) {
+      return 'Recently';
+    }
+  }
+
+  Widget _buildPhotosTab(Map<String, dynamic> listing) {
+    final images = _extractImages(listing);
+    
+    if (images.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            'No photos available',
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.secondaryTextColor,
+            ),
+          ),
+        ),
+      );
+    }
+    
     return GridView.builder(
       padding: const EdgeInsets.all(20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -671,12 +1123,12 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         mainAxisSpacing: 12,
         childAspectRatio: 1.2,
       ),
-      itemCount: accommodation['images'].length,
+      itemCount: images.length,
       itemBuilder: (context, index) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
-            accommodation['images'][index],
+            images[index],
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Container(
