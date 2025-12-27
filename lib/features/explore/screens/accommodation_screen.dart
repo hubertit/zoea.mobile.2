@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/favorites_provider.dart';
+import '../../../core/config/app_config.dart';
 
 class AccommodationScreen extends ConsumerStatefulWidget {
   const AccommodationScreen({super.key});
@@ -20,8 +22,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   TimeOfDay? _checkInTime;
   TimeOfDay? _checkOutTime;
   int _guestCount = 1;
-  Set<String> _favoriteAccommodations = {};
-
   final List<String> _tabs = [
     'All',
     'Hotels',
@@ -34,7 +34,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
-    _loadFavorites();
     _setDefaultDatesAndTimes();
   }
 
@@ -68,12 +67,6 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     super.dispose();
   }
 
-  void _loadFavorites() {
-    // Simulate loading favorites
-    setState(() {
-      _favoriteAccommodations = {'hotel_1', 'apartment_2'};
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -312,32 +305,66 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               Positioned(
                 top: 12,
                 right: 12,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (_favoriteAccommodations.contains(accommodation['id'])) {
-                        _favoriteAccommodations.remove(accommodation['id']);
-                      } else {
-                        _favoriteAccommodations.add(accommodation['id']);
-                      }
-                    });
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final listingId = accommodation['id'] as String? ?? '';
+                    final isFavoritedAsync = ref.watch(isListingFavoritedProvider(listingId));
+                    
+                    return GestureDetector(
+                      onTap: () async {
+                        try {
+                          final favoritesService = ref.read(favoritesServiceProvider);
+                          await favoritesService.toggleFavorite(listingId: listingId);
+                          
+                          ref.invalidate(isListingFavoritedProvider(listingId));
+                          ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+                          
+                          if (context.mounted) {
+                            final isFavorited = isFavoritedAsync.value ?? false;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              AppTheme.successSnackBar(
+                                message: isFavorited 
+                                    ? AppConfig.favoriteRemovedMessage 
+                                    : AppConfig.favoriteAddedMessage,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              AppTheme.errorSnackBar(
+                                message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: isFavoritedAsync.when(
+                          data: (isFavorited) => Icon(
+                            isFavorited ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorited ? Colors.red : Colors.white,
+                            size: 20,
+                          ),
+                          loading: () => const Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          error: (_, __) => const Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Icon(
-                      _favoriteAccommodations.contains(accommodation['id'])
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: _favoriteAccommodations.contains(accommodation['id'])
-                          ? Colors.red
-                          : Colors.white,
-                      size: 20,
-                    ),
-                  ),
                 ),
               ),
               // Price badge

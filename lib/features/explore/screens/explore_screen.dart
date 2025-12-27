@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
+import '../../../core/providers/favorites_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
@@ -1797,15 +1798,58 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          // TODO: Add to favorites
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final isFavoritedAsync = ref.watch(isListingFavoritedProvider(id));
+                          
+                          return GestureDetector(
+                            onTap: () async {
+                              try {
+                                final favoritesService = ref.read(favoritesServiceProvider);
+                                await favoritesService.toggleFavorite(listingId: id);
+                                
+                                ref.invalidate(isListingFavoritedProvider(id));
+                                ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
+                                
+                                if (context.mounted) {
+                                  final isFavorited = isFavoritedAsync.value ?? false;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    AppTheme.successSnackBar(
+                                      message: isFavorited 
+                                          ? AppConfig.favoriteRemovedMessage 
+                                          : AppConfig.favoriteAddedMessage,
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    AppTheme.errorSnackBar(
+                                      message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: isFavoritedAsync.when(
+                              data: (isFavorited) => Icon(
+                                isFavorited ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorited ? Colors.red : AppTheme.secondaryTextColor,
+                                size: 16,
+                              ),
+                              loading: () => Icon(
+                                Icons.favorite_border,
+                                color: AppTheme.secondaryTextColor,
+                                size: 16,
+                              ),
+                              error: (_, __) => Icon(
+                                Icons.favorite_border,
+                                color: AppTheme.secondaryTextColor,
+                                size: 16,
+                              ),
+                            ),
+                          );
                         },
-                        child: Icon(
-                          Icons.favorite_border,
-                          color: AppTheme.secondaryTextColor,
-                          size: 16,
-                        ),
                       ),
                     ],
                   ),
