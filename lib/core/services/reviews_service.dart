@@ -30,7 +30,7 @@ class ReviewsService {
       if (rating != null) queryParams['rating'] = rating;
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      // Note: Backend doesn't support sortBy parameter - it always sorts by createdAt desc
 
       final dio = await _getDio;
       final response = await dio.get(
@@ -83,7 +83,7 @@ class ReviewsService {
       };
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      // Note: Backend doesn't support sortBy parameter - it always sorts by createdAt desc
 
       final dio = await _getDio;
       final response = await dio.get(
@@ -146,7 +146,7 @@ class ReviewsService {
       };
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      // Note: Backend doesn't support sortBy parameter - it always sorts by createdAt desc
 
       final dio = await _getDio;
       final response = await dio.get(
@@ -198,7 +198,7 @@ class ReviewsService {
       };
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      // Note: Backend doesn't support sortBy parameter - it always sorts by createdAt desc
 
       final dio = await _getDio;
       final response = await dio.get(
@@ -437,7 +437,7 @@ class ReviewsService {
       final queryParams = <String, dynamic>{};
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      // Note: Backend doesn't support sortBy parameter - it always sorts by createdAt desc
 
       final dio = await _getDio;
       final response = await dio.get(
