@@ -102,9 +102,17 @@ class ReviewsService {
       if (e.response != null) {
         final statusCode = e.response!.statusCode;
         final message = e.response!.data?['message'] ?? e.response!.statusMessage;
+        final data = e.response!.data;
+        
+        // Log full error for debugging
+        debugPrint('ReviewsService Error: Status $statusCode, Message: $message, Data: $data');
         
         if (statusCode == 401) {
           errorMessage = 'Unauthorized. Please login again.';
+        } else if (statusCode == 400) {
+          errorMessage = message ?? 'Invalid request. Please check the listing ID.';
+        } else if (statusCode == 404) {
+          errorMessage = 'Reviews not found for this listing.';
         } else {
           errorMessage = message ?? errorMessage;
         }
@@ -113,10 +121,13 @@ class ReviewsService {
         errorMessage = 'Connection timeout. Please check your internet connection.';
       } else if (e.type == DioExceptionType.connectionError) {
         errorMessage = 'No internet connection. Please check your network.';
+      } else {
+        errorMessage = 'Network error: ${e.message}';
       }
       
       throw Exception(errorMessage);
     } catch (e) {
+      debugPrint('ReviewsService Unexpected Error: $e');
       throw Exception('Error fetching listing reviews: $e');
     }
   }
