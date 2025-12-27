@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import '../services/token_storage_service.dart';
 
 class AppConfig {
   static const String appName = 'Zoea Africa';
@@ -160,6 +161,90 @@ class AppConfig {
       );
     }
 
+    return dio;
+  }
+
+  /// Create an authenticated Dio instance with token interceptor
+  /// This should be used by services that need authentication
+  static Future<Dio> authenticatedDioInstance() async {
+    final dio = dioInstance();
+    final tokenStorage = await TokenStorageService.getInstance();
+    
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await tokenStorage.getAccessToken();
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          handler.next(options);
+        },
+        onError: (error, handler) async {
+          // Handle 401 errors - token expired
+          if (error.response?.statusCode == 401) {
+            // Skip refresh if this is already a refresh token request
+            if (error.requestOptions.path.contains('/refresh') || 
+                error.requestOptions.path.contains('/auth')) {
+              handler.next(error);
+              return;
+            }
+            
+            // Try to refresh token
+            final refreshToken = await tokenStorage.getRefreshToken();
+            if (refreshToken != null) {
+              try {
+                // Create a new Dio instance without interceptors to avoid infinite loop
+                final refreshDio = Dio(
+                  BaseOptions(
+                    baseUrl: apiBaseUrl,
+                    connectTimeout: const Duration(milliseconds: connectionTimeout),
+                    receiveTimeout: const Duration(milliseconds: receiveTimeout),
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                  ),
+                );
+                
+                final refreshResponse = await refreshDio.post(
+                  '$authEndpoint/refresh',
+                  data: {'refreshToken': refreshToken},
+                );
+                
+                if (refreshResponse.statusCode == 200 || refreshResponse.statusCode == 201) {
+                  final data = refreshResponse.data;
+                  final newAccessToken = data['accessToken'] ?? data['data']?['accessToken'];
+                  final newRefreshToken = data['refreshToken'] ?? data['data']?['refreshToken'] ?? refreshToken;
+                  
+                  if (newAccessToken != null) {
+                    await tokenStorage.saveTokens(newAccessToken, newRefreshToken);
+                    
+                    // Retry the original request with new token
+                    final opts = error.requestOptions;
+                    opts.headers['Authorization'] = 'Bearer $newAccessToken';
+                    try {
+                      final response = await dio.fetch(opts);
+                      handler.resolve(response);
+                      return;
+                    } catch (e) {
+                      // Retry failed even after refresh
+                      handler.next(error);
+                      return;
+                    }
+                  }
+                }
+              } catch (e) {
+                // Refresh failed - pass the error
+                handler.next(error);
+                return;
+              }
+            }
+          }
+          handler.next(error);
+        },
+      ),
+    );
+    
     return dio;
   }
 

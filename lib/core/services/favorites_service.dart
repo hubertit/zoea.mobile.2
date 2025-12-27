@@ -2,7 +2,12 @@ import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 
 class FavoritesService {
-  final Dio _dio = AppConfig.dioInstance();
+  Dio? _dio;
+  
+  Future<Dio> get _getDio async {
+    _dio ??= await AppConfig.authenticatedDioInstance();
+    return _dio!;
+  }
 
   /// Get all user favorites
   /// Returns list of favorites (listings, events, tours)
@@ -18,7 +23,8 @@ class FavoritesService {
       if (limit != null) queryParams['limit'] = limit;
       if (type != null) queryParams['type'] = type;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         AppConfig.favoritesEndpoint,
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
@@ -58,7 +64,8 @@ class FavoritesService {
   /// Add listing to favorites
   Future<Map<String, dynamic>> addListingToFavorites(String listingId) async {
     try {
-      final response = await _dio.post(
+      final dio = await _getDio;
+      final response = await dio.post(
         AppConfig.favoritesEndpoint,
         data: {
           'listingId': listingId,
@@ -100,8 +107,9 @@ class FavoritesService {
   /// Add event to favorites
   Future<Map<String, dynamic>> addEventToFavorites(String eventId) async {
     try {
-      final response = await _dio.post(
-        '/favorites',
+      final dio = await _getDio;
+      final response = await dio.post(
+        AppConfig.favoritesEndpoint,
         data: {
           'eventId': eventId,
         },
@@ -142,8 +150,9 @@ class FavoritesService {
   /// Add tour to favorites
   Future<Map<String, dynamic>> addTourToFavorites(String tourId) async {
     try {
-      final response = await _dio.post(
-        '/favorites',
+      final dio = await _getDio;
+      final response = await dio.post(
+        AppConfig.favoritesEndpoint,
         data: {
           'tourId': tourId,
         },
@@ -200,7 +209,8 @@ class FavoritesService {
       if (eventId != null) queryParams['eventId'] = eventId;
       if (tourId != null) queryParams['tourId'] = tourId;
 
-      final response = await _dio.delete(
+      final dio = await _getDio;
+      final response = await dio.delete(
         AppConfig.favoritesEndpoint,
         queryParameters: queryParams,
       );
@@ -254,7 +264,8 @@ class FavoritesService {
       if (eventId != null) data['eventId'] = eventId;
       if (tourId != null) data['tourId'] = tourId;
 
-      final response = await _dio.post(
+      final dio = await _getDio;
+      final response = await dio.post(
         '${AppConfig.favoritesEndpoint}/toggle',
         data: data,
       );
@@ -309,7 +320,8 @@ class FavoritesService {
       if (eventId != null) queryParams['eventId'] = eventId;
       if (tourId != null) queryParams['tourId'] = tourId;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         '${AppConfig.favoritesEndpoint}/check',
         queryParameters: queryParams,
       );
