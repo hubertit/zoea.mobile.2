@@ -23,8 +23,8 @@ class ListingsService {
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
       if (type != null) queryParams['type'] = type;
-      if (category != null) queryParams['category'] = category;
-      if (city != null) queryParams['city'] = city;
+      if (category != null) queryParams['categoryId'] = category; // Backend expects categoryId
+      if (city != null) queryParams['cityId'] = city; // Backend expects cityId
       if (search != null) queryParams['search'] = search;
       if (minPrice != null) queryParams['minPrice'] = minPrice;
       if (maxPrice != null) queryParams['maxPrice'] = maxPrice;
@@ -179,8 +179,8 @@ class ListingsService {
       
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (category != null) queryParams['category'] = category;
-      if (city != null) queryParams['city'] = city;
+      if (category != null) queryParams['categoryId'] = category; // Backend expects categoryId
+      if (city != null) queryParams['cityId'] = city; // Backend expects cityId
       if (search != null) queryParams['search'] = search;
 
       final response = await _dio.get(
