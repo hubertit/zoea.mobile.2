@@ -2,7 +2,12 @@ import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 
 class ReviewsService {
-  final Dio _dio = AppConfig.dioInstance();
+  Dio? _dio;
+  
+  Future<Dio> get _getDio async {
+    _dio ??= await AppConfig.authenticatedDioInstance();
+    return _dio!;
+  }
 
   /// Get reviews with filters
   /// Supports filtering by: listingId, eventId, userId, rating
@@ -26,7 +31,8 @@ class ReviewsService {
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         AppConfig.reviewsEndpoint,
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
@@ -78,7 +84,8 @@ class ReviewsService {
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         AppConfig.reviewsEndpoint,
         queryParameters: queryParams,
       );
@@ -129,7 +136,8 @@ class ReviewsService {
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         AppConfig.reviewsEndpoint,
         queryParameters: queryParams,
       );
@@ -180,7 +188,8 @@ class ReviewsService {
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         AppConfig.reviewsEndpoint,
         queryParameters: queryParams,
       );
@@ -219,7 +228,8 @@ class ReviewsService {
   /// Get a single review by ID
   Future<Map<String, dynamic>> getReviewById(String reviewId) async {
     try {
-      final response = await _dio.get('${AppConfig.reviewsEndpoint}/$reviewId');
+      final dio = await _getDio;
+      final response = await dio.get('${AppConfig.reviewsEndpoint}/$reviewId');
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -280,7 +290,8 @@ class ReviewsService {
       if (tourId != null) data['tourId'] = tourId;
       if (title != null) data['title'] = title;
 
-      final response = await _dio.post(AppConfig.reviewsEndpoint, data: data);
+      final dio = await _getDio;
+      final response = await dio.post(AppConfig.reviewsEndpoint, data: data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data as Map<String, dynamic>;
@@ -329,7 +340,8 @@ class ReviewsService {
       if (content != null) data['content'] = content;
       if (title != null) data['title'] = title;
 
-      final response = await _dio.put('${AppConfig.reviewsEndpoint}/$reviewId', data: data);
+      final dio = await _getDio;
+      final response = await dio.put('${AppConfig.reviewsEndpoint}/$reviewId', data: data);
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -368,7 +380,8 @@ class ReviewsService {
   /// Delete a review
   Future<void> deleteReview(String reviewId) async {
     try {
-      final response = await _dio.delete('${AppConfig.reviewsEndpoint}/$reviewId');
+      final dio = await _getDio;
+      final response = await dio.delete('${AppConfig.reviewsEndpoint}/$reviewId');
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         throw Exception('Failed to delete review: ${response.statusMessage}');
@@ -414,7 +427,8 @@ class ReviewsService {
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
-      final response = await _dio.get(
+      final dio = await _getDio;
+      final response = await dio.get(
         '${AppConfig.reviewsEndpoint}/my',
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
@@ -456,7 +470,8 @@ class ReviewsService {
     required bool helpful,
   }) async {
     try {
-      final response = await _dio.post(
+      final dio = await _getDio;
+      final response = await dio.post(
         '${AppConfig.reviewsEndpoint}/$reviewId/helpful',
         data: {'isHelpful': helpful},
       );
