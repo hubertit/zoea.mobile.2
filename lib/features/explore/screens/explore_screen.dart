@@ -1317,6 +1317,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   void _showCategoriesBottomSheet(BuildContext context) {
+    // Ensure categories exist before showing the bottom sheet
+    final categoriesService = ref.read(categoriesServiceProvider);
+    categoriesService.ensureCategoriesExist().catchError((e) {
+      // Silently handle errors - categories might already exist
+      print('Note: Category registration check: $e');
+    });
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1355,10 +1362,27 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 
                 return categoriesAsync.when(
                   data: (categories) {
-                    final activeCategories = categories
-                        .where((cat) => cat['isActive'] == true)
+                    // Filter to only show parent categories (no parentId)
+                    final parentCategories = categories
+                        .where((cat) => 
+                            cat['isActive'] == true && 
+                            (cat['parentId'] == null || cat['parentId'] == ''))
                         .toList()
                       ..sort((a, b) => (a['sortOrder'] as int? ?? 0).compareTo(b['sortOrder'] as int? ?? 0));
+                    
+                    if (parentCategories.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            'No categories available',
+                            style: AppTheme.bodyMedium.copyWith(
+                              color: AppTheme.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                     
                     return GridView.count(
                       shrinkWrap: true,
@@ -1367,14 +1391,34 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       childAspectRatio: 1.2,
-                      children: activeCategories.map((category) {
+                      children: parentCategories.map((category) {
                         return _buildBottomSheetCategoryCardFromApi(category);
                       }).toList(),
                     );
                   },
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (error, stack) => Center(
-                    child: Text('Failed to load categories'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Failed to load categories',
+                            style: AppTheme.bodyMedium.copyWith(
+                              color: AppTheme.errorColor,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextButton(
+                            onPressed: () {
+                              ref.invalidate(categoriesProvider);
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
