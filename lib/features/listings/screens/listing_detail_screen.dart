@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
@@ -202,13 +204,34 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 );
               },
             ),
-            IconButton(
-              icon: Icon(
-                Icons.share,
-                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
-              ),
-              onPressed: () {
-                // TODO: Implement share functionality
+            Consumer(
+              builder: (context, ref, child) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.share,
+                    color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+                  ),
+                  onPressed: () async {
+                    final listingAsync = ref.read(listingByIdProvider(widget.listingId));
+                    listingAsync.whenData((listing) async {
+                      final name = listing['name'] as String? ?? 'Listing';
+                      final address = listing['address'] as String? ?? '';
+                      final city = listing['city'] as Map<String, dynamic>?;
+                      final cityName = city?['name'] as String? ?? '';
+                      final location = address.isNotEmpty 
+                          ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+                          : cityName;
+                      
+                      final shareText = 'Check out $name${location != null && location.isNotEmpty ? ' in $location' : ''} on Zoea!';
+                      final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/listings/${widget.listingId}';
+                      
+                      await Share.share(
+                        '$shareText\n$shareUrl',
+                        subject: name,
+                      );
+                    });
+                  },
+                );
               },
             ),
           ],
@@ -604,8 +627,19 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     const SizedBox(width: 12),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          // TODO: Open website URL
+                        onTap: () async {
+                          final uri = Uri.parse(website);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                AppTheme.errorSnackBar(
+                                  message: 'Could not open website: $website',
+                                ),
+                              );
+                            }
+                          }
                         },
                         child: Text(
                           website,
@@ -1234,8 +1268,19 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           Expanded(
             child: ElevatedButton.icon(
               onPressed: contactPhone != null
-                  ? () {
-                      // TODO: Implement phone call
+                  ? () async {
+                      final uri = Uri.parse('tel:$contactPhone');
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            AppTheme.errorSnackBar(
+                              message: 'Could not make phone call to $contactPhone',
+                            ),
+                          );
+                        }
+                      }
                     }
                   : null,
               icon: const Icon(Icons.phone, size: 18),

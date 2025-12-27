@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -327,8 +328,25 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                         size: 18,
                       ),
                       padding: EdgeInsets.zero,
-                      onPressed: () {
-                        // Share functionality
+                      onPressed: () async {
+                        final listingAsync = ref.read(listingByIdProvider(widget.accommodationId));
+                        listingAsync.whenData((listing) async {
+                          final name = listing['name'] as String? ?? 'Accommodation';
+                          final address = listing['address'] as String? ?? '';
+                          final city = listing['city'] as Map<String, dynamic>?;
+                          final cityName = city?['name'] as String? ?? '';
+                          final location = address.isNotEmpty 
+                              ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+                              : cityName;
+                          
+                          final shareText = 'Check out $name${location != null && location.isNotEmpty ? ' in $location' : ''} on Zoea!';
+                          final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/accommodation/${widget.accommodationId}';
+                          
+                          await Share.share(
+                            '$shareText\n$shareUrl',
+                            subject: name,
+                          );
+                        });
                       },
                     ),
                   ),
