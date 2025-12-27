@@ -27,7 +27,7 @@ class ReviewsService {
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(
-        '/reviews',
+        AppConfig.reviewsEndpoint,
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
 
@@ -72,15 +72,14 @@ class ReviewsService {
   }) async {
     try {
       final queryParams = <String, dynamic>{
-        'targetType': 'listing',
-        'targetId': listingId,
+        'listingId': listingId,
       };
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(
-        '/reviews',
+        AppConfig.reviewsEndpoint,
         queryParameters: queryParams,
       );
 
@@ -124,15 +123,14 @@ class ReviewsService {
   }) async {
     try {
       final queryParams = <String, dynamic>{
-        'targetType': 'event',
-        'targetId': eventId,
+        'eventId': eventId,
       };
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(
-        '/reviews',
+        AppConfig.reviewsEndpoint,
         queryParameters: queryParams,
       );
 
@@ -167,10 +165,61 @@ class ReviewsService {
     }
   }
 
+  /// Get reviews for a specific tour
+  Future<Map<String, dynamic>> getTourReviews({
+    required String tourId,
+    int? page,
+    int? limit,
+    String? sortBy,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'tourId': tourId,
+      };
+      if (page != null) queryParams['page'] = page;
+      if (limit != null) queryParams['limit'] = limit;
+      if (sortBy != null) queryParams['sortBy'] = sortBy;
+
+      final response = await _dio.get(
+        AppConfig.reviewsEndpoint,
+        queryParameters: queryParams,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return data;
+      } else {
+        throw Exception('Failed to fetch tour reviews: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      String errorMessage = 'Failed to fetch tour reviews.';
+      
+      if (e.response != null) {
+        final statusCode = e.response!.statusCode;
+        final message = e.response!.data?['message'] ?? e.response!.statusMessage;
+        
+        if (statusCode == 401) {
+          errorMessage = 'Unauthorized. Please login again.';
+        } else {
+          errorMessage = message ?? errorMessage;
+        }
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+                 e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Connection timeout. Please check your internet connection.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'No internet connection. Please check your network.';
+      }
+      
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('Error fetching tour reviews: $e');
+    }
+  }
+
   /// Get a single review by ID
   Future<Map<String, dynamic>> getReviewById(String reviewId) async {
     try {
-      final response = await _dio.get('/reviews/$reviewId');
+      final response = await _dio.get('${AppConfig.reviewsEndpoint}/$reviewId');
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -205,30 +254,33 @@ class ReviewsService {
   }
 
   /// Create a new review
-  /// targetType: 'listing', 'event', or 'tour'
-  /// targetId: ID of the target being reviewed
+  /// Provide one of: listingId, eventId, or tourId
   Future<Map<String, dynamic>> createReview({
-    required String targetType,
-    required String targetId,
+    String? listingId,
+    String? eventId,
+    String? tourId,
     required int rating,
     required String content,
     String? title,
-    List<String>? images,
   }) async {
     try {
+      // Validate that exactly one target ID is provided
+      final targetCount = [listingId, eventId, tourId].where((id) => id != null).length;
+      if (targetCount != 1) {
+        throw Exception('Must provide exactly one of: listingId, eventId, or tourId');
+      }
+
       final data = <String, dynamic>{
-        'targetType': targetType,
-        'targetId': targetId,
         'rating': rating,
         'content': content,
       };
       
+      if (listingId != null) data['listingId'] = listingId;
+      if (eventId != null) data['eventId'] = eventId;
+      if (tourId != null) data['tourId'] = tourId;
       if (title != null) data['title'] = title;
-      if (images != null && images.isNotEmpty) {
-        data['images'] = images;
-      }
 
-      final response = await _dio.post('/reviews', data: data);
+      final response = await _dio.post(AppConfig.reviewsEndpoint, data: data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data as Map<String, dynamic>;
@@ -270,16 +322,14 @@ class ReviewsService {
     int? rating,
     String? content,
     String? title,
-    List<String>? images,
   }) async {
     try {
       final data = <String, dynamic>{};
       if (rating != null) data['rating'] = rating;
       if (content != null) data['content'] = content;
       if (title != null) data['title'] = title;
-      if (images != null) data['images'] = images;
 
-      final response = await _dio.put('/reviews/$reviewId', data: data);
+      final response = await _dio.put('${AppConfig.reviewsEndpoint}/$reviewId', data: data);
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -318,7 +368,7 @@ class ReviewsService {
   /// Delete a review
   Future<void> deleteReview(String reviewId) async {
     try {
-      final response = await _dio.delete('/reviews/$reviewId');
+      final response = await _dio.delete('${AppConfig.reviewsEndpoint}/$reviewId');
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         throw Exception('Failed to delete review: ${response.statusMessage}');
@@ -365,7 +415,7 @@ class ReviewsService {
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(
-        '/reviews/my',
+        '${AppConfig.reviewsEndpoint}/my',
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
 
@@ -407,8 +457,8 @@ class ReviewsService {
   }) async {
     try {
       final response = await _dio.post(
-        '/reviews/$reviewId/helpful',
-        data: {'helpful': helpful},
+        '${AppConfig.reviewsEndpoint}/$reviewId/helpful',
+        data: {'isHelpful': helpful},
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

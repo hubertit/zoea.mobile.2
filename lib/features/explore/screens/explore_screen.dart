@@ -9,7 +9,6 @@ import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/models/event.dart';
-import '../../../core/models/listing.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
 
