@@ -163,7 +163,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             Consumer(
               builder: (context, ref, child) {
                 final isFavoritedAsync = ref.watch(isListingFavoritedProvider(widget.listingId));
-                final isFavorited = isFavoritedAsync.value != null;
+                final isFavorited = isFavoritedAsync.value ?? false;
 
                 return IconButton(
                   icon: Icon(
@@ -174,35 +174,20 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     try {
                       final favoritesService = ref.read(favoritesServiceProvider);
                       
-                      if (isFavorited) {
-                        // Remove from favorites
-                        final favoriteId = isFavoritedAsync.value;
-                        if (favoriteId != null) {
-                          await favoritesService.removeFromFavorites(favoriteId);
-                          // Invalidate to refresh
-                          ref.invalidate(isListingFavoritedProvider(widget.listingId));
-                          ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              AppTheme.successSnackBar(
-                                message: AppConfig.favoriteRemovedMessage,
-                              ),
-                            );
-                          }
-                        }
-                      } else {
-                        // Add to favorites
-                        await favoritesService.addListingToFavorites(widget.listingId);
-                        // Invalidate to refresh
-                        ref.invalidate(isListingFavoritedProvider(widget.listingId));
-                        ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            AppTheme.successSnackBar(
-                              message: AppConfig.favoriteAddedMessage,
-                            ),
-                          );
-                        }
+                      // Use toggleFavorite for add/remove in one call
+                      await favoritesService.toggleFavorite(listingId: widget.listingId);
+                      
+                      // Invalidate to refresh
+                      ref.invalidate(isListingFavoritedProvider(widget.listingId));
+                      ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          AppTheme.successSnackBar(
+                            message: isFavorited 
+                                ? AppConfig.favoriteRemovedMessage 
+                                : AppConfig.favoriteAddedMessage,
+                          ),
+                        );
                       }
                     } catch (e) {
                       if (mounted) {

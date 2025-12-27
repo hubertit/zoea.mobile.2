@@ -1002,12 +1002,17 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
   }
 
   void _showRemoveFavoriteDialogFromApi(Map<String, dynamic> favorite) {
-    final favoriteId = favorite['id']?.toString();
-    if (favoriteId == null) return;
-    
     final listing = favorite['listing'] as Map<String, dynamic>?;
     final event = favorite['event'] as Map<String, dynamic>?;
-    final itemName = listing?['name'] ?? event?['name'] ?? 'this item';
+    final tour = favorite['tour'] as Map<String, dynamic>?;
+    final itemName = listing?['name'] ?? event?['name'] ?? tour?['name'] ?? 'this item';
+    
+    // Extract the actual item ID (listingId, eventId, or tourId)
+    final listingId = listing?['id']?.toString();
+    final eventId = event?['id']?.toString();
+    final tourId = tour?['id']?.toString();
+    
+    if (listingId == null && eventId == null && tourId == null) return;
     
     showDialog(
       context: context,
@@ -1033,7 +1038,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               Navigator.pop(context);
               try {
                 final favoritesService = ref.read(favoritesServiceProvider);
-                await favoritesService.removeFromFavorites(favoriteId);
+                await favoritesService.removeFromFavorites(
+                  listingId: listingId,
+                  eventId: eventId,
+                  tourId: tourId,
+                );
                 
                 // Invalidate to refresh
                 ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
