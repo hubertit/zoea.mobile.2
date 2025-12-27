@@ -184,7 +184,9 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
             ? double.tryParse(listing['rating']) 
             : listing['rating']?.toDouble())
         : 0.0;
-    final reviewCount = listing['reviewCount'] ?? 0;
+    // Backend returns _count.reviews, not reviewCount directly
+    final reviewCount = (listing['_count'] as Map<String, dynamic>?)?['reviews'] as int? ?? 
+                       listing['reviewCount'] as int? ?? 0;
     final minPrice = listing['minPrice'];
     final currency = listing['currency'] ?? 'RWF';
     final id = listing['id'] ?? '';

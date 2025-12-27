@@ -367,7 +367,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ? double.tryParse(listing['rating']) ?? 0.0
             : (listing['rating'] as num?)?.toDouble() ?? 0.0)
         : 0.0;
-    final reviewCount = listing['reviewCount'] as int? ?? 0;
+    // Backend returns _count.reviews, not reviewCount directly
+    final reviewCount = (listing['_count'] as Map<String, dynamic>?)?['reviews'] as int? ?? 
+                       listing['reviewCount'] as int? ?? 0;
     
     // Extract price - minPrice and currency are directly on listing
     final minPrice = listing['minPrice'] != null
@@ -452,7 +454,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ? double.tryParse(listing['rating']) ?? 0.0
             : (listing['rating'] as num?)?.toDouble() ?? 0.0)
         : 0.0;
-    final reviewCount = listing['reviewCount'] as int? ?? 0;
+    // Backend returns _count.reviews, not reviewCount directly
+    final reviewCount = (listing['_count'] as Map<String, dynamic>?)?['reviews'] as int? ?? 
+                       listing['reviewCount'] as int? ?? 0;
     
     // Extract price - minPrice and currency are directly on listing
     final minPrice = listing['minPrice'] != null
