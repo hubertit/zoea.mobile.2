@@ -37,19 +37,19 @@ final favoritesProvider = FutureProvider.family<Map<String, dynamic>, FavoritesP
 });
 
 /// Provider for checking if a listing is favorited
-final isListingFavoritedProvider = FutureProvider.family<String?, String>((ref, listingId) async {
+final isListingFavoritedProvider = FutureProvider.family<bool, String>((ref, listingId) async {
   final favoritesService = ref.watch(favoritesServiceProvider);
   return await favoritesService.checkIfListingFavorited(listingId);
 });
 
 /// Provider for checking if an event is favorited
-final isEventFavoritedProvider = FutureProvider.family<String?, String>((ref, eventId) async {
+final isEventFavoritedProvider = FutureProvider.family<bool, String>((ref, eventId) async {
   final favoritesService = ref.watch(favoritesServiceProvider);
   return await favoritesService.checkIfEventFavorited(eventId);
 });
 
 /// Provider for checking if a tour is favorited
-final isTourFavoritedProvider = FutureProvider.family<String?, String>((ref, tourId) async {
+final isTourFavoritedProvider = FutureProvider.family<bool, String>((ref, tourId) async {
   final favoritesService = ref.watch(favoritesServiceProvider);
   return await favoritesService.checkIfTourFavorited(tourId);
 });

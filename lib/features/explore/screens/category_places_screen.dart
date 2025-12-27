@@ -397,7 +397,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
       priceRange: priceText,
       category: _categoryName ?? widget.category,
       isFavorite: isFavoritedAsync.when(
-        data: (favoriteId) => favoriteId != null,
+        data: (isFavorited) => isFavorited,
         loading: () => false,
         error: (_, __) => false,
       ),
@@ -406,13 +406,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
       },
       onFavorite: () async {
         final favoritesService = ref.read(favoritesServiceProvider);
-        final favoriteId = await favoritesService.checkIfListingFavorited(listingId);
-        
-        if (favoriteId != null) {
-          await favoritesService.removeFromFavorites(favoriteId);
-        } else {
-          await favoritesService.addListingToFavorites(listingId);
-        }
+        await favoritesService.toggleFavorite(listingId: listingId);
         
         ref.invalidate(isListingFavoritedProvider(listingId));
         ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
@@ -536,13 +530,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   child: GestureDetector(
                     onTap: () async {
                       final favoritesService = ref.read(favoritesServiceProvider);
-                      final favoriteId = await favoritesService.checkIfListingFavorited(listingId);
-                      
-                      if (favoriteId != null) {
-                        await favoritesService.removeFromFavorites(favoriteId);
-                      } else {
-                        await favoritesService.addListingToFavorites(listingId);
-                      }
+                      await favoritesService.toggleFavorite(listingId: listingId);
                       
                       ref.invalidate(isListingFavoritedProvider(listingId));
                       ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
@@ -554,9 +542,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: isFavoritedAsync.when(
-                        data: (favoriteId) => Icon(
-                          favoriteId != null ? Icons.favorite : Icons.favorite_border,
-                          color: favoriteId != null ? Colors.red : Colors.white,
+                        data: (isFavorited) => Icon(
+                          isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorited ? Colors.red : Colors.white,
                           size: 20,
                         ),
                         loading: () => const Icon(

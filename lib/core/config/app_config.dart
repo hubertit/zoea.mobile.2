@@ -21,6 +21,7 @@ class AppConfig {
   static const String searchEndpoint = '/search';
   static const String recommendationsEndpoint = '/recommendations';
   static const String reviewsEndpoint = '/reviews';
+  static const String favoritesEndpoint = '/favorites';
   static const String uploadEndpoint = '/upload';
 
   // Cache Keys
