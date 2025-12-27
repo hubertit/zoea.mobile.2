@@ -21,33 +21,14 @@ class ExploreScreen extends ConsumerStatefulWidget {
 
 class _ExploreScreenState extends ConsumerState<ExploreScreen>
     with TickerProviderStateMixin {
-  final TextEditingController _searchController = TextEditingController();
-  late AnimationController _greetingController;
-  late AnimationController _searchAnimationController;
   late AnimationController _shimmerController;
   late AnimationController _rewardsAnimationController;
-  late Animation<double> _greetingFadeAnimation;
-  late Animation<double> _searchFadeAnimation;
   late Animation<double> _shimmerAnimation;
   late Animation<Color?> _rewardsColorAnimation;
-  bool _showGreeting = true;
-  bool _showSearch = false;
 
   @override
   void initState() {
     super.initState();
-    
-    // Greeting animation controller
-    _greetingController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    
-    // Search animation controller
-    _searchAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
     
     // Shimmer animation controller
     _shimmerController = AnimationController(
@@ -67,24 +48,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     // Start rewards animation (slow loop)
     _rewardsAnimationController.repeat(reverse: true);
     
-    // Greeting fade animation
-    _greetingFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _greetingController,
-      curve: Curves.easeInOut,
-    ));
-    
-    // Search fade animation
-    _searchFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _searchAnimationController,
-      curve: Curves.easeInOut,
-    ));
-    
     // Shimmer animation
     _shimmerAnimation = Tween<double>(
       begin: 0.0,
@@ -102,32 +65,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       parent: _rewardsAnimationController,
       curve: Curves.easeInOut,
     ));
-    
-    
-    _startAnimationSequence();
-  }
-
-  void _startAnimationSequence() {
-    // Start greeting animation
-    _greetingController.forward();
-    
-    // Hide greeting and show search after 1 minute
-    Future.delayed(const Duration(seconds: 60), () {
-      if (mounted) {
-        setState(() {
-          _showGreeting = false;
-          _showSearch = true;
-        });
-        _searchAnimationController.forward();
-      }
-    });
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _greetingController.dispose();
-    _searchAnimationController.dispose();
     _shimmerController.dispose();
     _rewardsAnimationController.dispose();
     super.dispose();
@@ -210,42 +151,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Animated Header with greeting
-              AnimatedBuilder(
-                animation: _greetingFadeAnimation,
-                builder: (context, child) {
-                  return _showGreeting
-                      ? Opacity(
-                          opacity: _greetingFadeAnimation.value,
-                          child: Column(
-                            children: [
-                              _buildHeader(),
-                              const SizedBox(height: 8),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
-              
-              // Animated Search bar
-              AnimatedBuilder(
-                animation: _searchFadeAnimation,
-                builder: (context, child) {
-                  return _showSearch
-                      ? Opacity(
-                          opacity: _searchFadeAnimation.value,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 8),
-                              _buildSearchBar(),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
-              
               // Weather and Currency Widgets (always visible)
               const SizedBox(height: 8),
               _buildQuickInfoWidgets(),
@@ -276,54 +181,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          _getTimeBasedGreeting(),
-          style: AppTheme.bodyLarge.copyWith(
-            color: AppTheme.secondaryTextColor,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          _getFriendlyMessage(),
-          style: AppTheme.headlineMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _getTimeBasedGreeting() {
-    final hour = DateTime.now().hour;
-    
-    if (hour >= 5 && hour < 12) {
-      return 'Good morning, Hubert';
-    } else if (hour >= 12 && hour < 17) {
-      return 'Good afternoon, Hubert';
-    } else if (hour >= 17 && hour < 21) {
-      return 'Good evening, Hubert';
-    } else {
-      return 'Good night, Hubert';
-    }
-  }
-
-  String _getFriendlyMessage() {
-    final hour = DateTime.now().hour;
-    
-    if (hour >= 5 && hour < 12) {
-      return 'Ready to start your day?';
-    } else if (hour >= 12 && hour < 17) {
-      return 'How can we help you today?';
-    } else if (hour >= 17 && hour < 21) {
-      return 'What would you like to explore?';
-    } else {
-      return 'Planning for tomorrow?';
-    }
-  }
 
   Widget _buildQuickInfoWidgets() {
     return SizedBox(
@@ -831,52 +688,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
-  Widget _buildSearchBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: TextField(
-        controller: _searchController,
-        decoration: InputDecoration(
-          hintText: 'Explore events, venues, experiences...',
-          hintStyle: AppTheme.bodyMedium.copyWith(
-            color: AppTheme.secondaryTextColor,
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: AppTheme.secondaryTextColor,
-            size: 20,
-          ),
-          filled: true,
-          fillColor: Colors.grey[100],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: AppTheme.dividerColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: AppTheme.dividerColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: AppTheme.dividerColor),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
-        ),
-        style: AppTheme.bodyMedium,
-        onSubmitted: (value) {
-          if (value.trim().isNotEmpty) {
-            context.push('/search?q=${Uri.encodeComponent(value)}');
-          }
-        },
-      ),
-    );
-  }
 
   Widget _buildCategoriesSection() {
     final categoriesAsync = ref.watch(categoriesProvider);
@@ -1007,10 +818,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final slug = category['slug'] as String? ?? '';
     final iconName = category['icon'] as String?;
     final icon = _getIconForCategory(iconName);
-    final count = category['_count'] as Map<String, dynamic>?;
-    final listingsCount = count?['listings'] as int? ?? 0;
-    final toursCount = count?['tours'] as int? ?? 0;
-    final totalCount = listingsCount + toursCount;
 
     return GestureDetector(
       onTap: () {
@@ -1048,16 +855,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (totalCount > 0) ...[
-              const SizedBox(height: 4),
-              Text(
-                '$totalCount',
-                style: AppTheme.labelSmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                  fontSize: 10,
-                ),
-              ),
-            ],
           ],
         ),
       ),
@@ -1596,10 +1393,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final slug = category['slug'] as String? ?? '';
     final iconName = category['icon'] as String?;
     final icon = _getIconForCategory(iconName);
-    final count = category['_count'] as Map<String, dynamic>?;
-    final listingsCount = count?['listings'] as int? ?? 0;
-    final toursCount = count?['tours'] as int? ?? 0;
-    final totalCount = listingsCount + toursCount;
 
     return GestureDetector(
       onTap: () {
@@ -1646,16 +1439,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (totalCount > 0) ...[
-              const SizedBox(height: 4),
-              Text(
-                '$totalCount places',
-                style: AppTheme.labelSmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                  fontSize: 9,
-                ),
-              ),
-            ],
           ],
         ),
       ),
