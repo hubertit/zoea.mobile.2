@@ -8,6 +8,7 @@ import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
+import '../../../core/config/app_config.dart';
 
 class CategoryPlacesScreen extends ConsumerStatefulWidget {
   final String category; // This is the slug
@@ -407,11 +408,33 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         context.push('/listing/$listingId');
       },
       onFavorite: () async {
-        final favoritesService = ref.read(favoritesServiceProvider);
-        await favoritesService.toggleFavorite(listingId: listingId);
-        
-        ref.invalidate(isListingFavoritedProvider(listingId));
-        ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+        try {
+          final favoritesService = ref.read(favoritesServiceProvider);
+          final isFavorited = isFavoritedAsync.value ?? false;
+          
+          await favoritesService.toggleFavorite(listingId: listingId);
+          
+          ref.invalidate(isListingFavoritedProvider(listingId));
+          ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+          
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              AppTheme.successSnackBar(
+                message: isFavorited 
+                    ? AppConfig.favoriteRemovedMessage 
+                    : AppConfig.favoriteAddedMessage,
+              ),
+            );
+          }
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              AppTheme.errorSnackBar(
+                message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+              ),
+            );
+          }
+        }
       },
     );
   }
@@ -533,11 +556,33 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   right: 12,
                   child: GestureDetector(
                     onTap: () async {
-                      final favoritesService = ref.read(favoritesServiceProvider);
-                      await favoritesService.toggleFavorite(listingId: listingId);
-                      
-                      ref.invalidate(isListingFavoritedProvider(listingId));
-                      ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+                      try {
+                        final favoritesService = ref.read(favoritesServiceProvider);
+                        final isFavorited = isFavoritedAsync.value ?? false;
+                        
+                        await favoritesService.toggleFavorite(listingId: listingId);
+                        
+                        ref.invalidate(isListingFavoritedProvider(listingId));
+                        ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
+                        
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            AppTheme.successSnackBar(
+                              message: isFavorited 
+                                  ? AppConfig.favoriteRemovedMessage 
+                                  : AppConfig.favoriteAddedMessage,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            AppTheme.errorSnackBar(
+                              message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
