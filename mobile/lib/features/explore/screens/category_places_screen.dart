@@ -138,9 +138,26 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                     ),
                 ],
               ),
-              IconButton(
-                icon: const Icon(Icons.sort),
-                onPressed: _showSortBottomSheet,
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.sort),
+                    onPressed: _showSortBottomSheet,
+                  ),
+                  if (_sortBy != null && _sortBy != 'popular')
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ],
             bottom: _isAccommodation ? null : TabBar(
