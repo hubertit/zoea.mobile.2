@@ -412,7 +412,17 @@ class BookingsService {
         } else if (statusCode == 404) {
           errorMessage = 'Booking not found.';
         } else if (statusCode == 400) {
-          errorMessage = 'Booking cannot be cancelled. It may have already been cancelled or completed.';
+          // Extract detailed message from backend
+          final errorData = e.response!.data;
+          if (errorData is Map && errorData['message'] != null) {
+            if (errorData['message'] is List) {
+              errorMessage = (errorData['message'] as List).join(', ');
+            } else {
+              errorMessage = errorData['message'].toString();
+            }
+          } else {
+            errorMessage = message ?? 'Booking cannot be cancelled. It may have already been cancelled or completed.';
+          }
         } else {
           errorMessage = message ?? errorMessage;
         }

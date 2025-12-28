@@ -992,10 +992,22 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     } catch (e) {
       if (!mounted) return;
 
+      // Extract clean error message
+      String errorMessage = 'Failed to cancel booking.';
+      if (e is Exception) {
+        final message = e.toString();
+        // Remove "Exception: " prefix if present
+        if (message.startsWith('Exception: ')) {
+          errorMessage = message.substring(11);
+        } else {
+          errorMessage = message;
+        }
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Failed to cancel booking: ${e.toString()}',
+            errorMessage,
             style: AppTheme.bodyMedium.copyWith(
               color: Colors.white,
             ),

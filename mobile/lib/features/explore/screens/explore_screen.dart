@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -1325,7 +1326,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final categoriesService = ref.read(categoriesServiceProvider);
     categoriesService.ensureCategoriesExist().catchError((e) {
       // Silently handle errors - categories might already exist
-      print('Note: Category registration check: $e');
+      debugPrint('Note: Category registration check: $e');
     });
 
     showModalBottomSheet(

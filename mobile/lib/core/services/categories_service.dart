@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../config/app_config.dart';
 
 class CategoriesService {
@@ -270,14 +271,14 @@ class CategoriesService {
             // Category might have been created by another request, ignore duplicate errors
             if (!e.toString().contains('already exists')) {
               // Log other errors but don't throw
-              print('Warning: Failed to create category $slug: $e');
+              debugPrint('Warning: Failed to create category $slug: $e');
             }
           }
         }
       }
     } catch (e) {
       // Don't throw - just log the error
-      print('Warning: Failed to ensure categories exist: $e');
+      debugPrint('Warning: Failed to ensure categories exist: $e');
     }
   }
 }

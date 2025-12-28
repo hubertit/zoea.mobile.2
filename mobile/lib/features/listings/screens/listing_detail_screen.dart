@@ -225,7 +225,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       final shareText = 'Check out $name${location != null && location.isNotEmpty ? ' in $location' : ''} on Zoea!';
                       final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/listings/${widget.listingId}';
                       
-                      await Share.share(
+                      await SharePlus.instance.share(
                         '$shareText\n$shareUrl',
                         subject: name,
                       );
