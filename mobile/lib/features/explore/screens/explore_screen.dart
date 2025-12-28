@@ -148,35 +148,46 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Weather and Currency Widgets (always visible)
-              const SizedBox(height: 8),
-              _buildQuickInfoWidgets(),
-              
-              // Categories section (always visible)
-              const SizedBox(height: 16),
-              _buildCategoriesSection(),
-              const SizedBox(height: 16),
-              
-              // Events section (always visible)
-              _buildEventsSection(),
-              const SizedBox(height: 16),
-              
-              // Recommend section (always visible)
-              _buildRecommendSection(),
-              const SizedBox(height: 16),
-              
-              // Near Me section (always visible)
-              _buildNearMeSection(),
-              const SizedBox(height: 16),
-              
-              // Specials section (always visible)
-              _buildSpecialsSection(),
-            ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            // Refresh all data on explore screen
+            ref.invalidate(categoriesProvider);
+            ref.invalidate(eventsProvider);
+            ref.invalidate(listingsProvider);
+            // Wait a bit for providers to refresh
+            await Future.delayed(const Duration(milliseconds: 500));
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(), // Enable pull-to-refresh even when content fits
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Weather and Currency Widgets (always visible)
+                const SizedBox(height: 8),
+                _buildQuickInfoWidgets(),
+                
+                // Categories section (always visible)
+                const SizedBox(height: 16),
+                _buildCategoriesSection(),
+                const SizedBox(height: 16),
+                
+                // Events section (always visible)
+                _buildEventsSection(),
+                const SizedBox(height: 16),
+                
+                // Recommend section (always visible)
+                _buildRecommendSection(),
+                const SizedBox(height: 16),
+                
+                // Near Me section (always visible)
+                _buildNearMeSection(),
+                const SizedBox(height: 16),
+                
+                // Specials section (always visible)
+                _buildSpecialsSection(),
+              ],
+            ),
           ),
         ),
       ),

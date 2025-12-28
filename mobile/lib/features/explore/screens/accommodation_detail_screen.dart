@@ -927,9 +927,19 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       data: (reviewsData) {
         final reviews = reviewsData['data'] as List? ?? [];
         
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(listingReviewsProvider(ListingReviewsParams(
+              listingId: listingId,
+              page: 1,
+              limit: 20,
+            )));
+            await Future.delayed(const Duration(milliseconds: 500));
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -1065,6 +1075,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               ],
             ],
           ),
+        ),
         );
       },
       loading: () => const Center(child: Padding(

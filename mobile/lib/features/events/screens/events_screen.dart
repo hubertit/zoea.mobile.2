@@ -144,13 +144,20 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   Widget _buildMiceEventsList() {
     final miceEvents = _getMockMiceEvents();
     
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: miceEvents.length,
-      itemBuilder: (context, index) {
-        final event = miceEvents[index];
-        return _buildMiceEventCard(event);
+    return RefreshIndicator(
+      onRefresh: () async {
+        // MICE events are mock data, just refresh the UI
+        setState(() {});
+        await Future.delayed(const Duration(milliseconds: 500));
       },
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: miceEvents.length,
+        itemBuilder: (context, index) {
+          final event = miceEvents[index];
+          return _buildMiceEventCard(event);
+        },
+      ),
     );
   }
 
@@ -365,13 +372,30 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: eventsState.events.length,
-      itemBuilder: (context, index) {
-        final event = eventsState.events[index];
-        return _buildEventCard(event);
+    return RefreshIndicator(
+      onRefresh: () async {
+        final eventsNotifier = ref.read(eventsProvider.notifier);
+        switch (eventsState.currentTab) {
+          case EventsTab.trending:
+            eventsNotifier.loadTrendingEvents();
+            break;
+          case EventsTab.nearMe:
+            eventsNotifier.loadTrendingEvents();
+            break;
+          case EventsTab.thisWeek:
+            eventsNotifier.loadThisWeekEvents();
+            break;
+        }
+        await Future.delayed(const Duration(milliseconds: 500));
       },
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: eventsState.events.length,
+        itemBuilder: (context, index) {
+          final event = eventsState.events[index];
+          return _buildEventCard(event);
+        },
+      ),
     );
   }
 

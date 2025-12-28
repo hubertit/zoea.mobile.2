@@ -93,29 +93,47 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: listings.length + (_currentPage < totalPages ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == listings.length) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _currentPage++;
-                        });
-                      },
-                      child: const Text('Load More'),
-                    ),
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _currentPage = 1; // Reset to first page on refresh
+              });
+              ref.invalidate(
+                listingsProvider(
+                  ListingsParams(
+                    page: 1,
+                    limit: _pageSize,
+                    type: widget.type,
+                    category: widget.category,
                   ),
-                );
-              }
-
-              final listing = listings[index] as Map<String, dynamic>;
-              return _buildListingCard(listing);
+                ),
+              );
+              await Future.delayed(const Duration(milliseconds: 500));
             },
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: listings.length + (_currentPage < totalPages ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == listings.length) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentPage++;
+                          });
+                        },
+                        child: const Text('Load More'),
+                      ),
+                    ),
+                  );
+                }
+
+                final listing = listings[index] as Map<String, dynamic>;
+                return _buildListingCard(listing);
+              },
+            ),
           );
         },
         loading: () => const Center(
