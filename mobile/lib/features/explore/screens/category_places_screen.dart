@@ -815,235 +815,272 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
       context: context,
       backgroundColor: AppTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.85,
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Filter ${_categoryName ?? widget.category}',
-                    style: AppTheme.headlineSmall.copyWith(
-                      fontWeight: FontWeight.w600,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filter ${_categoryName ?? widget.category}',
+                      style: AppTheme.headlineSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              
-              // Scrollable content
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Minimum Rating
-                      Text(
-                        'Minimum Rating',
-                        style: AppTheme.titleMedium.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _buildRatingChip(
-                            '4.0+ Stars',
-                            4.0,
-                            tempMinRating,
-                            (value) {
-                              setModalState(() {
-                                tempMinRating = tempMinRating == value ? null : value;
-                              });
-                            },
-                          ),
-                          _buildRatingChip(
-                            '4.5+ Stars',
-                            4.5,
-                            tempMinRating,
-                            (value) {
-                              setModalState(() {
-                                tempMinRating = tempMinRating == value ? null : value;
-                              });
-                            },
-                          ),
-                          _buildRatingChip(
-                            '5.0 Stars',
-                            5.0,
-                            tempMinRating,
-                            (value) {
-                              setModalState(() {
-                                tempMinRating = tempMinRating == value ? null : value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      
-                      // Price Range
-                      Text(
-                        'Price Range',
-                        style: AppTheme.titleMedium.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: minPriceController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: 'Min Price',
-                                hintText: '0',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                prefixText: 'RWF ',
-                              ),
-                              onChanged: (value) {
-                                final price = double.tryParse(value);
-                                setModalState(() {
-                                  tempMinPrice = price;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: TextField(
-                              controller: maxPriceController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: 'Max Price',
-                                hintText: 'No limit',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                prefixText: 'RWF ',
-                              ),
-                              onChanged: (value) {
-                                final price = double.tryParse(value);
-                                setModalState(() {
-                                  tempMaxPrice = price;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      
-                      // Featured Only
-                      CheckboxListTile(
-                        title: Text(
-                          'Featured Only',
-                          style: AppTheme.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        subtitle: Text(
-                          'Show only featured listings',
-                          style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
-                          ),
-                        ),
-                        value: tempIsFeatured == true,
-                        onChanged: (bool? value) {
-                          setModalState(() {
-                            tempIsFeatured = (value == true) ? true : null;
-                          });
-                        },
-                        activeColor: AppTheme.primaryColor,
-                      ),
-                    ],
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                
+                // Minimum Rating
+                Text(
+                  'Minimum Rating',
+                  style: AppTheme.titleMedium.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              
-              // Action buttons
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildRatingChip(
+                      '4.0+ Stars',
+                      4.0,
+                      tempMinRating,
+                      (value) {
                         setModalState(() {
-                          tempMinRating = null;
-                          tempMinPrice = null;
-                          tempMaxPrice = null;
-                          tempIsFeatured = null;
-                          minPriceController.clear();
-                          maxPriceController.clear();
+                          tempMinRating = tempMinRating == value ? null : value;
                         });
                       },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryColor,
-                        side: BorderSide(color: AppTheme.primaryColor),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: const Text('Clear All'),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _minRating = tempMinRating;
-                          _minPrice = tempMinPrice;
-                          _maxPrice = tempMaxPrice;
-                          _isFeatured = tempIsFeatured;
-                          _currentPage = 1; // Reset to first page
+                    _buildRatingChip(
+                      '4.5+ Stars',
+                      4.5,
+                      tempMinRating,
+                      (value) {
+                        setModalState(() {
+                          tempMinRating = tempMinRating == value ? null : value;
                         });
-                        minPriceController.dispose();
-                        maxPriceController.dispose();
-                        Navigator.pop(context);
-                        // Invalidate provider to refresh with new filters
-                        ref.invalidate(
-                          listingsProvider(
-                            ListingsParams(
-                              page: 1,
-                              limit: _pageSize,
-                              category: _categoryId,
-                              rating: _minRating,
-                              minPrice: _minPrice,
-                              maxPrice: _maxPrice,
-                              isFeatured: _isFeatured,
+                      },
+                    ),
+                    _buildRatingChip(
+                      '5.0 Stars',
+                      5.0,
+                      tempMinRating,
+                      (value) {
+                        setModalState(() {
+                          tempMinRating = tempMinRating == value ? null : value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                
+                // Price Range
+                Text(
+                  'Price Range',
+                  style: AppTheme.titleMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: minPriceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Min Price',
+                          hintText: '0',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
                             ),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: AppTheme.primaryColor,
+                              width: 1.5,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
+                          ),
+                          prefixText: 'RWF ',
+                        ),
+                        onChanged: (value) {
+                          final price = double.tryParse(value);
+                          setModalState(() {
+                            tempMinPrice = price;
+                          });
+                        },
                       ),
-                      child: const Text('Apply Filters'),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: maxPriceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Max Price',
+                          hintText: 'No limit',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: AppTheme.primaryColor,
+                              width: 1.5,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
+                          ),
+                          prefixText: 'RWF ',
+                        ),
+                        onChanged: (value) {
+                          final price = double.tryParse(value);
+                          setModalState(() {
+                            tempMaxPrice = price;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                
+                // Featured Only
+                CheckboxListTile(
+                  title: Text(
+                    'Featured Only',
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ],
-              ),
-            ],
+                  subtitle: Text(
+                    'Show only featured listings',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                  value: tempIsFeatured == true,
+                  onChanged: (bool? value) {
+                    setModalState(() {
+                      tempIsFeatured = (value == true) ? true : null;
+                    });
+                  },
+                  activeColor: AppTheme.primaryColor,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                
+                // Action buttons
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setModalState(() {
+                            tempMinRating = null;
+                            tempMinPrice = null;
+                            tempMaxPrice = null;
+                            tempIsFeatured = null;
+                            minPriceController.clear();
+                            maxPriceController.clear();
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppTheme.primaryColor,
+                          side: BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text('Clear All'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _minRating = tempMinRating;
+                            _minPrice = tempMinPrice;
+                            _maxPrice = tempMaxPrice;
+                            _isFeatured = tempIsFeatured;
+                            _currentPage = 1; // Reset to first page
+                          });
+                          minPriceController.dispose();
+                          maxPriceController.dispose();
+                          Navigator.pop(context);
+                          // Invalidate provider to refresh with new filters
+                          ref.invalidate(
+                            listingsProvider(
+                              ListingsParams(
+                                page: 1,
+                                limit: _pageSize,
+                                category: _categoryId,
+                                rating: _minRating,
+                                minPrice: _minPrice,
+                                maxPrice: _maxPrice,
+                                isFeatured: _isFeatured,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text('Apply Filters'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
