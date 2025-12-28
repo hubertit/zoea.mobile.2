@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/reviews_provider.dart';
 
 class PlaceDetailScreen extends ConsumerStatefulWidget {
   final String placeId;
@@ -1577,17 +1578,29 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _ReviewBottomSheet(),
+      builder: (context) => _ReviewBottomSheet(
+        listingId: widget.placeId, // Pass placeId as listingId
+      ),
     );
   }
 }
 
-class _ReviewBottomSheet extends StatefulWidget {
+class _ReviewBottomSheet extends ConsumerStatefulWidget {
+  final String? listingId;
+  final String? eventId;
+  final String? tourId;
+
+  const _ReviewBottomSheet({
+    this.listingId,
+    this.eventId,
+    this.tourId,
+  });
+
   @override
-  _ReviewBottomSheetState createState() => _ReviewBottomSheetState();
+  ConsumerState<_ReviewBottomSheet> createState() => _ReviewBottomSheetState();
 }
 
-class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
+class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
   int _selectedRating = 5;
   final TextEditingController _reviewController = TextEditingController();
   bool _isSubmitting = false;
@@ -1696,7 +1709,7 @@ class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppTheme.primaryColor),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
               ),
               contentPadding: const EdgeInsets.all(16),
             ),
@@ -1740,7 +1753,7 @@ class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
     );
   }
 
-  void _submitReview() async {
+  Future<void> _submitReview() async {
     if (_reviewController.text.trim().isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1753,17 +1766,54 @@ class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
       return;
     }
 
+    // Validate that at least one ID is provided
+    if (widget.listingId == null && widget.eventId == null && widget.tourId == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to submit review. Missing listing, event, or tour information.'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() {
       _isSubmitting = true;
     });
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final reviewsService = ref.read(reviewsServiceProvider);
+      
+      await reviewsService.createReview(
+        listingId: widget.listingId,
+        eventId: widget.eventId,
+        tourId: widget.tourId,
+        rating: _selectedRating,
+        content: _reviewController.text.trim(),
+      );
 
-    if (mounted) {
-      setState(() {
-        _isSubmitting = false;
-      });
+      if (!mounted) return;
+
+      // Invalidate reviews providers to refresh the list
+      if (widget.listingId != null) {
+        ref.invalidate(listingReviewsProvider(
+          ListingReviewsParams(listingId: widget.listingId!),
+        ));
+      } else if (widget.eventId != null) {
+        ref.invalidate(eventReviewsProvider(
+          EventReviewsParams(eventId: widget.eventId!),
+        ));
+      }
+      
+      // Also invalidate general reviews provider
+      ref.invalidate(reviewsProvider(
+        ReviewsParams(
+          listingId: widget.listingId,
+          eventId: widget.eventId,
+        ),
+      ));
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1774,7 +1824,9 @@ class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
             label: 'View',
             textColor: Colors.white,
             onPressed: () {
-              // TODO: Navigate to reviews tab
+              // Close bottom sheet first
+              Navigator.pop(context);
+              // TODO: Navigate to reviews tab if needed
             },
           ),
         ),
@@ -1782,6 +1834,23 @@ class _ReviewBottomSheetState extends State<_ReviewBottomSheet> {
 
       // Close bottom sheet
       Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isSubmitting = false;
+      });
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceAll('Exception: ', ''),
+          ),
+          backgroundColor: AppTheme.errorColor,
+          duration: const Duration(seconds: 4),
+        ),
+      );
     }
   }
 }
