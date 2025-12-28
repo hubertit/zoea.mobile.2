@@ -228,15 +228,15 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         height: 36,
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: _isScrolled ? Colors.transparent : Colors.black.withOpacity(0.3),
+          color: Colors.black.withOpacity(0.5),
           shape: BoxShape.circle,
         ),
         child: IconButton(
           onPressed: () => context.pop(),
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
-            size: 18,
-            color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+            size: 20,
+            color: Colors.white,
           ),
           padding: EdgeInsets.zero,
           alignment: Alignment.center,
