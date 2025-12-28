@@ -159,7 +159,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
               size: 32,
             ),
-            onPressed: () => context.pop(),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/explore');
+              }
+            },
           ),
           actions: const [], // Buttons moved to flexibleSpace
           flexibleSpace: FlexibleSpaceBar(
