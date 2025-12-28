@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/bookings_provider.dart';
 
 class MyBookingsScreen extends ConsumerStatefulWidget {
   const MyBookingsScreen({super.key});
@@ -98,20 +99,110 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   }
 
   Widget _buildBookingsList(String filter) {
-    final bookings = _getMockBookings();
-    final filteredBookings = _filterBookings(bookings, filter);
-    
-    if (filteredBookings.isEmpty) {
-      return _buildEmptyState(filter);
+    // Determine status filter for API
+    String? statusFilter;
+    if (filter == 'cancelled') {
+      statusFilter = 'cancelled';
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: filteredBookings.length,
-      itemBuilder: (context, index) {
-        final booking = filteredBookings[index];
-        return _buildBookingCard(booking);
+    // Fetch bookings from API
+    final bookingsAsync = ref.watch(
+      bookingsProvider(
+        BookingsParams(
+          page: 1,
+          limit: 100, // Fetch all bookings for now
+          status: statusFilter,
+        ),
+      ),
+    );
+
+    return bookingsAsync.when(
+      data: (response) {
+        final bookings = (response['data'] as List<dynamic>?)
+                ?.map((b) => b as Map<String, dynamic>)
+                .toList() ??
+            [];
+
+        // Filter bookings based on tab
+        final filteredBookings = _filterBookings(bookings, filter);
+
+        if (filteredBookings.isEmpty) {
+          return _buildEmptyState(filter);
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(
+              bookingsProvider(
+                BookingsParams(
+                  page: 1,
+                  limit: 100,
+                  status: statusFilter,
+                ),
+              ),
+            );
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: filteredBookings.length,
+            itemBuilder: (context, index) {
+              final booking = filteredBookings[index];
+              return _buildBookingCard(booking);
+            },
+          ),
+        );
       },
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          color: AppTheme.primaryColor,
+        ),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppTheme.secondaryTextColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load bookings',
+              style: AppTheme.titleMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: AppTheme.bodySmall.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(
+                  bookingsProvider(
+                    BookingsParams(
+                      page: 1,
+                      limit: 100,
+                      status: statusFilter,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -200,11 +291,116 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   }
 
   Widget _buildBookingCard(Map<String, dynamic> booking) {
-    final bookingDate = booking['bookingDate'] as DateTime;
-    final eventDate = booking['eventDate'] as DateTime;
+    // Parse booking data from API response
+    final bookingId = booking['id'] as String? ?? '';
+    final bookingNumber = booking['bookingNumber'] as String?;
+    final status = booking['status'] as String? ?? 'pending';
+    final bookingType = booking['bookingType'] as String? ?? 'hotel';
+    
+    // Get dates based on booking type
+    DateTime? eventDate;
+    DateTime? bookingDate;
+    String? bookingTime;
+    
+    if (bookingType == 'hotel') {
+      if (booking['checkInDate'] != null) {
+        eventDate = DateTime.parse(booking['checkInDate'] as String);
+      }
+      if (booking['checkOutDate'] != null) {
+        // Use check-out date for display
+        eventDate = DateTime.parse(booking['checkOutDate'] as String);
+      }
+    } else if (bookingType == 'restaurant') {
+      if (booking['bookingDate'] != null) {
+        eventDate = DateTime.parse(booking['bookingDate'] as String);
+        bookingDate = eventDate;
+      }
+      bookingTime = booking['bookingTime'] as String?;
+    } else if (bookingType == 'event') {
+      final event = booking['event'] as Map<String, dynamic>?;
+      if (event?['startDate'] != null) {
+        eventDate = DateTime.parse(event!['startDate'] as String);
+      }
+    } else if (bookingType == 'tour') {
+      final tourSchedule = booking['tourSchedule'] as Map<String, dynamic>?;
+      if (tourSchedule?['date'] != null) {
+        eventDate = DateTime.parse(tourSchedule!['date'] as String);
+      }
+    }
+    
+    // Fallback to createdAt if no event date
+    if (eventDate == null && booking['createdAt'] != null) {
+      eventDate = DateTime.parse(booking['createdAt'] as String);
+    }
+    if (bookingDate == null && booking['createdAt'] != null) {
+      bookingDate = DateTime.parse(booking['createdAt'] as String);
+    }
+
+    // Get name and location based on booking type
+    String name = 'Unknown';
+    String location = 'Location not specified';
+    String? imageUrl;
+
+    if (bookingType == 'hotel' || bookingType == 'restaurant') {
+      final listing = booking['listing'] as Map<String, dynamic>?;
+      if (listing != null) {
+        name = listing['name'] as String? ?? 'Unknown';
+        // Get location from listing address or city
+        final address = listing['address'] as String?;
+        final city = listing['city'] as Map<String, dynamic>?;
+        if (address != null && address.isNotEmpty) {
+          location = address;
+        } else if (city != null && city['name'] != null) {
+          location = city['name'] as String;
+        }
+        
+        // Get primary image
+        final images = listing['images'] as List<dynamic>?;
+        if (images != null && images.isNotEmpty) {
+          final image = images[0] as Map<String, dynamic>?;
+          final media = image?['media'] as Map<String, dynamic>?;
+          imageUrl = media?['url'] as String?;
+        }
+      }
+    } else if (bookingType == 'event') {
+      final event = booking['event'] as Map<String, dynamic>?;
+      if (event != null) {
+        name = event['name'] as String? ?? 'Unknown';
+        location = event['locationName'] as String? ??
+            event['venueName'] as String? ??
+            event['address'] as String? ??
+            'Location not specified';
+        
+        // Get main flyer image
+        final attachments = event['attachments'] as List<dynamic>?;
+        if (attachments != null && attachments.isNotEmpty) {
+          final attachment = attachments[0] as Map<String, dynamic>?;
+          final media = attachment?['media'] as Map<String, dynamic>?;
+          imageUrl = media?['url'] as String?;
+        }
+      }
+    } else if (bookingType == 'tour') {
+      final tour = booking['tour'] as Map<String, dynamic>?;
+      if (tour != null) {
+        name = tour['name'] as String? ?? 'Unknown';
+        location = 'Tour Location'; // Tours might not have location in response
+        
+        // Get primary image
+        final images = tour['images'] as List<dynamic>?;
+        if (images != null && images.isNotEmpty) {
+          final image = images[0] as Map<String, dynamic>?;
+          final media = image?['media'] as Map<String, dynamic>?;
+          imageUrl = media?['url'] as String?;
+        }
+      }
+    }
+
+    // Get price and guest count
+    final totalAmount = (booking['totalAmount'] as num?)?.toDouble() ?? 0.0;
+    final guestCount = booking['guestCount'] as int? ?? 1;
+    final currency = booking['currency'] as String? ?? 'RWF';
+
     final dateFormat = DateFormat('MMM dd, yyyy');
-    final timeFormat = DateFormat('HH:mm');
-    final status = booking['status'] as String;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -222,35 +418,47 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Event Image and Status
+          // Booking Image and Status
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Stack(
               children: [
-                CachedNetworkImage(
-                  imageUrl: booking['image'] as String,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
+                // Image
+                if (imageUrl != null && imageUrl.isNotEmpty)
+                  CachedNetworkImage(
+                    imageUrl: imageUrl,
                     height: 200,
-                    color: AppTheme.dividerColor,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 200,
+                      color: AppTheme.dividerColor,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: AppTheme.primaryColor,
+                        ),
                       ),
                     ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
+                    errorWidget: (context, url, error) => Container(
+                      height: 200,
+                      color: AppTheme.dividerColor,
+                      child: Icon(
+                        _getBookingTypeIcon(bookingType),
+                        size: 64,
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  )
+                else
+                  Container(
                     height: 200,
                     color: AppTheme.dividerColor,
-                    child: const Icon(
-                      Icons.event,
+                    child: Icon(
+                      _getBookingTypeIcon(bookingType),
                       size: 64,
                       color: AppTheme.secondaryTextColor,
                     ),
                   ),
-                ),
                 // Status Badge
                 Positioned(
                   top: 12,
@@ -270,7 +478,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     ),
                   ),
                 ),
-                // Booking ID
+                // Booking ID/Number
                 Positioned(
                   top: 12,
                   left: 12,
@@ -281,7 +489,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '#${booking['id']}',
+                      '#${bookingNumber ?? bookingId.substring(0, 8)}',
                       style: AppTheme.labelSmall.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
@@ -298,9 +506,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Event Name
+                // Name
                 Text(
-                  booking['eventName'] as String,
+                  name,
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -308,7 +516,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                // Event Date and Time
+                // Date and Time
                 Row(
                   children: [
                     Icon(
@@ -317,25 +525,28 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                       color: AppTheme.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      dateFormat.format(eventDate),
-                      style: AppTheme.bodyMedium.copyWith(
+                    if (eventDate != null)
+                      Text(
+                        dateFormat.format(eventDate),
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    if (bookingTime != null) ...[
+                      const SizedBox(width: 16),
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
                         color: AppTheme.secondaryTextColor,
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(
-                      Icons.access_time,
-                      size: 16,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      timeFormat.format(eventDate),
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                      const SizedBox(width: 8),
+                      Text(
+                        bookingTime,
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -350,7 +561,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        booking['location'] as String,
+                        location,
                         style: AppTheme.bodyMedium.copyWith(
                           color: AppTheme.secondaryTextColor,
                         ),
@@ -362,36 +573,37 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 ),
                 const SizedBox(height: 8),
                 // Booking Date
-                Row(
-                  children: [
-                    Icon(
-                      Icons.shopping_cart,
-                      size: 16,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Booked on ${dateFormat.format(bookingDate)}',
-                      style: AppTheme.bodySmall.copyWith(
+                if (bookingDate != null)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.shopping_cart,
+                        size: 16,
                         color: AppTheme.secondaryTextColor,
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Booked on ${dateFormat.format(bookingDate)}',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 12),
                 // Price and Guests
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${booking['price']} RWF',
+                      '${totalAmount.toStringAsFixed(0)} $currency',
                       style: AppTheme.titleMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.primaryColor,
                       ),
                     ),
                     Text(
-                      '${booking['guests']} guest${booking['guests'] > 1 ? 's' : ''}',
+                      '$guestCount guest${guestCount > 1 ? 's' : ''}',
                       style: AppTheme.bodyMedium.copyWith(
                         color: AppTheme.secondaryTextColor,
                       ),
@@ -400,7 +612,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 ),
                 const SizedBox(height: 16),
                 // Action Buttons
-                _buildActionButtons(booking),
+                _buildActionButtons(booking, bookingId, status),
               ],
             ),
           ),
@@ -409,16 +621,28 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     );
   }
 
-  Widget _buildActionButtons(Map<String, dynamic> booking) {
-    final status = booking['status'] as String;
-    
-    if (status == 'cancelled') {
+  IconData _getBookingTypeIcon(String bookingType) {
+    switch (bookingType.toLowerCase()) {
+      case 'hotel':
+        return Icons.hotel;
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'event':
+        return Icons.event;
+      case 'tour':
+        return Icons.tour;
+      default:
+        return Icons.event;
+    }
+  }
+
+  Widget _buildActionButtons(Map<String, dynamic> booking, String bookingId, String status) {
+    if (status.toLowerCase() == 'cancelled') {
       return Row(
         children: [
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () {
-                // TODO: Book again
                 _showBookAgainDialog(booking);
               },
               icon: const Icon(Icons.repeat, size: 16),
@@ -436,13 +660,14 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           ),
         ],
       );
-    } else if (status == 'upcoming') {
+    } else if (status.toLowerCase() == 'pending' ||
+        status.toLowerCase() == 'confirmed' ||
+        status.toLowerCase() == 'upcoming') {
       return Row(
         children: [
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () {
-                // TODO: View details
                 _showBookingDetails(booking);
               },
               icon: const Icon(Icons.visibility, size: 16),
@@ -462,7 +687,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () {
-                _showCancelBookingDialog(booking);
+                _showCancelBookingDialog(booking, bookingId);
               },
               icon: const Icon(Icons.cancel, size: 16),
               label: const Text('Cancel'),
@@ -509,180 +734,122 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     switch (status.toLowerCase()) {
       case 'confirmed':
         return AppTheme.successColor;
+      case 'pending':
+        return Colors.orange;
       case 'upcoming':
         return AppTheme.primaryColor;
       case 'completed':
         return Colors.blue;
       case 'cancelled':
         return Colors.red;
+      case 'checked_in':
+        return Colors.green;
       default:
         return AppTheme.secondaryTextColor;
     }
   }
 
-  List<Map<String, dynamic>> _filterBookings(List<Map<String, dynamic>> bookings, String filter) {
+  List<Map<String, dynamic>> _filterBookings(
+      List<Map<String, dynamic>> bookings, String filter) {
     final now = DateTime.now();
-    
+
     switch (filter) {
       case 'upcoming':
         return bookings.where((booking) {
-          final eventDate = booking['eventDate'] as DateTime;
-          return eventDate.isAfter(now) && booking['status'] != 'cancelled';
+          final status = (booking['status'] as String? ?? '').toLowerCase();
+          if (status == 'cancelled') return false;
+
+          // Determine event date based on booking type
+          DateTime? eventDate;
+          final bookingType = booking['bookingType'] as String? ?? 'hotel';
+
+          if (bookingType == 'hotel') {
+            if (booking['checkInDate'] != null) {
+              eventDate = DateTime.parse(booking['checkInDate'] as String);
+            }
+          } else if (bookingType == 'restaurant') {
+            if (booking['bookingDate'] != null) {
+              eventDate = DateTime.parse(booking['bookingDate'] as String);
+            }
+          } else if (bookingType == 'event') {
+            final event = booking['event'] as Map<String, dynamic>?;
+            if (event?['startDate'] != null) {
+              eventDate = DateTime.parse(event!['startDate'] as String);
+            }
+          } else if (bookingType == 'tour') {
+            final tourSchedule = booking['tourSchedule'] as Map<String, dynamic>?;
+            if (tourSchedule?['date'] != null) {
+              eventDate = DateTime.parse(tourSchedule!['date'] as String);
+            }
+          }
+
+          if (eventDate == null) return false;
+          return eventDate.isAfter(now);
         }).toList();
       case 'past':
         return bookings.where((booking) {
-          final eventDate = booking['eventDate'] as DateTime;
-          return eventDate.isBefore(now) && booking['status'] != 'cancelled';
+          final status = (booking['status'] as String? ?? '').toLowerCase();
+          if (status == 'cancelled') return false;
+
+          // Determine event date based on booking type
+          DateTime? eventDate;
+          final bookingType = booking['bookingType'] as String? ?? 'hotel';
+
+          if (bookingType == 'hotel') {
+            if (booking['checkOutDate'] != null) {
+              eventDate = DateTime.parse(booking['checkOutDate'] as String);
+            }
+          } else if (bookingType == 'restaurant') {
+            if (booking['bookingDate'] != null) {
+              eventDate = DateTime.parse(booking['bookingDate'] as String);
+            }
+          } else if (bookingType == 'event') {
+            final event = booking['event'] as Map<String, dynamic>?;
+            if (event?['startDate'] != null) {
+              eventDate = DateTime.parse(event!['startDate'] as String);
+            }
+          } else if (bookingType == 'tour') {
+            final tourSchedule = booking['tourSchedule'] as Map<String, dynamic>?;
+            if (tourSchedule?['date'] != null) {
+              eventDate = DateTime.parse(tourSchedule!['date'] as String);
+            }
+          }
+
+          if (eventDate == null) return false;
+          return eventDate.isBefore(now);
         }).toList();
       case 'cancelled':
-        return bookings.where((booking) => booking['status'] == 'cancelled').toList();
+        return bookings.where((booking) {
+          final status = (booking['status'] as String? ?? '').toLowerCase();
+          return status == 'cancelled';
+        }).toList();
       default:
         return bookings;
     }
   }
 
-  List<Map<String, dynamic>> _getMockBookings() {
-    return [
-      // EVENTS - Upcoming
-      {
-        'id': 'BK001',
-        'type': 'event',
-        'eventName': 'Kigali Jazz Festival 2024',
-        'location': 'Kigali Convention Centre',
-        'eventDate': DateTime.now().add(const Duration(days: 15)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 5)),
-        'price': 25000,
-        'guests': 2,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK002',
-        'type': 'event',
-        'eventName': 'Kwita Izina Gorilla Naming Ceremony',
-        'location': 'Kinigi, Musanze',
-        'eventDate': DateTime.now().add(const Duration(days: 8)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 3)),
-        'price': 50000,
-        'guests': 1,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK003',
-        'type': 'event',
-        'eventName': 'Rwanda Cultural Festival',
-        'location': 'Amahoro Stadium, Kigali',
-        'eventDate': DateTime.now().add(const Duration(days: 25)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 7)),
-        'price': 15000,
-        'guests': 4,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-      },
-      
-      // ACCOMMODATION - Upcoming
-      {
-        'id': 'BK004',
-        'type': 'accommodation',
-        'eventName': 'Kigali Marriott Hotel',
-        'location': 'Kacyiru, Kigali',
-        'eventDate': DateTime.now().add(const Duration(days: 12)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 4)),
-        'price': 180000,
-        'guests': 2,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK005',
-        'type': 'accommodation',
-        'eventName': 'Sabyinyo Silverback Lodge',
-        'location': 'Kinigi, Musanze',
-        'eventDate': DateTime.now().add(const Duration(days: 20)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 6)),
-        'price': 450000,
-        'guests': 2,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop',
-      },
-      
-      // RESTAURANTS - Upcoming
-      {
-        'id': 'BK006',
-        'type': 'restaurant',
-        'eventName': 'Poivre Noir Restaurant',
-        'location': 'Kacyiru, Kigali',
-        'eventDate': DateTime.now().add(const Duration(days: 3)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 1)),
-        'price': 45000,
-        'guests': 2,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK007',
-        'type': 'restaurant',
-        'eventName': 'Heaven Restaurant',
-        'location': 'Kacyiru, Kigali',
-        'eventDate': DateTime.now().add(const Duration(days: 7)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 2)),
-        'price': 35000,
-        'guests': 3,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
-      },
-      
-      // PAST BOOKINGS
-      {
-        'id': 'BK008',
-        'type': 'event',
-        'eventName': 'Volcanoes National Park Tour',
-        'location': 'Musanze, Northern Province',
-        'eventDate': DateTime.now().subtract(const Duration(days: 10)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 20)),
-        'price': 150000,
-        'guests': 1,
-        'status': 'completed',
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK003',
-        'eventName': 'Tech Meetup Rwanda',
-        'location': 'KLab Innovation Hub',
-        'eventDate': DateTime.now().subtract(const Duration(days: 30)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 35)),
-        'price': 0,
-        'guests': 1,
-        'status': 'cancelled',
-        'image': 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK004',
-        'eventName': 'Lake Kivu Boat Tour',
-        'location': 'Rubavu, Western Province',
-        'eventDate': DateTime.now().add(const Duration(days: 7)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 2)),
-        'price': 45000,
-        'guests': 4,
-        'status': 'upcoming',
-        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-      },
-      {
-        'id': 'BK005',
-        'eventName': 'Art Exhibition Opening',
-        'location': 'Inema Arts Center',
-        'eventDate': DateTime.now().subtract(const Duration(days: 5)),
-        'bookingDate': DateTime.now().subtract(const Duration(days: 8)),
-        'price': 10000,
-        'guests': 2,
-        'status': 'completed',
-        'image': 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
-      },
-    ];
-  }
-
   void _showBookingDetails(Map<String, dynamic> booking) {
+    final bookingId = booking['id'] as String? ?? 'N/A';
+    final bookingNumber = booking['bookingNumber'] as String?;
+    final status = booking['status'] as String? ?? 'pending';
+    final totalAmount = (booking['totalAmount'] as num?)?.toDouble() ?? 0.0;
+    final currency = booking['currency'] as String? ?? 'RWF';
+    final guestCount = booking['guestCount'] as int? ?? 1;
+
+    // Get name based on booking type
+    String name = 'Unknown';
+    final bookingType = booking['bookingType'] as String? ?? 'hotel';
+    if (bookingType == 'hotel' || bookingType == 'restaurant') {
+      final listing = booking['listing'] as Map<String, dynamic>?;
+      name = listing?['name'] as String? ?? 'Unknown';
+    } else if (bookingType == 'event') {
+      final event = booking['event'] as Map<String, dynamic>?;
+      name = event?['name'] as String? ?? 'Unknown';
+    } else if (bookingType == 'tour') {
+      final tour = booking['tour'] as Map<String, dynamic>?;
+      name = tour?['name'] as String? ?? 'Unknown';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -694,17 +861,15 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Booking ID: ${booking['id']}'),
+            Text('Booking ID: ${bookingNumber ?? bookingId}'),
             const SizedBox(height: 8),
-            Text('Event: ${booking['eventName']}'),
+            Text('Name: $name'),
             const SizedBox(height: 8),
-            Text('Location: ${booking['location']}'),
+            Text('Guests: $guestCount'),
             const SizedBox(height: 8),
-            Text('Guests: ${booking['guests']}'),
+            Text('Price: ${totalAmount.toStringAsFixed(0)} $currency'),
             const SizedBox(height: 8),
-            Text('Price: ${booking['price']} RWF'),
-            const SizedBox(height: 8),
-            Text('Status: ${booking['status'].toUpperCase()}'),
+            Text('Status: ${status.toUpperCase()}'),
           ],
         ),
         actions: [
@@ -723,7 +888,21 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     );
   }
 
-  void _showCancelBookingDialog(Map<String, dynamic> booking) {
+  void _showCancelBookingDialog(Map<String, dynamic> booking, String bookingId) {
+    // Get name for display
+    String name = 'Unknown';
+    final bookingType = booking['bookingType'] as String? ?? 'hotel';
+    if (bookingType == 'hotel' || bookingType == 'restaurant') {
+      final listing = booking['listing'] as Map<String, dynamic>?;
+      name = listing?['name'] as String? ?? 'Unknown';
+    } else if (bookingType == 'event') {
+      final event = booking['event'] as Map<String, dynamic>?;
+      name = event?['name'] as String? ?? 'Unknown';
+    } else if (bookingType == 'tour') {
+      final tour = booking['tour'] as Map<String, dynamic>?;
+      name = tour?['name'] as String? ?? 'Unknown';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -734,7 +913,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           ),
         ),
         content: Text(
-          'Are you sure you want to cancel this booking? This action cannot be undone.',
+          'Are you sure you want to cancel your booking for "$name"? This action cannot be undone.',
           style: AppTheme.bodyMedium,
         ),
         actions: [
@@ -748,21 +927,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              // TODO: Implement cancellation logic
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Booking cancelled successfully!',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  backgroundColor: AppTheme.successColor,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              await _cancelBooking(bookingId);
             },
             child: Text(
               'Cancel Booking',
@@ -777,55 +944,146 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     );
   }
 
+  Future<void> _cancelBooking(String bookingId) async {
+    try {
+      final bookingsService = ref.read(bookingsServiceProvider);
+      await bookingsService.cancelBooking(id: bookingId);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Booking cancelled successfully!',
+            style: AppTheme.bodyMedium.copyWith(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: AppTheme.successColor,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      // Refresh bookings
+      ref.invalidate(bookingsProvider(
+        BookingsParams(page: 1, limit: 100),
+      ));
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to cancel booking: ${e.toString()}',
+            style: AppTheme.bodyMedium.copyWith(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   void _showBookAgainDialog(Map<String, dynamic> booking) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Book Again',
-          style: AppTheme.titleMedium,
-        ),
-        content: Text(
-          'Would you like to book "${booking['eventName']}" again?',
-          style: AppTheme.bodyMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
-              ),
-            ),
+    // Get name for display
+    String name = 'Unknown';
+    final bookingType = booking['bookingType'] as String? ?? 'hotel';
+    if (bookingType == 'hotel' || bookingType == 'restaurant') {
+      final listing = booking['listing'] as Map<String, dynamic>?;
+      name = listing?['name'] as String? ?? 'Unknown';
+      final listingId = listing?['id'] as String?;
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Book Again',
+            style: AppTheme.titleMedium,
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Navigate to booking flow
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Redirecting to booking...',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  backgroundColor: AppTheme.primaryColor,
-                  behavior: SnackBarBehavior.floating,
+          content: Text(
+            'Would you like to book "$name" again?',
+            style: AppTheme.bodyMedium,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
                 ),
-              );
-            },
-            child: Text(
-              'Book Now',
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.w500,
               ),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // Navigate to listing detail or booking screen
+                if (listingId != null) {
+                  if (bookingType == 'hotel') {
+                    context.go('/accommodation/$listingId');
+                  } else if (bookingType == 'restaurant') {
+                    context.go('/listing/$listingId');
+                  }
+                }
+              },
+              child: Text(
+                'Book Now',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else if (bookingType == 'event') {
+      final event = booking['event'] as Map<String, dynamic>?;
+      name = event?['name'] as String? ?? 'Unknown';
+      final eventId = event?['id'] as String?;
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Book Again',
+            style: AppTheme.titleMedium,
           ),
-        ],
-      ),
-    );
+          content: Text(
+            'Would you like to book "$name" again?',
+            style: AppTheme.bodyMedium,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // Navigate to event detail
+                if (eventId != null) {
+                  context.go('/event/$eventId');
+                }
+              },
+              child: Text(
+                'Book Now',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
