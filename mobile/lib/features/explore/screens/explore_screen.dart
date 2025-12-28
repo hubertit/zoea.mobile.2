@@ -889,7 +889,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         // Navigate to Stay tab if Accommodation category
         if (slug == 'accommodation' || name.toLowerCase() == 'accommodation') {
           context.go('/accommodation');
-        } else if (slug.isNotEmpty) {
+        } 
+        // Navigate to Events screen if Events category
+        else if (slug == 'events' || name.toLowerCase() == 'events') {
+          context.go('/events');
+        } 
+        else if (slug.isNotEmpty) {
           context.push('/category/$slug');
         } else {
           context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
@@ -1606,7 +1611,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         // Navigate to Stay tab if Accommodation category
         if (slug == 'accommodation' || name.toLowerCase() == 'accommodation') {
           context.go('/accommodation');
-        } else if (slug.isNotEmpty) {
+        } 
+        // Navigate to Events screen if Events category
+        else if (slug == 'events' || name.toLowerCase() == 'events') {
+          context.go('/events');
+        } 
+        else if (slug.isNotEmpty) {
           context.push('/category/$slug');
         } else {
           context.push('/category/${name.toLowerCase().replaceAll(' ', '-')}');
