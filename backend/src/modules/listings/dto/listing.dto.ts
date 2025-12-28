@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber, IsUUID, IsBoolean, IsArray, IsEnum } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsUUID, IsBoolean, IsArray, IsEnum, IsIn } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateListingDto {
@@ -309,6 +309,15 @@ export class ListingQueryDto {
   @Transform(({ value }) => (value === undefined ? undefined : value === true || value === 'true'))
   @IsBoolean() @IsOptional()
   isFeatured?: boolean;
+
+  @ApiPropertyOptional({ 
+    enum: ['popular', 'rating_desc', 'rating_asc', 'name_asc', 'name_desc', 'price_asc', 'price_desc', 'createdAt_desc', 'createdAt_asc'],
+    description: 'Sort order for listings. Default: popular (featured first, then by rating, then by creation date)',
+    example: 'rating_desc'
+  })
+  @IsString() @IsOptional()
+  @IsIn(['popular', 'rating_desc', 'rating_asc', 'name_asc', 'name_desc', 'price_asc', 'price_desc', 'createdAt_desc', 'createdAt_asc'])
+  sortBy?: string;
 }
 
 export class SubmitListingDto {

@@ -21,8 +21,9 @@ export class ListingsService {
     search?: string;
     amenities?: string[];
     rating?: number;
+    sortBy?: string;
   }) {
-    const { page = 1, limit = 20, type, status, cityId, countryId, categoryId, merchantId, isFeatured, minPrice, maxPrice, search, amenities, rating } = params;
+    const { page = 1, limit = 20, type, status, cityId, countryId, categoryId, merchantId, isFeatured, minPrice, maxPrice, search, amenities, rating, sortBy = 'popular' } = params;
     const skip = (page - 1) * limit;
 
     const where: Prisma.ListingWhereInput = {
@@ -48,6 +49,41 @@ export class ListingsService {
       }),
     };
 
+    // Build orderBy based on sortBy parameter
+    let orderBy: Prisma.ListingOrderByWithRelationInput[] | Prisma.ListingOrderByWithRelationInput;
+    
+    switch (sortBy) {
+      case 'rating_desc':
+        orderBy = { rating: 'desc' };
+        break;
+      case 'rating_asc':
+        orderBy = { rating: 'asc' };
+        break;
+      case 'name_asc':
+        orderBy = { name: 'asc' };
+        break;
+      case 'name_desc':
+        orderBy = { name: 'desc' };
+        break;
+      case 'price_asc':
+        orderBy = { minPrice: 'asc' };
+        break;
+      case 'price_desc':
+        orderBy = { minPrice: 'desc' };
+        break;
+      case 'createdAt_desc':
+        orderBy = { createdAt: 'desc' };
+        break;
+      case 'createdAt_asc':
+        orderBy = { createdAt: 'asc' };
+        break;
+      case 'popular':
+      default:
+        // Default: featured first, then by rating, then by creation date
+        orderBy = [{ isFeatured: 'desc' }, { rating: 'desc' }, { createdAt: 'desc' }];
+        break;
+    }
+
     const [listings, total] = await Promise.all([
       this.prisma.listing.findMany({
         where,
@@ -60,7 +96,7 @@ export class ListingsService {
           images: { include: { media: true }, orderBy: { sortOrder: 'asc' } },
           _count: { select: { reviews: true, bookings: true, favorites: true } },
         },
-        orderBy: [{ isFeatured: 'desc' }, { rating: 'desc' }, { createdAt: 'desc' }],
+        orderBy,
       }),
       this.prisma.listing.count({ where }),
     ]);
