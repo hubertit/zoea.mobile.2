@@ -157,9 +157,10 @@ export class ListingsService {
   }
 
   async getRandom(limit = 10) {
-    // Get random listings using PostgreSQL's random() function
-    const listings = await this.prisma.$queryRaw`
-      SELECT l.*
+    // Get random listing IDs using PostgreSQL's random() function
+    // Only select ID to avoid geography column deserialization issues
+    const listings = await this.prisma.$queryRaw<Array<{ id: string }>>`
+      SELECT l.id
       FROM listings l
       WHERE l.status = 'active' 
         AND l.deleted_at IS NULL
@@ -168,7 +169,7 @@ export class ListingsService {
     `;
     
     // Fetch full details with relations for each listing
-    const listingIds = (listings as any[]).map((l: any) => l.id);
+    const listingIds = listings.map((l) => l.id);
     
     if (listingIds.length === 0) {
       return [];
