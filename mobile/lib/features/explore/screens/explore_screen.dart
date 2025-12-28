@@ -843,15 +843,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ),
             itemCount: 6,
             itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+              return _buildSkeletonCategoryCard();
             },
           ),
         ],
@@ -934,6 +926,61 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSkeletonCategoryCard() {
+    return AnimatedBuilder(
+      animation: _shimmerAnimation,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey[200]!,
+              width: 1,
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.grey[200]!,
+                Colors.grey[100]!,
+                Colors.grey[200]!,
+              ],
+              stops: [
+                0.0,
+                _shimmerAnimation.value,
+                1.0,
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Skeleton icon
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Skeleton text
+              Container(
+                width: 60,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
