@@ -48,6 +48,7 @@ export class SearchService {
         skip: type === 'listing' ? skip : 0,
         include: {
           city: { select: { name: true } },
+          category: { select: { id: true, name: true, slug: true } },
           images: { include: { media: true }, take: 1, where: { isPrimary: true } },
         },
         orderBy: [{ isFeatured: 'desc' }, { rating: 'desc' }],

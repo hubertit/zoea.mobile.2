@@ -548,7 +548,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           } else if (resultType == 'tour') {
             context.push('/tour/$id');
           } else {
-            context.push('/listing/$id');
+            // Check if this is an accommodation listing
+            final category = result['category'] as Map<String, dynamic>?;
+            final categorySlug = category?['slug'] as String?;
+            final categoryName = category?['name'] as String?;
+            
+            final isAccommodation = categorySlug == 'accommodation' || 
+                                   categoryName?.toLowerCase() == 'accommodation';
+            
+            if (isAccommodation) {
+              context.push('/accommodation/$id');
+            } else {
+              context.push('/listing/$id');
+            }
           }
         },
       ),
