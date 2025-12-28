@@ -167,33 +167,145 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildEmptyState() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Recent searches
-          Text(
-            'Recent Searches',
-            style: AppTheme.headlineSmall.copyWith(
-              fontWeight: FontWeight.w600,
+    // Fetch search history and trending searches
+    final searchHistoryAsync = ref.watch(searchHistoryProvider);
+    final trendingAsync = ref.watch(trendingSearchesProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(searchHistoryProvider);
+        ref.invalidate(trendingSearchesProvider);
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Recent searches
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recent Searches',
+                  style: AppTheme.headlineSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                searchHistoryAsync.when(
+                  data: (history) {
+                    if (history.isEmpty) return const SizedBox.shrink();
+                    return TextButton(
+                      onPressed: () => _showClearHistoryDialog(),
+                      child: Text(
+                        'Clear',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                    );
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 16),
-          ..._getRecentSearches().map((search) => _buildRecentSearchItem(search)),
-          
-          const SizedBox(height: 32),
-          
-          // Popular searches
-          Text(
-            'Popular Searches',
-            style: AppTheme.headlineSmall.copyWith(
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 16),
+            searchHistoryAsync.when(
+              data: (history) {
+                if (history.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No recent searches',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  );
+                }
+                return Column(
+                  children: history.map((item) => _buildRecentSearchItem(item)).toList(),
+                );
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (error, stack) {
+                // If 401 (unauthorized), user is not logged in - show empty state
+                final errorString = error.toString();
+                if (errorString.contains('Unauthorized') || errorString.contains('401')) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'Sign in to see your search history',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  );
+                }
+                // For other errors, show error message
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Failed to load recent searches',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.errorColor,
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-          const SizedBox(height: 16),
-          ..._getPopularSearches().map((search) => _buildPopularSearchItem(search)),
-        ],
+            
+            const SizedBox(height: 32),
+            
+            // Popular searches
+            Text(
+              'Popular Searches',
+              style: AppTheme.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            trendingAsync.when(
+              data: (trending) {
+                final trendingSearches = (trending['trendingSearches'] as List?)?.cast<String>() ?? [];
+                if (trendingSearches.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No popular searches available',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  );
+                }
+                return Column(
+                  children: trendingSearches.map((search) => _buildPopularSearchItem(search)).toList(),
+                );
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (error, stack) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'Failed to load popular searches',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.errorColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -443,7 +555,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  Widget _buildRecentSearchItem(String search) {
+  Widget _buildRecentSearchItem(Map<String, dynamic> historyItem) {
+    final query = historyItem['query'] as String? ?? '';
+    final createdAt = historyItem['createdAt'] as String?;
+    String? timeAgo;
+    
+    if (createdAt != null) {
+      try {
+        final date = DateTime.parse(createdAt);
+        final now = DateTime.now();
+        final difference = now.difference(date);
+        
+        if (difference.inDays > 0) {
+          timeAgo = '${difference.inDays}d ago';
+        } else if (difference.inHours > 0) {
+          timeAgo = '${difference.inHours}h ago';
+        } else if (difference.inMinutes > 0) {
+          timeAgo = '${difference.inMinutes}m ago';
+        } else {
+          timeAgo = 'Just now';
+        }
+      } catch (e) {
+        // If parsing fails, don't show time
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -453,15 +589,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           size: 20,
         ),
         title: Text(
-          search,
+          query,
           style: AppTheme.bodyMedium,
         ),
+        trailing: timeAgo != null
+            ? Text(
+                timeAgo,
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              )
+            : null,
         onTap: () {
-          _searchController.text = search;
+          _searchController.text = query;
           setState(() {
-            _currentQuery = search;
+            _currentQuery = query;
           });
-          _performSearch(search);
+          _performSearch(query);
         },
       ),
     );
@@ -492,22 +636,83 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
 
-  List<String> _getRecentSearches() {
-    return [
-      'Gorilla Trekking',
-      'Kigali Memorial',
-      'Lake Kivu',
-      'Cultural Tour',
-    ];
+  void _showClearHistoryDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Clear Search History',
+          style: AppTheme.titleMedium,
+        ),
+        content: Text(
+          'Are you sure you want to clear all your search history?',
+          style: AppTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await _clearSearchHistory();
+            },
+            child: Text(
+              'Clear',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  List<String> _getPopularSearches() {
-    return [
-      'Volcanoes National Park',
-      'Nyungwe Forest',
-      'Akagera Safari',
-      'Kigali City Tour',
-      'Rwanda Cultural Experience',
-    ];
+  Future<void> _clearSearchHistory() async {
+    try {
+      final searchService = ref.read(searchServiceProvider);
+      await searchService.clearSearchHistory();
+
+      if (!mounted) return;
+
+      // Refresh search history
+      ref.invalidate(searchHistoryProvider);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Search history cleared',
+            style: AppTheme.bodyMedium.copyWith(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: AppTheme.successColor,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to clear search history: ${e.toString().replaceFirst('Exception: ', '')}',
+            style: AppTheme.bodyMedium.copyWith(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: AppTheme.errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }

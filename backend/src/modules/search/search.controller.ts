@@ -2,6 +2,7 @@ import { Controller, Get, Delete, Query, UseGuards, Request } from '@nestjs/comm
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { SearchService } from './search.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 
 @ApiTags('Search')
 @Controller('search')
@@ -9,6 +10,8 @@ export class SearchController {
   constructor(private searchService: SearchService) {}
 
   @Get()
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Search listings, events, and tours' })
   @ApiQuery({ name: 'q', required: true, description: 'Search query' })
   @ApiQuery({ name: 'type', required: false, enum: ['all', 'listing', 'event', 'tour'] })
@@ -17,6 +20,7 @@ export class SearchController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   async search(
+    @Request() req,
     @Query('q') query: string,
     @Query('type') type?: string,
     @Query('cityId') cityId?: string,
@@ -31,6 +35,7 @@ export class SearchController {
       countryId,
       page: page ? +page : 1,
       limit: limit ? +limit : 20,
+      userId: req.user?.id, // Extract userId from JWT token if authenticated
     });
   }
 

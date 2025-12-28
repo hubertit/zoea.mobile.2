@@ -104,3 +104,15 @@ final searchToursProvider = FutureProvider.family<List<Map<String, dynamic>>, Ma
   );
 });
 
+/// Provider for user's search history
+final searchHistoryProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  final searchService = ref.watch(searchServiceProvider);
+  return await searchService.getSearchHistory(limit: 10);
+});
+
+/// Provider for trending searches
+final trendingSearchesProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+  final searchService = ref.watch(searchServiceProvider);
+  return await searchService.getTrendingSearches();
+});
+
