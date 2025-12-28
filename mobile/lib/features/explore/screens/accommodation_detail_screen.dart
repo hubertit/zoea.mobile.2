@@ -232,7 +232,13 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           shape: BoxShape.circle,
         ),
         child: IconButton(
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/explore');
+            }
+          },
           icon: const Icon(
             Icons.chevron_left,
             size: 20,
