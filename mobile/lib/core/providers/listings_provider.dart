@@ -15,6 +15,8 @@ class ListingsParams {
   final String? search;
   final double? minPrice;
   final double? maxPrice;
+  final double? rating;
+  final bool? isFeatured;
   final String? sortBy;
 
   const ListingsParams({
@@ -26,6 +28,8 @@ class ListingsParams {
     this.search,
     this.minPrice,
     this.maxPrice,
+    this.rating,
+    this.isFeatured,
     this.sortBy,
   });
 
@@ -42,6 +46,8 @@ class ListingsParams {
           search == other.search &&
           minPrice == other.minPrice &&
           maxPrice == other.maxPrice &&
+          rating == other.rating &&
+          isFeatured == other.isFeatured &&
           sortBy == other.sortBy;
 
   @override
@@ -54,6 +60,8 @@ class ListingsParams {
       search.hashCode ^
       minPrice.hashCode ^
       maxPrice.hashCode ^
+      rating.hashCode ^
+      isFeatured.hashCode ^
       sortBy.hashCode;
 }
 
@@ -69,6 +77,8 @@ final listingsProvider = FutureProvider.family<Map<String, dynamic>, ListingsPar
     search: params.search,
     minPrice: params.minPrice,
     maxPrice: params.maxPrice,
+    rating: params.rating,
+    isFeatured: params.isFeatured,
     sortBy: params.sortBy,
   );
 });

@@ -15,6 +15,8 @@ class ListingsService {
     String? search,
     double? minPrice,
     double? maxPrice,
+    double? rating,
+    bool? isFeatured,
     String? sortBy,
   }) async {
     try {
@@ -28,6 +30,8 @@ class ListingsService {
       if (search != null) queryParams['search'] = search;
       if (minPrice != null) queryParams['minPrice'] = minPrice;
       if (maxPrice != null) queryParams['maxPrice'] = maxPrice;
+      if (rating != null) queryParams['rating'] = rating;
+      if (isFeatured != null) queryParams['isFeatured'] = isFeatured;
       if (sortBy != null) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(

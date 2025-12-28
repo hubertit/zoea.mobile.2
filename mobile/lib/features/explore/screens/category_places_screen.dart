@@ -32,6 +32,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   String? _categoryId;
   String? _categoryName;
   bool _isAccommodation = false;
+  
+  // Filter state
+  double? _minRating;
+  double? _minPrice;
+  double? _maxPrice;
+  bool? _isFeatured;
+  
+  bool get _hasActiveFilters => _minRating != null || _minPrice != null || _maxPrice != null || _isFeatured != null;
 
   @override
   void initState() {
@@ -106,9 +114,26 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                 icon: const Icon(Icons.search),
                 onPressed: () => context.push('/search?category=${widget.category}'),
               ),
-              IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: _showFilterBottomSheet,
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.filter_list),
+                    onPressed: _showFilterBottomSheet,
+                  ),
+                  if (_hasActiveFilters)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               IconButton(
                 icon: const Icon(Icons.sort),
@@ -222,6 +247,10 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           page: _currentPage,
           limit: _pageSize,
           category: _categoryId,
+          rating: _minRating,
+          minPrice: _minPrice,
+          maxPrice: _maxPrice,
+          isFeatured: _isFeatured,
         ),
       ),
     );
@@ -269,6 +298,10 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   page: _currentPage,
                   limit: _pageSize,
                   category: _categoryId,
+                  rating: _minRating,
+                  minPrice: _minPrice,
+                  maxPrice: _maxPrice,
+                  isFeatured: _isFeatured,
                 ),
               ),
             );
@@ -282,14 +315,28 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _currentPage++;
-                        });
-                      },
-                      child: const Text('Load More'),
-                    ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentPage++;
+                          });
+                          // Invalidate to fetch next page with current filters
+                          ref.invalidate(
+                            listingsProvider(
+                              ListingsParams(
+                                page: _currentPage,
+                                limit: _pageSize,
+                                category: _categoryId,
+                                rating: _minRating,
+                                minPrice: _minPrice,
+                                maxPrice: _maxPrice,
+                                isFeatured: _isFeatured,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text('Load More'),
+                      ),
                   ),
                 );
               }
@@ -751,51 +798,204 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   }
 
   void _showFilterBottomSheet() {
+    // Local state for bottom sheet
+    double? tempMinRating = _minRating;
+    double? tempMinPrice = _minPrice;
+    double? tempMaxPrice = _maxPrice;
+    bool? tempIsFeatured = _isFeatured;
+    
+    final minPriceController = TextEditingController(
+      text: _minPrice != null ? _minPrice!.toStringAsFixed(0) : '',
+    );
+    final maxPriceController = TextEditingController(
+      text: _maxPrice != null ? _maxPrice!.toStringAsFixed(0) : '',
+    );
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.6,
-        ),
-        child: SingleChildScrollView(
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Filter ${_categoryName ?? widget.category}',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Minimum Rating',
-                style: AppTheme.titleMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildFilterChip('4.0+ Stars', false),
-                  _buildFilterChip('4.5+ Stars', false),
-                  _buildFilterChip('5.0 Stars', false),
+                  Text(
+                    'Filter ${_categoryName ?? widget.category}',
+                    style: AppTheme.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Minimum Rating
+                      Text(
+                        'Minimum Rating',
+                        style: AppTheme.titleMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _buildRatingChip(
+                            '4.0+ Stars',
+                            4.0,
+                            tempMinRating,
+                            (value) {
+                              setModalState(() {
+                                tempMinRating = tempMinRating == value ? null : value;
+                              });
+                            },
+                          ),
+                          _buildRatingChip(
+                            '4.5+ Stars',
+                            4.5,
+                            tempMinRating,
+                            (value) {
+                              setModalState(() {
+                                tempMinRating = tempMinRating == value ? null : value;
+                              });
+                            },
+                          ),
+                          _buildRatingChip(
+                            '5.0 Stars',
+                            5.0,
+                            tempMinRating,
+                            (value) {
+                              setModalState(() {
+                                tempMinRating = tempMinRating == value ? null : value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      
+                      // Price Range
+                      Text(
+                        'Price Range',
+                        style: AppTheme.titleMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: minPriceController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Min Price',
+                                hintText: '0',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                prefixText: 'RWF ',
+                              ),
+                              onChanged: (value) {
+                                final price = double.tryParse(value);
+                                setModalState(() {
+                                  tempMinPrice = price;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextField(
+                              controller: maxPriceController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Max Price',
+                                hintText: 'No limit',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                prefixText: 'RWF ',
+                              ),
+                              onChanged: (value) {
+                                final price = double.tryParse(value);
+                                setModalState(() {
+                                  tempMaxPrice = price;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      
+                      // Featured Only
+                      CheckboxListTile(
+                        title: Text(
+                          'Featured Only',
+                          style: AppTheme.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Show only featured listings',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                        value: tempIsFeatured == true,
+                        onChanged: (bool? value) {
+                          setModalState(() {
+                            tempIsFeatured = (value == true) ? true : null;
+                          });
+                        },
+                        activeColor: AppTheme.primaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Action buttons
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        setModalState(() {
+                          tempMinRating = null;
+                          tempMinPrice = null;
+                          tempMaxPrice = null;
+                          tempIsFeatured = null;
+                          minPriceController.clear();
+                          maxPriceController.clear();
+                        });
+                      },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.primaryColor,
                         side: BorderSide(color: AppTheme.primaryColor),
@@ -807,7 +1007,32 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        setState(() {
+                          _minRating = tempMinRating;
+                          _minPrice = tempMinPrice;
+                          _maxPrice = tempMaxPrice;
+                          _isFeatured = tempIsFeatured;
+                          _currentPage = 1; // Reset to first page
+                        });
+                        minPriceController.dispose();
+                        maxPriceController.dispose();
+                        Navigator.pop(context);
+                        // Invalidate provider to refresh with new filters
+                        ref.invalidate(
+                          listingsProvider(
+                            ListingsParams(
+                              page: 1,
+                              limit: _pageSize,
+                              category: _categoryId,
+                              rating: _minRating,
+                              minPrice: _minPrice,
+                              maxPrice: _maxPrice,
+                              isFeatured: _isFeatured,
+                            ),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primaryColor,
                         foregroundColor: Colors.white,
@@ -821,6 +1046,21 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+  
+  Widget _buildRatingChip(String label, double value, double? selectedValue, Function(double) onSelected) {
+    final isSelected = selectedValue == value;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) => onSelected(value),
+      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
+      checkmarkColor: AppTheme.primaryColor,
+      labelStyle: AppTheme.bodySmall.copyWith(
+        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );
   }
@@ -861,20 +1101,6 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected) {
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (selected) {
-        // Handle filter selection
-      },
-      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-      checkmarkColor: AppTheme.primaryColor,
-      labelStyle: AppTheme.bodySmall.copyWith(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
-      ),
-    );
-  }
 
   Widget _buildSortOption(String label, bool isSelected) {
     return ListTile(
