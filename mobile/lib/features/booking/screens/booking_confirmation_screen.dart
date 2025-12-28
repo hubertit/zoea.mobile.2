@@ -49,7 +49,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     final bookingType = booking['bookingType'] as String? ?? 'hotel';
     final bookingNumber = booking['bookingNumber'] as String? ?? booking['id'] as String? ?? '';
     final status = booking['status'] as String? ?? 'confirmed';
-    final totalAmount = (booking['totalAmount'] as num?)?.toDouble() ?? 0.0;
+    final totalAmount = _parseNumericValue(booking['totalAmount']) ?? 0.0;
     final currency = booking['currency'] as String? ?? 'RWF';
     
     // Get listing information
@@ -353,9 +353,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
     required double totalAmount,
     required String currency,
   }) {
-    final subtotal = (booking['subtotal'] as num?)?.toDouble();
-    final taxAmount = (booking['taxAmount'] as num?)?.toDouble();
-    final discountAmount = (booking['discountAmount'] as num?)?.toDouble();
+    final subtotal = _parseNumericValue(booking['subtotal']);
+    final taxAmount = _parseNumericValue(booking['taxAmount']);
+    final discountAmount = _parseNumericValue(booking['discountAmount']);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -548,6 +548,17 @@ class BookingConfirmationScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  /// Safely parse numeric values that can come as either String or num from API
+  double? _parseNumericValue(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      return parsed;
+    }
+    return null;
   }
 
   String _formatDate(String dateString) {
