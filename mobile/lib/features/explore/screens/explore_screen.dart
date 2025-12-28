@@ -1317,15 +1317,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        eventDetails.locationName,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
                         timeText,
                         style: AppTheme.labelSmall.copyWith(
                           color: Colors.white.withOpacity(0.8),
