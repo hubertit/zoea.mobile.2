@@ -110,7 +110,7 @@ export class SearchService {
     return results;
   }
 
-  async getSearchHistory(userId: string, limit = 10) {
+  async getSearchHistory(userId: string, limit = 5) {
     return this.prisma.searchHistory.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -135,7 +135,7 @@ export class SearchService {
       },
       _count: { query: true },
       orderBy: { _count: { query: 'desc' } },
-      take: 10,
+      take: 5,
     });
 
     // Get featured content

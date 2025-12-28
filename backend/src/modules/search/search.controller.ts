@@ -53,7 +53,7 @@ export class SearchController {
   @ApiOperation({ summary: 'Get search history' })
   @ApiQuery({ name: 'limit', required: false })
   async getHistory(@Request() req, @Query('limit') limit?: string) {
-    return this.searchService.getSearchHistory(req.user.id, limit ? +limit : 10);
+    return this.searchService.getSearchHistory(req.user.id, limit ? +limit : 5);
   }
 
   @Delete('history')

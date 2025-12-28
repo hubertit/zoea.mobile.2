@@ -284,8 +284,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   );
                 }
+                // Limit to 5 items
+                final limitedSearches = trendingSearches.take(5).toList();
                 return Column(
-                  children: trendingSearches.map((search) => _buildPopularSearchItem(search)).toList(),
+                  children: limitedSearches.map((search) => _buildPopularSearchItem(search)).toList(),
                 );
               },
               loading: () => const Center(
