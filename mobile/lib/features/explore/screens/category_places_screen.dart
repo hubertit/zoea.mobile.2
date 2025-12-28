@@ -409,6 +409,11 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       page: _currentPage,
                       limit: _pageSize,
                       category: _categoryId,
+                      rating: _minRating,
+                      minPrice: _minPrice,
+                      maxPrice: _maxPrice,
+                      isFeatured: _isFeatured,
+                      sortBy: _sortBy,
                     ),
                   ),
                 );
