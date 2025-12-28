@@ -2082,7 +2082,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return Consumer(
       builder: (context, ref, child) {
         // Use random listings for now until geolocation is implemented
-        final nearbyAsync = ref.watch(randomListingsProvider(10));
+        final nearbyAsync = ref.watch(randomListingsProvider(5));
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
