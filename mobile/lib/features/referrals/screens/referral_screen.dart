@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 
 class ReferralScreen extends ConsumerStatefulWidget {
@@ -170,8 +171,12 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: () {
-              // TODO: Share referral code
+            onPressed: () async {
+              const referralCode = 'ZOEAFRIEND';
+              const shareText = 'Join me on Zoea Africa and discover amazing places in Rwanda! Use my referral code: $referralCode to get started!';
+              const shareUrl = 'https://zoea.africa?ref=$referralCode';
+              
+              await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
             },
             icon: const Icon(Icons.share),
             label: const Text('Share Referral Code'),

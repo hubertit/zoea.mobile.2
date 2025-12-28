@@ -369,7 +369,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                           final shareText = 'Check out $name${location.isNotEmpty ? ' in $location' : ''} on Zoea!';
                           final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/accommodation/${widget.accommodationId}';
                           
-                          await Share.share('$shareText\n$shareUrl');
+                          await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
                         });
                       },
                     ),

@@ -17,16 +17,24 @@ class MyBookingsScreen extends ConsumerStatefulWidget {
 class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -53,7 +61,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         actions: [
           IconButton(
             onPressed: () {
-              // TODO: Add search functionality
+              _showSearchBottomSheet();
             },
             icon: const Icon(Icons.search_outlined),
             style: IconButton.styleFrom(
@@ -88,6 +96,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
       ),
       body: TabBarView(
         controller: _tabController,
+        key: ValueKey(_searchQuery), // Rebuild when search query changes
         children: [
           _buildBookingsList('all'),
           _buildBookingsList('upcoming'),
@@ -124,7 +133,12 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             [];
 
         // Filter bookings based on tab
-        final filteredBookings = _filterBookings(bookings, filter);
+        var filteredBookings = _filterBookings(bookings, filter);
+        
+        // Apply search filter if search query exists
+        if (_searchQuery.isNotEmpty) {
+          filteredBookings = _searchBookings(filteredBookings, _searchQuery);
+        }
 
         if (filteredBookings.isEmpty) {
           return _buildEmptyState(filter);
@@ -1133,5 +1147,189 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         ),
       );
     }
+  }
+
+  void _showSearchBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        decoration: const BoxDecoration(
+          color: AppTheme.backgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Search Bookings',
+                    style: AppTheme.titleMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: 'Search by name, location, or booking number...',
+                      hintStyle: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {});
+                              },
+                              icon: const Icon(
+                                Icons.clear,
+                                color: AppTheme.secondaryTextColor,
+                              ),
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppTheme.primaryColor),
+                      ),
+                      filled: true,
+                      fillColor: AppTheme.backgroundColor,
+                    ),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.secondaryTextColor,
+                            side: BorderSide(color: Colors.grey[300]!),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text('Clear'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text('Search'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _searchBookings(
+    List<Map<String, dynamic>> bookings,
+    String query,
+  ) {
+    if (query.isEmpty) return bookings;
+
+    final lowerQuery = query.toLowerCase().trim();
+
+    return bookings.where((booking) {
+      // Search by booking number
+      final bookingNumber = (booking['bookingNumber'] as String? ?? '').toLowerCase();
+      if (bookingNumber.contains(lowerQuery)) return true;
+
+      // Search by name (listing/event/tour name)
+      String name = '';
+      final bookingType = booking['bookingType'] as String? ?? 'hotel';
+      
+      if (bookingType == 'hotel' || bookingType == 'restaurant') {
+        final listing = booking['listing'] as Map<String, dynamic>?;
+        name = (listing?['name'] as String? ?? '').toLowerCase();
+      } else if (bookingType == 'event') {
+        final event = booking['event'] as Map<String, dynamic>?;
+        name = (event?['name'] as String? ?? '').toLowerCase();
+      } else if (bookingType == 'tour') {
+        final tour = booking['tour'] as Map<String, dynamic>?;
+        name = (tour?['name'] as String? ?? '').toLowerCase();
+      }
+      
+      if (name.contains(lowerQuery)) return true;
+
+      // Search by location
+      String location = '';
+      if (bookingType == 'hotel' || bookingType == 'restaurant') {
+        final listing = booking['listing'] as Map<String, dynamic>?;
+        final address = listing?['address'] as String? ?? '';
+        final city = listing?['city'] as Map<String, dynamic>?;
+        final cityName = city?['name'] as String? ?? '';
+        location = '$address $cityName'.toLowerCase();
+      } else if (bookingType == 'event') {
+        final event = booking['event'] as Map<String, dynamic>?;
+        location = (event?['locationName'] as String? ?? 
+                   event?['venueName'] as String? ?? 
+                   event?['address'] as String? ?? '').toLowerCase();
+      }
+      
+      if (location.contains(lowerQuery)) return true;
+
+      // Search by status
+      final status = (booking['status'] as String? ?? '').toLowerCase();
+      if (status.contains(lowerQuery)) return true;
+
+      return false;
+    }).toList();
   }
 }

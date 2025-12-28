@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/event.dart';
+import '../../../core/config/app_config.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final Event event;
@@ -38,8 +40,17 @@ class EventDetailScreen extends ConsumerWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.share, color: Colors.white),
-                onPressed: () {
-                  // TODO: Implement share functionality
+                onPressed: () async {
+                  final eventName = eventDetails.name;
+                  final location = eventDetails.locationName.isNotEmpty 
+                      ? eventDetails.locationName 
+                      : '';
+                  final dateText = dateFormat.format(startDate);
+                  
+                  final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText! Join me on Zoea!';
+                  final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/events/${event.id}';
+                  
+                  await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
                 },
               ),
               IconButton(

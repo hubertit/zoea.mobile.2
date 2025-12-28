@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/reviews_provider.dart';
+import '../../../core/config/app_config.dart';
 
 class PlaceDetailScreen extends ConsumerStatefulWidget {
   final String placeId;
@@ -181,8 +183,14 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                               size: 18,
                             ),
                             padding: EdgeInsets.zero,
-                            onPressed: () {
-                              // TODO: Implement share functionality
+                            onPressed: () async {
+                              final name = place['name'] as String? ?? 'this place';
+                              final location = place['location'] as String? ?? '';
+                              
+                              final shareText = 'Check out $name${location.isNotEmpty ? ' in $location' : ''} on Zoea!';
+                              final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/places/${widget.placeId}';
+                              
+                              await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
                             },
                           ),
                         ),
