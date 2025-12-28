@@ -36,7 +36,7 @@ async function bootstrap() {
 
     console.log('✅ Connected to V1 database\n');
 
-    // Query V1 venues where sponsored > 0
+    // Query V1 venues where sponsored = 1
     const [sponsoredVenues] = await v1Connection.execute(
       `SELECT 
         venue_id, 
@@ -49,7 +49,7 @@ async function bootstrap() {
         venue_reviews,
         time_added
       FROM venues 
-      WHERE sponsored > 0 
+      WHERE sponsored = 1 
       ORDER BY sponsored DESC, venue_id`
     ) as [any[], any];
 

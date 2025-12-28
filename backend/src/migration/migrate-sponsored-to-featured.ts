@@ -47,9 +47,9 @@ async function bootstrap() {
 
     logger.log('✅ Connected to V1 database');
 
-    // Query V1 venues where sponsored > 0
+    // Query V1 venues where sponsored = 1
     const [sponsoredVenues] = await v1Connection.execute(
-      'SELECT venue_id, venue_name, sponsored FROM venues WHERE sponsored > 0 ORDER BY sponsored DESC, venue_id'
+      'SELECT venue_id, venue_name, sponsored FROM venues WHERE sponsored = 1 ORDER BY sponsored DESC, venue_id'
     ) as [any[], any];
 
     logger.log(`📊 Found ${sponsoredVenues.length} sponsored venues in V1`);
