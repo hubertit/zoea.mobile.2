@@ -1,0 +1,53 @@
+version: '3.8'
+
+# Development Docker Compose
+# For local development with all services
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: zoea-postgres-dev
+    environment:
+      POSTGRES_USER: zoea
+      POSTGRES_PASSWORD: zoea_dev_password
+      POSTGRES_DB: zoea_v2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zoea"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API (optional - can run locally with npm)
+  # Uncomment if you want to run backend in Docker
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: zoea-backend-dev
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://zoea:zoea_dev_password@postgres:5432/zoea_v2
+  #     JWT_SECRET: dev-secret-key
+  #     JWT_REFRESH_SECRET: dev-refresh-secret
+  #     NODE_ENV: development
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./backend:/app
+  #     - /app/node_modules
+
+volumes:
+  postgres_data:
+
+# Usage:
+# docker-compose -f docker-compose.dev.yml up -d
+# This starts PostgreSQL for local development
+# Backend and other services run locally (not in Docker)
+

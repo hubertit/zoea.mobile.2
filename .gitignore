@@ -1,0 +1,40 @@
+# Monorepo root ignores
+.DS_Store
+*.log
+*.swp
+*.swo
+*~
+
+# IntelliJ IDEA - Allow project structure, ignore user-specific
+.idea/
+!.idea/modules.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+!.idea/.gitignore
+!.idea/runConfigurations.xml
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/libraries/
+
+# VS Code
+.vscode/
+
+# Build outputs
+dist/
+build/
+.next/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Dependencies (each subdirectory has its own)
+node_modules/
+
+# Each subdirectory maintains its own .gitignore
+# This is just for the root level
