@@ -409,7 +409,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               color: AppTheme.primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.people_outline,
               color: AppTheme.primaryColor,
               size: 20,
@@ -540,7 +540,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -642,7 +642,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,

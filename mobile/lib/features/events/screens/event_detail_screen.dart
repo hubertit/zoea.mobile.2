@@ -404,7 +404,7 @@ class EventDetailScreen extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppTheme.backgroundColor,
         border: Border(
           top: BorderSide(color: AppTheme.dividerColor),

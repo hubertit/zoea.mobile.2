@@ -305,7 +305,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             color: AppTheme.secondaryTextColor,
           ),
         ),
-        trailing: Icon(
+        trailing: const Icon(
           Icons.chevron_right,
           color: AppTheme.secondaryTextColor,
         ),
@@ -316,14 +316,14 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
   }
 
   void _showChangePasswordDialog() {
-    final _formKey = GlobalKey<FormState>();
-    final _currentPasswordController = TextEditingController();
-    final _newPasswordController = TextEditingController();
-    final _confirmPasswordController = TextEditingController();
-    bool _isLoading = false;
-    bool _obscureCurrentPassword = true;
-    bool _obscureNewPassword = true;
-    bool _obscureConfirmPassword = true;
+    final formKey = GlobalKey<FormState>();
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    bool isLoading = false;
+    bool obscureCurrentPassword = true;
+    bool obscureNewPassword = true;
+    bool obscureConfirmPassword = true;
 
     showModalBottomSheet(
       context: context,
@@ -338,7 +338,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,19 +367,19 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 
                 // Current Password
                 TextFormField(
-                  controller: _currentPasswordController,
-                  obscureText: _obscureCurrentPassword,
+                  controller: currentPasswordController,
+                  obscureText: obscureCurrentPassword,
                   decoration: InputDecoration(
                     labelText: 'Current Password',
                     hintText: 'Enter your current password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureCurrentPassword ? Icons.visibility : Icons.visibility_off,
+                        obscureCurrentPassword ? Icons.visibility : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setModalState(() {
-                          _obscureCurrentPassword = !_obscureCurrentPassword;
+                          obscureCurrentPassword = !obscureCurrentPassword;
                         });
                       },
                     ),
@@ -401,19 +401,19 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 
                 // New Password
                 TextFormField(
-                  controller: _newPasswordController,
-                  obscureText: _obscureNewPassword,
+                  controller: newPasswordController,
+                  obscureText: obscureNewPassword,
                   decoration: InputDecoration(
                     labelText: 'New Password',
                     hintText: 'Enter your new password',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureNewPassword ? Icons.visibility : Icons.visibility_off,
+                        obscureNewPassword ? Icons.visibility : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setModalState(() {
-                          _obscureNewPassword = !_obscureNewPassword;
+                          obscureNewPassword = !obscureNewPassword;
                         });
                       },
                     ),
@@ -438,19 +438,19 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 
                 // Confirm Password
                 TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword,
+                  controller: confirmPasswordController,
+                  obscureText: obscureConfirmPassword,
                   decoration: InputDecoration(
                     labelText: 'Confirm New Password',
                     hintText: 'Confirm your new password',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                        obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setModalState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                          obscureConfirmPassword = !obscureConfirmPassword;
                         });
                       },
                     ),
@@ -465,7 +465,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm your new password';
                     }
-                    if (value != _newPasswordController.text) {
+                    if (value != newPasswordController.text) {
                       return 'Passwords do not match';
                     }
                     return null;
@@ -478,15 +478,15 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: _isLoading ? null : () {
+                        onPressed: isLoading ? null : () {
                           Navigator.pop(context);
-                          _currentPasswordController.dispose();
-                          _newPasswordController.dispose();
-                          _confirmPasswordController.dispose();
+                          currentPasswordController.dispose();
+                          newPasswordController.dispose();
+                          confirmPasswordController.dispose();
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: AppTheme.secondaryTextColor),
+                          side: const BorderSide(color: AppTheme.secondaryTextColor),
                         ),
                         child: Text(
                           'Cancel',
@@ -500,17 +500,17 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : () async {
-                          if (_formKey.currentState!.validate()) {
+                        onPressed: isLoading ? null : () async {
+                          if (formKey.currentState!.validate()) {
                             setModalState(() {
-                              _isLoading = true;
+                              isLoading = true;
                             });
 
                             try {
                               final userService = ref.read(userServiceProvider);
                               await userService.changePassword(
-                                currentPassword: _currentPasswordController.text,
-                                newPassword: _newPasswordController.text,
+                                currentPassword: currentPasswordController.text,
+                                newPassword: newPasswordController.text,
                               );
 
                               if (context.mounted) {
@@ -549,12 +549,12 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                             } finally {
                               if (context.mounted) {
                                 setModalState(() {
-                                  _isLoading = false;
+                                  isLoading = false;
                                 });
                               }
-                              _currentPasswordController.dispose();
-                              _newPasswordController.dispose();
-                              _confirmPasswordController.dispose();
+                              currentPasswordController.dispose();
+                              newPasswordController.dispose();
+                              confirmPasswordController.dispose();
                             }
                           }
                         },
@@ -562,7 +562,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                           backgroundColor: AppTheme.primaryColor,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: _isLoading
+                        child: isLoading
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
@@ -660,7 +660,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: AppTheme.secondaryTextColor),
+                      side: const BorderSide(color: AppTheme.secondaryTextColor),
                     ),
                     child: Text(
                       'Cancel',

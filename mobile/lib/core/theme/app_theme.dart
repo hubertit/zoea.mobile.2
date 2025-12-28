@@ -124,23 +124,23 @@ class AppTheme {
         fillColor: darkCardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: darkDividerColor),
+          borderSide: const BorderSide(color: darkDividerColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: darkDividerColor),
+          borderSide: const BorderSide(color: darkDividerColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: primaryColor, width: 2),
+          borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: errorColor),
+          borderSide: const BorderSide(color: errorColor),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: darkSurfaceColor,
         selectedItemColor: primaryColor,
         unselectedItemColor: darkSecondaryTextColor,
@@ -292,7 +292,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius8),
       ),
-      margin: EdgeInsets.all(spacing16),
+      margin: const EdgeInsets.all(spacing16),
       action: actionLabel != null
           ? SnackBarAction(
               label: actionLabel,
@@ -321,7 +321,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius8),
       ),
-      margin: EdgeInsets.all(spacing16),
+      margin: const EdgeInsets.all(spacing16),
       action: actionLabel != null
           ? SnackBarAction(
               label: actionLabel,

@@ -35,15 +35,15 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
               size: 64,
               color: AppTheme.primaryColor,
             ),
-            SizedBox(height: AppTheme.spacing16),
+            const SizedBox(height: AppTheme.spacing16),
             Text(
               'Zoea Card',
               style: Theme.of(context).textTheme.headlineLarge,
             ),
-            SizedBox(height: AppTheme.spacing8),
+            const SizedBox(height: AppTheme.spacing8),
             const Text(
               'Your digital wallet for seamless payments',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.secondaryTextColor,
               ),
               textAlign: TextAlign.center,

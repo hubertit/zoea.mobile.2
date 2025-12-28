@@ -197,7 +197,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -484,7 +484,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppTheme.primaryColor),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
               ),
             ),
           ),
@@ -505,7 +505,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppTheme.primaryColor),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
               ),
             ),
           ),
@@ -527,7 +527,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppTheme.primaryColor),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
               ),
             ),
           ),
@@ -576,7 +576,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppTheme.primaryColor),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
               ),
             ),
           ),
@@ -605,7 +605,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.local_offer,
                 color: AppTheme.primaryColor,
                 size: 20,
@@ -644,7 +644,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppTheme.primaryColor),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -689,7 +689,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.check_circle,
                     color: AppTheme.successColor,
                     size: 20,
@@ -717,7 +717,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   ),
                   IconButton(
                     onPressed: _removeCoupon,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: AppTheme.successColor,
                       size: 18,
@@ -854,14 +854,14 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         _discountAmount = _calculateBasePrice() * validCoupons[_couponCode.toUpperCase()]!;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Coupon applied successfully!'),
           backgroundColor: AppTheme.successColor,
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Invalid coupon code'),
           backgroundColor: AppTheme.errorColor,
         ),
@@ -962,7 +962,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     onPressed: () => Navigator.of(context).pop(),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                     ),
                     child: Text(
                       'Cancel',

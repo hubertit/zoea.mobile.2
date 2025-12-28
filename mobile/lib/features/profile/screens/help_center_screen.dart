@@ -94,7 +94,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           hintStyle: AppTheme.bodyMedium.copyWith(
             color: AppTheme.secondaryTextColor,
           ),
-          prefixIcon: Icon(
+          prefixIcon: const Icon(
             Icons.search,
             color: AppTheme.secondaryTextColor,
           ),
@@ -104,7 +104,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     _searchController.clear();
                     setState(() {});
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.clear,
                     color: AppTheme.secondaryTextColor,
                   ),
@@ -229,7 +229,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -401,7 +401,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -491,7 +491,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 color: AppTheme.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.help_outline,
                 color: AppTheme.primaryColor,
                 size: 20,
@@ -521,7 +521,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -711,7 +711,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: AppTheme.secondaryTextColor),
+                      side: const BorderSide(color: AppTheme.secondaryTextColor),
                     ),
                     child: Text(
                       'Close',

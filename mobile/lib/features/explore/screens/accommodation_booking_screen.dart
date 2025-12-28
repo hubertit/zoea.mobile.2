@@ -158,7 +158,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star,
                       color: Colors.amber,
                       size: 16,
@@ -378,7 +378,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
   }
 
   Widget _buildPriceBreakdown() {
-    final basePrice = 120000;
+    const basePrice = 120000;
     final totalPrice = basePrice * _roomCount;
     final tax = (totalPrice * 0.18).round();
     final total = totalPrice + tax;
@@ -588,7 +588,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.hotel,
                 color: AppTheme.primaryColor,
                 size: 20,
@@ -661,7 +661,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -687,7 +687,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.local_offer,
                 color: AppTheme.primaryColor,
                 size: 20,
@@ -726,7 +726,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppTheme.primaryColor),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -771,7 +771,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.check_circle,
                     color: AppTheme.successColor,
                     size: 20,
@@ -799,7 +799,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                   ),
                   IconButton(
                     onPressed: _removeCoupon,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: AppTheme.successColor,
                       size: 18,
@@ -828,14 +828,14 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         _discountAmount = _calculateTotalPrice() * validCoupons[_couponCode.toUpperCase()]!;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Coupon applied successfully!'),
           backgroundColor: AppTheme.successColor,
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Invalid coupon code'),
           backgroundColor: AppTheme.errorColor,
         ),
@@ -859,8 +859,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
   Future<void> _submitBooking() async {
     if (_checkInDate == null || _checkOutDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please select check-in and check-out dates'),
+        const SnackBar(
+          content: Text('Please select check-in and check-out dates'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -871,8 +871,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     if (_checkOutDate!.isBefore(_checkInDate!) || 
         _checkOutDate!.isAtSameMomentAs(_checkInDate!)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Check-out date must be after check-in date'),
+        const SnackBar(
+          content: Text('Check-out date must be after check-in date'),
           backgroundColor: AppTheme.errorColor,
         ),
       );
@@ -917,8 +917,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       if (roomTypeId == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Please select a room type to continue'),
+            const SnackBar(
+              content: Text('Please select a room type to continue'),
               backgroundColor: AppTheme.errorColor,
             ),
           );

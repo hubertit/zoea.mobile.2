@@ -17,7 +17,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
   late TabController _tabController;
   String _selectedFilter = 'All';
   String _selectedSort = 'Popular';
-  Set<String> _favoriteExperiences = {};
+  final Set<String> _favoriteExperiences = {};
 
   @override
   void initState() {
@@ -187,7 +187,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                       child: Image.network(
                         operator['logo'],
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
+                        errorBuilder: (context, error, stackTrace) => const Icon(
                           Icons.business,
                           size: 30,
                           color: AppTheme.primaryColor,
@@ -210,7 +210,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               size: 16,
                               color: AppTheme.secondaryTextColor,
@@ -227,7 +227,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star,
                               size: 16,
                               color: Colors.amber,

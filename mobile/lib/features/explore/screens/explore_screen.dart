@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -436,7 +435,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     width: 1,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.bolt,
                   color: AppTheme.primaryColor,
                   size: 20,
@@ -1079,7 +1078,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.error_outline,
                         color: AppTheme.errorColor,
                         size: 32,
@@ -1102,7 +1101,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.event_available,
                         color: AppTheme.secondaryTextColor,
                         size: 32,
@@ -1996,12 +1995,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                                 color: isFavorited ? Colors.red : AppTheme.secondaryTextColor,
                                 size: 16,
                               ),
-                              loading: () => Icon(
+                              loading: () => const Icon(
                                 Icons.favorite_border,
                                 color: AppTheme.secondaryTextColor,
                                 size: 16,
                               ),
-                              error: (_, __) => Icon(
+                              error: (_, __) => const Icon(
                                 Icons.favorite_border,
                                 color: AppTheme.secondaryTextColor,
                                 size: 16,
@@ -2240,7 +2239,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     // Address and Category
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_on,
                           size: 12,
                           color: AppTheme.secondaryTextColor,

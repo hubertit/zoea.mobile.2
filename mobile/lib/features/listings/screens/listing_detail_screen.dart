@@ -85,7 +85,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
               color: AppTheme.errorColor,
@@ -399,7 +399,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.location_on,
                             size: 18,
                             color: AppTheme.secondaryTextColor,
@@ -419,7 +419,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       Row(
                         children: [
                           if (rating > 0) ...[
-                            Icon(
+                            const Icon(
                               Icons.star,
                               size: 18,
                               color: Colors.amber,
@@ -526,7 +526,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     final displayDescription = description.isNotEmpty
         ? description
         : categoryName != null
-            ? 'Experience ${categoryName.toLowerCase()}${listingType != null ? ' - ${listingType}' : ''} in ${cityName.isNotEmpty ? cityName : countryName.isNotEmpty ? countryName : 'Rwanda'}.'
+            ? 'Experience ${categoryName.toLowerCase()}${listingType != null ? ' - $listingType' : ''} in ${cityName.isNotEmpty ? cityName : countryName.isNotEmpty ? countryName : 'Rwanda'}.'
             : '';
 
     return SingleChildScrollView(
@@ -564,7 +564,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
+              const Icon(
                 Icons.location_on,
                 size: 20,
                 color: AppTheme.secondaryTextColor,
@@ -636,7 +636,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.phone,
                       size: 20,
                       color: AppTheme.secondaryTextColor,
@@ -656,7 +656,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.email,
                       size: 20,
                       color: AppTheme.secondaryTextColor,
@@ -676,7 +676,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.language,
                       size: 20,
                       color: AppTheme.secondaryTextColor,
@@ -755,7 +755,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.hotel_outlined,
                 size: 64,
                 color: AppTheme.secondaryTextColor,
@@ -957,7 +957,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.rate_review_outlined,
                     size: 64,
                     color: AppTheme.secondaryTextColor,
@@ -1052,7 +1052,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
                 color: AppTheme.errorColor,
@@ -1218,7 +1218,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.thumb_up_outlined,
                   size: 16,
                   color: AppTheme.secondaryTextColor,
@@ -1462,8 +1462,6 @@ class _ReviewBottomSheet extends ConsumerStatefulWidget {
 
   const _ReviewBottomSheet({
     this.listingId,
-    this.eventId,
-    this.tourId,
   });
 
   @override
@@ -1687,8 +1685,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Thank you for your review!'),
+        const SnackBar(
+          content: Text('Thank you for your review!'),
           backgroundColor: AppTheme.successColor,
         ),
       );

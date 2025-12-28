@@ -161,7 +161,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
               color: AppTheme.secondaryTextColor,
@@ -239,7 +239,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
               shape: BoxShape.circle,
             ),
@@ -529,7 +529,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 // Date and Time
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -544,7 +544,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                       ),
                     if (bookingTime != null) ...[
                       const SizedBox(width: 16),
-                      Icon(
+                      const Icon(
                         Icons.access_time,
                         size: 16,
                         color: AppTheme.secondaryTextColor,
@@ -563,7 +563,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 // Location
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -586,7 +586,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 if (bookingDate != null)
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.shopping_cart,
                         size: 16,
                         color: AppTheme.secondaryTextColor,
@@ -660,7 +660,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryColor,
                 backgroundColor: AppTheme.backgroundColor,
-                side: BorderSide(color: AppTheme.primaryColor),
+                side: const BorderSide(color: AppTheme.primaryColor),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -685,7 +685,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryColor,
                 backgroundColor: AppTheme.backgroundColor,
-                side: BorderSide(color: AppTheme.primaryColor),
+                side: const BorderSide(color: AppTheme.primaryColor),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -704,7 +704,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.red,
                 backgroundColor: AppTheme.backgroundColor,
-                side: BorderSide(color: Colors.red),
+                side: const BorderSide(color: Colors.red),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -727,7 +727,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryColor,
                 backgroundColor: AppTheme.backgroundColor,
-                side: BorderSide(color: AppTheme.primaryColor),
+                side: const BorderSide(color: AppTheme.primaryColor),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

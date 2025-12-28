@@ -14,7 +14,7 @@ class SpecialsScreen extends StatelessWidget {
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
             color: AppTheme.primaryTextColor,
             size: 32,

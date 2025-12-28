@@ -272,7 +272,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               size: 18,
                               color: AppTheme.secondaryTextColor,
@@ -291,7 +291,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star,
                               size: 18,
                               color: Colors.amber,
@@ -1643,8 +1643,6 @@ class _ReviewBottomSheet extends ConsumerStatefulWidget {
 
   const _ReviewBottomSheet({
     this.listingId,
-    this.eventId,
-    this.tourId,
   });
 
   @override

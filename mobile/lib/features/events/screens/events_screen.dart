@@ -238,7 +238,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -257,7 +257,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -885,7 +885,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+                  borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 prefixIcon: Icon(
@@ -910,7 +910,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                     ),
                     child: Text(
                       'Cancel',

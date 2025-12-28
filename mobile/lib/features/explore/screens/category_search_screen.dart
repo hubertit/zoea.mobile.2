@@ -110,7 +110,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: AppTheme.primaryColor,
                     width: 1,
                   ),
@@ -352,7 +352,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         size: 16,
                         color: AppTheme.secondaryTextColor,
@@ -371,7 +371,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star,
                         size: 16,
                         color: Colors.amber,
@@ -417,7 +417,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.search_off,
             size: 64,
             color: AppTheme.secondaryTextColor,
@@ -544,7 +544,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.primaryColor,
-                        side: BorderSide(color: AppTheme.primaryColor),
+                        side: const BorderSide(color: AppTheme.primaryColor),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Clear All'),
@@ -685,7 +685,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.primaryColor,
-                        side: BorderSide(color: AppTheme.primaryColor),
+                        side: const BorderSide(color: AppTheme.primaryColor),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Cancel'),
@@ -769,7 +769,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ),
               ),
               if (isSelected)
-                Icon(
+                const Icon(
                   Icons.check,
                   size: 20,
                   color: AppTheme.primaryColor,

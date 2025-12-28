@@ -98,7 +98,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.nightlife,
               size: 64,
               color: AppTheme.secondaryTextColor,
@@ -250,7 +250,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Clear All'),
@@ -321,7 +321,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Cancel'),
@@ -405,7 +405,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                 ),
               ),
               if (isSelected)
-                Icon(
+                const Icon(
                   Icons.check,
                   size: 20,
                   color: AppTheme.primaryColor,

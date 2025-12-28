@@ -51,7 +51,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _checkAuthAndNavigate() async {
     // Wait for splash duration
     await Future.delayed(
-      Duration(milliseconds: AppConfig.splashDuration),
+      const Duration(milliseconds: AppConfig.splashDuration),
     );
     
     if (!mounted) return;

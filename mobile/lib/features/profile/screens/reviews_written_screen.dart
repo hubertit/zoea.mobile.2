@@ -120,11 +120,11 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.rate_review,
               size: 48,
               color: AppTheme.secondaryTextColor,
@@ -193,9 +193,9 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           // Place Header
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Row(
               children: [
@@ -301,7 +301,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 // Review Date
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -319,7 +319,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 // Helpful Count
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.thumb_up,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -348,7 +348,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
                           backgroundColor: AppTheme.backgroundColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -367,7 +367,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: AppTheme.primaryColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

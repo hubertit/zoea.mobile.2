@@ -17,7 +17,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
   late TabController _tabController;
   String _selectedFilter = 'All';
   String _selectedSort = 'Popular';
-  Set<String> _favoritePlaces = {};
+  final Set<String> _favoritePlaces = {};
 
   @override
   void initState() {

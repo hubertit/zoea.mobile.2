@@ -112,7 +112,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
@@ -174,7 +174,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
@@ -236,7 +236,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
@@ -486,7 +486,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Date
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.event,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -621,7 +621,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Category
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.place,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -786,7 +786,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.event, size: 16, color: AppTheme.secondaryTextColor),
+                    const Icon(Icons.event, size: 16, color: AppTheme.secondaryTextColor),
                     const SizedBox(width: 4),
                     Text(
                       dateText,
@@ -940,7 +940,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.place, size: 16, color: AppTheme.secondaryTextColor),
+                    const Icon(Icons.place, size: 16, color: AppTheme.secondaryTextColor),
                     const SizedBox(width: 4),
                     Text(
                       category,
@@ -1165,7 +1165,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               Navigator.pop(context);
               // TODO: Remove from favorites
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Removed from favorites'),
                   backgroundColor: AppTheme.successColor,
                 ),

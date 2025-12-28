@@ -34,7 +34,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
   late ScrollController _scrollController;
   int _selectedImageIndex = 0;
   bool _isScrolled = false;
-  Map<String, Map<String, dynamic>> _selectedRooms = {}; // roomType -> {roomType, quantity}
+  final Map<String, Map<String, dynamic>> _selectedRooms = {}; // roomType -> {roomType, quantity}
 
   @override
   void initState() {
@@ -175,7 +175,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
                 color: AppTheme.errorColor,
@@ -464,7 +464,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               if (rating > 0)
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star,
                       color: Colors.amber,
                       size: 20,
@@ -490,7 +490,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.location_on,
                 size: 16,
                 color: AppTheme.secondaryTextColor,
@@ -799,7 +799,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                   'maxGuests': maxOccupancy,
                   'amenities': description.isNotEmpty ? description : bedType,
                 });
-              }).toList(),
+              }),
             ] else ...[
               Container(
                 padding: const EdgeInsets.all(20),
@@ -871,7 +871,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                 }
               }
               return const SizedBox.shrink();
-            }).toList(),
+            }),
           ] else ...[
             Container(
               padding: const EdgeInsets.all(20),
@@ -1001,7 +1001,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.rate_review_outlined,
                           size: 64,
                           color: AppTheme.secondaryTextColor,
@@ -1135,7 +1135,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                     );
                   }
                   return const SizedBox.shrink();
-                }).toList(),
+                }),
               ],
             ],
           ),
@@ -1442,7 +1442,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               ),
               const SizedBox(width: 8),
               if (isSelected)
-                Icon(
+                const Icon(
                   Icons.check_circle,
                   color: AppTheme.primaryColor,
                   size: 20,
@@ -1452,7 +1452,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.bed,
                 size: 16,
                 color: AppTheme.secondaryTextColor,
@@ -1465,7 +1465,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                 ),
               ),
               const SizedBox(width: 16),
-              Icon(
+              const Icon(
                 Icons.hotel,
                 size: 16,
                 color: AppTheme.secondaryTextColor,
@@ -1644,8 +1644,6 @@ class _ReviewBottomSheet extends ConsumerStatefulWidget {
 
   const _ReviewBottomSheet({
     this.listingId,
-    this.eventId,
-    this.tourId,
   });
 
   @override
@@ -1869,8 +1867,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Thank you for your review!'),
+        const SnackBar(
+          content: Text('Thank you for your review!'),
           backgroundColor: AppTheme.successColor,
         ),
       );

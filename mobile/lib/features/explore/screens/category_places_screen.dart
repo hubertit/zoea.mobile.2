@@ -127,7 +127,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppTheme.primaryColor,
                           shape: BoxShape.circle,
                         ),
@@ -202,7 +202,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
                 color: AppTheme.secondaryTextColor,
@@ -266,7 +266,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.explore,
                   size: 64,
                   color: AppTheme.secondaryTextColor,
@@ -357,7 +357,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
               color: AppTheme.secondaryTextColor,
@@ -720,7 +720,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       ),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.amber,
                             size: 16,
@@ -746,7 +746,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         size: 16,
                         color: AppTheme.secondaryTextColor,
@@ -926,7 +926,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(6),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: AppTheme.primaryColor,
                               width: 1.5,
                             ),
@@ -969,7 +969,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(6),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: AppTheme.primaryColor,
                               width: 1.5,
                             ),
@@ -1034,7 +1034,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Clear All'),
@@ -1145,7 +1145,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         label,
         style: AppTheme.bodyMedium,
       ),
-      trailing: isSelected ? Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
       onTap: () {
         Navigator.pop(context);
         // Handle sort selection

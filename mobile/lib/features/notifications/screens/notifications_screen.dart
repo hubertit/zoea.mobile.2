@@ -32,7 +32,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
             color: AppTheme.primaryTextColor,
             size: 32,
@@ -276,11 +276,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.notifications_none,
               size: 48,
               color: AppTheme.secondaryTextColor,
@@ -313,7 +313,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
               color: AppTheme.errorColor,
@@ -409,8 +409,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       ref.invalidate(unreadCountProvider);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('All notifications marked as read'),
+        const SnackBar(
+          content: Text('All notifications marked as read'),
           backgroundColor: AppTheme.successColor,
         ),
       );

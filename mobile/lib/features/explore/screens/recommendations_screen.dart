@@ -102,7 +102,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.explore,
               size: 64,
               color: AppTheme.secondaryTextColor,
@@ -314,7 +314,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.primaryColor,
-                        side: BorderSide(color: AppTheme.primaryColor),
+                        side: const BorderSide(color: AppTheme.primaryColor),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Clear All'),
@@ -401,7 +401,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         label,
         style: AppTheme.bodyMedium,
       ),
-      trailing: isSelected ? Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
       onTap: () {
         Navigator.pop(context);
         // Handle sort selection

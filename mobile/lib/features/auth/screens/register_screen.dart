@@ -99,7 +99,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppTheme.spacing24),
+          padding: const EdgeInsets.all(AppTheme.spacing24),
           child: Form(
             key: _formKey,
             child: Column(
@@ -115,7 +115,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ).animate().fadeIn(
                       duration: 600.ms,
                     ),
-                    SizedBox(height: AppTheme.spacing8),
+                    const SizedBox(height: AppTheme.spacing8),
                     Text(
                       'Join the Zoea Africa community',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -129,7 +129,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ],
                 ),
                 
-                SizedBox(height: AppTheme.spacing32),
+                const SizedBox(height: AppTheme.spacing32),
                 
                 // Full Name Field
                 TextFormField(
@@ -138,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Full Name',
                     hintText: 'Enter your full name',
-                    prefixIcon: const Icon(Icons.person),
+                    prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -153,7 +153,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOut,
                 ),
                 
-                SizedBox(height: AppTheme.spacing16),
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // Email Field
                 TextFormField(
@@ -163,7 +163,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     hintText: 'Enter your email address',
-                    prefixIcon: const Icon(Icons.email),
+                    prefixIcon: Icon(Icons.email),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -181,7 +181,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOut,
                 ),
                 
-                SizedBox(height: AppTheme.spacing16),
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // Password Field
                 TextFormField(
@@ -219,7 +219,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOut,
                 ),
                 
-                SizedBox(height: AppTheme.spacing16),
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // Confirm Password Field
                 TextFormField(
@@ -258,7 +258,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOut,
                 ),
                 
-                SizedBox(height: AppTheme.spacing16),
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // User Type Selection
                 Text(
@@ -271,7 +271,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOut,
                 ),
                 
-                SizedBox(height: AppTheme.spacing12),
+                const SizedBox(height: AppTheme.spacing12),
                 
                 // User Type Cards
                 ...UserRole.values.where((role) => role != UserRole.admin).map((role) {
@@ -350,7 +350,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   );
                 }),
                 
-                SizedBox(height: AppTheme.spacing16),
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // Terms and Conditions
                 Row(
@@ -368,19 +368,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       child: RichText(
                         text: TextSpan(
                           style: Theme.of(context).textTheme.bodySmall,
-                          children: [
-                            const TextSpan(text: 'I agree to the '),
+                          children: const [
+                            TextSpan(text: 'I agree to the '),
                             TextSpan(
                               text: 'Terms and Conditions',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const TextSpan(text: ' and '),
+                            TextSpan(text: ' and '),
                             TextSpan(
                               text: 'Privacy Policy',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.primaryColor,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -395,7 +395,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   delay: 800.ms,
                 ),
                 
-                SizedBox(height: AppTheme.spacing24),
+                const SizedBox(height: AppTheme.spacing24),
                 
                 // Register Button
                 SizedBox(
@@ -403,7 +403,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _handleRegister,
                     child: _isLoading
-                        ? SizedBox(
+                        ? const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
@@ -420,15 +420,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   curve: Curves.easeOutBack,
                 ),
                 
-                SizedBox(height: AppTheme.spacing24),
+                const SizedBox(height: AppTheme.spacing24),
                 
                 // Login Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Already have an account? ',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.secondaryTextColor,
                       ),
                     ),

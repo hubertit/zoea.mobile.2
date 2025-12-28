@@ -114,7 +114,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 defaultTextStyle: const TextStyle(
                   color: AppTheme.primaryTextColor,
                 ),
-                selectedDecoration: BoxDecoration(
+                selectedDecoration: const BoxDecoration(
                   color: AppTheme.primaryColor,
                   shape: BoxShape.circle,
                 ),
@@ -293,7 +293,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
             const SizedBox(height: 4),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.access_time,
                   size: 12,
                   color: AppTheme.secondaryTextColor,
@@ -425,7 +425,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_on,
                           size: 14,
                           color: AppTheme.secondaryTextColor,

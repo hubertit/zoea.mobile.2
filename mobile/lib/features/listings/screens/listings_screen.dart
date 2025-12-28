@@ -69,7 +69,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.list,
                     size: 64,
                     color: AppTheme.secondaryTextColor,
@@ -143,7 +143,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
                 color: AppTheme.errorColor,
@@ -283,7 +283,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                     if (address.isNotEmpty)
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.location_on,
                             size: 12,
                             color: AppTheme.secondaryTextColor,
@@ -312,7 +312,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                         if (rating > 0)
                           Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.star,
                                 size: 14,
                                 color: AppTheme.primaryColor,

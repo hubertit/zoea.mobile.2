@@ -190,7 +190,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         ),
         child: Row(
           children: [
-            Icon(
+            const Icon(
               Icons.location_on,
               color: AppTheme.primaryColor,
               size: 20,
@@ -211,7 +211,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               color: Colors.grey[300],
             ),
             const SizedBox(width: 12),
-            Icon(
+            const Icon(
               Icons.calendar_today,
               color: AppTheme.secondaryTextColor,
               size: 18,
@@ -231,7 +231,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               color: Colors.grey[300],
             ),
             const SizedBox(width: 12),
-            Icon(
+            const Icon(
               Icons.person,
               color: AppTheme.secondaryTextColor,
               size: 18,
@@ -244,7 +244,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               ),
             ),
             const SizedBox(width: 8),
-            Icon(
+            const Icon(
               Icons.arrow_drop_down,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -345,7 +345,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
                 color: AppTheme.errorColor,
@@ -1006,7 +1006,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.restaurant,
                           color: Colors.white,
                           size: 12,
@@ -1038,7 +1038,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.bed,
                           color: Colors.white,
                           size: 12,
@@ -1078,7 +1078,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     ),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.star,
                           color: Colors.amber,
                           size: 16,
@@ -1113,7 +1113,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 if (amenityNames.isNotEmpty)
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.wifi,
                         size: 16,
                         color: AppTheme.secondaryTextColor,
@@ -1145,7 +1145,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.hotel,
             size: 64,
             color: AppTheme.secondaryTextColor,
@@ -1277,7 +1277,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.amber,
                             size: 16,
@@ -1551,7 +1551,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -1587,7 +1587,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               ListTile(
                 title: Text(location),
                 trailing: location == _selectedLocation 
-                  ? Icon(Icons.check, color: AppTheme.primaryColor)
+                  ? const Icon(Icons.check, color: AppTheme.primaryColor)
                   : null,
                 onTap: () {
                   setState(() {
@@ -1596,7 +1596,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Navigator.pop(context);
                 },
               ),
-            ).toList(),
+            ),
           ],
         ),
       ),
@@ -1721,7 +1721,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   ),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_today,
                         size: 16,
                         color: AppTheme.primaryColor,
@@ -1755,7 +1755,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   ),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.access_time,
                         size: 16,
                         color: AppTheme.primaryColor,
@@ -1955,14 +1955,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   ),
                 ),
                 trailing: sortOption == 'Recommended' 
-                  ? Icon(Icons.check, color: AppTheme.primaryColor)
+                  ? const Icon(Icons.check, color: AppTheme.primaryColor)
                   : null,
                 onTap: () {
                   Navigator.pop(context);
                   // Handle sort selection
                 },
               ),
-            ).toList(),
+            ),
           ],
         ),
       ),

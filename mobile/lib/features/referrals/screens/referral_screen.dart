@@ -80,7 +80,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
       ),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.card_giftcard,
             size: 48,
             color: AppTheme.primaryColor,

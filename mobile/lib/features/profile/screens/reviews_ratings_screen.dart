@@ -237,7 +237,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star,
                         size: 16,
                         color: AppTheme.primaryColor,
@@ -311,7 +311,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                 // Review Meta
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.access_time,
                       size: 14,
                       color: AppTheme.secondaryTextColor,
@@ -325,7 +325,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     ),
                     const Spacer(),
                     if (review['helpfulCount'] > 0) ...[
-                      Icon(
+                      const Icon(
                         Icons.thumb_up_outlined,
                         size: 14,
                         color: AppTheme.secondaryTextColor,
@@ -480,7 +480,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               Navigator.pop(context);
               // TODO: Navigate to edit review
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Edit review feature coming soon'),
                   backgroundColor: AppTheme.primaryColor,
                 ),

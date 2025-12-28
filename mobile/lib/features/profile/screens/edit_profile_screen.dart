@@ -298,21 +298,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: AppTheme.primaryColor,
                 width: 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.red,
                 width: 2,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.red,
                 width: 2,
               ),
@@ -335,7 +335,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: AppTheme.primaryColor,
-          side: BorderSide(color: AppTheme.primaryColor),
+          side: const BorderSide(color: AppTheme.primaryColor),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -402,7 +402,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
                       backgroundColor: AppTheme.backgroundColor,
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -422,7 +422,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
                       backgroundColor: AppTheme.backgroundColor,
-                      side: BorderSide(color: AppTheme.primaryColor),
+                      side: const BorderSide(color: AppTheme.primaryColor),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

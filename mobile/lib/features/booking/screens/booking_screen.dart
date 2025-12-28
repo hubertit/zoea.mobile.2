@@ -79,7 +79,7 @@ class BookingScreen extends ConsumerWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Booking is not available for this listing type'),
                 backgroundColor: AppTheme.errorColor,
               ),
@@ -88,16 +88,16 @@ class BookingScreen extends ConsumerWidget {
         }
         
         // Show loading while redirecting
-        return Scaffold(
+        return const Scaffold(
           backgroundColor: AppTheme.backgroundColor,
-          body: const Center(
+          body: Center(
             child: CircularProgressIndicator(),
           ),
         );
       },
-      loading: () => Scaffold(
+      loading: () => const Scaffold(
         backgroundColor: AppTheme.backgroundColor,
-        body: const Center(
+        body: Center(
           child: CircularProgressIndicator(),
         ),
       ),
@@ -111,9 +111,9 @@ class BookingScreen extends ConsumerWidget {
             ),
           );
         });
-        return Scaffold(
+        return const Scaffold(
           backgroundColor: AppTheme.backgroundColor,
-          body: const Center(
+          body: Center(
             child: CircularProgressIndicator(),
           ),
         );

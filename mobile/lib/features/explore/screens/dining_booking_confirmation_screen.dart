@@ -115,7 +115,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       ),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.check_circle,
             size: 64,
             color: AppTheme.successColor,
@@ -429,7 +429,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                 onPressed: () => context.go('/explore'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.primaryColor,
-                  side: BorderSide(color: AppTheme.primaryColor),
+                  side: const BorderSide(color: AppTheme.primaryColor),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(

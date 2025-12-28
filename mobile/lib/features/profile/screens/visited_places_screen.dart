@@ -120,11 +120,11 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.place,
               size: 48,
               color: AppTheme.secondaryTextColor,
@@ -289,7 +289,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 // Location
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -311,7 +311,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 // Visit Date
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -365,7 +365,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
                           backgroundColor: AppTheme.backgroundColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -384,7 +384,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: AppTheme.primaryColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

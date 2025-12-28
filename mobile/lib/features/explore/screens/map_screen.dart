@@ -42,7 +42,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             SizedBox(height: AppTheme.spacing16),
             Text(
               'Map View',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.primaryTextColor,
@@ -51,7 +51,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             SizedBox(height: AppTheme.spacing8),
             Text(
               'Interactive map with listings will be implemented here',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.secondaryTextColor,
               ),
               textAlign: TextAlign.center,

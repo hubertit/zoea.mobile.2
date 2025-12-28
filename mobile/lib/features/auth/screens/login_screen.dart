@@ -145,7 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Logo and Title
-                  Icon(
+                  const Icon(
                     Icons.explore,
                     size: 80,
                     color: AppTheme.primaryColor,
@@ -333,7 +333,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     style: AppTheme.bodyLarge,
                                   ),
                                   const SizedBox(width: AppTheme.spacing4),
-                                  Icon(
+                                  const Icon(
                                     Icons.arrow_drop_down,
                                     color: AppTheme.secondaryTextColor,
                                     size: 20,
@@ -427,7 +427,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (_isLoading) ...[
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(

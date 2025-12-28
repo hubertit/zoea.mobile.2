@@ -566,7 +566,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: AppTheme.secondaryTextColor,
               size: 20,
@@ -836,7 +836,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? Icon(
+        trailing: isSelected ? const Icon(
           Icons.check_circle,
           color: AppTheme.primaryColor,
           size: 20,
@@ -903,7 +903,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
           ),
         ),
-        trailing: isSelected ? Icon(
+        trailing: isSelected ? const Icon(
           Icons.check_circle,
           color: AppTheme.primaryColor,
           size: 20,
@@ -956,7 +956,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? Icon(
+        trailing: isSelected ? const Icon(
           Icons.check_circle,
           color: AppTheme.primaryColor,
           size: 20,
@@ -1005,7 +1005,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? Icon(
+        trailing: isSelected ? const Icon(
           Icons.check_circle,
           color: AppTheme.primaryColor,
           size: 20,

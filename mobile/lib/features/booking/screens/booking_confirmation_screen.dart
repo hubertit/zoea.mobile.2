@@ -131,7 +131,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppTheme.successColor,
                 shape: BoxShape.circle,
               ),
@@ -254,7 +254,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -429,7 +429,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             onPressed: () => context.go('/explore'),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: BorderSide(color: AppTheme.primaryColor),
+              side: const BorderSide(color: AppTheme.primaryColor),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

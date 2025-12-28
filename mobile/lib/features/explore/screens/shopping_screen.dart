@@ -17,7 +17,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
   late TabController _tabController;
   String _selectedFilter = 'All';
   String _selectedSort = 'Popular';
-  Set<String> _favoritePlaces = {};
+  final Set<String> _favoritePlaces = {};
 
   @override
   void initState() {
@@ -140,7 +140,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.shopping_bag_outlined,
               size: 64,
               color: AppTheme.secondaryTextColor,

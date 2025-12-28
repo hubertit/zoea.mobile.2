@@ -120,11 +120,11 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.event_available,
               size: 48,
               color: AppTheme.secondaryTextColor,
@@ -271,7 +271,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                 // Date and Time
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -284,7 +284,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Icon(
+                    const Icon(
                       Icons.access_time,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -302,7 +302,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                 // Location
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       size: 16,
                       color: AppTheme.secondaryTextColor,
@@ -335,7 +335,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
                           backgroundColor: AppTheme.backgroundColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -354,7 +354,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: AppTheme.primaryColor,
-                          side: BorderSide(color: AppTheme.primaryColor),
+                          side: const BorderSide(color: AppTheme.primaryColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

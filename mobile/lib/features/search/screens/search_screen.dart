@@ -75,7 +75,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
             color: AppTheme.primaryTextColor,
             size: 32,
@@ -111,7 +111,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         actions: [
           if (_currentQuery.isNotEmpty)
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.clear,
                 color: AppTheme.secondaryTextColor,
               ),
@@ -323,7 +323,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.search_off,
             size: 64,
             color: AppTheme.secondaryTextColor,
@@ -363,7 +363,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 64,
             color: AppTheme.errorColor,
@@ -525,7 +525,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 if (rating != null) ...[
                   const SizedBox(width: 8),
-                  Icon(
+                  const Icon(
                     Icons.star,
                     size: 12,
                     color: AppTheme.primaryColor,
@@ -597,7 +597,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: Icon(
+        leading: const Icon(
           Icons.history,
           color: AppTheme.secondaryTextColor,
           size: 20,
@@ -629,7 +629,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: Icon(
+        leading: const Icon(
           Icons.trending_up,
           color: AppTheme.primaryColor,
           size: 20,

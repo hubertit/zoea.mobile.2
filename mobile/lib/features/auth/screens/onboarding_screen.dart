@@ -65,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildPage(OnboardingPage page) {
     return Padding(
-      padding: EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -77,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             duration: 600.ms,
             curve: Curves.easeOutBack,
           ),
-          SizedBox(height: 48),
+          const SizedBox(height: 48),
           Text(
             page.title,
             style: Theme.of(context).textTheme.displayMedium,
@@ -86,7 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             duration: 800.ms,
             delay: 200.ms,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             page.subtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -104,7 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildBottomSection() {
     return Padding(
-      padding: EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
           Row(
@@ -112,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: List.generate(
               _pages.length,
               (index) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 4),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: _currentPage == index ? 24 : 8,
                 height: 8,
                 decoration: BoxDecoration(
@@ -127,14 +127,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
                 if (_currentPage < _pages.length - 1) {
                   _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 } else {
@@ -150,12 +150,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             duration: 600.ms,
             curve: Curves.easeOutBack,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextButton(
             onPressed: () => context.go('/login'),
-            child: Text(
+            child: const Text(
               'Already have an account? Sign In',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.secondaryTextColor,
               ),
             ),
