@@ -396,8 +396,18 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     }
 
     // Get price and guest count
-    final totalAmount = (booking['totalAmount'] as num?)?.toDouble() ?? 0.0;
-    final guestCount = booking['guestCount'] as int? ?? 1;
+    // Handle both string and number types from API
+    final totalAmountValue = booking['totalAmount'];
+    final totalAmount = totalAmountValue is num
+        ? totalAmountValue.toDouble()
+        : totalAmountValue is String
+            ? double.tryParse(totalAmountValue) ?? 0.0
+            : 0.0;
+    final guestCount = booking['guestCount'] is int
+        ? booking['guestCount'] as int
+        : booking['guestCount'] is String
+            ? int.tryParse(booking['guestCount'] as String) ?? 1
+            : 1;
     final currency = booking['currency'] as String? ?? 'RWF';
 
     final dateFormat = DateFormat('MMM dd, yyyy');
