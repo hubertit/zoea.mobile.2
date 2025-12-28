@@ -4,6 +4,9 @@ Welcome to the Zoea project documentation. This directory contains comprehensive
 
 ## Documentation Index
 
+### Important Notes
+- **[Temporary Changes](./TEMPORARY_CHANGES.md)** - Documents temporary changes that need to be reverted in the future
+
 ### 📋 Overview & Structure
 - **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Project description, technology stack, and architecture overview
 - **[FEATURES.md](./FEATURES.md)** - Complete feature breakdown by application
