@@ -985,9 +985,12 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         ),
       );
 
-      // Refresh bookings
+      // Refresh bookings - invalidate all provider instances for different tabs
       ref.invalidate(bookingsProvider(
-        BookingsParams(page: 1, limit: 100),
+        const BookingsParams(page: 1, limit: 100, status: null),
+      ));
+      ref.invalidate(bookingsProvider(
+        const BookingsParams(page: 1, limit: 100, status: 'cancelled'),
       ));
     } catch (e) {
       if (!mounted) return;
