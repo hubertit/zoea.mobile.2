@@ -75,37 +75,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
               ),
               onPressed: () => context.pop(),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isFavorite = !_isFavorite;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.rate_review, 
-                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white
-                ),
-                onPressed: () {
-                  _showReviewBottomSheet();
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.share, 
-                  color: _isScrolled ? AppTheme.primaryTextColor : Colors.white
-                ),
-                onPressed: () {
-                  // TODO: Implement share functionality
-                },
-              ),
-            ],
+            actions: const [], // Buttons moved to flexibleSpace
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -136,6 +106,81 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           Colors.black.withOpacity(0.7),
                         ],
                       ),
+                    ),
+                  ),
+                  // Action buttons at top right
+                  Positioned(
+                    top: 50,
+                    right: 16,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Favorite button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              _isFavorite ? Icons.favorite : Icons.favorite_border,
+                              color: _isFavorite ? Colors.red : Colors.white,
+                              size: 18,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              setState(() {
+                                _isFavorite = !_isFavorite;
+                              });
+                            },
+                          ),
+                        ),
+                        // Review button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.rate_review,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              _showReviewBottomSheet();
+                            },
+                          ),
+                        ),
+                        // Share button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.share,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              // TODO: Implement share functionality
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

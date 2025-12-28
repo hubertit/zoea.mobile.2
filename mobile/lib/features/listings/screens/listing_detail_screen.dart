@@ -161,86 +161,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             ),
             onPressed: () => context.pop(),
           ),
-          actions: [
-            Consumer(
-              builder: (context, ref, child) {
-                final isFavoritedAsync = ref.watch(isListingFavoritedProvider(widget.listingId));
-                final isFavorited = isFavoritedAsync.value ?? false;
-
-                return IconButton(
-                  icon: Icon(
-                    isFavorited ? Icons.favorite : Icons.favorite_border,
-                    color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
-                  ),
-                  onPressed: () async {
-                    try {
-                      final favoritesService = ref.read(favoritesServiceProvider);
-                      
-                      // Use toggleFavorite for add/remove in one call
-                      await favoritesService.toggleFavorite(listingId: widget.listingId);
-                      
-                      // Invalidate to refresh
-                      ref.invalidate(isListingFavoritedProvider(widget.listingId));
-                      ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          AppTheme.successSnackBar(
-                            message: isFavorited 
-                                ? AppConfig.favoriteRemovedMessage 
-                                : AppConfig.favoriteAddedMessage,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          AppTheme.errorSnackBar(
-                            message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
-                          ),
-                        );
-                      }
-                    }
-                  },
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.rate_review,
-                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
-              ),
-              onPressed: () {
-                _showReviewBottomSheet();
-              },
-            ),
-            Consumer(
-              builder: (context, ref, child) {
-                return IconButton(
-                  icon: Icon(
-                    Icons.share,
-                    color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
-                  ),
-                  onPressed: () async {
-                    final listingAsync = ref.read(listingByIdProvider(widget.listingId));
-                    listingAsync.whenData((listing) async {
-                      final name = listing['name'] as String? ?? 'Listing';
-                      final address = listing['address'] as String? ?? '';
-                      final city = listing['city'] as Map<String, dynamic>?;
-                      final cityName = city?['name'] as String? ?? '';
-                      final location = address.isNotEmpty 
-                          ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
-                          : cityName;
-                      
-                      final shareText = 'Check out $name${location.isNotEmpty ? ' in $location' : ''} on Zoea!';
-                      final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/listings/${widget.listingId}';
-                      
-                      await Share.share('$shareText\n$shareUrl');
-                    });
-                  },
-                );
-              },
-            ),
-          ],
+          actions: const [], // Buttons moved to flexibleSpace
           flexibleSpace: FlexibleSpaceBar(
             background: Stack(
               fit: StackFit.expand,
@@ -276,6 +197,130 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         Colors.black.withOpacity(0.7),
                       ],
                     ),
+                  ),
+                ),
+                // Action buttons at top right
+                Positioned(
+                  top: 50,
+                  right: 16,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Favorite button
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final isFavoritedAsync = ref.watch(isListingFavoritedProvider(widget.listingId));
+                          final isFavorited = isFavoritedAsync.value ?? false;
+
+                          return Container(
+                            width: 36,
+                            height: 36,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                isFavorited ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorited ? Colors.red : Colors.white,
+                                size: 18,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                try {
+                                  final favoritesService = ref.read(favoritesServiceProvider);
+                                  
+                                  // Use toggleFavorite for add/remove in one call
+                                  await favoritesService.toggleFavorite(listingId: widget.listingId);
+                                  
+                                  // Invalidate to refresh
+                                  ref.invalidate(isListingFavoritedProvider(widget.listingId));
+                                  ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      AppTheme.successSnackBar(
+                                        message: isFavorited 
+                                            ? AppConfig.favoriteRemovedMessage 
+                                            : AppConfig.favoriteAddedMessage,
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      AppTheme.errorSnackBar(
+                                        message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      // Review button
+                      Container(
+                        width: 36,
+                        height: 36,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.rate_review,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            _showReviewBottomSheet();
+                          },
+                        ),
+                      ),
+                      // Share button
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return Container(
+                            width: 36,
+                            height: 36,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.share,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                final listingAsync = ref.read(listingByIdProvider(widget.listingId));
+                                listingAsync.whenData((listing) async {
+                                  final name = listing['name'] as String? ?? 'Listing';
+                                  final address = listing['address'] as String? ?? '';
+                                  final city = listing['city'] as Map<String, dynamic>?;
+                                  final cityName = city?['name'] as String? ?? '';
+                                  final location = address.isNotEmpty 
+                                      ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+                                      : cityName;
+                                  
+                                  final shareText = 'Check out $name${location.isNotEmpty ? ' in $location' : ''} on Zoea!';
+                                  final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/listings/${widget.listingId}';
+                                  
+                                  await Share.share('$shareText\n$shareUrl');
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
