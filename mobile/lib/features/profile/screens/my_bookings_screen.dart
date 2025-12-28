@@ -992,9 +992,21 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     } catch (e) {
       if (!mounted) return;
 
-      // Extract clean error message
+      // Extract user-friendly error message
       String errorMessage = 'Failed to cancel booking.';
-      if (e is Exception) {
+      final errorString = e.toString();
+      
+      if (errorString.contains('Cannot cancel this booking') ||
+          errorString.contains('cannot be cancelled')) {
+        errorMessage = 'This booking cannot be cancelled. It may have already been cancelled, completed, or refunded.';
+      } else if (errorString.contains('Unauthorized')) {
+        errorMessage = 'You are not authorized to cancel this booking.';
+      } else if (errorString.contains('not found')) {
+        errorMessage = 'Booking not found.';
+      } else if (errorString.contains('Connection timeout') || 
+                 errorString.contains('No internet')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (e is Exception) {
         final message = e.toString();
         // Remove "Exception: " prefix if present
         if (message.startsWith('Exception: ')) {
