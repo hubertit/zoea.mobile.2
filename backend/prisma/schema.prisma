@@ -1172,6 +1172,9 @@ model SearchHistory {
   createdAt   DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
   user        User?                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
+  @@index([userId], map: "idx_search_history_user")
+  @@index([createdAt], map: "idx_search_history_created")
+  @@index([query], map: "idx_search_history_query")
   @@map("search_history")
 }
 
