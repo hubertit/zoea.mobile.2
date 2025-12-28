@@ -1462,6 +1462,8 @@ class _ReviewBottomSheet extends ConsumerStatefulWidget {
 
   const _ReviewBottomSheet({
     this.listingId,
+    this.eventId,
+    this.tourId,
   });
 
   @override
