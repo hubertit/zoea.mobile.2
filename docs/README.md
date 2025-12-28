@@ -49,10 +49,34 @@ Welcome to the Zoea project documentation. This directory contains comprehensive
 - **Merchant Web**: `/merchant-web/` - Merchant web portal (future)
 
 ### Key Directories
-- **Documentation**: `/docs/` - This directory
+- **Documentation**: `/docs/` - This directory (all project documentation)
+  - `/docs/backend/` - Backend-specific documentation (analysis, migration, deployment)
+  - `/docs/admin/` - Admin dashboard documentation (codebase analysis, database docs)
+  - `/docs/merchant-mobile/` - Merchant mobile app documentation
 - **Database**: `/database/` - Database schemas and dumps
 - **Migrations**: `/migration/` - Database migration scripts
 - **Scripts**: `/scripts/` - Shared utility scripts
+
+## Application-Specific Documentation
+
+### Backend Documentation
+See `/docs/backend/` for:
+- Backend codebase analysis
+- Migration guides and history
+- Deployment documentation
+- API analysis
+
+### Admin Dashboard Documentation
+See `/docs/admin/` for:
+- Admin codebase analysis
+- Database analysis and analytics
+- Merchant module documentation
+- Test credentials
+
+### Merchant Mobile App Documentation
+See `/docs/merchant-mobile/` for:
+- Merchant mobile app analysis
+- Feature documentation
 
 ## Project Status
 

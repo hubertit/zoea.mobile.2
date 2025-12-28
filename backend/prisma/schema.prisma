@@ -1,0 +1,2457 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                                                                String                      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email                                                             String?                     @unique @db.VarChar(255)
+  phoneNumber                                                       String?                     @unique @map("phone_number") @db.VarChar(20)
+  passwordHash                                                      String?                     @map("password_hash") @db.VarChar(255)
+  username                                                          String?                     @unique @db.VarChar(50)
+  fullName                                                          String?                     @map("full_name") @db.VarChar(255)
+  firstName                                                         String?                     @map("first_name") @db.VarChar(100)
+  lastName                                                          String?                     @map("last_name") @db.VarChar(100)
+  bio                                                               String?
+  profileImageId                                                    String?                     @map("profile_image_id") @db.Uuid
+  backgroundImageId                                                 String?                     @map("background_image_id") @db.Uuid
+  dateOfBirth                                                       DateTime?                   @map("date_of_birth") @db.Date
+  gender                                                            String?                     @db.VarChar(20)
+  countryId                                                         String?                     @map("country_id") @db.Uuid
+  cityId                                                            String?                     @map("city_id") @db.Uuid
+  address                                                           String?
+  postalCode                                                        String?                     @map("postal_code") @db.VarChar(20)
+  current_location                                                  Unsupported("geography")?
+  profession                                                        String?                     @db.VarChar(100)
+  company                                                           String?                     @db.VarChar(255)
+  industry                                                          String?                     @db.VarChar(100)
+  interests                                                         String[]
+  dietaryPreferences                                                String[]                    @map("dietary_preferences")
+  accessibilityNeeds                                                String[]                    @map("accessibility_needs")
+  roles                                                             user_role[]                 @default([explorer])
+  accountType                                                       account_type?               @default(personal) @map("account_type")
+  isVerified                                                        Boolean?                    @default(false) @map("is_verified")
+  isActive                                                          Boolean?                    @default(true) @map("is_active")
+  isPrivate                                                         Boolean?                    @default(false) @map("is_private")
+  isBlocked                                                         Boolean?                    @default(false) @map("is_blocked")
+  verificationStatus                                                verification_status?        @default(unverified) @map("verification_status")
+  preferredCurrency                                                 String?                     @default("RWF") @map("preferred_currency") @db.VarChar(3)
+  preferredLanguage                                                 String?                     @default("en") @map("preferred_language") @db.VarChar(10)
+  timezone                                                          String?                     @default("Africa/Kigali") @db.VarChar(50)
+  maxDistance                                                       Int?                        @default(50) @map("max_distance")
+  notificationPreferences                                           Json?                       @default("{\"sms\": false, \"push\": true, \"email\": true}") @map("notification_preferences")
+  marketingConsent                                                  Boolean?                    @default(false) @map("marketing_consent")
+  marketing_consent_at                                              DateTime?                   @db.Timestamptz(6)
+  emailVerifiedAt                                                   DateTime?                   @map("email_verified_at") @db.Timestamptz(6)
+  phoneVerifiedAt                                                   DateTime?                   @map("phone_verified_at") @db.Timestamptz(6)
+  lastLoginAt                                                       DateTime?                   @map("last_login_at") @db.Timestamptz(6)
+  createdAt                                                         DateTime?                   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                                                         DateTime?                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                                                         DateTime?                   @map("deleted_at") @db.Timestamptz(6)
+  approval_history                                                  approval_history[]
+  audit_logs                                                        audit_logs[]
+  bookings_bookings_cancelled_byTousers                             Booking[]                   @relation("bookings_cancelled_byTousers")
+  bookings                                                          Booking[]
+  comment_likes                                                     comment_likes[]
+  content_approvals_content_approvals_assigned_toTousers            content_approvals[]         @relation("content_approvals_assigned_toTousers")
+  content_approvals_content_approvals_reviewed_byTousers            content_approvals[]         @relation("content_approvals_reviewed_byTousers")
+  content_approvals_content_approvals_submitted_byTousers           content_approvals[]         @relation("content_approvals_submitted_byTousers")
+  content_flags_content_flags_reported_byTousers                    content_flags[]             @relation("content_flags_reported_byTousers")
+  content_flags_content_flags_reviewed_byTousers                    content_flags[]             @relation("content_flags_reviewed_byTousers")
+  content_views                                                     content_views[]
+  coupon_uses                                                       coupon_uses[]
+  email_verification_tokens                                         email_verification_tokens[]
+  event_attendees_event_attendees_checked_in_byTousers              EventAttendee[]             @relation("event_attendees_checked_in_byTousers")
+  eventAttendees                                                    EventAttendee[]
+  eventComments                                                     EventComment[]
+  eventLikes                                                        EventLike[]
+  favorites                                                         Favorite[]
+  funnel_events                                                     funnel_events[]
+  merchant_profiles_merchant_profiles_reviewed_byTousers            MerchantProfile[]           @relation("merchant_profiles_reviewed_byTousers")
+  merchantProfiles                                                  MerchantProfile[]
+  merchant_profiles_merchant_profiles_verified_byTousers            MerchantProfile[]           @relation("merchant_profiles_verified_byTousers")
+  notification_preferences                                          notification_preferences[]
+  notification_requests_notification_requests_requester_idTousers   notification_requests[]     @relation("notification_requests_requester_idTousers")
+  notification_requests_notification_requests_reviewed_byTousers    notification_requests[]     @relation("notification_requests_reviewed_byTousers")
+  notifications                                                     Notification[]
+  organizer_profiles_organizer_profiles_reviewed_byTousers          OrganizerProfile[]          @relation("organizer_profiles_reviewed_byTousers")
+  organizerProfiles                                                 OrganizerProfile[]
+  password_reset_tokens                                             password_reset_tokens[]
+  profile_views_profile_views_profile_user_idTousers                profile_views[]             @relation("profile_views_profile_user_idTousers")
+  profile_views_profile_views_viewer_user_idTousers                 profile_views[]             @relation("profile_views_viewer_user_idTousers")
+  promotion_uses                                                    promotion_uses[]
+  recentlyViewed                                                    RecentlyViewed[]
+  referral_codes                                                    referral_codes?
+  referral_rewards                                                  referral_rewards[]
+  referrals_referrals_referred_idTousers                            referrals?                  @relation("referrals_referred_idTousers")
+  referrals_referrals_referrer_idTousers                            referrals[]                 @relation("referrals_referrer_idTousers")
+  review_votes                                                      review_votes[]
+  reviews_reviews_response_byTousers                                Review[]                    @relation("reviews_response_byTousers")
+  reviews                                                           Review[]
+  scheduled_notifications_scheduled_notifications_created_byTousers scheduled_notifications[]   @relation("scheduled_notifications_created_byTousers")
+  scheduled_notifications_scheduled_notifications_user_idTousers    scheduled_notifications[]   @relation("scheduled_notifications_user_idTousers")
+  search_analytics                                                  search_analytics[]
+  searchHistory                                                     SearchHistory[]
+  subscription_invoices                                             subscription_invoices[]
+  subscriptions                                                     subscriptions[]
+  support_messages                                                  support_messages[]
+  support_tickets_support_tickets_assigned_toTousers                support_tickets[]           @relation("support_tickets_assigned_toTousers")
+  support_tickets_support_tickets_user_idTousers                    support_tickets[]           @relation("support_tickets_user_idTousers")
+  tour_operator_profiles_tour_operator_profiles_reviewed_byTousers  TourOperatorProfile[]       @relation("tour_operator_profiles_reviewed_byTousers")
+  tourOperatorProfiles                                              TourOperatorProfile[]
+  transactions                                                      Transaction[]
+  user_activity_summary                                             user_activity_summary?
+  user_content_preferences                                          user_content_preferences?
+  user_documents_user_documents_reviewed_byTousers                  user_documents[]            @relation("user_documents_reviewed_byTousers")
+  user_documents_user_documents_user_idTousers                      user_documents[]            @relation("user_documents_user_idTousers")
+  user_follows_user_follows_follower_idTousers                      user_follows[]              @relation("user_follows_follower_idTousers")
+  user_follows_user_follows_following_idTousers                     user_follows[]              @relation("user_follows_following_idTousers")
+  user_locations                                                    user_locations[]
+  user_payment_methods                                              user_payment_methods[]
+  sessions                                                          UserSession[]
+  media_users_background_image_idTomedia                            Media?                      @relation("users_background_image_idTomedia", fields: [backgroundImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  city                                                              City?                       @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                                                           Country?                    @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profileImage                                                      Media?                      @relation("ProfileImage", fields: [profileImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  zoeaCard                                                          ZoeaCard?
+
+  @@index([email], map: "idx_users_email")
+  @@index([phoneNumber], map: "idx_users_phone")
+  @@index([cityId], map: "idx_users_city")
+  @@index([countryId], map: "idx_users_country")
+  @@index([interests], map: "idx_users_interests", type: Gin)
+  @@index([roles], map: "idx_users_roles", type: Gin)
+  @@index([username], map: "idx_users_username")
+  @@map("users")
+}
+
+model UserSession {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  deviceId     String?   @map("device_id") @db.VarChar(255)
+  deviceName   String?   @map("device_name") @db.VarChar(255)
+  deviceType   String?   @map("device_type") @db.VarChar(50)
+  osVersion    String?   @map("os_version") @db.VarChar(50)
+  appVersion   String?   @map("app_version") @db.VarChar(20)
+  fcmToken     String?   @map("fcm_token") @db.VarChar(500)
+  ipAddress    String?   @map("ip_address") @db.Inet
+  isActive     Boolean?  @default(true) @map("is_active")
+  lastActiveAt DateTime? @default(now()) @map("last_active_at") @db.Timestamptz(6)
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt    DateTime? @map("expires_at") @db.Timestamptz(6)
+  user         User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("user_sessions")
+}
+
+model Country {
+  id                   String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name                 String                @db.VarChar(100)
+  code                 String                @unique @db.VarChar(3)
+  code2                String                @unique @map("code_2") @db.VarChar(2)
+  phoneCode            String?               @map("phone_code") @db.VarChar(10)
+  currencyCode         String?               @map("currency_code") @db.VarChar(3)
+  currencySymbol       String?               @map("currency_symbol") @db.VarChar(10)
+  flagEmoji            String?               @map("flag_emoji") @db.VarChar(10)
+  defaultLanguage      String?               @default("en") @map("default_language") @db.VarChar(10)
+  supportedLanguages   String[]              @default(["en"]) @map("supported_languages")
+  timezone             String?               @db.VarChar(50)
+  isActive             Boolean?              @default(false) @map("is_active")
+  launchedAt           DateTime?             @map("launched_at") @db.Timestamptz(6)
+  settings             Json?
+  createdAt            DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  cities               City[]
+  content_views        content_views[]
+  events               Event[]
+  listings             Listing[]
+  merchantProfiles     MerchantProfile[]
+  organizerProfiles    OrganizerProfile[]
+  profile_views        profile_views[]
+  regions              Region[]
+  tourOperatorProfiles TourOperatorProfile[]
+  tours                Tour[]
+  users                User[]
+
+  @@index([code], map: "idx_countries_code")
+  @@map("countries")
+}
+
+model Region {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  countryId String    @map("country_id") @db.Uuid
+  name      String    @db.VarChar(100)
+  code      String?   @db.VarChar(20)
+  isActive  Boolean?  @default(true) @map("is_active")
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  cities    City[]
+  country   Country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([countryId], map: "idx_regions_country")
+  @@map("regions")
+}
+
+model City {
+  id                   String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  countryId            String                    @map("country_id") @db.Uuid
+  regionId             String?                   @map("region_id") @db.Uuid
+  name                 String                    @db.VarChar(100)
+  slug                 String                    @db.VarChar(100)
+  location             Unsupported("geography")?
+  bounds               Unsupported("geography")?
+  timezone             String?                   @db.VarChar(50)
+  population           Int?
+  description          String?
+  imageId              String?                   @map("image_id") @db.Uuid
+  isActive             Boolean?                  @default(false) @map("is_active")
+  isFeatured           Boolean?                  @default(false) @map("is_featured")
+  launchedAt           DateTime?                 @map("launched_at") @db.Timestamptz(6)
+  listingCount         Int?                      @default(0) @map("listing_count")
+  eventCount           Int?                      @default(0) @map("event_count")
+  createdAt            DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  country              Country                   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media                Media?                    @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  region               Region?                   @relation(fields: [regionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  content_views        content_views[]
+  districts            District[]
+  events               Event[]
+  listings             Listing[]
+  merchantProfiles     MerchantProfile[]
+  organizerProfiles    OrganizerProfile[]
+  profile_views        profile_views[]
+  tourOperatorProfiles TourOperatorProfile[]
+  tours                Tour[]
+  users                User[]
+
+  @@unique([countryId, slug])
+  @@index([countryId], map: "idx_cities_country")
+  @@index([location], map: "idx_cities_location", type: Gist)
+  @@map("cities")
+}
+
+model District {
+  id                String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cityId            String                    @map("city_id") @db.Uuid
+  name              String                    @db.VarChar(100)
+  slug              String                    @db.VarChar(100)
+  location          Unsupported("geography")?
+  bounds            Unsupported("geography")?
+  isActive          Boolean?                  @default(true) @map("is_active")
+  createdAt         DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  city              City                      @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events            Event[]
+  listings          Listing[]
+  merchant_profiles MerchantProfile[]
+
+  @@unique([cityId, slug])
+  @@index([cityId], map: "idx_districts_city")
+  @@map("districts")
+}
+
+model Media {
+  id                                     String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  url                                    String                  @db.VarChar(500)
+  mediaType                              media_type              @default(image) @map("media_type")
+  fileName                               String?                 @map("file_name") @db.VarChar(255)
+  fileSize                               Int?                    @map("file_size")
+  mimeType                               String?                 @map("mime_type") @db.VarChar(100)
+  width                                  Int?
+  height                                 Int?
+  blurhash                               String?                 @db.VarChar(100)
+  color                                  String?                 @db.VarChar(20)
+  isDark                                 Boolean?                @default(false) @map("is_dark")
+  thumbnailUrl                           String?                 @map("thumbnail_url") @db.VarChar(500)
+  mediumUrl                              String?                 @map("medium_url") @db.VarChar(500)
+  uploadedBy                             String?                 @map("uploaded_by") @db.Uuid
+  storageProvider                        String?                 @default("primary") @map("storage_provider") @db.VarChar(50)
+  publicId                               String?                 @map("public_id") @db.VarChar(255)
+  category                               String?                 @db.VarChar(50)
+  altText                                String?                 @map("alt_text") @db.VarChar(255)
+  title                                  String?                 @db.VarChar(255)
+  createdAt                              DateTime?               @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt                              DateTime?               @map("deleted_at") @db.Timestamptz(6)
+  categories                             Category[]
+  cities                                 City[]
+  eventAttachments                       EventAttachment[]
+  events                                 Event[]
+  listingImages                          ListingImage[]
+  merchant_profiles                      MerchantProfile[]
+  notification_requests                  notification_requests[]
+  organizer_profiles                     OrganizerProfile[]
+  promotions                             Promotion[]
+  tourImages                             TourImage[]
+  tour_operator_profiles                 TourOperatorProfile[]
+  user_documents                         user_documents[]
+  users_users_background_image_idTomedia User[]                  @relation("users_background_image_idTomedia")
+  userProfiles                           User[]                  @relation("ProfileImage")
+
+  @@map("media")
+}
+
+model Category {
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String             @db.VarChar(100)
+  slug             String             @unique @db.VarChar(100)
+  parentId         String?            @map("parent_id") @db.Uuid
+  icon             String?            @db.VarChar(50)
+  imageId          String?            @map("image_id") @db.Uuid
+  description      String?
+  sortOrder        Int?               @default(0) @map("sort_order")
+  isActive         Boolean?           @default(true) @map("is_active")
+  createdAt        DateTime?          @default(now()) @map("created_at") @db.Timestamptz(6)
+  media            Media?             @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parent           Category?          @relation("CategoryParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children         Category[]         @relation("CategoryParent")
+  commission_rules commission_rules[]
+  listings         Listing[]
+  tours            Tour[]
+
+  @@map("categories")
+}
+
+model Amenity {
+  id               String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String           @db.VarChar(100)
+  slug             String           @unique @db.VarChar(100)
+  description      String?
+  icon             String?          @db.VarChar(50)
+  category         String?          @db.VarChar(50)
+  applicable_types listing_type[]
+  createdAt        DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  listingAmenities ListingAmenity[]
+
+  @@map("amenities")
+}
+
+model Tag {
+  id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String       @db.VarChar(100)
+  slug        String       @unique @db.VarChar(100)
+  description String?
+  category    String?      @db.VarChar(50)
+  createdAt   DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
+  listingTags ListingTag[]
+
+  @@map("tags")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model Listing {
+  id                         String                       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  merchantId                 String?                      @map("merchant_id") @db.Uuid
+  name                       String?                      @db.VarChar(255)
+  slug                       String?                      @unique @db.VarChar(255)
+  description                String?
+  shortDescription           String?                      @map("short_description") @db.VarChar(500)
+  type                       listing_type?
+  categoryId                 String?                      @map("category_id") @db.Uuid
+  status                     listing_status?              @default(draft)
+  countryId                  String?                      @map("country_id") @db.Uuid
+  cityId                     String?                      @map("city_id") @db.Uuid
+  districtId                 String?                      @map("district_id") @db.Uuid
+  address                    String?
+  postalCode                 String?                      @map("postal_code") @db.VarChar(20)
+  location                   Unsupported("geography")?
+  locationName               String?                      @map("location_name") @db.VarChar(255)
+  minPrice                   Decimal?                     @map("min_price") @db.Decimal(10, 2)
+  maxPrice                   Decimal?                     @map("max_price") @db.Decimal(10, 2)
+  currency                   String?                      @default("RWF") @db.VarChar(3)
+  priceUnit                  price_unit?                  @map("price_unit")
+  contactPhone               String?                      @map("contact_phone") @db.VarChar(20)
+  contactEmail               String?                      @map("contact_email") @db.VarChar(255)
+  website                    String?                      @db.VarChar(255)
+  operatingHours             Json?                        @map("operating_hours")
+  isVerified                 Boolean?                     @default(false) @map("is_verified")
+  isFeatured                 Boolean?                     @default(false) @map("is_featured")
+  isBlocked                  Boolean?                     @default(false) @map("is_blocked")
+  rating                     Decimal?                     @default(0) @db.Decimal(3, 2)
+  reviewCount                Int?                         @default(0) @map("review_count")
+  bookingCount               Int?                         @default(0) @map("booking_count")
+  viewCount                  Int?                         @default(0) @map("view_count")
+  favoriteCount              Int?                         @default(0) @map("favorite_count")
+  metaTitle                  String?                      @map("meta_title") @db.VarChar(255)
+  metaDescription            String?                      @map("meta_description")
+  createdAt                  DateTime?                    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                  DateTime?                    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                  DateTime?                    @map("deleted_at") @db.Timestamptz(6)
+  bookings                   Booking[]
+  favorites                  Favorite[]
+  amenities                  ListingAmenity[]
+  images                     ListingImage[]
+  tags                       ListingTag[]
+  category                   Category?                    @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  city                       City?                        @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                    Country?                     @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  district                   District?                    @relation(fields: [districtId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant                   MerchantProfile?             @relation(fields: [merchantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notifications              Notification[]
+  recentlyViewed             RecentlyViewed[]
+  reservation_date_overrides reservation_date_overrides[]
+  reservation_time_slots     reservation_time_slots[]
+  restaurantTables           RestaurantTable[]
+  reviews                    Review[]
+  roomTypes                  RoomType[]
+
+  @@index([merchantId], map: "idx_listings_merchant")
+  @@index([type], map: "idx_listings_type")
+  @@index([status], map: "idx_listings_status")
+  @@index([cityId], map: "idx_listings_city")
+  @@index([countryId], map: "idx_listings_country")
+  @@index([location], map: "idx_listings_location", type: Gist)
+  @@map("listings")
+}
+
+model ListingImage {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  listingId String    @map("listing_id") @db.Uuid
+  mediaId   String    @map("media_id") @db.Uuid
+  isPrimary Boolean?  @default(false) @map("is_primary")
+  sortOrder Int?      @default(0) @map("sort_order")
+  caption   String?   @db.VarChar(255)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  media     Media     @relation(fields: [mediaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("listing_images")
+}
+
+model ListingAmenity {
+  listingId String  @map("listing_id") @db.Uuid
+  amenityId String  @map("amenity_id") @db.Uuid
+  amenity   Amenity @relation(fields: [amenityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([listingId, amenityId])
+  @@map("listing_amenities")
+}
+
+model ListingTag {
+  listingId String  @map("listing_id") @db.Uuid
+  tagId     String  @map("tag_id") @db.Uuid
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([listingId, tagId])
+  @@map("listing_tags")
+}
+
+model RoomType {
+  id           String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  listingId    String             @map("listing_id") @db.Uuid
+  name         String             @db.VarChar(100)
+  description  String?
+  maxOccupancy Int                @default(2) @map("max_occupancy")
+  bedType      String?            @map("bed_type") @db.VarChar(50)
+  bedCount     Int?               @default(1) @map("bed_count")
+  roomSize     Decimal?           @map("room_size") @db.Decimal(6, 2)
+  basePrice    Decimal            @map("base_price") @db.Decimal(10, 2)
+  currency     String?            @default("RWF") @db.VarChar(3)
+  totalRooms   Int                @default(1) @map("total_rooms")
+  amenities    String[]           @db.Uuid
+  images       String[]           @db.Uuid
+  isActive     Boolean?           @default(true) @map("is_active")
+  createdAt    DateTime?          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime?          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  bookings     Booking[]
+  availability RoomAvailability[]
+  listing      Listing            @relation(fields: [listingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  rooms        Room[]
+
+  @@map("room_types")
+}
+
+model Room {
+  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  roomTypeId String       @map("room_type_id") @db.Uuid
+  roomNumber String       @map("room_number") @db.VarChar(20)
+  floor      Int?
+  status     room_status? @default(available)
+  notes      String?
+  createdAt  DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime?    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  bookings   Booking[]
+  roomType   RoomType     @relation(fields: [roomTypeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("rooms")
+}
+
+model RoomAvailability {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  roomTypeId     String   @map("room_type_id") @db.Uuid
+  date           DateTime @db.Date
+  availableCount Int      @map("available_count")
+  price          Decimal? @db.Decimal(10, 2)
+  minStay        Int?     @default(1) @map("min_stay")
+  isBlocked      Boolean? @default(false) @map("is_blocked")
+  roomType       RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([roomTypeId, date])
+  @@index([roomTypeId, date], map: "idx_room_availability_date")
+  @@map("room_availability")
+}
+
+model RestaurantTable {
+  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  listingId   String        @map("listing_id") @db.Uuid
+  tableNumber String        @map("table_number") @db.VarChar(20)
+  capacity    Int
+  minCapacity Int?          @default(1) @map("min_capacity")
+  location    String?       @db.VarChar(50)
+  status      table_status? @default(available)
+  isActive    Boolean?      @default(true) @map("is_active")
+  createdAt   DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime?     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  bookings    Booking[]
+  listing     Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("restaurant_tables")
+}
+
+model EventContext {
+  id          String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String         @db.VarChar(100)
+  slug        String         @unique @db.VarChar(100)
+  description String?
+  icon        String?        @db.VarChar(50)
+  parentId    String?        @map("parent_id") @db.Uuid
+  isActive    Boolean?       @default(true) @map("is_active")
+  createdAt   DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
+  parent      EventContext?  @relation("EventContextParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    EventContext[] @relation("EventContextParent")
+  events      Event[]
+
+  @@map("event_contexts")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model Event {
+  id                      String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  organizerId             String?                   @map("organizer_id") @db.Uuid
+  name                    String?                   @db.VarChar(255)
+  slug                    String?                   @unique @db.VarChar(255)
+  description             String?
+  eventContextId          String?                   @map("event_context_id") @db.Uuid
+  type                    String?                   @db.VarChar(50)
+  privacy                 event_privacy?            @default(public)
+  setup                   event_setup?              @default(in_person)
+  flyerId                 String?                   @map("flyer_id") @db.Uuid
+  countryId               String?                   @map("country_id") @db.Uuid
+  cityId                  String?                   @map("city_id") @db.Uuid
+  districtId              String?                   @map("district_id") @db.Uuid
+  location                Unsupported("geography")?
+  locationName            String?                   @map("location_name") @db.VarChar(255)
+  venueName               String?                   @map("venue_name") @db.VarChar(255)
+  address                 String?
+  virtualUrl              String?                   @map("virtual_url") @db.VarChar(500)
+  virtualPlatform         String?                   @map("virtual_platform") @db.VarChar(50)
+  startDate               DateTime?                 @map("start_date") @db.Timestamptz(6)
+  endDate                 DateTime?                 @map("end_date") @db.Timestamptz(6)
+  timezone                String?                   @default("Africa/Kigali") @db.VarChar(50)
+  maxAttendance           Int?                      @map("max_attendance")
+  attendingCount          Int?                      @default(0) @map("attending_count")
+  status                  event_status?             @default(draft)
+  isBlocked               Boolean?                  @default(false) @map("is_blocked")
+  cancellationReason      String?                   @map("cancellation_reason")
+  viewCount               Int?                      @default(0) @map("view_count")
+  likeCount               Int?                      @default(0) @map("like_count")
+  commentCount            Int?                      @default(0) @map("comment_count")
+  shareCount              Int?                      @default(0) @map("share_count")
+  isMice                  Boolean?                  @default(false) @map("is_mice")
+  createdAt               DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt               DateTime?                 @map("deleted_at") @db.Timestamptz(6)
+  bookings                Booking[]
+  attachments             EventAttachment[]
+  attendees               EventAttendee[]
+  comments                EventComment[]
+  likes                   EventLike[]
+  event_reports           event_reports[]
+  tickets                 EventTicket[]
+  city                    City?                     @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                 Country?                  @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  districts               District?                 @relation(fields: [districtId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  eventContext            EventContext?             @relation(fields: [eventContextId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media                   Media?                    @relation(fields: [flyerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  organizer               OrganizerProfile?         @relation(fields: [organizerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  favorites               Favorite[]
+  notifications           Notification[]
+  recentlyViewed          RecentlyViewed[]
+  reviews                 Review[]
+  scheduled_notifications scheduled_notifications[]
+
+  @@index([organizerId], map: "idx_events_organizer")
+  @@index([status], map: "idx_events_status")
+  @@index([cityId], map: "idx_events_city")
+  @@index([countryId], map: "idx_events_country")
+  @@index([startDate, endDate], map: "idx_events_dates")
+  @@index([location], map: "idx_events_location", type: Gist)
+  @@map("events")
+}
+
+model EventTicket {
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId          String             @map("event_id") @db.Uuid
+  name             String             @db.VarChar(100)
+  description      String?
+  type             ticket_type?       @default(paid)
+  orderType        ticket_order_type? @default(first_come) @map("order_type")
+  price            Decimal            @default(0) @db.Decimal(10, 2)
+  currency         String?            @default("RWF") @db.VarChar(3)
+  totalQuantity    Int?               @map("total_quantity")
+  soldQuantity     Int?               @default(0) @map("sold_quantity")
+  reservedQuantity Int?               @default(0) @map("reserved_quantity")
+  minPerOrder      Int?               @default(1) @map("min_per_order")
+  maxPerOrder      Int?               @default(10) @map("max_per_order")
+  saleStart        DateTime?          @map("sale_start") @db.Timestamptz(6)
+  saleEnd          DateTime?          @map("sale_end") @db.Timestamptz(6)
+  status           ticket_status?     @default(available)
+  isVisible        Boolean?           @default(true) @map("is_visible")
+  sortOrder        Int?               @default(0) @map("sort_order")
+  createdAt        DateTime?          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime?          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  bookings         Booking[]
+  attendees        EventAttendee[]
+  event            Event              @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("event_tickets")
+}
+
+model EventAttachment {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId     String    @map("event_id") @db.Uuid
+  mediaId     String    @map("media_id") @db.Uuid
+  isMainFlyer Boolean?  @default(false) @map("is_main_flyer")
+  sortOrder   Int?      @default(0) @map("sort_order")
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  media       Media     @relation(fields: [mediaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("event_attachments")
+}
+
+model EventLike {
+  userId    String    @map("user_id") @db.Uuid
+  eventId   String    @map("event_id") @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([userId, eventId])
+  @@map("event_likes")
+}
+
+model EventComment {
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId       String          @map("event_id") @db.Uuid
+  userId        String          @map("user_id") @db.Uuid
+  parentId      String?         @map("parent_id") @db.Uuid
+  content       String
+  likeCount     Int?            @default(0) @map("like_count")
+  isPinned      Boolean?        @default(false) @map("is_pinned")
+  isHidden      Boolean?        @default(false) @map("is_hidden")
+  createdAt     DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime?       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?       @map("deleted_at") @db.Timestamptz(6)
+  comment_likes comment_likes[]
+  event         Event           @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parent        EventComment?   @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies       EventComment[]  @relation("CommentReplies")
+  user          User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("event_comments")
+}
+
+model EventAttendee {
+  id                                         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId                                    String?      @map("event_id") @db.Uuid
+  userId                                     String?      @map("user_id") @db.Uuid
+  bookingId                                  String?      @map("booking_id") @db.Uuid
+  ticketId                                   String?      @map("ticket_id") @db.Uuid
+  fullName                                   String?      @map("full_name") @db.VarChar(255)
+  email                                      String?      @db.VarChar(255)
+  phone                                      String?      @db.VarChar(20)
+  ticketCode                                 String?      @unique @map("ticket_code") @db.VarChar(50)
+  qrCode                                     String?      @map("qr_code") @db.VarChar(500)
+  isCheckedIn                                Boolean?     @default(false) @map("is_checked_in")
+  checkedInAt                                DateTime?    @map("checked_in_at") @db.Timestamptz(6)
+  checkedInBy                                String?      @map("checked_in_by") @db.Uuid
+  createdAt                                  DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
+  booking                                    Booking?     @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_event_attendees_checked_in_byTousers User?        @relation("event_attendees_checked_in_byTousers", fields: [checkedInBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  event                                      Event?       @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ticket                                     EventTicket? @relation(fields: [ticketId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                                       User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([eventId], map: "idx_event_attendees_event")
+  @@index([ticketCode], map: "idx_event_attendees_ticket_code")
+  @@map("event_attendees")
+}
+
+model Tour {
+  id                      String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  operatorId              String?                   @map("operator_id") @db.Uuid
+  name                    String?                   @db.VarChar(255)
+  slug                    String?                   @unique @db.VarChar(255)
+  description             String?
+  shortDescription        String?                   @map("short_description") @db.VarChar(500)
+  categoryId              String?                   @map("category_id") @db.Uuid
+  type                    String?                   @db.VarChar(50)
+  durationHours           Decimal?                  @map("duration_hours") @db.Decimal(5, 2)
+  durationDays            Int?                      @map("duration_days")
+  countryId               String?                   @map("country_id") @db.Uuid
+  cityId                  String?                   @map("city_id") @db.Uuid
+  start_location          Unsupported("geography")?
+  startLocationName       String?                   @map("start_location_name") @db.VarChar(255)
+  end_location            Unsupported("geography")?
+  endLocationName         String?                   @map("end_location_name") @db.VarChar(255)
+  operating_regions       String[]                  @db.Uuid
+  pricePerPerson          Decimal?                  @map("price_per_person") @db.Decimal(10, 2)
+  currency                String?                   @default("USD") @db.VarChar(3)
+  groupDiscountPercentage Decimal?                  @map("group_discount_percentage") @db.Decimal(5, 2)
+  minGroupSize            Int?                      @default(1) @map("min_group_size")
+  maxGroupSize            Int?                      @default(20) @map("max_group_size")
+  includes                String[]
+  excludes                String[]
+  itinerary               Json?
+  requirements            String[]
+  difficultyLevel         String?                   @map("difficulty_level") @db.VarChar(20)
+  languages               String[]                  @default(["en"])
+  status                  tour_status?              @default(draft)
+  isFeatured              Boolean?                  @default(false) @map("is_featured")
+  rating                  Decimal?                  @default(0) @db.Decimal(3, 2)
+  reviewCount             Int?                      @default(0) @map("review_count")
+  bookingCount            Int?                      @default(0) @map("booking_count")
+  createdAt               DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt               DateTime?                 @map("deleted_at") @db.Timestamptz(6)
+  bookings                Booking[]
+  favorites               Favorite[]
+  recentlyViewed          RecentlyViewed[]
+  reviews                 Review[]
+  images                  TourImage[]
+  schedules               TourSchedule[]
+  category                Category?                 @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  city                    City?                     @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                 Country?                  @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  operator                TourOperatorProfile?      @relation(fields: [operatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([operatorId], map: "idx_tours_operator")
+  @@index([status], map: "idx_tours_status")
+  @@index([cityId], map: "idx_tours_city")
+  @@index([countryId], map: "idx_tours_country")
+  @@index([start_location], map: "idx_tours_location", type: Gist)
+  @@map("tours")
+}
+
+model TourImage {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tourId    String    @map("tour_id") @db.Uuid
+  mediaId   String    @map("media_id") @db.Uuid
+  isPrimary Boolean?  @default(false) @map("is_primary")
+  sortOrder Int?      @default(0) @map("sort_order")
+  caption   String?   @db.VarChar(255)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  media     Media     @relation(fields: [mediaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tour      Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("tour_images")
+}
+
+model TourSchedule {
+  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tourId         String    @map("tour_id") @db.Uuid
+  date           DateTime  @db.Date
+  startTime      DateTime? @map("start_time") @db.Time(6)
+  availableSpots Int       @map("available_spots")
+  bookedSpots    Int?      @default(0) @map("booked_spots")
+  priceOverride  Decimal?  @map("price_override") @db.Decimal(10, 2)
+  isAvailable    Boolean?  @default(true) @map("is_available")
+  bookings       Booking[]
+  tour           Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([tourId, date, startTime])
+  @@index([tourId, date], map: "idx_tour_schedules_date")
+  @@map("tour_schedules")
+}
+
+model MerchantProfile {
+  id                                         String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                                     String                    @map("user_id") @db.Uuid
+  businessName                               String?                   @map("business_name") @db.VarChar(255)
+  businessType                               listing_type?             @map("business_type")
+  businessRegistrationNumber                 String?                   @map("business_registration_number") @db.VarChar(100)
+  taxId                                      String?                   @map("tax_id") @db.VarChar(100)
+  description                                String?
+  logoId                                     String?                   @map("logo_id") @db.Uuid
+  businessEmail                              String?                   @map("business_email") @db.VarChar(255)
+  businessPhone                              String?                   @map("business_phone") @db.VarChar(20)
+  website                                    String?                   @db.VarChar(255)
+  socialLinks                                Json?                     @map("social_links")
+  countryId                                  String?                   @map("country_id") @db.Uuid
+  cityId                                     String?                   @map("city_id") @db.Uuid
+  districtId                                 String?                   @map("district_id") @db.Uuid
+  address                                    String?
+  location                                   Unsupported("geography")?
+  registrationStatus                         approval_status?          @default(pending) @map("registration_status")
+  submittedAt                                DateTime?                 @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  reviewedBy                                 String?                   @map("reviewed_by") @db.Uuid
+  reviewedAt                                 DateTime?                 @map("reviewed_at") @db.Timestamptz(6)
+  rejectionReason                            String?                   @map("rejection_reason")
+  revisionNotes                              String?                   @map("revision_notes")
+  isVerified                                 Boolean?                  @default(false) @map("is_verified")
+  verifiedAt                                 DateTime?                 @map("verified_at") @db.Timestamptz(6)
+  verifiedBy                                 String?                   @map("verified_by") @db.Uuid
+  commissionRate                             Decimal?                  @default(10.00) @map("commission_rate") @db.Decimal(5, 2)
+  payoutSchedule                             String?                   @default("weekly") @map("payout_schedule") @db.VarChar(20)
+  bankAccountInfo                            Json?                     @map("bank_account_info")
+  totalRevenue                               Decimal?                  @default(0) @map("total_revenue") @db.Decimal(15, 2)
+  totalBookings                              Int?                      @default(0) @map("total_bookings")
+  averageRating                              Decimal?                  @default(0) @map("average_rating") @db.Decimal(3, 2)
+  createdAt                                  DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                                  DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                                  DateTime?                 @map("deleted_at") @db.Timestamptz(6)
+  bookings                                   Booking[]
+  commission_rules                           commission_rules[]
+  listings                                   Listing[]
+  city                                       City?                     @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                                    Country?                  @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  districts                                  District?                 @relation(fields: [districtId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media                                      Media?                    @relation(fields: [logoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_merchant_profiles_reviewed_byTousers User?                     @relation("merchant_profiles_reviewed_byTousers", fields: [reviewedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                                       User                      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_merchant_profiles_verified_byTousers User?                     @relation("merchant_profiles_verified_byTousers", fields: [verifiedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant_reports                           merchant_reports[]
+  notification_requests                      notification_requests[]
+  payouts                                    payouts[]
+  transactions                               Transaction[]
+
+  @@index([cityId], map: "idx_merchant_profiles_city")
+  @@index([countryId], map: "idx_merchant_profiles_country")
+  @@index([registrationStatus], map: "idx_merchant_profiles_status")
+  @@index([userId], map: "idx_merchant_profiles_user")
+  @@map("merchant_profiles")
+}
+
+model OrganizerProfile {
+  id                                          String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                                      String                  @map("user_id") @db.Uuid
+  organizationName                            String?                 @map("organization_name") @db.VarChar(255)
+  organizationType                            String?                 @map("organization_type") @db.VarChar(100)
+  description                                 String?
+  logoId                                      String?                 @map("logo_id") @db.Uuid
+  countryId                                   String?                 @map("country_id") @db.Uuid
+  cityId                                      String?                 @map("city_id") @db.Uuid
+  contactEmail                                String?                 @map("contact_email") @db.VarChar(255)
+  contactPhone                                String?                 @map("contact_phone") @db.VarChar(20)
+  website                                     String?                 @db.VarChar(255)
+  socialLinks                                 Json?                   @map("social_links")
+  registrationStatus                          approval_status?        @default(pending) @map("registration_status")
+  submittedAt                                 DateTime?               @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  reviewedBy                                  String?                 @map("reviewed_by") @db.Uuid
+  reviewedAt                                  DateTime?               @map("reviewed_at") @db.Timestamptz(6)
+  rejectionReason                             String?                 @map("rejection_reason")
+  revisionNotes                               String?                 @map("revision_notes")
+  isVerified                                  Boolean?                @default(false) @map("is_verified")
+  verifiedAt                                  DateTime?               @map("verified_at") @db.Timestamptz(6)
+  totalEvents                                 Int?                    @default(0) @map("total_events")
+  totalAttendees                              Int?                    @default(0) @map("total_attendees")
+  averageRating                               Decimal?                @default(0) @map("average_rating") @db.Decimal(3, 2)
+  followerCount                               Int?                    @default(0) @map("follower_count")
+  createdAt                                   DateTime?               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                                   DateTime?               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                                   DateTime?               @map("deleted_at") @db.Timestamptz(6)
+  bookings                                    Booking[]
+  events                                      Event[]
+  notification_requests                       notification_requests[]
+  city                                        City?                   @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                                     Country?                @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media                                       Media?                  @relation(fields: [logoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_organizer_profiles_reviewed_byTousers User?                   @relation("organizer_profiles_reviewed_byTousers", fields: [reviewedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                                        User                    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([registrationStatus], map: "idx_organizer_profiles_status")
+  @@index([userId], map: "idx_organizer_profiles_user")
+  @@map("organizer_profiles")
+}
+
+model TourOperatorProfile {
+  id                                              String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                                          String           @map("user_id") @db.Uuid
+  companyName                                     String?          @map("company_name") @db.VarChar(255)
+  licenseNumber                                   String?          @map("license_number") @db.VarChar(100)
+  description                                     String?
+  logoId                                          String?          @map("logo_id") @db.Uuid
+  specializations                                 String[]
+  languagesOffered                                String[]         @default(["en"]) @map("languages_offered")
+  contactEmail                                    String?          @map("contact_email") @db.VarChar(255)
+  contactPhone                                    String?          @map("contact_phone") @db.VarChar(20)
+  website                                         String?          @db.VarChar(255)
+  socialLinks                                     Json?            @map("social_links")
+  countryId                                       String?          @map("country_id") @db.Uuid
+  cityId                                          String?          @map("city_id") @db.Uuid
+  operatingRegions                                String[]         @map("operating_regions") @db.Uuid
+  registrationStatus                              approval_status? @default(pending) @map("registration_status")
+  submittedAt                                     DateTime?        @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  reviewedBy                                      String?          @map("reviewed_by") @db.Uuid
+  reviewedAt                                      DateTime?        @map("reviewed_at") @db.Timestamptz(6)
+  rejectionReason                                 String?          @map("rejection_reason")
+  revisionNotes                                   String?          @map("revision_notes")
+  isVerified                                      Boolean?         @default(false) @map("is_verified")
+  verifiedAt                                      DateTime?        @map("verified_at") @db.Timestamptz(6)
+  totalTours                                      Int?             @default(0) @map("total_tours")
+  totalCustomers                                  Int?             @default(0) @map("total_customers")
+  averageRating                                   Decimal?         @default(0) @map("average_rating") @db.Decimal(3, 2)
+  createdAt                                       DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                                       DateTime?        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                                       DateTime?        @map("deleted_at") @db.Timestamptz(6)
+  bookings                                        Booking[]
+  city                                            City?            @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  country                                         Country?         @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media                                           Media?           @relation(fields: [logoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_tour_operator_profiles_reviewed_byTousers User?            @relation("tour_operator_profiles_reviewed_byTousers", fields: [reviewedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                                            User             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tours                                           Tour[]
+
+  @@index([countryId], map: "idx_tour_operator_profiles_country")
+  @@index([registrationStatus], map: "idx_tour_operator_profiles_status")
+  @@index([userId], map: "idx_tour_operator_profiles_user")
+  @@map("tour_operator_profiles")
+}
+
+model Booking {
+  id                                 String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  bookingNumber                      String?                   @unique @map("booking_number") @db.VarChar(20)
+  userId                             String?                   @map("user_id") @db.Uuid
+  bookingType                        booking_type?             @map("booking_type")
+  listingId                          String?                   @map("listing_id") @db.Uuid
+  eventId                            String?                   @map("event_id") @db.Uuid
+  tourId                             String?                   @map("tour_id") @db.Uuid
+  merchantId                         String?                   @map("merchant_id") @db.Uuid
+  organizerId                        String?                   @map("organizer_id") @db.Uuid
+  operatorId                         String?                   @map("operator_id") @db.Uuid
+  roomTypeId                         String?                   @map("room_type_id") @db.Uuid
+  roomId                             String?                   @map("room_id") @db.Uuid
+  tableId                            String?                   @map("table_id") @db.Uuid
+  time_slot_id                       String?                   @db.Uuid
+  partySize                          Int?                      @map("party_size")
+  ticketId                           String?                   @map("ticket_id") @db.Uuid
+  ticketQuantity                     Int?                      @map("ticket_quantity")
+  tourScheduleId                     String?                   @map("tour_schedule_id") @db.Uuid
+  checkInDate                        DateTime?                 @map("check_in_date") @db.Date
+  checkOutDate                       DateTime?                 @map("check_out_date") @db.Date
+  bookingDate                        DateTime?                 @map("booking_date") @db.Date
+  bookingTime                        DateTime?                 @map("booking_time") @db.Time(6)
+  guestCount                         Int?                      @default(1) @map("guest_count")
+  adults                             Int?                      @default(1)
+  children                           Int?                      @default(0)
+  subtotal                           Decimal?                  @db.Decimal(12, 2)
+  taxAmount                          Decimal?                  @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  discountAmount                     Decimal?                  @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  totalAmount                        Decimal?                  @map("total_amount") @db.Decimal(12, 2)
+  currency                           String?                   @default("RWF") @db.VarChar(3)
+  status                             booking_status?           @default(pending)
+  paymentStatus                      payment_status?           @default(pending) @map("payment_status")
+  paymentMethod                      payment_method?           @map("payment_method")
+  paymentReference                   String?                   @map("payment_reference") @db.VarChar(255)
+  paidAt                             DateTime?                 @map("paid_at") @db.Timestamptz(6)
+  specialRequests                    String?                   @map("special_requests")
+  internalNotes                      String?                   @map("internal_notes")
+  cancelledAt                        DateTime?                 @map("cancelled_at") @db.Timestamptz(6)
+  cancelledBy                        String?                   @map("cancelled_by") @db.Uuid
+  cancellationReason                 String?                   @map("cancellation_reason")
+  refundAmount                       Decimal?                  @map("refund_amount") @db.Decimal(10, 2)
+  confirmedAt                        DateTime?                 @map("confirmed_at") @db.Timestamptz(6)
+  confirmationCode                   String?                   @map("confirmation_code") @db.VarChar(20)
+  createdAt                          DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                          DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  guests                             BookingGuest[]
+  users_bookings_cancelled_byTousers User?                     @relation("bookings_cancelled_byTousers", fields: [cancelledBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  event                              Event?                    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listing                            Listing?                  @relation(fields: [listingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant                           MerchantProfile?          @relation(fields: [merchantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  operator                           TourOperatorProfile?      @relation(fields: [operatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  organizer                          OrganizerProfile?         @relation(fields: [organizerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  room                               Room?                     @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  roomType                           RoomType?                 @relation(fields: [roomTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  table                              RestaurantTable?          @relation(fields: [tableId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ticket                             EventTicket?              @relation(fields: [ticketId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reservation_time_slots             reservation_time_slots?   @relation(fields: [time_slot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tour                               Tour?                     @relation(fields: [tourId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tourSchedule                       TourSchedule?             @relation(fields: [tourScheduleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                               User?                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  coupon_uses                        coupon_uses[]
+  attendees                          EventAttendee[]
+  notifications                      Notification[]
+  promotion_uses                     promotion_uses[]
+  reviews                            Review[]
+  scheduled_notifications            scheduled_notifications[]
+  transactions                       Transaction[]
+
+  @@index([userId], map: "idx_bookings_user")
+  @@index([listingId], map: "idx_bookings_listing")
+  @@index([eventId], map: "idx_bookings_event")
+  @@index([tourId], map: "idx_bookings_tour")
+  @@index([status], map: "idx_bookings_status")
+  @@index([checkInDate, checkOutDate], map: "idx_bookings_dates")
+  @@index([bookingNumber], map: "idx_bookings_number")
+  @@map("bookings")
+}
+
+model BookingGuest {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  bookingId   String?   @map("booking_id") @db.Uuid
+  fullName    String?   @map("full_name") @db.VarChar(255)
+  email       String?   @db.VarChar(255)
+  phone       String?   @db.VarChar(20)
+  isPrimary   Boolean?  @default(false) @map("is_primary")
+  idType      String?   @map("id_type") @db.VarChar(50)
+  idNumber    String?   @map("id_number") @db.VarChar(100)
+  nationality String?   @db.VarChar(100)
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  booking     Booking?  @relation(fields: [bookingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("booking_guests")
+}
+
+model ZoeaCard {
+  id                String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String?       @unique @map("user_id") @db.Uuid
+  cardNumber        String?       @unique @map("card_number") @db.VarChar(16)
+  balance           Decimal?      @default(0) @db.Decimal(12, 2)
+  currency          String?       @default("RWF") @db.VarChar(3)
+  status            card_status?  @default(active)
+  linkedMomoNumber  String?       @map("linked_momo_number") @db.VarChar(20)
+  linkedBankAccount Json?         @map("linked_bank_account")
+  pinHash           String?       @map("pin_hash") @db.VarChar(255)
+  pinAttempts       Int?          @default(0) @map("pin_attempts")
+  pinLockedUntil    DateTime?     @map("pin_locked_until") @db.Timestamptz(6)
+  dailyLimit        Decimal?      @default(1000000) @map("daily_limit") @db.Decimal(12, 2)
+  transactionLimit  Decimal?      @default(500000) @map("transaction_limit") @db.Decimal(12, 2)
+  createdAt         DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime?     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  transactions      Transaction[]
+  user              User?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("zoea_cards")
+}
+
+model Transaction {
+  id            String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cardId        String?             @map("card_id") @db.Uuid
+  userId        String?             @map("user_id") @db.Uuid
+  type          transaction_type?
+  amount        Decimal?            @db.Decimal(12, 2)
+  currency      String?             @default("RWF") @db.VarChar(3)
+  balanceBefore Decimal?            @map("balance_before") @db.Decimal(12, 2)
+  balanceAfter  Decimal?            @map("balance_after") @db.Decimal(12, 2)
+  description   String?
+  reference     String?             @db.VarChar(100)
+  bookingId     String?             @map("booking_id") @db.Uuid
+  merchantId    String?             @map("merchant_id") @db.Uuid
+  status        transaction_status? @default(completed)
+  metadata      Json?
+  createdAt     DateTime?           @default(now()) @map("created_at") @db.Timestamptz(6)
+  booking       Booking?            @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  card          ZoeaCard?           @relation(fields: [cardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant      MerchantProfile?    @relation(fields: [merchantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user          User?               @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([cardId], map: "idx_transactions_card")
+  @@index([createdAt], map: "idx_transactions_created")
+  @@map("transactions")
+}
+
+model Review {
+  id                               String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                           String?        @map("user_id") @db.Uuid
+  listingId                        String?        @map("listing_id") @db.Uuid
+  eventId                          String?        @map("event_id") @db.Uuid
+  tourId                           String?        @map("tour_id") @db.Uuid
+  bookingId                        String?        @map("booking_id") @db.Uuid
+  rating                           Int?
+  title                            String?        @db.VarChar(255)
+  content                          String?
+  ratingsBreakdown                 Json?          @map("ratings_breakdown")
+  images                           String[]       @db.Uuid
+  status                           review_status? @default(pending)
+  isVerified                       Boolean?       @default(false) @map("is_verified")
+  response                         String?
+  responseBy                       String?        @map("response_by") @db.Uuid
+  responseAt                       DateTime?      @map("response_at") @db.Timestamptz(6)
+  helpfulCount                     Int?           @default(0) @map("helpful_count")
+  createdAt                        DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                        DateTime?      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt                        DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  review_votes                     review_votes[]
+  booking                          Booking?       @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  event                            Event?         @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listing                          Listing?       @relation(fields: [listingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_reviews_response_byTousers User?          @relation("reviews_response_byTousers", fields: [responseBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tour                             Tour?          @relation(fields: [tourId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                             User?          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_reviews_user")
+  @@index([listingId], map: "idx_reviews_listing")
+  @@index([eventId], map: "idx_reviews_event")
+  @@index([tourId], map: "idx_reviews_tour")
+  @@index([status], map: "idx_reviews_status")
+  @@map("reviews")
+}
+
+model Favorite {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  listingId String?   @map("listing_id") @db.Uuid
+  eventId   String?   @map("event_id") @db.Uuid
+  tourId    String?   @map("tour_id") @db.Uuid
+  notes     String?
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  event     Event?    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listing   Listing?  @relation(fields: [listingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tour      Tour?     @relation(fields: [tourId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([userId, listingId])
+  @@unique([userId, eventId])
+  @@unique([userId, tourId])
+  @@index([userId], map: "idx_favorites_user")
+  @@map("favorites")
+}
+
+model Notification {
+  id                      String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                  String?                  @map("user_id") @db.Uuid
+  template_id             String?                  @db.Uuid
+  scheduled_id            String?                  @db.Uuid
+  type                    notification_type?
+  title                   String?                  @db.VarChar(255)
+  body                    String?
+  actionUrl               String?                  @map("action_url") @db.VarChar(500)
+  actionData              Json?                    @map("action_data")
+  bookingId               String?                  @map("booking_id") @db.Uuid
+  eventId                 String?                  @map("event_id") @db.Uuid
+  listingId               String?                  @map("listing_id") @db.Uuid
+  isRead                  Boolean?                 @default(false) @map("is_read")
+  readAt                  DateTime?                @map("read_at") @db.Timestamptz(6)
+  pushSent                Boolean?                 @default(false) @map("push_sent")
+  pushSentAt              DateTime?                @map("push_sent_at") @db.Timestamptz(6)
+  push_delivered          Boolean?                 @default(false)
+  push_clicked            Boolean?                 @default(false)
+  emailSent               Boolean?                 @default(false) @map("email_sent")
+  emailSentAt             DateTime?                @map("email_sent_at") @db.Timestamptz(6)
+  email_opened            Boolean?                 @default(false)
+  sms_sent                Boolean?                 @default(false)
+  sms_sent_at             DateTime?                @db.Timestamptz(6)
+  expiresAt               DateTime?                @map("expires_at") @db.Timestamptz(6)
+  createdAt               DateTime?                @default(now()) @map("created_at") @db.Timestamptz(6)
+  bookings                Booking?                 @relation(fields: [bookingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events                  Event?                   @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listings                Listing?                 @relation(fields: [listingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  scheduled_notifications scheduled_notifications? @relation(fields: [scheduled_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notification_templates  notification_templates?  @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                    User?                    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_notifications_user")
+  @@index([type], map: "idx_notifications_type")
+  @@map("notifications")
+}
+
+model SearchHistory {
+  id          String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId      String?                   @map("user_id") @db.Uuid
+  sessionId   String?                   @map("session_id") @db.VarChar(100)
+  query       String
+  filters     Json?
+  resultCount Int?                      @map("result_count")
+  location    Unsupported("geography")?
+  createdAt   DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  user        User?                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("search_history")
+}
+
+model RecentlyViewed {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  listingId    String?   @map("listing_id") @db.Uuid
+  eventId      String?   @map("event_id") @db.Uuid
+  tourId       String?   @map("tour_id") @db.Uuid
+  viewCount    Int?      @default(1) @map("view_count")
+  lastViewedAt DateTime? @default(now()) @map("last_viewed_at") @db.Timestamptz(6)
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  event        Event?    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  listing      Listing?  @relation(fields: [listingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tour         Tour?     @relation(fields: [tourId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("recently_viewed")
+}
+
+model Promotion {
+  id                      String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name                    String                    @db.VarChar(255)
+  slug                    String                    @unique @db.VarChar(255)
+  description             String?
+  discountType            String                    @map("discount_type") @db.VarChar(20)
+  discountValue           Decimal                   @map("discount_value") @db.Decimal(10, 2)
+  countryIds              String[]                  @map("country_ids") @db.Uuid
+  cityIds                 String[]                  @map("city_ids") @db.Uuid
+  applicableTypes         listing_type[]            @map("applicable_types")
+  listingIds              String[]                  @map("listing_ids") @db.Uuid
+  merchantIds             String[]                  @map("merchant_ids") @db.Uuid
+  promoCode               String?                   @unique @map("promo_code") @db.VarChar(50)
+  maxUses                 Int?                      @map("max_uses")
+  usedCount               Int?                      @default(0) @map("used_count")
+  maxUsesPerUser          Int?                      @default(1) @map("max_uses_per_user")
+  minOrderAmount          Decimal?                  @map("min_order_amount") @db.Decimal(10, 2)
+  maxDiscountAmount       Decimal?                  @map("max_discount_amount") @db.Decimal(10, 2)
+  startDate               DateTime                  @map("start_date") @db.Timestamptz(6)
+  endDate                 DateTime                  @map("end_date") @db.Timestamptz(6)
+  imageId                 String?                   @map("image_id") @db.Uuid
+  isActive                Boolean?                  @default(true) @map("is_active")
+  isFeatured              Boolean?                  @default(false) @map("is_featured")
+  createdAt               DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime?                 @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  promotion_uses          promotion_uses[]
+  media                   Media?                    @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  scheduled_notifications scheduled_notifications[]
+
+  @@map("promotions")
+}
+
+model app_config {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  key         String    @unique @db.VarChar(100)
+  value       Json
+  description String?
+  is_public   Boolean?  @default(false)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model approval_history {
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  approval_id       String            @db.Uuid
+  action            String            @db.VarChar(50)
+  from_status       approval_status?
+  to_status         approval_status?
+  performed_by      String            @db.Uuid
+  notes             String?
+  created_at        DateTime?         @default(now()) @db.Timestamptz(6)
+  content_approvals content_approvals @relation(fields: [approval_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users             User              @relation(fields: [performed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model audit_logs {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String?   @db.Uuid
+  action      String    @db.VarChar(50)
+  entity_type String    @db.VarChar(50)
+  entity_id   String?   @db.Uuid
+  old_values  Json?
+  new_values  Json?
+  ip_address  String?   @db.Inet
+  user_agent  String?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  users       User?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_audit_logs_created")
+  @@index([entity_type, entity_id], map: "idx_audit_logs_entity")
+  @@index([user_id], map: "idx_audit_logs_user")
+}
+
+model comment_likes {
+  user_id        String       @db.Uuid
+  comment_id     String       @db.Uuid
+  created_at     DateTime?    @default(now()) @db.Timestamptz(6)
+  event_comments EventComment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          User         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, comment_id])
+}
+
+model commission_rules {
+  id                String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name              String           @db.VarChar(100)
+  description       String?
+  listing_type      listing_type?
+  category_id       String?          @db.Uuid
+  merchant_id       String?          @db.Uuid
+  percentage        Decimal          @db.Decimal(5, 2)
+  fixed_amount      Decimal?         @default(0) @db.Decimal(10, 2)
+  valid_from        DateTime?        @db.Date
+  valid_until       DateTime?        @db.Date
+  is_active         Boolean?         @default(true)
+  priority          Int?             @default(0)
+  created_at        DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?        @default(now()) @db.Timestamptz(6)
+  categories        Category?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant_profiles MerchantProfile? @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model content_approvals {
+  id                                          String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content_type                                content_type
+  content_id                                  String             @db.Uuid
+  submitted_by                                String             @db.Uuid
+  submitted_at                                DateTime?          @default(now()) @db.Timestamptz(6)
+  version                                     Int?               @default(1)
+  changes_summary                             String?
+  snapshot                                    Json?
+  status                                      approval_status?   @default(pending)
+  priority                                    String?            @default("normal") @db.VarChar(20)
+  assigned_to                                 String?            @db.Uuid
+  reviewed_by                                 String?            @db.Uuid
+  reviewed_at                                 DateTime?          @db.Timestamptz(6)
+  rejection_reason                            String?
+  revision_notes                              String?
+  internal_notes                              String?
+  auto_approved                               Boolean?           @default(false)
+  auto_approval_reason                        String?            @db.VarChar(255)
+  created_at                                  DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at                                  DateTime?          @default(now()) @db.Timestamptz(6)
+  approval_history                            approval_history[]
+  users_content_approvals_assigned_toTousers  User?              @relation("content_approvals_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_content_approvals_reviewed_byTousers  User?              @relation("content_approvals_reviewed_byTousers", fields: [reviewed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_content_approvals_submitted_byTousers User               @relation("content_approvals_submitted_byTousers", fields: [submitted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([status], map: "idx_content_approvals_status")
+  @@index([content_type, content_id], map: "idx_content_approvals_type")
+}
+
+model content_flags {
+  id                                     String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content_type                           content_type
+  content_id                             String       @db.Uuid
+  reported_by                            String       @db.Uuid
+  reason                                 String       @db.VarChar(50)
+  description                            String?
+  status                                 String?      @default("pending") @db.VarChar(20)
+  reviewed_by                            String?      @db.Uuid
+  reviewed_at                            DateTime?    @db.Timestamptz(6)
+  action_taken                           String?      @db.VarChar(100)
+  created_at                             DateTime?    @default(now()) @db.Timestamptz(6)
+  users_content_flags_reported_byTousers User         @relation("content_flags_reported_byTousers", fields: [reported_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_content_flags_reviewed_byTousers User?        @relation("content_flags_reviewed_byTousers", fields: [reviewed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([content_type, content_id], map: "idx_content_flags_content")
+  @@index([status], map: "idx_content_flags_status")
+}
+
+model content_views {
+  id                 String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content_type       content_type
+  content_id         String                    @db.Uuid
+  user_id            String?                   @db.Uuid
+  session_id         String?                   @db.VarChar(100)
+  viewer_age_range   String?                   @db.VarChar(20)
+  viewer_gender      String?                   @db.VarChar(20)
+  viewer_interests   String[]
+  viewer_profession  String?                   @db.VarChar(100)
+  source             String?                   @db.VarChar(50)
+  referrer           String?                   @db.VarChar(500)
+  device_type        String?                   @db.VarChar(20)
+  os                 String?                   @db.VarChar(50)
+  browser            String?                   @db.VarChar(50)
+  app_version        String?                   @db.VarChar(20)
+  ip_address         String?                   @db.Inet
+  location           Unsupported("geography")?
+  city_id            String?                   @db.Uuid
+  country_id         String?                   @db.Uuid
+  duration_seconds   Int?
+  scroll_depth       Int?
+  clicked_book       Boolean?                  @default(false)
+  clicked_contact    Boolean?                  @default(false)
+  added_to_favorites Boolean?                  @default(false)
+  created_at         DateTime?                 @default(now()) @db.Timestamptz(6)
+  cities             City?                     @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  countries          Country?                  @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users              User?                     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([city_id], map: "idx_content_views_city")
+  @@index([content_type, content_id], map: "idx_content_views_content")
+  @@index([country_id], map: "idx_content_views_country")
+  @@index([created_at], map: "idx_content_views_created")
+  @@index([user_id], map: "idx_content_views_user")
+}
+
+model coupon_uses {
+  id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  coupon_id       String    @db.Uuid
+  user_id         String    @db.Uuid
+  booking_id      String?   @db.Uuid
+  discount_amount Decimal   @db.Decimal(10, 2)
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+  bookings        Booking?  @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  coupons         coupons   @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_coupon_uses_user")
+}
+
+model coupons {
+  id                  String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code                String         @unique @db.VarChar(50)
+  name                String         @db.VarChar(100)
+  description         String?
+  discount_type       String         @db.VarChar(20)
+  discount_value      Decimal        @db.Decimal(10, 2)
+  max_discount_amount Decimal?       @db.Decimal(10, 2)
+  min_order_amount    Decimal?       @db.Decimal(10, 2)
+  country_ids         String[]       @db.Uuid
+  city_ids            String[]       @db.Uuid
+  applicable_types    listing_type[]
+  listing_ids         String[]       @db.Uuid
+  user_ids            String[]       @db.Uuid
+  max_uses            Int?
+  max_uses_per_user   Int?           @default(1)
+  used_count          Int?           @default(0)
+  start_date          DateTime       @db.Timestamptz(6)
+  end_date            DateTime       @db.Timestamptz(6)
+  is_active           Boolean?       @default(true)
+  created_at          DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?      @default(now()) @db.Timestamptz(6)
+  coupon_uses         coupon_uses[]
+
+  @@index([code], map: "idx_coupons_code")
+}
+
+model currencies {
+  id                       String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code                     String    @unique @db.VarChar(3)
+  name                     String    @db.VarChar(100)
+  symbol                   String    @db.VarChar(10)
+  symbol_native            String?   @db.VarChar(10)
+  decimal_digits           Int?      @default(2)
+  exchange_rate_to_usd     Decimal?  @default(1) @db.Decimal(15, 6)
+  exchange_rate_updated_at DateTime? @db.Timestamptz(6)
+  is_active                Boolean?  @default(true)
+  sort_order               Int?      @default(0)
+  created_at               DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model daily_stats {
+  id              String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  date            DateTime     @db.Date
+  content_type    content_type
+  content_id      String       @db.Uuid
+  view_count      Int?         @default(0)
+  unique_viewers  Int?         @default(0)
+  like_count      Int?         @default(0)
+  share_count     Int?         @default(0)
+  comment_count   Int?         @default(0)
+  favorite_count  Int?         @default(0)
+  booking_count   Int?         @default(0)
+  booking_revenue Decimal?     @default(0) @db.Decimal(15, 2)
+  review_count    Int?         @default(0)
+  average_rating  Decimal?     @db.Decimal(3, 2)
+  created_at      DateTime?    @default(now()) @db.Timestamptz(6)
+
+  @@unique([date, content_type, content_id])
+  @@index([content_type, content_id], map: "idx_daily_stats_content")
+  @@index([date], map: "idx_daily_stats_date")
+}
+
+model dashboard_widgets {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  widget_key       String    @unique @db.VarChar(100)
+  title            String    @db.VarChar(255)
+  data             Json
+  cached_at        DateTime? @default(now()) @db.Timestamptz(6)
+  expires_at       DateTime  @db.Timestamptz(6)
+  refresh_interval Int?      @default(300)
+}
+
+model email_verification_tokens {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @db.Uuid
+  email       String    @db.VarChar(255)
+  token       String    @unique @db.VarChar(255)
+  expires_at  DateTime  @db.Timestamptz(6)
+  verified_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  users       User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model event_reports {
+  id                String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  event_id          String    @db.Uuid
+  total_views       Int?      @default(0)
+  unique_visitors   Int?      @default(0)
+  tickets_sold      Int?      @default(0)
+  tickets_available Int?      @default(0)
+  ticket_revenue    Decimal?  @default(0) @db.Decimal(15, 2)
+  ticket_breakdown  Json?
+  checked_in_count  Int?      @default(0)
+  no_show_count     Int?      @default(0)
+  likes             Int?      @default(0)
+  shares            Int?      @default(0)
+  comments          Int?      @default(0)
+  traffic_sources   Json?
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
+  events            Event     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([event_id], map: "idx_event_reports_event")
+}
+
+model exchange_rates {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  from_currency String    @db.VarChar(3)
+  to_currency   String    @db.VarChar(3)
+  rate          Decimal   @db.Decimal(15, 6)
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@unique([from_currency, to_currency])
+}
+
+model faq_categories {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name       String    @db.VarChar(100)
+  slug       String    @unique @db.VarChar(100)
+  icon       String?   @db.VarChar(50)
+  sort_order Int?      @default(0)
+  is_active  Boolean?  @default(true)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  faqs       faqs[]
+}
+
+model faqs {
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  category_id    String?         @db.Uuid
+  question       String
+  answer         String
+  sort_order     Int?            @default(0)
+  is_active      Boolean?        @default(true)
+  view_count     Int?            @default(0)
+  helpful_count  Int?            @default(0)
+  created_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  faq_categories faq_categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model funnel_events {
+  id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id      String?       @db.Uuid
+  session_id   String        @db.VarChar(100)
+  funnel_name  String        @db.VarChar(50)
+  step_name    String        @db.VarChar(50)
+  step_number  Int
+  content_type content_type?
+  content_id   String?       @db.Uuid
+  completed    Boolean?      @default(false)
+  dropped_off  Boolean?      @default(false)
+  metadata     Json?
+  created_at   DateTime?     @default(now()) @db.Timestamptz(6)
+  users        User?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([funnel_name, step_name], map: "idx_funnel_events_funnel")
+  @@index([session_id], map: "idx_funnel_events_session")
+}
+
+model languages {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code        String    @unique @db.VarChar(10)
+  code_3      String?   @db.VarChar(10)
+  name        String    @db.VarChar(100)
+  native_name String?   @db.VarChar(100)
+  is_rtl      Boolean?  @default(false)
+  is_active   Boolean?  @default(true)
+  sort_order  Int?      @default(0)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model merchant_reports {
+  id                        String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  merchant_id               String          @db.Uuid
+  report_type               String          @db.VarChar(20)
+  period_start              DateTime        @db.Date
+  period_end                DateTime        @db.Date
+  total_views               Int?            @default(0)
+  unique_visitors           Int?            @default(0)
+  profile_views             Int?            @default(0)
+  listing_views             Json?
+  total_bookings            Int?            @default(0)
+  completed_bookings        Int?            @default(0)
+  cancelled_bookings        Int?            @default(0)
+  no_show_bookings          Int?            @default(0)
+  gross_revenue             Decimal?        @default(0) @db.Decimal(15, 2)
+  commission_paid           Decimal?        @default(0) @db.Decimal(10, 2)
+  net_revenue               Decimal?        @default(0) @db.Decimal(15, 2)
+  refunds                   Decimal?        @default(0) @db.Decimal(10, 2)
+  new_reviews               Int?            @default(0)
+  average_rating            Decimal?        @db.Decimal(3, 2)
+  revenue_change_percentage Decimal?        @db.Decimal(5, 2)
+  booking_change_percentage Decimal?        @db.Decimal(5, 2)
+  rating_change             Decimal?        @db.Decimal(3, 2)
+  created_at                DateTime?       @default(now()) @db.Timestamptz(6)
+  merchant_profiles         MerchantProfile @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([merchant_id, report_type, period_start])
+  @@index([merchant_id, report_type], map: "idx_merchant_reports_merchant")
+}
+
+model moderation_rules {
+  id            String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name          String       @db.VarChar(100)
+  description   String?
+  content_type  content_type
+  conditions    Json
+  action        String       @db.VarChar(50)
+  action_params Json?
+  priority      Int?         @default(0)
+  is_active     Boolean?     @default(true)
+  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?    @default(now()) @db.Timestamptz(6)
+}
+
+model monthly_revenue_reports {
+  id                        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  year                      Int
+  month                     Int
+  category_breakdown        Json?
+  top_merchants             Json?
+  gross_revenue             Decimal?  @default(0) @db.Decimal(15, 2)
+  commission_revenue        Decimal?  @default(0) @db.Decimal(15, 2)
+  refunds                   Decimal?  @default(0) @db.Decimal(15, 2)
+  net_revenue               Decimal?  @default(0) @db.Decimal(15, 2)
+  revenue_growth_percentage Decimal?  @db.Decimal(5, 2)
+  booking_growth_percentage Decimal?  @db.Decimal(5, 2)
+  total_bookings            Int?      @default(0)
+  average_booking_value     Decimal?  @db.Decimal(10, 2)
+  created_at                DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@unique([year, month])
+}
+
+model notification_preferences {
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id           String            @db.Uuid
+  notification_type notification_type
+  push_enabled      Boolean?          @default(true)
+  email_enabled     Boolean?          @default(true)
+  sms_enabled       Boolean?          @default(false)
+  quiet_hours_start DateTime?         @db.Time(6)
+  quiet_hours_end   DateTime?         @db.Time(6)
+  created_at        DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
+  users             User              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([user_id, notification_type])
+  @@index([user_id], map: "idx_notification_preferences_user")
+}
+
+model notification_requests {
+  id                                              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  requester_id                                    String            @db.Uuid
+  merchant_id                                     String?           @db.Uuid
+  organizer_id                                    String?           @db.Uuid
+  title                                           String            @db.VarChar(255)
+  body                                            String
+  image_id                                        String?           @db.Uuid
+  action_url                                      String?           @db.VarChar(500)
+  target_type                                     String            @db.VarChar(50)
+  target_segment                                  Json?
+  estimated_reach                                 Int?
+  scheduled_at                                    DateTime?         @db.Timestamptz(6)
+  expires_at                                      DateTime?         @db.Timestamptz(6)
+  status                                          approval_status?  @default(pending)
+  reviewed_by                                     String?           @db.Uuid
+  reviewed_at                                     DateTime?         @db.Timestamptz(6)
+  rejection_reason                                String?
+  revision_notes                                  String?
+  sent_at                                         DateTime?         @db.Timestamptz(6)
+  delivered_count                                 Int?              @default(0)
+  opened_count                                    Int?              @default(0)
+  created_at                                      DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at                                      DateTime?         @default(now()) @db.Timestamptz(6)
+  media                                           Media?            @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merchant_profiles                               MerchantProfile?  @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  organizer_profiles                              OrganizerProfile? @relation(fields: [organizer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_notification_requests_requester_idTousers User              @relation("notification_requests_requester_idTousers", fields: [requester_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_notification_requests_reviewed_byTousers  User?             @relation("notification_requests_reviewed_byTousers", fields: [reviewed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([requester_id], map: "idx_notification_requests_requester")
+  @@index([status], map: "idx_notification_requests_status")
+}
+
+model notification_templates {
+  id                      String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code                    String                    @unique @db.VarChar(100)
+  name                    String                    @db.VarChar(255)
+  description             String?
+  type                    notification_type
+  title_template          String                    @db.VarChar(255)
+  body_template           String
+  email_subject_template  String?                   @db.VarChar(255)
+  email_body_template     String?
+  sms_template            String?                   @db.VarChar(500)
+  send_push               Boolean?                  @default(true)
+  send_email              Boolean?                  @default(false)
+  send_sms                Boolean?                  @default(false)
+  is_active               Boolean?                  @default(true)
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  notifications           Notification[]
+  scheduled_notifications scheduled_notifications[]
+}
+
+model password_reset_tokens {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String    @db.Uuid
+  token      String    @unique @db.VarChar(255)
+  expires_at DateTime  @db.Timestamptz(6)
+  used_at    DateTime? @db.Timestamptz(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  users      User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payouts {
+  id                String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  merchant_id       String          @db.Uuid
+  payout_number     String          @unique @db.VarChar(50)
+  gross_amount      Decimal         @db.Decimal(12, 2)
+  commission_amount Decimal         @db.Decimal(10, 2)
+  net_amount        Decimal         @db.Decimal(12, 2)
+  currency          String?         @default("RWF") @db.VarChar(3)
+  period_start      DateTime        @db.Date
+  period_end        DateTime        @db.Date
+  status            payment_status? @default(pending)
+  payment_method    String?         @db.VarChar(50)
+  payment_reference String?         @db.VarChar(255)
+  paid_at           DateTime?       @db.Timestamptz(6)
+  booking_ids       String[]        @db.Uuid
+  booking_count     Int?
+  notes             String?
+  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  merchant_profiles MerchantProfile @relation(fields: [merchant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model platform_daily_stats {
+  id                     String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  date                   DateTime  @unique @db.Date
+  new_users              Int?      @default(0)
+  active_users           Int?      @default(0)
+  returning_users        Int?      @default(0)
+  new_merchants          Int?      @default(0)
+  pending_merchants      Int?      @default(0)
+  approved_merchants     Int?      @default(0)
+  new_events             Int?      @default(0)
+  pending_events         Int?      @default(0)
+  published_events       Int?      @default(0)
+  total_bookings         Int?      @default(0)
+  completed_bookings     Int?      @default(0)
+  cancelled_bookings     Int?      @default(0)
+  gross_revenue          Decimal?  @default(0) @db.Decimal(15, 2)
+  commission_revenue     Decimal?  @default(0) @db.Decimal(15, 2)
+  refunds                Decimal?  @default(0) @db.Decimal(15, 2)
+  total_transactions     Int?      @default(0)
+  zoea_card_transactions Int?      @default(0)
+  momo_transactions      Int?      @default(0)
+  total_views            Int?      @default(0)
+  total_searches         Int?      @default(0)
+  total_reviews          Int?      @default(0)
+  created_at             DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model profile_views {
+  id                                         String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  profile_user_id                            String                    @db.Uuid
+  viewer_user_id                             String?                   @db.Uuid
+  session_id                                 String?                   @db.VarChar(100)
+  source                                     String?                   @db.VarChar(50)
+  referrer_type                              content_type?
+  referrer_id                                String?                   @db.Uuid
+  device_type                                String?                   @db.VarChar(20)
+  ip_address                                 String?                   @db.Inet
+  location                                   Unsupported("geography")?
+  city_id                                    String?                   @db.Uuid
+  country_id                                 String?                   @db.Uuid
+  created_at                                 DateTime?                 @default(now()) @db.Timestamptz(6)
+  cities                                     City?                     @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  countries                                  Country?                  @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_profile_views_profile_user_idTousers User                      @relation("profile_views_profile_user_idTousers", fields: [profile_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_profile_views_viewer_user_idTousers  User?                     @relation("profile_views_viewer_user_idTousers", fields: [viewer_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_profile_views_created")
+  @@index([profile_user_id], map: "idx_profile_views_profile")
+  @@index([viewer_user_id], map: "idx_profile_views_viewer")
+}
+
+model promotion_uses {
+  id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  promotion_id    String    @db.Uuid
+  user_id         String    @db.Uuid
+  booking_id      String?   @db.Uuid
+  discount_amount Decimal   @db.Decimal(10, 2)
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+  bookings        Booking?  @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  promotions      Promotion @relation(fields: [promotion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model referral_codes {
+  id                   String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id              String      @unique @db.Uuid
+  code                 String      @unique @db.VarChar(20)
+  total_referrals      Int?        @default(0)
+  successful_referrals Int?        @default(0)
+  total_earnings       Decimal?    @default(0) @db.Decimal(12, 2)
+  is_active            Boolean?    @default(true)
+  created_at           DateTime?   @default(now()) @db.Timestamptz(6)
+  users                User        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referrals            referrals[]
+}
+
+model referral_rewards {
+  id          String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  referral_id String                  @db.Uuid
+  user_id     String                  @db.Uuid
+  reward_type String                  @db.VarChar(50)
+  amount      Decimal                 @db.Decimal(10, 2)
+  currency    String?                 @default("RWF") @db.VarChar(3)
+  status      referral_reward_status? @default(pending)
+  credited_at DateTime?               @db.Timestamptz(6)
+  expires_at  DateTime?               @db.Timestamptz(6)
+  created_at  DateTime?               @default(now()) @db.Timestamptz(6)
+  referrals   referrals               @relation(fields: [referral_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       User                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model referrals {
+  id                                 String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  referrer_id                        String             @db.Uuid
+  referred_id                        String             @unique @db.Uuid
+  referral_code_id                   String             @db.Uuid
+  is_successful                      Boolean?           @default(false)
+  qualified_at                       DateTime?          @db.Timestamptz(6)
+  created_at                         DateTime?          @default(now()) @db.Timestamptz(6)
+  referral_rewards                   referral_rewards[]
+  referral_codes                     referral_codes     @relation(fields: [referral_code_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_referrals_referred_idTousers User               @relation("referrals_referred_idTousers", fields: [referred_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_referrals_referrer_idTousers User               @relation("referrals_referrer_idTousers", fields: [referrer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reservation_date_overrides {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  listing_id   String   @db.Uuid
+  date         DateTime @db.Date
+  is_closed    Boolean? @default(false)
+  custom_slots Json?
+  notes        String?
+  listings     Listing  @relation(fields: [listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([listing_id, date])
+}
+
+model reservation_time_slots {
+  id               String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  listing_id       String      @db.Uuid
+  day_of_week      day_of_week
+  start_time       DateTime    @db.Time(6)
+  end_time         DateTime    @db.Time(6)
+  slot_duration    Int?        @default(90)
+  max_reservations Int?
+  is_active        Boolean?    @default(true)
+  bookings         Booking[]
+  listings         Listing     @relation(fields: [listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([listing_id, day_of_week, start_time])
+}
+
+model review_votes {
+  user_id    String    @db.Uuid
+  review_id  String    @db.Uuid
+  is_helpful Boolean
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  reviews    Review    @relation(fields: [review_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, review_id])
+}
+
+model scheduled_notifications {
+  id                                              String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  template_id                                     String?                 @db.Uuid
+  user_id                                         String?                 @db.Uuid
+  user_segment                                    Json?
+  title                                           String?                 @db.VarChar(255)
+  body                                            String?
+  scheduled_at                                    DateTime                @db.Timestamptz(6)
+  timezone                                        String?                 @default("Africa/Kigali") @db.VarChar(50)
+  is_recurring                                    Boolean?                @default(false)
+  recurrence_rule                                 String?                 @db.VarChar(100)
+  recurrence_end                                  DateTime?               @db.Timestamptz(6)
+  event_id                                        String?                 @db.Uuid
+  booking_id                                      String?                 @db.Uuid
+  promotion_id                                    String?                 @db.Uuid
+  status                                          String?                 @default("pending") @db.VarChar(20)
+  sent_at                                         DateTime?               @db.Timestamptz(6)
+  error_message                                   String?
+  recipients_count                                Int?                    @default(0)
+  delivered_count                                 Int?                    @default(0)
+  opened_count                                    Int?                    @default(0)
+  clicked_count                                   Int?                    @default(0)
+  created_by                                      String?                 @db.Uuid
+  created_at                                      DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at                                      DateTime?               @default(now()) @db.Timestamptz(6)
+  notifications                                   Notification[]
+  bookings                                        Booking?                @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_scheduled_notifications_created_byTousers User?                   @relation("scheduled_notifications_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events                                          Event?                  @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  promotions                                      Promotion?              @relation(fields: [promotion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notification_templates                          notification_templates? @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_scheduled_notifications_user_idTousers    User?                   @relation("scheduled_notifications_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([status], map: "idx_scheduled_notifications_status")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model search_analytics {
+  id                  String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id             String?                   @db.Uuid
+  session_id          String?                   @db.VarChar(100)
+  query               String
+  filters             Json?
+  result_count        Int?
+  clicked_result_id   String?                   @db.Uuid
+  clicked_result_type content_type?
+  clicked_position    Int?
+  source              String?                   @db.VarChar(50)
+  location            Unsupported("geography")?
+  created_at          DateTime?                 @default(now()) @db.Timestamptz(6)
+  users               User?                     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_search_analytics_created")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
+model subscription_invoices {
+  id                String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  subscription_id   String?         @db.Uuid
+  user_id           String?         @db.Uuid
+  invoice_number    String?         @unique @db.VarChar(50)
+  amount            Decimal?        @db.Decimal(10, 2)
+  currency          String?         @default("RWF") @db.VarChar(3)
+  tax_amount        Decimal?        @default(0) @db.Decimal(10, 2)
+  total_amount      Decimal?        @db.Decimal(10, 2)
+  status            payment_status? @default(pending)
+  paid_at           DateTime?       @db.Timestamptz(6)
+  payment_method    payment_method?
+  payment_reference String?         @db.VarChar(255)
+  period_start      DateTime?       @db.Timestamptz(6)
+  period_end        DateTime?       @db.Timestamptz(6)
+  due_date          DateTime?       @db.Date
+  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  subscriptions     subscriptions?  @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users             User?           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model subscription_plans {
+  id               String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String?                @db.VarChar(100)
+  slug             String?                @unique @db.VarChar(100)
+  description      String?
+  price            Decimal?               @db.Decimal(10, 2)
+  currency         String?                @default("RWF") @db.VarChar(3)
+  interval         subscription_interval?
+  trial_days       Int?                   @default(0)
+  features         Json?                  @default("{}")
+  applicable_roles user_role[]
+  is_active        Boolean?               @default(true)
+  sort_order       Int?                   @default(0)
+  created_at       DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?              @default(now()) @db.Timestamptz(6)
+  subscriptions    subscriptions[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model subscriptions {
+  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id               String?                 @db.Uuid
+  plan_id               String?                 @db.Uuid
+  status                subscription_status?    @default(active)
+  current_period_start  DateTime?               @db.Timestamptz(6)
+  current_period_end    DateTime?               @db.Timestamptz(6)
+  trial_end             DateTime?               @db.Timestamptz(6)
+  payment_method        payment_method?
+  payment_reference     String?                 @db.VarChar(255)
+  cancelled_at          DateTime?               @db.Timestamptz(6)
+  cancel_reason         String?
+  created_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  subscription_invoices subscription_invoices[]
+  subscription_plans    subscription_plans?     @relation(fields: [plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                 User?                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model support_messages {
+  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  ticket_id       String          @db.Uuid
+  sender_id       String          @db.Uuid
+  message         String
+  attachments     String[]        @db.Uuid
+  is_internal     Boolean?        @default(false)
+  is_read         Boolean?        @default(false)
+  created_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  users           User            @relation(fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  support_tickets support_tickets @relation(fields: [ticket_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model support_tickets {
+  id                                       String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                                  String             @db.Uuid
+  ticket_number                            String             @unique @db.VarChar(20)
+  subject                                  String             @db.VarChar(255)
+  category                                 String?            @db.VarChar(50)
+  priority                                 String?            @default("normal") @db.VarChar(20)
+  status                                   String?            @default("open") @db.VarChar(20)
+  assigned_to                              String?            @db.Uuid
+  created_at                               DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at                               DateTime?          @default(now()) @db.Timestamptz(6)
+  resolved_at                              DateTime?          @db.Timestamptz(6)
+  closed_at                                DateTime?          @db.Timestamptz(6)
+  support_messages                         support_messages[]
+  users_support_tickets_assigned_toTousers User?              @relation("support_tickets_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_support_tickets_user_idTousers     User               @relation("support_tickets_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([assigned_to], map: "idx_support_tickets_assigned")
+  @@index([status], map: "idx_support_tickets_status")
+  @@index([user_id], map: "idx_support_tickets_user")
+}
+
+model timezones {
+  id                 String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name               String    @unique @db.VarChar(100)
+  abbreviation       String?   @db.VarChar(10)
+  utc_offset         String    @db.VarChar(10)
+  utc_offset_minutes Int
+  has_dst            Boolean?  @default(false)
+  dst_offset_minutes Int?
+  is_active          Boolean?  @default(true)
+  created_at         DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model trending_content {
+  id               String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content_type     content_type
+  content_id       String       @db.Uuid
+  rank             Int
+  score            Decimal      @db.Decimal(10, 2)
+  views_24h        Int?         @default(0)
+  views_7d         Int?         @default(0)
+  bookings_24h     Int?         @default(0)
+  bookings_7d      Int?         @default(0)
+  engagement_score Decimal?     @default(0) @db.Decimal(10, 2)
+  category         String?      @db.VarChar(50)
+  city             String?      @db.VarChar(100)
+  period           String       @db.VarChar(20)
+  created_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  expires_at       DateTime     @db.Timestamptz(6)
+
+  @@unique([content_type, content_id, period, category, city])
+  @@index([content_type, period, rank], map: "idx_trending_content_rank")
+}
+
+model user_activity_summary {
+  id                      String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                 String    @unique @db.Uuid
+  interests               Json?
+  total_views             Int?      @default(0)
+  total_bookings          Int?      @default(0)
+  total_spent             Decimal?  @default(0) @db.Decimal(15, 2)
+  total_reviews           Int?      @default(0)
+  favorite_categories     String[]
+  favorite_locations      String[]
+  last_active_at          DateTime? @db.Timestamptz(6)
+  avg_session_duration    Int?
+  first_booking_at        DateTime? @db.Timestamptz(6)
+  last_booking_at         DateTime? @db.Timestamptz(6)
+  days_since_last_booking Int?
+  created_at              DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
+  users                   User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_content_preferences {
+  id                    String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id               String    @unique @db.Uuid
+  selected_countries    String[]  @db.Uuid
+  selected_cities       String[]  @db.Uuid
+  show_current_location Boolean?  @default(true)
+  show_selected_only    Boolean?  @default(false)
+  show_events           Boolean?  @default(true)
+  show_listings         Boolean?  @default(true)
+  show_tours            Boolean?  @default(true)
+  show_promotions       Boolean?  @default(true)
+  preferred_categories  String[]  @db.Uuid
+  hidden_categories     String[]  @db.Uuid
+  min_price             Decimal?  @db.Decimal(10, 2)
+  max_price             Decimal?  @db.Decimal(10, 2)
+  preferred_price_range String?   @db.VarChar(20)
+  created_at            DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime? @default(now()) @db.Timestamptz(6)
+  users                 User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_user_content_preferences_user")
+}
+
+model user_documents {
+  id                                      String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id                                 String           @db.Uuid
+  document_type                           document_type
+  document_number                         String?          @db.VarChar(100)
+  media_id                                String?          @db.Uuid
+  status                                  document_status? @default(pending)
+  reviewed_by                             String?          @db.Uuid
+  reviewed_at                             DateTime?        @db.Timestamptz(6)
+  rejection_reason                        String?
+  expires_at                              DateTime?        @db.Date
+  created_at                              DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at                              DateTime?        @default(now()) @db.Timestamptz(6)
+  media                                   Media?           @relation(fields: [media_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_user_documents_reviewed_byTousers User?            @relation("user_documents_reviewed_byTousers", fields: [reviewed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_user_documents_user_idTousers     User             @relation("user_documents_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_follows {
+  follower_id                            String    @db.Uuid
+  following_id                           String    @db.Uuid
+  created_at                             DateTime? @default(now()) @db.Timestamptz(6)
+  users_user_follows_follower_idTousers  User      @relation("user_follows_follower_idTousers", fields: [follower_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_user_follows_following_idTousers User      @relation("user_follows_following_idTousers", fields: [following_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([follower_id, following_id])
+}
+
+model user_locations {
+  id         String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String                   @db.Uuid
+  location   Unsupported("geography")
+  accuracy   Decimal?                 @db.Decimal(10, 2)
+  created_at DateTime?                @default(now()) @db.Timestamptz(6)
+  users      User                     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([location], map: "idx_user_locations_location", type: Gist)
+  @@index([user_id], map: "idx_user_locations_user")
+}
+
+model user_payment_methods {
+  id                  String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id             String         @db.Uuid
+  type                payment_method
+  card_last_four      String?        @db.VarChar(4)
+  card_brand          String?        @db.VarChar(20)
+  card_expiry_month   Int?
+  card_expiry_year    Int?
+  card_token          String?        @db.VarChar(255)
+  momo_number         String?        @db.VarChar(20)
+  momo_provider       String?        @db.VarChar(50)
+  bank_name           String?        @db.VarChar(100)
+  bank_account_number String?        @db.VarChar(50)
+  is_default          Boolean?       @default(false)
+  is_verified         Boolean?       @default(false)
+  created_at          DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?      @default(now()) @db.Timestamptz(6)
+  users               User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_user_payment_methods_user")
+}
+
+model weather_cache {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  city        String    @db.VarChar(100)
+  country     String    @db.VarChar(100)
+  temperature Decimal?  @db.Decimal(5, 2)
+  condition   String?   @db.VarChar(50)
+  icon        String?   @db.VarChar(50)
+  humidity    Int?
+  wind_speed  Decimal?  @db.Decimal(5, 2)
+  forecast    Json?
+  fetched_at  DateTime? @default(now()) @db.Timestamptz(6)
+  expires_at  DateTime  @db.Timestamptz(6)
+
+  @@unique([city, country])
+}
+
+enum user_role {
+  explorer
+  merchant
+  event_organizer
+  tour_operator
+  admin
+  super_admin
+}
+
+enum account_type {
+  personal
+  business
+  creator
+}
+
+enum verification_status {
+  unverified
+  pending
+  verified
+  rejected
+}
+
+enum approval_status {
+  pending
+  approved
+  rejected
+  revision_requested
+}
+
+enum booking_type {
+  hotel
+  restaurant
+  tour
+  event
+  experience
+}
+
+enum booking_status {
+  pending
+  confirmed
+  checked_in
+  completed
+  cancelled
+  no_show
+  refunded
+}
+
+enum payment_method {
+  zoea_card
+  momo
+  bank_transfer
+  cash
+  card
+}
+
+enum payment_status {
+  pending
+  processing
+  completed
+  failed
+  refunded
+  partially_refunded
+}
+
+enum listing_type {
+  hotel
+  restaurant
+  tour
+  event
+  attraction
+  bar
+  club
+  lounge
+  cafe
+  fast_food
+  mall
+  market
+  boutique
+}
+
+enum listing_status {
+  draft
+  pending_review
+  active
+  inactive
+  suspended
+}
+
+enum price_unit {
+  per_night
+  per_person
+  per_meal
+  per_tour
+  per_event
+  per_hour
+  per_table
+}
+
+enum event_status {
+  draft
+  pending_review
+  published
+  ongoing
+  completed
+  cancelled
+  suspended
+}
+
+enum event_privacy {
+  public
+  private
+  invite_only
+}
+
+enum event_setup {
+  in_person
+  virtual
+  hybrid
+}
+
+enum ticket_type {
+  free
+  paid
+  donation
+  vip
+  early_bird
+}
+
+enum tour_status {
+  draft
+  pending_review
+  active
+  inactive
+  suspended
+}
+
+enum review_status {
+  pending
+  approved
+  rejected
+  flagged
+}
+
+enum notification_type {
+  booking
+  payment
+  event
+  promotion
+  system
+  social
+}
+
+enum media_type {
+  image
+  video
+  document
+  audio
+}
+
+enum room_status {
+  available
+  occupied
+  maintenance
+  blocked
+}
+
+enum table_status {
+  available
+  reserved
+  occupied
+  unavailable
+}
+
+enum card_status {
+  active
+  inactive
+  suspended
+  blocked
+}
+
+enum transaction_type {
+  deposit
+  withdrawal
+  payment
+  refund
+  commission
+  bonus
+  payout
+  subscription
+}
+
+enum transaction_status {
+  pending
+  completed
+  failed
+  cancelled
+}
+
+enum content_type {
+  event
+  listing
+  notification
+  review
+  promotion
+  merchant
+  organizer
+  tour_operator
+}
+
+enum day_of_week {
+  monday
+  tuesday
+  wednesday
+  thursday
+  friday
+  saturday
+  sunday
+}
+
+enum document_status {
+  pending
+  approved
+  rejected
+}
+
+enum document_type {
+  id_card
+  passport
+  business_license
+  tax_certificate
+  bank_statement
+}
+
+enum referral_reward_status {
+  pending
+  credited
+  expired
+  cancelled
+}
+
+enum subscription_interval {
+  monthly
+  quarterly
+  yearly
+}
+
+enum subscription_status {
+  active
+  past_due
+  cancelled
+  paused
+  trial
+}
+
+enum ticket_order_type {
+  first_come
+  lottery
+  approval
+}
+
+enum ticket_status {
+  available
+  sold_out
+  expired
+  disabled
+}
