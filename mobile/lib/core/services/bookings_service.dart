@@ -395,7 +395,7 @@ class BookingsService {
         data: data,
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data as Map<String, dynamic>;
       } else {
         throw Exception('Failed to cancel booking: ${response.statusMessage}');
