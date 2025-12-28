@@ -1083,53 +1083,165 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   }
 
   void _showSortBottomSheet() {
+    // Local state for bottom sheet
+    String? tempSortBy = _sortBy;
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.6,
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sort ${_categoryName ?? widget.category}',
-                style: AppTheme.headlineSmall.copyWith(
-                  fontWeight: FontWeight.w600,
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Sort ${_categoryName ?? widget.category}',
+                      style: AppTheme.headlineSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              _buildSortOption('Popular', true),
-              _buildSortOption('Rating (High to Low)', false),
-              _buildSortOption('Rating (Low to High)', false),
-              _buildSortOption('Name (A to Z)', false),
-              _buildSortOption('Name (Z to A)', false),
-            ],
+                const SizedBox(height: 20),
+                
+                // Sort Options
+                _buildSortOption('Popular', 'popular', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Rating (High to Low)', 'rating_desc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Rating (Low to High)', 'rating_asc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Price (Low to High)', 'price_asc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Price (High to Low)', 'price_desc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Name (A to Z)', 'name_asc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Name (Z to A)', 'name_desc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Newest First', 'createdAt_desc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                _buildSortOption('Oldest First', 'createdAt_asc', tempSortBy, (value) {
+                  setModalState(() {
+                    tempSortBy = tempSortBy == value ? null : value;
+                  });
+                }),
+                
+                // Action buttons
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setModalState(() {
+                            tempSortBy = null;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppTheme.primaryColor,
+                          side: const BorderSide(color: AppTheme.primaryColor),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text('Clear'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _sortBy = tempSortBy;
+                            _currentPage = 1; // Reset to first page
+                          });
+                          Navigator.pop(context);
+                          // Invalidate provider to refresh with new sort
+                          ref.invalidate(
+                            listingsProvider(
+                              ListingsParams(
+                                page: 1,
+                                limit: _pageSize,
+                                category: _categoryId,
+                                rating: _minRating,
+                                minPrice: _minPrice,
+                                maxPrice: _maxPrice,
+                                isFeatured: _isFeatured,
+                                sortBy: _sortBy,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text('Apply Sort'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
-
-  Widget _buildSortOption(String label, bool isSelected) {
+  
+  Widget _buildSortOption(String label, String value, String? selectedValue, Function(String) onSelected) {
+    final isSelected = selectedValue == value;
     return ListTile(
       title: Text(
         label,
         style: AppTheme.bodyMedium,
       ),
       trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
-      onTap: () {
-        Navigator.pop(context);
-        // Handle sort selection
-      },
+      onTap: () => onSelected(value),
+      selected: isSelected,
+      selectedTileColor: AppTheme.primaryColor.withOpacity(0.1),
     );
   }
 
