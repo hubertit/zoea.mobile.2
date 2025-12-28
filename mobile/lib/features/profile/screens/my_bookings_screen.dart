@@ -842,9 +842,20 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     final bookingId = booking['id'] as String? ?? 'N/A';
     final bookingNumber = booking['bookingNumber'] as String?;
     final status = booking['status'] as String? ?? 'pending';
-    final totalAmount = (booking['totalAmount'] as num?)?.toDouble() ?? 0.0;
+    // Handle both string and number types from API
+    final totalAmountValue = booking['totalAmount'];
+    final totalAmount = totalAmountValue is num
+        ? totalAmountValue.toDouble()
+        : totalAmountValue is String
+            ? double.tryParse(totalAmountValue) ?? 0.0
+            : 0.0;
     final currency = booking['currency'] as String? ?? 'RWF';
-    final guestCount = booking['guestCount'] as int? ?? 1;
+    final guestCountValue = booking['guestCount'];
+    final guestCount = guestCountValue is int
+        ? guestCountValue
+        : guestCountValue is String
+            ? int.tryParse(guestCountValue) ?? 1
+            : 1;
 
     // Get name based on booking type
     String name = 'Unknown';
