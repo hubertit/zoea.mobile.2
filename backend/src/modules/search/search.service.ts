@@ -17,12 +17,14 @@ export class SearchService {
     const { query, type, cityId, countryId, page = 1, limit = 20, userId } = params;
     const skip = (page - 1) * limit;
 
-    // Save search history
-    if (userId || query.length > 2) {
+    // Save search history for all searches (logged-in or anonymous)
+    // For anonymous users: save query and timestamp (userId will be null)
+    // For logged-in users: save query, timestamp, and userId
+    if (query && query.trim().length > 0) {
       await this.prisma.searchHistory.create({
         data: {
-          userId,
-          query,
+          userId: userId || null, // null for anonymous users
+          query: query.trim(),
           filters: { type, cityId, countryId },
         },
       });

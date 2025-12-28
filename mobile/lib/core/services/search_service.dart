@@ -8,7 +8,8 @@ class SearchService {
   }
 
   /// Global search - searches across listings, events, and tours
-  /// Automatically saves search history if user is logged in
+  /// Works for both logged-in and anonymous users
+  /// Automatically saves search history (with userId if logged in, without userId if anonymous)
   /// Returns: {listings: [...], events: [...], tours: [...]}
   Future<Map<String, dynamic>> search({
     required String query,
