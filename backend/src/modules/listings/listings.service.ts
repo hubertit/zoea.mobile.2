@@ -156,6 +156,38 @@ export class ListingsService {
     return listings;
   }
 
+  async getRandom(limit = 10) {
+    // Get random listings using PostgreSQL's random() function
+    const listings = await this.prisma.$queryRaw`
+      SELECT l.*
+      FROM listings l
+      WHERE l.status = 'active' 
+        AND l.deleted_at IS NULL
+      ORDER BY RANDOM()
+      LIMIT ${limit}
+    `;
+    
+    // Fetch full details with relations for each listing
+    const listingIds = (listings as any[]).map((l: any) => l.id);
+    
+    if (listingIds.length === 0) {
+      return [];
+    }
+    
+    return this.prisma.listing.findMany({
+      where: {
+        id: { in: listingIds },
+        status: 'active',
+        deletedAt: null,
+      },
+      include: {
+        category: { select: { id: true, name: true, icon: true } },
+        city: { select: { id: true, name: true } },
+        images: { include: { media: true }, take: 1, where: { isPrimary: true } },
+      },
+    });
+  }
+
   // ============ MERCHANT LISTING MANAGEMENT ============
   async getMyListings(merchantId: string, params: { page?: number; limit?: number; status?: string }) {
     return this.findAll({ ...params, merchantId });

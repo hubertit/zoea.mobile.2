@@ -2081,17 +2081,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildNearMeSection() {
     return Consumer(
       builder: (context, ref, child) {
-        // Use default Kigali coordinates for nearby listings
-        final nearbyAsync = ref.watch(
-          nearbyListingsProvider(
-            const NearbyListingsParams(
-              latitude: AppConfig.defaultMapLatitude,
-              longitude: AppConfig.defaultMapLongitude,
-              radiusKm: 10.0,
-              limit: 5,
-            ),
-          ),
-        );
+        // Use random listings for now until geolocation is implemented
+        final nearbyAsync = ref.watch(randomListingsProvider(10));
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2127,7 +2118,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        'No nearby listings',
+                        'No listings available',
                         style: AppTheme.bodyMedium.copyWith(
                           color: AppTheme.secondaryTextColor,
                         ),
@@ -2156,7 +2147,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    'Failed to load nearby listings',
+                    'Failed to load listings',
                     style: AppTheme.bodySmall.copyWith(
                       color: AppTheme.errorColor,
                     ),

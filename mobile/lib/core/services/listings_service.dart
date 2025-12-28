@@ -165,6 +165,50 @@ class ListingsService {
     }
   }
 
+  /// Get random listings (for Near Me section until geolocation is implemented)
+  Future<List<Map<String, dynamic>>> getRandomListings({int limit = 10}) async {
+    try {
+      final response = await _dio.get(
+        '${AppConfig.listingsEndpoint}/random',
+        queryParameters: {'limit': limit},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is List) {
+          return List<Map<String, dynamic>>.from(data);
+        } else if (data is Map && data['data'] != null) {
+          return List<Map<String, dynamic>>.from(data['data']);
+        }
+        return [];
+      } else {
+        throw Exception('Failed to fetch random listings: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      String errorMessage = 'Failed to fetch random listings.';
+      
+      if (e.response != null) {
+        final statusCode = e.response!.statusCode;
+        final message = e.response!.data?['message'] ?? e.response!.statusMessage;
+        
+        if (statusCode == 401) {
+          errorMessage = 'Unauthorized. Please login again.';
+        } else {
+          errorMessage = message ?? errorMessage;
+        }
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+                 e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Connection timeout. Please check your internet connection.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'No internet connection. Please check your network.';
+      }
+      
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('Error fetching random listings: $e');
+    }
+  }
+
   /// Get listings by type
   Future<Map<String, dynamic>> getListingsByType({
     required String type,

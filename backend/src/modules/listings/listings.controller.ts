@@ -65,6 +65,13 @@ export class ListingsController {
     return this.listingsService.getNearby(+latitude, +longitude, radius ? +radius : 10, limit ? +limit : 20);
   }
 
+  @Get('random')
+  @ApiOperation({ summary: 'Get random listings (for Near Me section until geolocation is implemented)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  async getRandom(@Query('limit') limit?: string) {
+    return this.listingsService.getRandom(limit ? +limit : 10);
+  }
+
   @Get('type/:type')
   @ApiOperation({ summary: 'Get listings by type' })
   @ApiParam({ name: 'type', enum: ['hotel', 'restaurant', 'attraction', 'activity', 'rental', 'nightlife', 'spa'] })

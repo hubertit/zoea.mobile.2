@@ -127,6 +127,12 @@ final nearbyListingsProvider = FutureProvider.family<List<Map<String, dynamic>>,
   );
 });
 
+/// Provider for random listings (for Near Me section until geolocation is implemented)
+final randomListingsProvider = FutureProvider.family<List<Map<String, dynamic>>, int>((ref, limit) async {
+  final listingsService = ref.watch(listingsServiceProvider);
+  return await listingsService.getRandomListings(limit: limit);
+});
+
 /// Parameters for listings by type query
 class ListingsByTypeParams {
   final String type;
