@@ -1,43 +1,40 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
+# Monorepo root ignores
 .DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
+*.log
+*.swp
+*.swo
+*~
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
+# IntelliJ IDEA - Allow project structure, ignore user-specific
 .idea/
+!.idea/modules.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+!.idea/.gitignore
+!.idea/runConfigurations.xml
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/libraries/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code
+.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
+# Build outputs
+dist/
+build/
+.next/
+coverage/
+.nyc_output/
+*.tsbuildinfo
 
-# Symbolication related
-app.*.symbols
+# Dependencies (each subdirectory has its own)
+node_modules/
 
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Each subdirectory maintains its own .gitignore
+# This is just for the root level

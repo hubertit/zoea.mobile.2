@@ -1,16 +1,97 @@
-# zoea2
+# Zoea Project
 
-Discover Rwanda Like Never Before
+This is the main Zoea project directory containing all related applications and services.
 
-## Getting Started
+## Structure
 
-This project is a starting point for a Flutter application.
+```
+zoea2/
+├── mobile/          # Consumer mobile app (Flutter)
+│   ├── lib/         # Flutter source code
+│   ├── android/     # Android platform files
+│   ├── ios/         # iOS platform files
+│   ├── pubspec.yaml # Flutter dependencies
+│   └── .git/        # Git repository
+├── merchant-mobile/  # Merchant mobile app (Flutter)
+│   ├── lib/         # Flutter source code
+│   ├── android/     # Android platform files
+│   ├── ios/         # iOS platform files
+│   ├── pubspec.yaml # Flutter dependencies
+│   └── .git/        # Git repository
+├── backend/         # NestJS backend API
+│   ├── src/         # Source code
+│   ├── prisma/      # Database schema
+│   └── .git/        # Git repository
+├── admin/           # Admin and partners dashboard (Next.js)
+│   ├── src/         # Source code
+│   └── .git/        # Git repository
+├── web/             # Consumer web app (Next.js)
+│   └── .git/        # Git repository (ready for remote)
+├── merchant-web/    # Merchant web portal (Next.js) - Future
+│   └── .git/        # Git repository (ready for remote)
+├── docs/            # Documentation
+├── scripts/         # Shared scripts
+├── migration/       # Database migration scripts
+└── database/        # Database schemas and dumps
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Git Repositories
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Each application maintains its own git repository:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **mobile/**: `https://github.com/hubertit/zoea.mobile.2.git`
+- **merchant-mobile/**: (preserved from original location)
+- **backend/**: `https://github.com/zoea-africa/zoea2-apis.git`
+- **admin/**: (to be configured)
+- **web/**: (to be configured)
+- **merchant-web/**: (to be configured)
+
+## Development
+
+### Consumer Mobile (Flutter)
+```bash
+cd mobile
+flutter pub get
+flutter run
+```
+
+### Merchant Mobile (Flutter)
+```bash
+cd merchant-mobile
+flutter pub get
+flutter run
+```
+
+### Backend (NestJS)
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+### Admin (Next.js)
+```bash
+cd admin
+npm install
+npm run dev
+```
+
+### Web (Public App)
+```bash
+cd web
+npm install
+npm run dev
+```
+
+## Deployment
+
+Deployment scripts remain in their respective directories:
+- Backend: `backend/sync-all-environments.sh` (uses relative paths)
+- Mobile: Standard Flutter deployment
+- Admin: Standard Next.js deployment
+
+## Location
+
+**Project Root**: `/Users/macbookpro/projects/flutter/zoea2`
+
+This is your main working directory. All development happens here.
