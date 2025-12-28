@@ -39,6 +39,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   double? _maxPrice;
   bool? _isFeatured;
   
+  // Sort state
+  String? _sortBy;
+  
   bool get _hasActiveFilters => _minRating != null || _minPrice != null || _maxPrice != null || _isFeatured != null;
 
   @override
@@ -251,6 +254,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           minPrice: _minPrice,
           maxPrice: _maxPrice,
           isFeatured: _isFeatured,
+          sortBy: _sortBy,
         ),
       ),
     );
@@ -302,6 +306,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   minPrice: _minPrice,
                   maxPrice: _maxPrice,
                   isFeatured: _isFeatured,
+                  sortBy: _sortBy,
                 ),
               ),
             );
@@ -320,7 +325,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           setState(() {
                             _currentPage++;
                           });
-                          // Invalidate to fetch next page with current filters
+                          // Invalidate to fetch next page with current filters and sort
                           ref.invalidate(
                             listingsProvider(
                               ListingsParams(
@@ -331,6 +336,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                                 minPrice: _minPrice,
                                 maxPrice: _maxPrice,
                                 isFeatured: _isFeatured,
+                                sortBy: _sortBy,
                               ),
                             ),
                           );

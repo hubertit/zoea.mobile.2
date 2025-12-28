@@ -4,8 +4,9 @@ import '../config/app_config.dart';
 class ListingsService {
   final Dio _dio = AppConfig.dioInstance();
 
-  /// Get all listings with filters
+  /// Get all listings with filters and sorting
   /// Returns paginated response: {data: [...], meta: {total, page, limit, totalPages}}
+  /// sortBy options: 'popular', 'rating_desc', 'rating_asc', 'name_asc', 'name_desc', 'price_asc', 'price_desc', 'createdAt_desc', 'createdAt_asc'
   Future<Map<String, dynamic>> getListings({
     int? page,
     int? limit,
@@ -32,7 +33,7 @@ class ListingsService {
       if (maxPrice != null) queryParams['maxPrice'] = maxPrice;
       if (rating != null) queryParams['rating'] = rating;
       if (isFeatured != null) queryParams['isFeatured'] = isFeatured;
-      if (sortBy != null) queryParams['sortBy'] = sortBy;
+      if (sortBy != null && sortBy.isNotEmpty) queryParams['sortBy'] = sortBy;
 
       final response = await _dio.get(
         AppConfig.listingsEndpoint,
