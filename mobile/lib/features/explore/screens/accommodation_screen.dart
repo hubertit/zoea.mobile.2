@@ -819,7 +819,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     
     final currency = listing['currency'] as String? ?? 'RWF';
     final priceDisplay = minPrice > 0
-        ? (maxPrice != null && maxPrice > minPrice 
+        ? (maxPrice > minPrice 
             ? '$currency ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}'
             : '$currency ${minPrice.toStringAsFixed(0)}')
         : 'Price not available';
