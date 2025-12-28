@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/listings_provider.dart';
 
-class BookingScreen extends ConsumerStatefulWidget {
+/// BookingScreen - Routes to appropriate booking screen based on listing type
+/// This is a router screen that detects the listing type and redirects accordingly
+class BookingScreen extends ConsumerWidget {
   final String listingId;
 
   const BookingScreen({
@@ -12,51 +16,108 @@ class BookingScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BookingScreen> createState() => _BookingScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listingAsync = ref.watch(listingByIdProvider(listingId));
 
-class _BookingScreenState extends ConsumerState<BookingScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Booking'),
+    return listingAsync.when(
+      data: (listing) {
+        final listingType = listing['type']?.toString().toLowerCase() ?? '';
+        
+        // Redirect based on listing type
+        if (listingType == 'restaurant') {
+          // Extract data for dining booking
+          final images = listing['images'] as List? ?? [];
+          final primaryImage = images.isNotEmpty && images[0]['media'] != null
+              ? images[0]['media']['url']
+              : null;
+          final name = listing['name'] ?? 'Restaurant';
+          final address = listing['address'] ?? '';
+          final city = listing['city'] as Map<String, dynamic>?;
+          final cityName = city?['name'] as String? ?? '';
+          final location = address.isNotEmpty 
+              ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+              : cityName.isNotEmpty ? cityName : 'Location not available';
+          final rating = listing['rating'] != null
+              ? (listing['rating'] is String
+                  ? double.tryParse(listing['rating'])
+                  : listing['rating']?.toDouble())
+              : 0.0;
+          final minPrice = listing['minPrice'];
+          final maxPrice = listing['maxPrice'];
+          final currency = listing['currency'] ?? 'RWF';
+          String priceRange = 'Price not available';
+          if (minPrice != null) {
+            final min = minPrice is String ? double.tryParse(minPrice) : minPrice?.toDouble();
+            final max = maxPrice != null 
+                ? (maxPrice is String ? double.tryParse(maxPrice) : maxPrice?.toDouble())
+                : null;
+            if (min != null) {
+              priceRange = max != null && max > min
+                  ? '$currency ${min.toStringAsFixed(0)} - ${max.toStringAsFixed(0)}'
+                  : '$currency ${min.toStringAsFixed(0)}';
+            }
+          }
+          
+          // Navigate to dining booking screen
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.pushReplacement('/dining-booking', extra: {
+              'placeId': listingId,
+              'placeName': name,
+              'placeLocation': location,
+              'placeImage': primaryImage ?? '',
+              'placeRating': rating ?? 0.0,
+              'priceRange': priceRange,
+            });
+          });
+        } else if (listingType == 'hotel') {
+          // Navigate to accommodation booking screen
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.pushReplacement('/accommodation/$listingId/book');
+          });
+        } else {
+          // Unsupported listing type - show error
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Booking is not available for this listing type'),
+                backgroundColor: AppTheme.errorColor,
+              ),
+            );
+          });
+        }
+        
+        // Show loading while redirecting
+        return Scaffold(
+          backgroundColor: AppTheme.backgroundColor,
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+      loading: () => Scaffold(
         backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.event,
-              size: 64,
-              color: AppTheme.primaryColor,
-            ),
-            SizedBox(height: AppTheme.spacing16),
-            Text(
-              'Booking',
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            SizedBox(height: AppTheme.spacing8),
-            Text(
-              'Listing ID: ${widget.listingId}',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.secondaryTextColor,
-              ),
-            ),
-            SizedBox(height: AppTheme.spacing8),
-            const Text(
-              'Booking form and payment integration will be implemented here',
-              style: const TextStyle(
-                color: AppTheme.secondaryTextColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        body: const Center(
+          child: CircularProgressIndicator(),
         ),
       ),
+      error: (error, stack) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load listing: ${error.toString()}'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        });
+        return Scaffold(
+          backgroundColor: AppTheme.backgroundColor,
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
   }
 }

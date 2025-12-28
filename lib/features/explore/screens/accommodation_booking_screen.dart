@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/bookings_service.dart';
+import '../../../core/services/token_storage_service.dart';
+import '../../../core/providers/listings_provider.dart';
 
 class AccommodationBookingScreen extends ConsumerStatefulWidget {
   final String accommodationId;
@@ -33,6 +36,10 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
   String _couponCode = '';
   double _discountAmount = 0.0;
   bool _isCouponApplied = false;
+  bool _isLoading = false;
+  String _specialRequests = '';
+  
+  final BookingsService _bookingsService = BookingsService();
 
   @override
   void initState() {
@@ -470,6 +477,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             borderRadius: BorderRadius.circular(8),
           ),
           child: TextField(
+            onChanged: (value) => setState(() => _specialRequests = value),
             maxLines: 3,
             decoration: InputDecoration(
               hintText: 'Any special requests or preferences...',
@@ -501,26 +509,36 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: _checkInDate != null && _checkOutDate != null
-              ? () {
-                  // Navigate to payment/confirmation
-                  context.push('/booking-confirmation/booking_123');
+          onPressed: (_checkInDate != null && _checkOutDate != null && !_isLoading)
+              ? () async {
+                  await _submitBooking();
                 }
               : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryColor,
+            backgroundColor: (_checkInDate != null && _checkOutDate != null && !_isLoading)
+                ? AppTheme.primaryColor
+                : Colors.grey[300],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
-          child: Text(
-            'Continue to Payment',
-            style: AppTheme.bodyMedium.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : Text(
+                  'Continue to Payment',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
         ),
       ),
     );
@@ -836,5 +854,124 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
   double _calculateTotalPrice() {
     // Mock calculation - in real app, this would calculate from selected rooms
     return 150000.0; // Example total price
+  }
+
+  Future<void> _submitBooking() async {
+    if (_checkInDate == null || _checkOutDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please select check-in and check-out dates'),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
+      return;
+    }
+
+    // Validate check-out is after check-in
+    if (_checkOutDate!.isBefore(_checkInDate!) || 
+        _checkOutDate!.isAtSameMomentAs(_checkInDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Check-out date must be after check-in date'),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get user info for guests array
+      final tokenStorage = await TokenStorageService.getInstance();
+      final user = await tokenStorage.getUserData();
+      
+      // Extract roomTypeId from selectedRooms if available
+      String? roomTypeId;
+      if (widget.selectedRooms != null && widget.selectedRooms!.isNotEmpty) {
+        // Get the first room type ID from selected rooms
+        final firstRoom = widget.selectedRooms!.entries.first;
+        final roomType = firstRoom.value['roomType'] as Map<String, dynamic>?;
+        roomTypeId = roomType?['id'] as String?;
+      }
+      
+      // If no roomTypeId from selectedRooms, fetch from listing
+      if (roomTypeId == null) {
+        try {
+          final listing = await ref.read(listingByIdProvider(widget.accommodationId).future);
+          final roomTypes = listing['roomTypes'] as List?;
+          if (roomTypes != null && roomTypes.isNotEmpty) {
+            // Get the first available room type
+            final firstRoomType = roomTypes.first as Map<String, dynamic>;
+            roomTypeId = firstRoomType['id'] as String?;
+          }
+        } catch (e) {
+          // If fetching listing fails, continue without roomTypeId
+          // The API will return an error which we'll handle below
+        }
+      }
+      
+      // Validate that we have a roomTypeId
+      if (roomTypeId == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Please select a room type to continue'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Build guests array from user info
+      final guests = <Map<String, dynamic>>[];
+      if (user != null) {
+        guests.add({
+          'fullName': user.fullName,
+          'email': user.email,
+          if (user.phoneNumber != null) 'phone': user.phoneNumber,
+          'isPrimary': true,
+        });
+      }
+
+      final booking = await _bookingsService.createHotelBooking(
+        listingId: widget.accommodationId,
+        checkInDate: _checkInDate!,
+        checkOutDate: _checkOutDate!,
+        roomTypeId: roomTypeId,
+        guestCount: _guestCount,
+        adults: _guestCount, // Default to guestCount if not specified
+        children: 0, // Default to 0
+        specialRequests: _specialRequests.isNotEmpty ? _specialRequests : null,
+        guests: guests.isNotEmpty ? guests : null,
+      );
+
+      if (mounted) {
+        // Navigate to confirmation screen with booking ID
+        context.push('/booking-confirmation/${booking['id'] as String}');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create booking: ${e.toString().replaceAll('Exception: ', '')}'),
+            backgroundColor: AppTheme.errorColor,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 }

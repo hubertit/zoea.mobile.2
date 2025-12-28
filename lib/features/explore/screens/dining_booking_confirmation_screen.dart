@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 
 class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
+  final String? bookingId;
+  final String? bookingNumber;
   final String placeName;
   final String placeLocation;
   final DateTime? date;
@@ -17,6 +19,8 @@ class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
 
   const DiningBookingConfirmationScreen({
     super.key,
+    this.bookingId,
+    this.bookingNumber,
     required this.placeName,
     required this.placeLocation,
     this.date,
@@ -96,11 +100,18 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildSuccessHeader() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.successColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.successColor.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -125,6 +136,24 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             ),
             textAlign: TextAlign.center,
           ),
+          if (widget.bookingNumber != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppTheme.backgroundColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppTheme.successColor.withOpacity(0.3)),
+              ),
+              child: Text(
+                'Booking #${widget.bookingNumber}',
+                style: AppTheme.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.successColor,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

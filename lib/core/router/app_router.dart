@@ -390,6 +390,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final confirmationData = state.extra as Map<String, dynamic>?;
           return DiningBookingConfirmationScreen(
+            bookingId: confirmationData?['bookingId'] as String?,
+            bookingNumber: confirmationData?['bookingNumber'] as String?,
             placeName: confirmationData?['placeName'] ?? '',
             placeLocation: confirmationData?['placeLocation'] ?? '',
             date: confirmationData?['date'] as DateTime?,

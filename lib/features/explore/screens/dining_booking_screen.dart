@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/bookings_service.dart';
+import '../../../core/providers/auth_provider.dart';
 
 class DiningBookingScreen extends ConsumerStatefulWidget {
   final String placeId;
@@ -37,9 +39,57 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
   String _couponCode = '';
   double _discountAmount = 0.0;
   bool _isCouponApplied = false;
+  bool _isLoading = false;
+  
+  final BookingsService _bookingsService = BookingsService();
+  
+  // Text controllers for pre-filling
+  late TextEditingController _fullNameController;
+  late TextEditingController _contactNumberController;
+  late TextEditingController _emailController;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Initialize controllers (will be populated after first build)
+    _fullNameController = TextEditingController();
+    _contactNumberController = TextEditingController();
+    _emailController = TextEditingController();
+  }
+  
+  void _prefillUserData() {
+    // Get current user and pre-fill fields
+    final currentUser = ref.read(currentUserProvider);
+    if (currentUser != null) {
+      _fullName = currentUser.fullName;
+      _contactNumber = currentUser.phoneNumber ?? '';
+      _email = currentUser.email;
+      
+      // Update controllers
+      _fullNameController.text = _fullName;
+      _contactNumberController.text = _contactNumber;
+      _emailController.text = _email;
+    }
+  }
+  
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _contactNumberController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Pre-fill user data on first build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_fullName.isEmpty && _email.isEmpty) {
+        _prefillUserData();
+      }
+    });
+    
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -419,6 +469,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           ),
           const SizedBox(height: 16),
           TextField(
+            controller: _fullNameController,
             onChanged: (value) => setState(() => _fullName = value),
             decoration: InputDecoration(
               labelText: 'Full Name',
@@ -439,6 +490,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           ),
           const SizedBox(height: 16),
           TextField(
+            controller: _contactNumberController,
             onChanged: (value) => setState(() => _contactNumber = value),
             decoration: InputDecoration(
               labelText: 'Phone Number',
@@ -459,7 +511,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           ),
           const SizedBox(height: 16),
           TextField(
+            controller: _emailController,
             onChanged: (value) => setState(() => _email = value),
+            keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               labelText: 'Email Address',
               hintText: 'your.email@example.com',
@@ -922,32 +976,102 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      // Navigate to confirmation screen
-                      context.push('/dining-booking-confirmation', extra: {
-                        'placeName': widget.placeName,
-                        'placeLocation': widget.placeLocation,
-                        'date': _selectedDate,
-                        'time': _selectedTimeSlot,
-                        'guests': _guestCount,
-                        'fullName': _fullName,
-                        'phone': _contactNumber,
-                        'email': _email,
-                        'specialRequests': _specialRequests,
+                    onPressed: _isLoading ? null : () async {
+                      if (_selectedDate == null || _selectedTimeSlot == null) {
+                        return;
+                      }
+                      
+                      setState(() {
+                        _isLoading = true;
                       });
+                      
+                      try {
+                        // Convert time from 12-hour to 24-hour format
+                        String time24 = _selectedTimeSlot!;
+                        if (_selectedTimeSlot!.contains('PM') || _selectedTimeSlot!.contains('AM')) {
+                          final timeParts = _selectedTimeSlot!.split(' ');
+                          final time = timeParts[0];
+                          final period = timeParts[1];
+                          final hourMin = time.split(':');
+                          int hour = int.parse(hourMin[0]);
+                          final minute = hourMin[1];
+                          
+                          if (period == 'PM' && hour != 12) {
+                            hour += 12;
+                          } else if (period == 'AM' && hour == 12) {
+                            hour = 0;
+                          }
+                          
+                          time24 = '${hour.toString().padLeft(2, '0')}:$minute';
+                        }
+                        
+                        // Create booking via API
+                        final booking = await _bookingsService.createRestaurantBooking(
+                          listingId: widget.placeId,
+                          bookingDate: _selectedDate!,
+                          bookingTime: time24,
+                          partySize: _guestCount,
+                          guests: [
+                            {
+                              'fullName': _fullName,
+                              'email': _email,
+                              'phone': _contactNumber,
+                              'isPrimary': true,
+                            }
+                          ],
+                          specialRequests: _specialRequests.isNotEmpty ? _specialRequests : null,
+                        );
+                        
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                          // Navigate to confirmation screen with actual booking ID
+                          context.push('/dining-booking-confirmation', extra: {
+                            'bookingId': booking['id'],
+                            'placeName': widget.placeName,
+                            'placeLocation': widget.placeLocation,
+                            'date': _selectedDate,
+                            'time': _selectedTimeSlot,
+                            'guests': _guestCount,
+                            'fullName': _fullName,
+                            'phone': _contactNumber,
+                            'email': _email,
+                            'specialRequests': _specialRequests,
+                          });
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to create booking: ${e.toString()}'),
+                              backgroundColor: AppTheme.errorColor,
+                            ),
+                          );
+                        }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Text(
-                      'Confirm',
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            'Confirm',
+                            style: AppTheme.bodyMedium.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                   ),
                 ),
               ],

@@ -1247,8 +1247,54 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // Navigate to booking screen
-                  context.push('/booking/${widget.listingId}');
+                  // Navigate to appropriate booking screen based on listing type
+                  if (listingType == 'restaurant') {
+                    // Extract data for dining booking
+                    final images = listing['images'] as List? ?? [];
+                    final primaryImage = images.isNotEmpty && images[0]['media'] != null
+                        ? images[0]['media']['url']
+                        : null;
+                    final name = listing['name'] ?? 'Restaurant';
+                    final address = listing['address'] ?? '';
+                    final city = listing['city'] as Map<String, dynamic>?;
+                    final cityName = city?['name'] as String? ?? '';
+                    final location = address.isNotEmpty 
+                        ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+                        : cityName.isNotEmpty ? cityName : 'Location not available';
+                    final rating = listing['rating'] != null
+                        ? (listing['rating'] is String
+                            ? double.tryParse(listing['rating'])
+                            : listing['rating']?.toDouble())
+                        : 0.0;
+                    final minPrice = listing['minPrice'];
+                    final maxPrice = listing['maxPrice'];
+                    final currency = listing['currency'] ?? 'RWF';
+                    String priceRange = 'Price not available';
+                    if (minPrice != null) {
+                      final min = minPrice is String ? double.tryParse(minPrice) : minPrice?.toDouble();
+                      final max = maxPrice != null 
+                          ? (maxPrice is String ? double.tryParse(maxPrice) : maxPrice?.toDouble())
+                          : null;
+                      if (min != null) {
+                        priceRange = max != null && max > min
+                            ? '$currency ${min.toStringAsFixed(0)} - ${max.toStringAsFixed(0)}'
+                            : '$currency ${min.toStringAsFixed(0)}';
+                      }
+                    }
+                    
+                    // Navigate to dining booking screen
+                    context.push('/dining-booking', extra: {
+                      'placeId': widget.listingId,
+                      'placeName': name,
+                      'placeLocation': location,
+                      'placeImage': primaryImage ?? '',
+                      'placeRating': rating ?? 0.0,
+                      'priceRange': priceRange,
+                    });
+                  } else if (listingType == 'hotel') {
+                    // Navigate to accommodation booking screen
+                    context.push('/accommodation/${widget.listingId}/book');
+                  }
                 },
                 icon: const Icon(Icons.calendar_today, size: 18),
                 label: const Text('Book Now'),
