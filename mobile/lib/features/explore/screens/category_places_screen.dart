@@ -1067,6 +1067,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                                 minPrice: _minPrice,
                                 maxPrice: _maxPrice,
                                 isFeatured: _isFeatured,
+                                sortBy: _sortBy,
                               ),
                             ),
                           );
