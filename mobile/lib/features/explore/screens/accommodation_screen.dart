@@ -199,7 +199,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             Expanded(
               child: Text(
                 _selectedLocation,
-                style: AppTheme.bodyMedium.copyWith(
+                style: AppTheme.bodySmall.copyWith(
                   color: AppTheme.primaryTextColor,
                   fontWeight: FontWeight.w500,
                 ),
@@ -220,7 +220,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             Expanded(
               child: Text(
                 _getDateRangeText(),
-                style: AppTheme.bodyMedium.copyWith(
+                style: AppTheme.bodySmall.copyWith(
                   color: AppTheme.secondaryTextColor,
                 ),
               ),
@@ -239,7 +239,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             const SizedBox(width: 8),
             Text(
               '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
-              style: AppTheme.bodyMedium.copyWith(
+              style: AppTheme.bodySmall.copyWith(
                 color: AppTheme.secondaryTextColor,
               ),
             ),
