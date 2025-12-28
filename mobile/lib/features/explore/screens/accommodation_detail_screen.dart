@@ -312,6 +312,27 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Review button
+                  Container(
+                    width: 36,
+                    height: 36,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.rate_review,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _showReviewBottomSheet(listingId);
+                      },
+                    ),
+                  ),
                   // Share button
                   Container(
                     width: 36,
@@ -339,7 +360,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                               ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
                               : cityName;
                           
-                          final shareText = 'Check out $name${location != null && location.isNotEmpty ? ' in $location' : ''} on Zoea!';
+                          final shareText = 'Check out $name${location.isNotEmpty ? ' in $location' : ''} on Zoea!';
                           final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/accommodation/${widget.accommodationId}';
                           
                           await Share.share('$shareText\n$shareUrl');
@@ -927,19 +948,26 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       data: (reviewsData) {
         final reviews = reviewsData['data'] as List? ?? [];
         
-        return RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(listingReviewsProvider(ListingReviewsParams(
-              listingId: listingId,
-              page: 1,
-              limit: 20,
-            )));
-            await Future.delayed(const Duration(milliseconds: 500));
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
-            child: Column(
+        return Stack(
+          children: [
+            RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(listingReviewsProvider(ListingReviewsParams(
+                  listingId: listingId,
+                  page: 1,
+                  limit: 20,
+                )));
+                await Future.delayed(const Duration(milliseconds: 500));
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 20,
+                  bottom: 100, // Space for FAB
+                ),
+                child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -960,7 +988,53 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                 ],
               ),
               const SizedBox(height: 16),
-              if (reviews.isNotEmpty) ...[
+              if (reviews.isEmpty) ...[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.rate_review_outlined,
+                          size: 64,
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No reviews yet',
+                          style: AppTheme.headlineSmall.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Be the first to review this place!',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            _showReviewBottomSheet(listingId);
+                          },
+                          icon: const Icon(Icons.edit),
+                          label: const Text('Write Review'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ] else ...[
                 ...reviews.map<Widget>((review) {
                   if (review is Map<String, dynamic>) {
                     final user = review['user'] as Map<String, dynamic>?;
@@ -1056,26 +1130,28 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                   }
                   return const SizedBox.shrink();
                 }).toList(),
-              ] else ...[
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'No reviews yet',
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ],
           ),
         ),
+            ),
+            if (reviews.isNotEmpty)
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    _showReviewBottomSheet(listingId);
+                  },
+                  backgroundColor: AppTheme.primaryColor,
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  label: const Text(
+                    'Write Review',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
         );
       },
       loading: () => const Center(child: Padding(
@@ -1540,6 +1616,278 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       return '1 room - per night';
     } else {
       return '$totalRooms rooms - per night';
+    }
+  }
+
+  void _showReviewBottomSheet(String listingId) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _ReviewBottomSheet(
+        listingId: listingId,
+      ),
+    );
+  }
+}
+
+class _ReviewBottomSheet extends ConsumerStatefulWidget {
+  final String? listingId;
+  final String? eventId;
+  final String? tourId;
+
+  const _ReviewBottomSheet({
+    this.listingId,
+    this.eventId,
+    this.tourId,
+  });
+
+  @override
+  ConsumerState<_ReviewBottomSheet> createState() => _ReviewBottomSheetState();
+}
+
+class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
+  int _selectedRating = 5;
+  final TextEditingController _reviewController = TextEditingController();
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle bar
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Title
+          Text(
+            'Write a Review',
+            style: AppTheme.headlineMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Rating selection
+          Text(
+            'How was your experience?',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          Row(
+            children: List.generate(5, (index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedRating = index + 1;
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    index < _selectedRating ? Icons.star : Icons.star_border,
+                    color: index < _selectedRating 
+                        ? Colors.amber 
+                        : Colors.grey[400],
+                    size: 32,
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 20),
+          
+          // Review text field
+          Text(
+            'Tell us about your experience',
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          TextField(
+            controller: _reviewController,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: 'Share your thoughts about this place...',
+              hintStyle: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppTheme.primaryColor),
+              ),
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Submit button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _isSubmitting ? null : _submitReview,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: _isSubmitting
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      'Submit Review',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submitReview() async {
+    if (_reviewController.text.trim().isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please write a review before submitting'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+      return;
+    }
+
+    // Validate that at least one ID is provided
+    if (widget.listingId == null && widget.eventId == null && widget.tourId == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to submit review. Missing listing, event, or tour information.'),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      final reviewsService = ref.read(reviewsServiceProvider);
+      
+      await reviewsService.createReview(
+        listingId: widget.listingId,
+        eventId: widget.eventId,
+        tourId: widget.tourId,
+        rating: _selectedRating,
+        content: _reviewController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      // Invalidate reviews providers to refresh the list
+      if (widget.listingId != null) {
+        ref.invalidate(listingReviewsProvider(
+          ListingReviewsParams(listingId: widget.listingId!),
+        ));
+      } else if (widget.eventId != null) {
+        ref.invalidate(eventReviewsProvider(
+          EventReviewsParams(eventId: widget.eventId!),
+        ));
+      }
+      
+      // Also invalidate general reviews provider
+      ref.invalidate(reviewsProvider(
+        ReviewsParams(
+          listingId: widget.listingId,
+          eventId: widget.eventId,
+        ),
+      ));
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Thank you for your review!'),
+          backgroundColor: AppTheme.successColor,
+        ),
+      );
+
+      // Close bottom sheet
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isSubmitting = false;
+      });
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceAll('Exception: ', ''),
+          ),
+          backgroundColor: AppTheme.errorColor,
+          duration: const Duration(seconds: 4),
+        ),
+      );
     }
   }
 }
