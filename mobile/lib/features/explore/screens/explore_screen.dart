@@ -694,6 +694,66 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildCategoriesSection() {
     final categoriesAsync = ref.watch(categoriesProvider);
 
+    // If we have previous data, show it while silently refreshing
+    if (categoriesAsync.hasValue && categoriesAsync.value != null) {
+      final categories = categoriesAsync.value!;
+      // Filter only active categories and sort by sortOrder
+      final activeCategories = categories
+          .where((cat) => cat['isActive'] == true)
+          .toList()
+        ..sort((a, b) => (a['sortOrder'] as int? ?? 0).compareTo(b['sortOrder'] as int? ?? 0));
+
+      if (activeCategories.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Categories',
+                style: AppTheme.headlineMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  _showCategoriesBottomSheet(context);
+                },
+                child: Text(
+                  'View More',
+                  style: AppTheme.bodySmall.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 1.1,
+            ),
+            itemCount: activeCategories.length > 6 ? 6 : activeCategories.length,
+            itemBuilder: (context, index) {
+              final category = activeCategories[index];
+              return _buildCategoryCardFromApi(category);
+            },
+          ),
+        ],
+      );
+    }
+
+    // Only show loading state if we don't have previous data
     return categoriesAsync.when(
       data: (categories) {
         // Filter only active categories and sort by sortOrder
@@ -1365,6 +1425,45 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               builder: (context, ref, child) {
                 final categoriesAsync = ref.watch(categoriesProvider);
                 
+                // If we have previous data, show it while silently refreshing
+                if (categoriesAsync.hasValue && categoriesAsync.value != null) {
+                  final categories = categoriesAsync.value!;
+                  // Filter to only show parent categories (no parentId)
+                  final parentCategories = categories
+                      .where((cat) => 
+                          cat['isActive'] == true && 
+                          (cat['parentId'] == null || cat['parentId'] == ''))
+                      .toList()
+                    ..sort((a, b) => (a['sortOrder'] as int? ?? 0).compareTo(b['sortOrder'] as int? ?? 0));
+                  
+                  if (parentCategories.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'No categories available',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  
+                  return GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1.2,
+                    children: parentCategories.map((category) {
+                      return _buildBottomSheetCategoryCardFromApi(category);
+                    }).toList(),
+                  );
+                }
+                
+                // Only show loading state if we don't have previous data
                 return categoriesAsync.when(
                   data: (categories) {
                     // Filter to only show parent categories (no parentId)
