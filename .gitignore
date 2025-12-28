@@ -15,6 +15,7 @@
 !.idea/codeStyles/
 !.idea/inspectionProfiles/
 .idea/workspace.xml
+!.idea/runConfigurations/
 .idea/tasks.xml
 .idea/dictionaries/
 .idea/shelf/
@@ -35,6 +36,18 @@ coverage/
 
 # Dependencies (each subdirectory has its own)
 node_modules/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Backup folders
+.git.backup/
+*.backup
 
 # Each subdirectory maintains its own .gitignore
 # This is just for the root level
