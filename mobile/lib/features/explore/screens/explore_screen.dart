@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
 import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
@@ -751,7 +751,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               crossAxisCount: 3,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
-              childAspectRatio: 1.1,
+              childAspectRatio: 1.3,
             ),
             itemCount: activeCategories.length > 6 ? 6 : activeCategories.length,
             itemBuilder: (context, index) {
@@ -810,7 +810,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 crossAxisCount: 3,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
-                childAspectRatio: 1.1,
+                childAspectRatio: 1.3,
               ),
               itemCount: activeCategories.length > 6 ? 6 : activeCategories.length,
               itemBuilder: (context, index) {
@@ -838,7 +838,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               crossAxisCount: 3,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
-              childAspectRatio: 1.1,
+              childAspectRatio: 1.3,
             ),
             itemCount: 6,
             itemBuilder: (context, index) {
@@ -914,14 +914,15 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             Icon(
               icon,
               color: AppTheme.primaryTextColor,
-              size: 24,
+              size: 22,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               name,
               style: AppTheme.bodySmall.copyWith(
                 fontWeight: FontWeight.w500,
                 color: AppTheme.primaryTextColor,
+                fontSize: 11,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -1259,18 +1260,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             children: [
               // Event image
               Positioned.fill(
-                child: CachedNetworkImage(
+                child: FadeInNetworkImage(
                   imageUrl: eventDetails.flyer,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
+                  placeholderColor: Colors.grey[300],
+                  errorWidget: Container(
                     color: Colors.grey[300],
                     child: const Icon(
                       Icons.event,
@@ -1509,7 +1503,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     crossAxisCount: 3,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: 1.2,
+                    childAspectRatio: 1.4,
                     children: parentCategories.map((category) {
                       return _buildBottomSheetCategoryCardFromApi(category);
                     }).toList(),
@@ -1547,7 +1541,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       crossAxisCount: 3,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1.2,
+                      childAspectRatio: 1.4,
                       children: parentCategories.map((category) {
                         return _buildBottomSheetCategoryCardFromApi(category);
                       }).toList(),
@@ -1634,9 +1628,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             Icon(
               icon,
               color: AppTheme.primaryColor,
-              size: 24,
+              size: 22,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               name,
               style: AppTheme.bodySmall.copyWith(
@@ -1836,19 +1830,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                     child: imageUrl != null
-                        ? CachedNetworkImage(
+                        ? FadeInNetworkImage(
                             imageUrl: imageUrl,
                             width: double.infinity,
                             height: 100,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              height: 100,
-                              color: Colors.grey[200],
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                            errorWidget: Container(
                               height: 100,
                               color: Colors.grey[200],
                               child: const Icon(Icons.image, color: Colors.grey),
@@ -2190,20 +2178,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             ClipRRect(
               borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
               child: imageUrl != null
-                  ? CachedNetworkImage(
+                  ? FadeInNetworkImage(
                       imageUrl: imageUrl,
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        height: 80,
-                        width: 80,
-                        color: AppTheme.dividerColor,
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
+                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                      errorWidget: Container(
                         height: 80,
                         width: 80,
                         color: AppTheme.dividerColor,
@@ -2496,16 +2477,11 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               ),
               child: ClipRRect(
                 borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
-                child: CachedNetworkImage(
+                child: FadeInNetworkImage(
                   imageUrl: special['image'],
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: AppTheme.dividerColor,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
+                  placeholderColor: AppTheme.dividerColor,
+                  errorWidget: Container(
                     color: AppTheme.dividerColor,
                     child: const Icon(Icons.image_not_supported),
                   ),

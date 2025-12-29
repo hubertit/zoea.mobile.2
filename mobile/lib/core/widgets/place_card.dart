@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import '../theme/app_theme.dart';
+import 'fade_in_image.dart' show FadeInNetworkImage;
 
 class PlaceCard extends StatelessWidget {
   final String name;
@@ -52,25 +52,16 @@ class PlaceCard extends StatelessWidget {
             // Image with favorite button
             Stack(
               children: [
-                ClipRRect(
+                FadeInNetworkImage(
+                  imageUrl: image,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: CachedNetworkImage(
-                    imageUrl: image,
+                  errorWidget: Container(
                     height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      height: 200,
-                      color: Colors.grey[200],
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      height: 200,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.place, size: 50),
-                    ),
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.place, size: 50),
                   ),
                 ),
                 // Favorite button

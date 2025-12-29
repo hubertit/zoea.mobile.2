@@ -28,11 +28,13 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
   List<Map<String, dynamic>> _subcategories = [];
   String? _selectedCategoryId; // Currently selected category/subcategory ID for listings
   // ignore: unused_field
-  int _selectedTabIndex = 0; // 0 = All, 1+ = subcategories (tracked for state management)
+  int _selectedTabIndex = 0; // 0 = All, 1 = Popular, 2+ = subcategories (tracked for state management)
+  bool _isPopularTab = false; // Track if we're showing popular (random) listings
   
   // Pagination
   int _currentPage = 1;
   final int _pageSize = 20;
+  final int _popularLimit = 12; // Limit for popular tab (random listings)
   
   // Filter state
   double? _minRating;
@@ -78,7 +80,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         .where((child) => child['isActive'] != false)
         .toList();
     
-    final tabCount = 1 + _subcategories.length; // All + subcategories
+    final tabCount = 2 + _subcategories.length; // All + Popular + subcategories
     
     // Dispose old controller if exists
     _tabController?.dispose();
@@ -106,15 +108,34 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         // "All" tab - show listings from dining category
         _selectedCategoryId = _diningCategoryId;
         _sortBy = null; // Reset sort for "All"
+        _isPopularTab = false;
+      } else if (index == 1) {
+        // "Popular" tab - show random listings from all dining
+        _selectedCategoryId = _diningCategoryId;
+        _sortBy = null; // No sort, we'll randomize
+        _isPopularTab = true;
       } else {
         // Subcategory tab - show listings from selected subcategory
-        final subcategoryIndex = index - 1;
+        final subcategoryIndex = index - 2;
         if (subcategoryIndex < _subcategories.length) {
           final subcategory = _subcategories[subcategoryIndex];
           _selectedCategoryId = subcategory['id'] as String?;
           _sortBy = null; // Reset sort when selecting subcategory
+          _isPopularTab = false;
         }
       }
+      
+      // Invalidate listings provider to refresh with new category/sort
+      ref.invalidate(listingsProvider(ListingsParams(
+        page: _isPopularTab ? 1 : _currentPage,
+        limit: _isPopularTab ? 50 : _pageSize,
+        category: _selectedCategoryId ?? _diningCategoryId,
+        rating: _minRating,
+        minPrice: _minPrice,
+        maxPrice: _maxPrice,
+        isFeatured: _isFeatured,
+        sortBy: _sortBy,
+      )));
     });
   }
 
@@ -130,6 +151,11 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       data: (categoryData) {
         _diningCategoryId = categoryData['id'] as String?;
         _diningCategoryName = categoryData['name'] as String?;
+        
+        // Set initial selected category to dining category for "All" tab
+        if (_selectedCategoryId == null) {
+          _selectedCategoryId = _diningCategoryId;
+        }
         
         // Extract children from category data
         final children = categoryData['children'] as List?;
@@ -223,6 +249,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
               labelPadding: const EdgeInsets.symmetric(horizontal: 16),
               tabs: [
                 const Tab(text: 'All'),
+                const Tab(text: 'Popular'),
                 ..._subcategories.map((subcategory) {
                   final name = subcategory['name'] as String? ?? 'Unknown';
                   return Tab(text: name);
@@ -320,11 +347,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       return const Center(child: Text('Category not found'));
     }
 
+    // For Popular tab, fetch more listings to randomize from
+    final fetchLimit = _isPopularTab ? 50 : _pageSize; // Fetch more for popular to randomize
+
     final listingsAsync = ref.watch(
       listingsProvider(
         ListingsParams(
-          page: _currentPage,
-          limit: _pageSize,
+          page: _isPopularTab ? 1 : _currentPage, // Popular always uses page 1
+          limit: fetchLimit,
           category: _categoryIdForListings,
           rating: _minRating,
           minPrice: _minPrice,
@@ -337,7 +367,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
 
     return listingsAsync.when(
       data: (response) {
-        final listings = response['data'] as List? ?? [];
+        List listings = List.from(response['data'] as List? ?? []);
+        
+        // For Popular tab, randomize and limit
+        if (_isPopularTab && listings.isNotEmpty) {
+          listings.shuffle(); // Randomize the list
+          listings = listings.take(_popularLimit).toList();
+        }
+        
         final meta = response['meta'] as Map<String, dynamic>?;
         final totalPages = meta?['totalPages'] ?? 1;
 
@@ -364,10 +401,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           },
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: listings.length + (_currentPage < totalPages ? 1 : 0),
+            itemCount: listings.length + (!_isPopularTab && _currentPage < totalPages ? 1 : 0),
             itemBuilder: (context, index) {
-              if (index == listings.length) {
-                // Load more indicator
+              // Load more indicator (only for non-popular tabs)
+              if (!_isPopularTab && index == listings.length) {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16),

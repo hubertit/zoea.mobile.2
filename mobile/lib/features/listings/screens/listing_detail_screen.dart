@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -10,6 +9,8 @@ import '../../../core/config/app_config.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
 import '../../../core/providers/reviews_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
 
 class ListingDetailScreen extends ConsumerStatefulWidget {
   final String listingId;
@@ -173,16 +174,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               fit: StackFit.expand,
               children: [
                 primaryImage != null
-                    ? CachedNetworkImage(
+                    ? FadeInNetworkImage(
                         imageUrl: primaryImage,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
+                        errorWidget: Container(
                           color: Colors.grey[200],
                           child: const Icon(Icons.place, size: 100),
                         ),
@@ -1247,20 +1242,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     margin: const EdgeInsets.only(right: 8),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(
+                      child: FadeInNetworkImage(
                         imageUrl: imageUrl is String ? imageUrl : imageUrl['url'] ?? '',
                         width: 80,
                         height: 80,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          width: 80,
-                          height: 80,
-                          color: AppTheme.dividerColor,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
+                        borderRadius: BorderRadius.circular(8),
+                        errorWidget: Container(
                           width: 80,
                           height: 80,
                           color: AppTheme.dividerColor,
@@ -1309,16 +1297,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: imageUrl != null
-              ? CachedNetworkImage(
+              ? FadeInNetworkImage(
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
+                  borderRadius: BorderRadius.circular(12),
+                  errorWidget: Container(
                     color: Colors.grey[200],
                     child: const Icon(Icons.image),
                   ),

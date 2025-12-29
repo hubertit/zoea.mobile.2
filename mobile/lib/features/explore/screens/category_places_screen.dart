@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/place_card.dart';
+import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -729,30 +729,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             // Image with favorite button
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: imageUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            height: 200,
-                            color: Colors.grey[200],
-                            child: const Center(child: CircularProgressIndicator()),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            height: 200,
-                            color: Colors.grey[200],
-                            child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.grey[400],
-                              size: 48,
-                            ),
-                          ),
-                        )
-                      : Container(
+                imageUrl != null
+                    ? FadeInNetworkImage(
+                        imageUrl: imageUrl,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                        errorWidget: Container(
                           height: 200,
                           color: Colors.grey[200],
                           child: Icon(
@@ -761,7 +745,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                             size: 48,
                           ),
                         ),
-                ),
+                      )
+                    : Container(
+                        height: 200,
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey[400],
+                          size: 48,
+                        ),
+                      ),
                 Positioned(
                   top: 12,
                   right: 12,
