@@ -8,7 +8,6 @@ import '../../features/auth/screens/splash_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/explore/screens/map_screen.dart';
-import '../../features/explore/screens/dining_screen.dart';
 import '../../features/explore/screens/experiences_screen.dart';
 import '../../features/explore/screens/nightlife_screen.dart';
 import '../../features/explore/screens/shopping_screen.dart';
@@ -27,6 +26,7 @@ import '../../features/events/screens/event_detail_screen.dart';
 import '../../core/models/event.dart';
 import '../../features/listings/screens/listing_detail_screen.dart';
 import '../../features/listings/screens/listings_screen.dart';
+import '../../features/listings/screens/webview_screen.dart';
 import '../../features/booking/screens/booking_screen.dart';
 import '../../features/booking/screens/booking_confirmation_screen.dart';
 import '../../features/zoea_card/screens/zoea_card_screen.dart';
@@ -296,11 +296,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MapScreen(),
       ),
 
-      // Dining Route
-      GoRoute(
-        path: '/dining',
-        builder: (context, state) => const DiningScreen(),
-      ),
 
       // Experiences Route
       GoRoute(
@@ -402,6 +397,20 @@ final routerProvider = Provider<GoRouter>((ref) {
             email: confirmationData?['email'] ?? '',
             specialRequests: confirmationData?['specialRequests'] ?? '',
           );
+        },
+      ),
+
+      // WebView Route (for Vuba Vuba and external links)
+      GoRoute(
+        path: '/webview',
+        builder: (context, state) {
+          final url = state.uri.queryParameters['url'] ?? '';
+          final title = state.uri.queryParameters['title'];
+          if (url.isEmpty) {
+            // Fallback to explore if no URL provided
+            return const ExploreScreen();
+          }
+          return WebViewScreen(url: url, title: title);
         },
       ),
 

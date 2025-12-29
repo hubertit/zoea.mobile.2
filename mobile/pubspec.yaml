@@ -75,6 +75,7 @@ dependencies:
   device_info_plus: ^9.1.1
   connectivity_plus: ^5.0.2
   table_calendar: ^3.0.9
+  webview_flutter: ^4.4.2
   
   # Phone Validation
   country_picker: ^2.0.24

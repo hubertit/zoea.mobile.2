@@ -7,6 +7,7 @@ class ListingsService {
   /// Get all listings with filters and sorting
   /// Returns paginated response: {data: [...], meta: {total, page, limit, totalPages}}
   /// sortBy options: 'popular', 'rating_desc', 'rating_asc', 'name_asc', 'name_desc', 'price_asc', 'price_desc', 'createdAt_desc', 'createdAt_asc'
+  /// status options: 'draft', 'pending_review', 'active', 'inactive' (defaults to 'active' if not specified)
   Future<Map<String, dynamic>> getListings({
     int? page,
     int? limit,
@@ -19,6 +20,7 @@ class ListingsService {
     double? rating,
     bool? isFeatured,
     String? sortBy,
+    String? status,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
@@ -34,6 +36,8 @@ class ListingsService {
       if (rating != null) queryParams['rating'] = rating;
       if (isFeatured != null) queryParams['isFeatured'] = isFeatured;
       if (sortBy != null && sortBy.isNotEmpty) queryParams['sortBy'] = sortBy;
+      // Default to 'active' status if not specified to filter out inactive listings
+      queryParams['status'] = status ?? 'active';
 
       final response = await _dio.get(
         AppConfig.listingsEndpoint,
@@ -222,6 +226,7 @@ class ListingsService {
     String? category,
     String? city,
     String? search,
+    String? status,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
@@ -231,6 +236,8 @@ class ListingsService {
       if (category != null) queryParams['categoryId'] = category; // Backend expects categoryId
       if (city != null) queryParams['cityId'] = city; // Backend expects cityId
       if (search != null) queryParams['search'] = search;
+      // Default to 'active' status if not specified to filter out inactive listings
+      queryParams['status'] = status ?? 'active';
 
       final response = await _dio.get(
         '${AppConfig.listingsEndpoint}/type/$type',

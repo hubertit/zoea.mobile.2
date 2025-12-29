@@ -371,6 +371,7 @@ model Listing {
   isVerified                 Boolean?                     @default(false) @map("is_verified")
   isFeatured                 Boolean?                     @default(false) @map("is_featured")
   isBlocked                  Boolean?                     @default(false) @map("is_blocked")
+  acceptsBookings            Boolean?                     @default(false) @map("accepts_bookings")
   rating                     Decimal?                     @default(0) @db.Decimal(3, 2)
   reviewCount                Int?                         @default(0) @map("review_count")
   bookingCount               Int?                         @default(0) @map("booking_count")

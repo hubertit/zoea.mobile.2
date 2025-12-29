@@ -22,9 +22,22 @@ class BookingScreen extends ConsumerWidget {
     return listingAsync.when(
       data: (listing) {
         final listingType = listing['type']?.toString().toLowerCase() ?? '';
+        final category = listing['category'] as Map<String, dynamic>?;
+        final categorySlug = category?['slug'] as String? ?? '';
+        final categoryName = category?['name'] as String? ?? '';
         
-        // Redirect based on listing type
-        if (listingType == 'restaurant') {
+        // Check if it's a dining-related category
+        final isDiningCategory = categorySlug.toLowerCase().contains('dining') ||
+            categorySlug.toLowerCase().contains('restaurant') ||
+            categorySlug.toLowerCase().contains('cafe') ||
+            categorySlug.toLowerCase().contains('fastfood') ||
+            categoryName.toLowerCase().contains('dining') ||
+            categoryName.toLowerCase().contains('restaurant') ||
+            categoryName.toLowerCase().contains('cafe') ||
+            categoryName.toLowerCase().contains('fast food');
+        
+        // Redirect based on listing type or category
+        if (listingType == 'restaurant' || isDiningCategory) {
           // Extract data for dining booking
           final images = listing['images'] as List? ?? [];
           final primaryImage = images.isNotEmpty && images[0]['media'] != null

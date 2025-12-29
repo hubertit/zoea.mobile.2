@@ -1317,64 +1317,36 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
 
   Widget _buildBottomBar(Map<String, dynamic> listing, String? contactPhone) {
     final listingType = listing['type']?.toString().toLowerCase() ?? '';
+    final acceptsBookings = listing['acceptsBookings'] as bool? ?? false;
+    final category = listing['category'] as Map<String, dynamic>?;
+    final categorySlug = category?['slug'] as String? ?? '';
+    final categoryName = category?['name'] as String? ?? '';
+    
+    // Check if it's a dining-related category (dining, restaurants, cafe, fastfood)
+    final isDiningCategory = categorySlug.toLowerCase().contains('dining') ||
+        categorySlug.toLowerCase().contains('restaurant') ||
+        categorySlug.toLowerCase().contains('cafe') ||
+        categorySlug.toLowerCase().contains('fastfood') ||
+        categoryName.toLowerCase().contains('dining') ||
+        categoryName.toLowerCase().contains('restaurant') ||
+        categoryName.toLowerCase().contains('cafe') ||
+        categoryName.toLowerCase().contains('fast food');
 
+    // Determine which buttons to show
+    final showBookingButtons = acceptsBookings && (listingType == 'restaurant' || listingType == 'hotel' || isDiningCategory);
+    
     return Container(
       color: AppTheme.backgroundColor,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (listingType == 'restaurant' || listingType == 'hotel') ...[
+          if (showBookingButtons) ...[
+            // Book Now button
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // Navigate to appropriate booking screen based on listing type
-                  if (listingType == 'restaurant') {
-                    // Extract data for dining booking
-                    final images = listing['images'] as List? ?? [];
-                    final primaryImage = images.isNotEmpty && images[0]['media'] != null
-                        ? images[0]['media']['url']
-                        : null;
-                    final name = listing['name'] ?? 'Restaurant';
-                    final address = listing['address'] ?? '';
-                    final city = listing['city'] as Map<String, dynamic>?;
-                    final cityName = city?['name'] as String? ?? '';
-                    final location = address.isNotEmpty 
-                        ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
-                        : cityName.isNotEmpty ? cityName : 'Location not available';
-                    final rating = listing['rating'] != null
-                        ? (listing['rating'] is String
-                            ? double.tryParse(listing['rating'])
-                            : listing['rating']?.toDouble())
-                        : 0.0;
-                    final minPrice = listing['minPrice'];
-                    final maxPrice = listing['maxPrice'];
-                    final currency = listing['currency'] ?? 'RWF';
-                    String priceRange = 'Price not available';
-                    if (minPrice != null) {
-                      final min = minPrice is String ? double.tryParse(minPrice) : minPrice?.toDouble();
-                      final max = maxPrice != null 
-                          ? (maxPrice is String ? double.tryParse(maxPrice) : maxPrice?.toDouble())
-                          : null;
-                      if (min != null) {
-                        priceRange = max != null && max > min
-                            ? '$currency ${min.toStringAsFixed(0)} - ${max.toStringAsFixed(0)}'
-                            : '$currency ${min.toStringAsFixed(0)}';
-                      }
-                    }
-                    
-                    // Navigate to dining booking screen
-                    context.push('/dining-booking', extra: {
-                      'placeId': widget.listingId,
-                      'placeName': name,
-                      'placeLocation': location,
-                      'placeImage': primaryImage ?? '',
-                      'placeRating': rating ?? 0.0,
-                      'priceRange': priceRange,
-                    });
-                  } else if (listingType == 'hotel') {
-                    // Navigate to accommodation booking screen
-                    context.push('/accommodation/${widget.listingId}/book');
-                  }
+                  // Navigate to booking screen which will route to appropriate booking flow
+                  context.push('/booking/${widget.listingId}');
                 },
                 icon: const Icon(Icons.calendar_today, size: 18),
                 label: const Text('Book Now'),
@@ -1382,15 +1354,55 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   foregroundColor: AppTheme.primaryColor,
                   backgroundColor: AppTheme.backgroundColor,
                   side: const BorderSide(color: AppTheme.primaryColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
+            // Order Now button - links to Vuba Vuba app via in-app webview
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  // Deep link to Vuba Vuba app using web URL format
+                  // Format: https://www.vv.rw/merchant/{merchant-slug}
+                  // Try to get merchant slug from listing, fallback to listing slug or name
+                  final merchant = listing['merchant'] as Map<String, dynamic>?;
+                  final merchantSlug = merchant?['slug'] as String?;
+                  final listingSlug = listing['slug'] as String?;
+                  final listingName = listing['name'] as String?;
+                  
+                  // Use merchant slug if available, otherwise use listing slug, or generate from name
+                  String merchantIdentifier = merchantSlug ?? 
+                      listingSlug ?? 
+                      (listingName?.toLowerCase().replaceAll(' ', '-').replaceAll(RegExp(r'[^a-z0-9-]'), '') ?? '');
+                  
+                  // Vuba Vuba URL - open in in-app webview
+                  final vubaVubaUrl = 'https://www.vv.rw/merchant/$merchantIdentifier';
+                  
+                  // Navigate to webview screen
+                  context.push(
+                    '/webview?url=${Uri.encodeComponent(vubaVubaUrl)}&title=${Uri.encodeComponent(listingName ?? 'Vuba Vuba')}',
+                  );
+                },
+                icon: const Icon(Icons.shopping_cart, size: 18),
+                label: const Text('Order Now'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF038f44), // Vuba Vuba brand color
+                  backgroundColor: AppTheme.backgroundColor,
+                  side: const BorderSide(color: Color(0xFF038f44)), // Vuba Vuba brand color
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
           ],
+          // Contact button
           Expanded(
             child: ElevatedButton.icon(
               onPressed: contactPhone != null
@@ -1414,7 +1426,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: AppTheme.primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

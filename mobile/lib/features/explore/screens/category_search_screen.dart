@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/place_card.dart';
+import '../../../core/providers/categories_provider.dart';
+import '../../../core/providers/listings_provider.dart';
 
 class CategorySearchScreen extends ConsumerStatefulWidget {
   final String category;
@@ -20,6 +22,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   String _selectedSubCategory = 'All';
+  String? _selectedSubCategoryId;
 
   @override
   void initState() {
@@ -123,12 +126,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             color: AppTheme.backgroundColor,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _buildSubCategoryChips(),
-              ),
-            ),
+            child: _buildSubCategoryChips(),
           ),
           
           // Search Results
@@ -166,122 +164,311 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
     }
   }
 
-  List<Widget> _buildSubCategoryChips() {
-    List<Map<String, String>> subCategories = [];
+  Widget _buildSubCategoryChips() {
+    // Fetch category by slug to get subcategories
+    final categoryAsync = ref.watch(categoryBySlugProvider(widget.category));
     
-    switch (widget.category) {
-      case 'dining':
-        subCategories = [
-          {'label': 'All', 'value': 'All'},
-          {'label': 'Restaurants', 'value': 'Restaurants'},
-          {'label': 'Cafes', 'value': 'Cafes'},
-          {'label': 'Fast Food', 'value': 'Fast Food'},
+    return categoryAsync.when(
+      data: (categoryData) {
+        final children = categoryData['children'] as List?;
+        List<Map<String, String?>> subCategories = [
+          {'label': 'All', 'value': 'All', 'id': null}
         ];
-        break;
-      case 'nightlife':
-        subCategories = [
-          {'label': 'All', 'value': 'All'},
-          {'label': 'Bars', 'value': 'Bar'},
-          {'label': 'Clubs', 'value': 'Club'},
-          {'label': 'Lounges', 'value': 'Lounge'},
-        ];
-        break;
-      case 'experiences':
-        subCategories = [
-          {'label': 'All', 'value': 'All'},
-          {'label': 'Tours', 'value': 'Tours'},
-          {'label': 'Adventures', 'value': 'Adventures'},
-          {'label': 'Cultural', 'value': 'Cultural'},
-          {'label': 'Operators', 'value': 'Operators'},
-        ];
-        break;
-    }
+        
+        // Add subcategories from API if available
+        if (children != null && children.isNotEmpty) {
+          for (var child in children) {
+            final childMap = child as Map<String, dynamic>;
+            final name = childMap['name'] as String? ?? '';
+            final id = childMap['id'] as String?;
+            if (name.isNotEmpty && id != null) {
+              subCategories.add({
+                'label': name,
+                'value': name,
+                'id': id,
+              });
+            }
+          }
+        } else {
+          // Fallback to hardcoded subcategories if API doesn't provide children
+          switch (widget.category) {
+            case 'dining':
+              subCategories.addAll([
+                {'label': 'Restaurants', 'value': 'Restaurants', 'id': null},
+                {'label': 'Cafes', 'value': 'Cafes', 'id': null},
+                {'label': 'Fast Food', 'value': 'Fast Food', 'id': null},
+              ]);
+              break;
+            case 'nightlife':
+              subCategories.addAll([
+                {'label': 'Bars', 'value': 'Bar', 'id': null},
+                {'label': 'Clubs', 'value': 'Club', 'id': null},
+                {'label': 'Lounges', 'value': 'Lounge', 'id': null},
+              ]);
+              break;
+            case 'experiences':
+              subCategories.addAll([
+                {'label': 'Tours', 'value': 'Tours', 'id': null},
+                {'label': 'Adventures', 'value': 'Adventures', 'id': null},
+                {'label': 'Cultural', 'value': 'Cultural', 'id': null},
+                {'label': 'Operators', 'value': 'Operators', 'id': null},
+              ]);
+              break;
+          }
+        }
 
-    return subCategories.map((subCategory) {
-      final isSelected = _selectedSubCategory == subCategory['value'];
-      return Padding(
-        padding: const EdgeInsets.only(right: 8),
-        child: FilterChip(
-          label: Text(
-            subCategory['label']!,
-            style: AppTheme.bodySmall.copyWith(
-              color: isSelected ? Colors.white : AppTheme.primaryTextColor,
-              fontWeight: FontWeight.w500,
-            ),
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: subCategories.map((subCategory) {
+              final isSelected = _selectedSubCategory == subCategory['value'];
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  label: Text(
+                    subCategory['label']!,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: isSelected ? Colors.white : AppTheme.primaryTextColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedSubCategory = subCategory['value']!;
+                      _selectedSubCategoryId = subCategory['id'];
+                    });
+                  },
+                  selectedColor: AppTheme.primaryColor,
+                  backgroundColor: AppTheme.backgroundColor,
+                  side: BorderSide(
+                    color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+              );
+            }).toList(),
           ),
-          selected: isSelected,
-          onSelected: (selected) {
-            setState(() {
-              _selectedSubCategory = subCategory['value']!;
-            });
-          },
-          selectedColor: AppTheme.primaryColor,
-          backgroundColor: AppTheme.backgroundColor,
-          side: BorderSide(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        ),
-      );
-    }).toList();
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
   }
 
   Widget _buildSearchResults() {
-    final places = _getMockPlaces();
-    final filteredPlaces = _searchQuery.isEmpty
-        ? places
-        : places.where((place) {
-            final name = place['name'].toString().toLowerCase();
-            final location = place['location'].toString().toLowerCase();
-            final query = _searchQuery.toLowerCase();
-            return name.contains(query) || location.contains(query);
-          }).toList();
-
-    if (filteredPlaces.isEmpty) {
-      return _buildEmptyState();
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: filteredPlaces.length,
-      itemBuilder: (context, index) {
-        final place = filteredPlaces[index];
+    // Fetch category by slug to get category ID
+    final categoryAsync = ref.watch(categoryBySlugProvider(widget.category));
+    
+    return categoryAsync.when(
+      data: (categoryData) {
+        final categoryId = categoryData['id'] as String?;
         
-        // Special handling for tour operators
-        if (widget.category == 'experiences' && _selectedSubCategory == 'Operators') {
-          return _buildTourOperatorCard(place);
+        if (categoryId == null) {
+          return Center(
+            child: Text(
+              'Category not found',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+          );
         }
         
-        return PlaceCard(
-          name: place['name'],
-          location: place['location'],
-          image: place['image'],
-          rating: place['rating'],
-          reviews: place['reviews'],
-          priceRange: place['priceRange'],
-          category: place['category'],
-          isFavorite: place['isFavorite'] ?? false,
-          onFavorite: () {
-            setState(() {
-              if (place['isFavorite'] == true) {
-                place['isFavorite'] = false;
-              } else {
-                place['isFavorite'] = true;
-              }
-            });
-          },
-          onTap: () {
-            context.push('/place/${place['id']}');
-          },
+        // Use subcategory ID if available, otherwise use main category ID
+        final categoryIdForListings = _selectedSubCategoryId ?? categoryId;
+        
+        // Fetch listings with search query and category filter
+        final listingsAsync = ref.watch(
+          listingsProvider(
+            ListingsParams(
+              page: 1,
+              limit: 100, // Fetch enough results for search
+              category: categoryIdForListings,
+              search: _searchQuery.isEmpty ? null : _searchQuery,
+            ),
+          ),
         );
+        
+        return listingsAsync.when(
+          data: (response) {
+            List listings = List.from(response['data'] as List? ?? []);
+            
+            // If subcategory ID is not available, filter by name as fallback
+            if (_selectedSubCategory != 'All' && _selectedSubCategoryId == null) {
+              listings = listings.where((listing) {
+                final listingCategory = listing['category'] as Map<String, dynamic>?;
+                final categoryName = listingCategory?['name'] as String?;
+                return categoryName == _selectedSubCategory;
+              }).toList();
+            }
+            
+            if (listings.isEmpty) {
+              return _buildEmptyState();
+            }
+            
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(
+                  listingsProvider(
+                    ListingsParams(
+                      page: 1,
+                      limit: 100,
+                      category: categoryId,
+                      search: _searchQuery.isEmpty ? null : _searchQuery,
+                    ),
+                  ),
+                );
+              },
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: listings.length,
+                itemBuilder: (context, index) {
+                  final listing = listings[index] as Map<String, dynamic>;
+                  
+                  // Special handling for tour operators
+                  if (widget.category == 'experiences' && _selectedSubCategory == 'Operators') {
+                    return _buildTourOperatorCard(listing);
+                  }
+                  
+                  return _buildListingCard(listing);
+                },
+              ),
+            );
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          error: (error, stack) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: AppTheme.secondaryTextColor,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load listings',
+                  style: AppTheme.headlineSmall.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error.toString(),
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    ref.invalidate(categoryBySlugProvider(widget.category));
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppTheme.secondaryTextColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load category',
+              style: AppTheme.headlineSmall.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(categoryBySlugProvider(widget.category));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildListingCard(Map<String, dynamic> listing) {
+    // Extract listing data
+    final name = listing['name'] as String? ?? 'Unknown';
+    final location = listing['location'] as Map<String, dynamic>?;
+    final city = location?['city'] as Map<String, dynamic>?;
+    final locationName = city?['name'] as String? ?? 'Unknown Location';
+    final images = listing['images'] as List?;
+    final imageUrl = images != null && images.isNotEmpty 
+        ? images[0] as String? 
+        : null;
+    final rating = (listing['rating'] as num?)?.toDouble() ?? 0.0;
+    final reviews = (listing['reviews'] as List?)?.length ?? 0;
+    final priceRange = listing['priceRange'] as String?;
+    final category = listing['category'] as Map<String, dynamic>?;
+    final categoryName = category?['name'] as String? ?? '';
+    final id = listing['id'] as String? ?? '';
+    final isFavorite = listing['isFavorite'] as bool? ?? false;
+    
+    return PlaceCard(
+      name: name,
+      location: locationName,
+      image: imageUrl ?? 'https://via.placeholder.com/400x300',
+      rating: rating,
+      reviews: reviews,
+      priceRange: priceRange ?? '',
+      category: categoryName,
+      isFavorite: isFavorite,
+      onFavorite: () {
+        // TODO: Implement favorite toggle
+      },
+      onTap: () {
+        context.push('/place/$id');
       },
     );
   }
 
   Widget _buildTourOperatorCard(Map<String, dynamic> operator) {
+    // Extract operator data
+    final name = operator['name'] as String? ?? 'Unknown';
+    final location = operator['location'] as Map<String, dynamic>?;
+    final city = location?['city'] as Map<String, dynamic>?;
+    final locationName = city?['name'] as String? ?? 'Unknown Location';
+    final images = operator['images'] as List?;
+    final imageUrl = images != null && images.isNotEmpty 
+        ? images[0] as String? 
+        : null;
+    final rating = (operator['rating'] as num?)?.toDouble() ?? 0.0;
+    final reviews = (operator['reviews'] as List?)?.length ?? 0;
+    final description = operator['description'] as String?;
+    final id = operator['id'] as String? ?? '';
+    
     return GestureDetector(
       onTap: () {
-        context.push('/place/${operator['id']}');
+        context.push('/place/$id');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
@@ -303,7 +490,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               child: Image.network(
-                operator['image'],
+                imageUrl ?? 'https://via.placeholder.com/400x300',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -324,7 +511,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          operator['name'],
+                          name,
                           style: AppTheme.headlineSmall.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -360,7 +547,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          operator['location'],
+                          locationName,
                           style: AppTheme.bodyMedium.copyWith(
                             color: AppTheme.secondaryTextColor,
                           ),
@@ -378,24 +565,24 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        operator['rating'].toString(),
+                        rating.toStringAsFixed(1),
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '(${operator['reviews']} reviews)',
+                        '($reviews reviews)',
                         style: AppTheme.bodySmall.copyWith(
                           color: AppTheme.secondaryTextColor,
                         ),
                       ),
                     ],
                   ),
-                  if (operator['description'] != null) ...[
+                  if (description != null && description.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Text(
-                      operator['description'],
+                      description,
                       style: AppTheme.bodyMedium.copyWith(
                         height: 1.4,
                       ),
@@ -781,164 +968,4 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
     );
   }
 
-  List<Map<String, dynamic>> _getMockPlaces() {
-    switch (widget.category) {
-      case 'dining':
-        return _getMockDiningPlaces();
-      case 'nightlife':
-        return _getMockNightlifePlaces();
-      case 'experiences':
-        return _selectedSubCategory == 'Operators' 
-            ? _getMockTourOperators() 
-            : _getMockExperiences();
-      default:
-        return [];
-    }
-  }
-
-  List<Map<String, dynamic>> _getMockDiningPlaces() {
-    final allPlaces = [
-      {
-        'id': '1',
-        'name': 'The Hut Restaurant',
-        'location': 'Kigali Heights, Kigali',
-        'image': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500',
-        'rating': 4.5,
-        'reviews': 120,
-        'priceRange': 'RWF 8,000 - 25,000',
-        'category': 'Restaurant',
-        'isFavorite': false,
-      },
-      {
-        'id': '2',
-        'name': 'Bourbon Coffee',
-        'location': 'Kacyiru, Kigali',
-        'image': 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500',
-        'rating': 4.3,
-        'reviews': 85,
-        'priceRange': 'RWF 3,000 - 8,000',
-        'category': 'Cafe',
-        'isFavorite': false,
-      },
-      {
-        'id': '3',
-        'name': 'Pizza Corner',
-        'location': 'Remera, Kigali',
-        'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=500',
-        'rating': 4.1,
-        'reviews': 95,
-        'priceRange': 'RWF 5,000 - 15,000',
-        'category': 'Fast Food',
-        'isFavorite': false,
-      },
-    ];
-
-    if (_selectedSubCategory == 'All') return allPlaces;
-    return allPlaces.where((place) => place['category'] == _selectedSubCategory).toList();
-  }
-
-  List<Map<String, dynamic>> _getMockNightlifePlaces() {
-    final allPlaces = [
-      {
-        'id': 'nightlife_1',
-        'name': 'Sky Lounge',
-        'location': 'Kigali Heights, Kigali',
-        'image': 'https://images.unsplash.com/photo-1533174072545-7bd46c006744?w=500',
-        'rating': 4.5,
-        'reviews': 120,
-        'priceRange': 'RWF 15,000 - 30,000',
-        'category': 'Lounge',
-        'isFavorite': false,
-      },
-      {
-        'id': 'nightlife_2',
-        'name': 'Club Amahoro',
-        'location': 'Remera, Kigali',
-        'image': 'https://images.unsplash.com/photo-1598032790856-ce216b72780b?w=500',
-        'rating': 4.2,
-        'reviews': 85,
-        'priceRange': 'RWF 10,000 - 25,000',
-        'category': 'Club',
-        'isFavorite': false,
-      },
-      {
-        'id': 'nightlife_3',
-        'name': 'Rooftop Bar',
-        'location': 'Kiyovu, Kigali',
-        'image': 'https://images.unsplash.com/photo-1514933651105-0646ef958e0e?w=500',
-        'rating': 4.7,
-        'reviews': 150,
-        'priceRange': 'RWF 20,000 - 35,000',
-        'category': 'Bar',
-        'isFavorite': false,
-      },
-    ];
-
-    if (_selectedSubCategory == 'All') return allPlaces;
-    return allPlaces.where((place) => place['category'] == _selectedSubCategory).toList();
-  }
-
-  List<Map<String, dynamic>> _getMockExperiences() {
-    final allExperiences = [
-      {
-        'id': 'exp_1',
-        'name': 'Gorilla Trekking Experience',
-        'location': 'Volcanoes National Park, Musanze',
-        'image': 'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=500',
-        'rating': 4.9,
-        'reviews': 250,
-        'priceRange': 'RWF 150,000 - 200,000',
-        'category': 'Tours',
-        'isFavorite': false,
-      },
-      {
-        'id': 'exp_2',
-        'name': 'Nyungwe Canopy Walk',
-        'location': 'Nyungwe National Park, Huye',
-        'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500',
-        'rating': 4.7,
-        'reviews': 180,
-        'priceRange': 'RWF 80,000 - 120,000',
-        'category': 'Adventures',
-        'isFavorite': false,
-      },
-      {
-        'id': 'exp_3',
-        'name': 'Cultural Village Tour',
-        'location': 'Iby\'Iwacu Cultural Village, Musanze',
-        'image': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500',
-        'rating': 4.5,
-        'reviews': 120,
-        'priceRange': 'RWF 30,000 - 50,000',
-        'category': 'Cultural',
-        'isFavorite': false,
-      },
-    ];
-
-    if (_selectedSubCategory == 'All') return allExperiences;
-    return allExperiences.where((exp) => exp['category'] == _selectedSubCategory).toList();
-  }
-
-  List<Map<String, dynamic>> _getMockTourOperators() {
-    return [
-      {
-        'id': 'op_1',
-        'name': 'Rwanda Eco Tours',
-        'location': 'Kigali, Rwanda',
-        'image': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500',
-        'rating': 4.8,
-        'reviews': 150,
-        'description': 'Specialized in eco-friendly tours and wildlife experiences.',
-      },
-      {
-        'id': 'op_2',
-        'name': 'Adventure Rwanda',
-        'location': 'Musanze, Rwanda',
-        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
-        'rating': 4.6,
-        'reviews': 200,
-        'description': 'Leading adventure tour operator with expert guides.',
-      },
-    ];
-  }
 }

@@ -32,6 +32,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   String? _categoryId;
   String? _categoryName;
   bool _isAccommodation = false;
+  bool _isDining = false;
   
   // Subcategories and navigation
   List<Map<String, dynamic>> _subcategories = [];
@@ -166,7 +167,29 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           _sortBy = null; // Reset sort when selecting subcategory
         }
       }
+      
+      // Invalidate listings provider to refresh with new category/sort
+      ref.invalidate(listingsProvider(ListingsParams(
+        page: _currentPage,
+        limit: _pageSize,
+        category: _selectedCategoryId ?? _categoryId,
+        rating: _minRating,
+        minPrice: _minPrice,
+        maxPrice: _maxPrice,
+        isFeatured: _isFeatured,
+        sortBy: _sortBy,
+      )));
     });
+  }
+
+  bool _isDiningCategory(String? categoryName, String? categorySlug) {
+    if (categoryName == null && (categorySlug == null || categorySlug.isEmpty)) return false;
+    final name = (categoryName ?? '').toLowerCase();
+    final slug = (categorySlug ?? widget.category).toLowerCase();
+    return name.contains('dining') || 
+           name.contains('restaurant') ||
+           slug.contains('dining') ||
+           slug.contains('restaurant');
   }
 
   bool _isAccommodationCategory(String? categoryName, String? categorySlug) {
@@ -189,6 +212,29 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         _categoryId = categoryData['id'] as String?;
         _categoryName = categoryData['name'] as String?;
         _isAccommodation = _isAccommodationCategory(_categoryName, widget.category);
+        _isDining = _isDiningCategory(_categoryName, widget.category);
+        
+        // Set initial selected category ID
+        if (_selectedCategoryId == null || _selectedCategoryId != _categoryId) {
+          _selectedCategoryId = _categoryId;
+          _currentParentCategoryId = _categoryId;
+          
+          // Invalidate listings provider to fetch real data for this category
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              ref.invalidate(listingsProvider(ListingsParams(
+                page: 1,
+                limit: _pageSize,
+                category: _categoryId,
+                rating: _minRating,
+                minPrice: _minPrice,
+                maxPrice: _maxPrice,
+                isFeatured: _isFeatured,
+                sortBy: _sortBy,
+              )));
+            }
+          });
+        }
         
         // Extract children from category data
         final children = categoryData['children'] as List?;
@@ -602,7 +648,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     // Check if favorited
     final isFavoritedAsync = ref.watch(isListingFavoritedProvider(listingId));
 
-    return PlaceCard(
+    final placeCard = PlaceCard(
       name: name,
       location: locationText,
       image: imageUrl ?? '',
@@ -648,6 +694,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         }
       },
     );
+
+    return placeCard;
   }
 
   Widget _buildAccommodationCard(Map<String, dynamic> listing) {

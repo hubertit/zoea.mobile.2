@@ -253,6 +253,7 @@ export class ListingsService {
     operatingHours?: any;
     metaTitle?: string;
     metaDescription?: string;
+    acceptsBookings?: boolean;
   }) {
     // Generate slug if not provided
     const slug = data.slug || this.generateSlug(data.name);
@@ -287,6 +288,7 @@ export class ListingsService {
         operatingHours: data.operatingHours,
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
+        acceptsBookings: data.acceptsBookings ?? false,
       },
       include: {
         category: true,
@@ -318,6 +320,7 @@ export class ListingsService {
     operatingHours: any;
     metaTitle: string;
     metaDescription: string;
+    acceptsBookings: boolean;
   }>) {
     const listing = await this.prisma.listing.findUnique({ where: { id } });
     if (!listing) throw new NotFoundException('Listing not found');

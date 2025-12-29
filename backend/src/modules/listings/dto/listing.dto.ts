@@ -87,6 +87,10 @@ export class CreateListingDto {
   @IsOptional()
   operatingHours?: any;
 
+  @ApiPropertyOptional({ example: false, description: 'Whether the listing accepts bookings' })
+  @IsBoolean() @IsOptional()
+  acceptsBookings?: boolean;
+
   @ApiPropertyOptional({ example: 'Grand Hotel Kigali | Best Luxury Hotel' })
   @IsString() @IsOptional()
   metaTitle?: string;
@@ -156,6 +160,10 @@ export class UpdateListingDto {
   @ApiPropertyOptional()
   @IsOptional()
   operatingHours?: any;
+
+  @ApiPropertyOptional({ description: 'Whether the listing accepts bookings' })
+  @IsBoolean() @IsOptional()
+  acceptsBookings?: boolean;
 }
 
 export class AddListingImageDto {

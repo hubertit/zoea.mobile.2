@@ -18,6 +18,7 @@ class ListingsParams {
   final double? rating;
   final bool? isFeatured;
   final String? sortBy;
+  final String? status;
 
   const ListingsParams({
     this.page,
@@ -31,6 +32,7 @@ class ListingsParams {
     this.rating,
     this.isFeatured,
     this.sortBy,
+    this.status,
   });
 
   @override
@@ -48,7 +50,8 @@ class ListingsParams {
           maxPrice == other.maxPrice &&
           rating == other.rating &&
           isFeatured == other.isFeatured &&
-          sortBy == other.sortBy;
+          sortBy == other.sortBy &&
+          status == other.status;
 
   @override
   int get hashCode =>
@@ -62,7 +65,8 @@ class ListingsParams {
       maxPrice.hashCode ^
       rating.hashCode ^
       isFeatured.hashCode ^
-      sortBy.hashCode;
+      sortBy.hashCode ^
+      status.hashCode;
 }
 
 /// Provider for all listings with pagination
@@ -80,6 +84,7 @@ final listingsProvider = FutureProvider.family<Map<String, dynamic>, ListingsPar
     rating: params.rating,
     isFeatured: params.isFeatured,
     sortBy: params.sortBy,
+    status: params.status,
   );
 });
 
@@ -151,6 +156,7 @@ class ListingsByTypeParams {
   final String? category;
   final String? city;
   final String? search;
+  final String? status;
 
   const ListingsByTypeParams({
     required this.type,
@@ -159,6 +165,7 @@ class ListingsByTypeParams {
     this.category,
     this.city,
     this.search,
+    this.status,
   });
 
   @override
@@ -171,7 +178,8 @@ class ListingsByTypeParams {
           limit == other.limit &&
           category == other.category &&
           city == other.city &&
-          search == other.search;
+          search == other.search &&
+          status == other.status;
 
   @override
   int get hashCode =>
@@ -180,7 +188,8 @@ class ListingsByTypeParams {
       limit.hashCode ^
       category.hashCode ^
       city.hashCode ^
-      search.hashCode;
+      search.hashCode ^
+      status.hashCode;
 }
 
 /// Provider for listings by type
@@ -193,6 +202,7 @@ final listingsByTypeProvider = FutureProvider.family<Map<String, dynamic>, Listi
     category: params.category,
     city: params.city,
     search: params.search,
+    status: params.status,
   );
 });
 

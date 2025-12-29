@@ -435,7 +435,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
               }
 
               final listing = listings[index] as Map<String, dynamic>;
-              return _buildListingCard(listing);
+              return _buildRegularListingCard(listing);
             },
           ),
         );
@@ -491,11 +491,11 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
     );
   }
 
-  Widget _buildListingCard(Map<String, dynamic> listing) {
+  Widget _buildRegularListingCard(Map<String, dynamic> listing) {
     final listingId = listing['id'] as String? ?? '';
     final name = listing['name'] as String? ?? 'Unknown';
     
-    // Extract image URL
+    // Extract image URL - images is a List of Maps with media objects
     String? imageUrl;
     if (listing['images'] != null && listing['images'] is List && (listing['images'] as List).isNotEmpty) {
       final firstImage = (listing['images'] as List).first;
@@ -506,7 +506,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       }
     }
     
-    // Extract address
+    // Extract address - address is directly on listing, city is an object
     final address = listing['address'] as String? ?? '';
     String cityName = '';
     final city = listing['city'];
@@ -529,10 +529,11 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             ? double.tryParse(listing['rating']) ?? 0.0
             : (listing['rating'] as num?)?.toDouble() ?? 0.0)
         : 0.0;
+    // Backend returns _count.reviews, not reviewCount directly
     final reviewCount = (listing['_count'] as Map<String, dynamic>?)?['reviews'] as int? ?? 
                        listing['reviewCount'] as int? ?? 0;
     
-    // Extract price
+    // Extract price - minPrice and currency are directly on listing
     final minPrice = listing['minPrice'] != null
         ? (listing['minPrice'] is String
             ? double.tryParse(listing['minPrice']) ?? 0.0
@@ -548,10 +549,6 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         ? (maxPrice > minPrice ? '$currency ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}' : '$currency ${minPrice.toStringAsFixed(0)}')
         : 'Price not available';
 
-    // Get category name
-    final category = listing['category'] as Map<String, dynamic>?;
-    final categoryName = category?['name'] as String? ?? 'Dining';
-
     // Check if favorited
     final isFavoritedAsync = ref.watch(isListingFavoritedProvider(listingId));
 
@@ -562,7 +559,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       rating: rating,
       reviews: reviewCount,
       priceRange: priceText,
-      category: categoryName,
+      category: _diningCategoryName ?? 'Dining',
       isFavorite: isFavoritedAsync.when(
         data: (isFavorited) => isFavorited,
         loading: () => false,
