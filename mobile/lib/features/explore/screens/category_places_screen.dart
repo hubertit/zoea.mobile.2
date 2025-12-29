@@ -24,7 +24,7 @@ class CategoryPlacesScreen extends ConsumerStatefulWidget {
 
 class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     with TickerProviderStateMixin {
-  late TabController _tabController;
+  TabController? _tabController;
   late AnimationController _shimmerController;
   late Animation<double> _shimmerAnimation;
   int _currentPage = 1;
@@ -32,6 +32,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   String? _categoryId;
   String? _categoryName;
   bool _isAccommodation = false;
+  
+  // Subcategories and navigation
+  List<Map<String, dynamic>> _subcategories = [];
+  String? _selectedCategoryId; // Currently selected category/subcategory ID for listings
+  // ignore: unused_field
+  int _selectedTabIndex = 0; // 0 = All, 1 = Popular, 2+ = subcategories (tracked for state management)
+  String? _currentParentCategoryId; // Track which category's children we're showing
+  bool _isInitializingTabs = false; // Prevent listener from firing during initialization
   
   // Filter state
   double? _minRating;
@@ -47,7 +55,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // All, Popular for now
+    // TabController will be initialized after we know the number of tabs
     
     // Shimmer animation controller
     _shimmerController = AnimationController(
@@ -70,9 +78,95 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     _shimmerController.dispose();
     super.dispose();
+  }
+
+  void _initializeTabs(List<Map<String, dynamic>>? children) {
+    _isInitializingTabs = true;
+    
+    // Extract direct children only (not nested)
+    _subcategories = (children ?? [])
+        .where((child) => child['isActive'] != false)
+        .toList();
+    
+    final tabCount = 2 + _subcategories.length; // All + Popular + subcategories
+    
+    // Dispose old controller if exists
+    _tabController?.dispose();
+    
+    // Create new controller with correct number of tabs
+    _tabController = TabController(length: tabCount, vsync: this);
+    _tabController!.addListener(() {
+      // Don't handle tab change during initialization
+      if (!_isInitializingTabs && !_tabController!.indexIsChanging) {
+        _handleTabChange(_tabController!.index);
+      }
+    });
+    
+    // Set initial selected category
+    if (_selectedCategoryId == null) {
+      _selectedCategoryId = _categoryId;
+      _currentParentCategoryId = _categoryId;
+    }
+    
+    _isInitializingTabs = false;
+  }
+
+  void _handleTabChange(int index) {
+    if (!mounted || _tabController == null) return;
+    
+    setState(() {
+      _selectedTabIndex = index;
+      _currentPage = 1; // Reset to first page
+      
+      if (index == 0) {
+        // "All" tab - show listings from current parent category
+        _selectedCategoryId = _currentParentCategoryId ?? _categoryId;
+        _sortBy = null; // Reset sort for "All"
+      } else if (index == 1) {
+        // "Popular" tab - show popular listings from current parent category
+        _selectedCategoryId = _currentParentCategoryId ?? _categoryId;
+        _sortBy = 'popular';
+      } else {
+        // Subcategory tab - show listings from selected subcategory
+        final subcategoryIndex = index - 2;
+        if (subcategoryIndex < _subcategories.length) {
+          final subcategory = _subcategories[subcategoryIndex];
+          final subcategoryId = subcategory['id'] as String?;
+          final subcategoryChildren = subcategory['children'] as List?;
+          
+          // If this subcategory has children, update tabs to show them
+          if (subcategoryChildren != null && subcategoryChildren.isNotEmpty) {
+            // Prevent infinite loop: only update if we're not already showing these children
+            if (_currentParentCategoryId != subcategoryId) {
+              _currentParentCategoryId = subcategoryId;
+              _isInitializingTabs = true;
+              _initializeTabs(List<Map<String, dynamic>>.from(subcategoryChildren));
+              // Reset to "All" tab when switching to subcategory with children
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && _tabController != null) {
+                  _isInitializingTabs = true;
+                  _tabController!.animateTo(0);
+                  setState(() {
+                    _selectedTabIndex = 0;
+                    _selectedCategoryId = subcategoryId;
+                    _sortBy = null;
+                    _isInitializingTabs = false;
+                  });
+                }
+              });
+              return; // Exit early, will be updated in postFrameCallback
+            }
+          }
+          
+          // No children or already showing this category's children - just show its listings
+          _selectedCategoryId = subcategoryId;
+          _sortBy = null; // Reset sort when selecting subcategory
+        }
+      }
+    });
   }
 
   bool _isAccommodationCategory(String? categoryName, String? categorySlug) {
@@ -95,6 +189,20 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         _categoryId = categoryData['id'] as String?;
         _categoryName = categoryData['name'] as String?;
         _isAccommodation = _isAccommodationCategory(_categoryName, widget.category);
+        
+        // Extract children from category data
+        final children = categoryData['children'] as List?;
+        
+        // Initialize tabs if not already done or if category changed
+        if (_tabController == null || _currentParentCategoryId != _categoryId) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _initializeTabs(children != null 
+                  ? List<Map<String, dynamic>>.from(children)
+                  : null);
+            }
+          });
+        }
 
         return Scaffold(
           backgroundColor: Colors.grey[50],
@@ -160,7 +268,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                 ],
               ),
             ],
-            bottom: _isAccommodation ? null : TabBar(
+            bottom: _isAccommodation || _tabController == null ? null : TabBar(
               controller: _tabController,
               indicatorColor: AppTheme.primaryColor,
               labelColor: AppTheme.primaryColor,
@@ -169,9 +277,13 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               isScrollable: true,
               tabAlignment: TabAlignment.start,
               labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Popular'),
+              tabs: [
+                const Tab(text: 'All'),
+                const Tab(text: 'Popular'),
+                ..._subcategories.map((subcategory) {
+                  final name = subcategory['name'] as String? ?? 'Unknown';
+                  return Tab(text: name);
+                }),
               ],
             ),
           ),
@@ -256,17 +368,20 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     );
   }
 
+  // Getter for the category ID to use for listings
+  String? get _categoryIdForListings => _selectedCategoryId ?? _categoryId;
+
   Widget _buildListingsList() {
     if (_categoryId == null) {
       return const Center(child: Text('Category not found'));
     }
-
+    
     final listingsAsync = ref.watch(
       listingsProvider(
         ListingsParams(
           page: _currentPage,
           limit: _pageSize,
-          category: _categoryId,
+          category: _categoryIdForListings,
           rating: _minRating,
           minPrice: _minPrice,
           maxPrice: _maxPrice,
@@ -348,7 +463,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                               ListingsParams(
                                 page: _currentPage,
                                 limit: _pageSize,
-                                category: _categoryId,
+                                category: _categoryIdForListings,
                                 rating: _minRating,
                                 minPrice: _minPrice,
                                 maxPrice: _maxPrice,
@@ -1062,7 +1177,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                               ListingsParams(
                                 page: 1,
                                 limit: _pageSize,
-                                category: _categoryId,
+                                category: _categoryIdForListings,
                                 rating: _minRating,
                                 minPrice: _minPrice,
                                 maxPrice: _maxPrice,
@@ -1226,7 +1341,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                               ListingsParams(
                                 page: 1,
                                 limit: _pageSize,
-                                category: _categoryId,
+                                category: _categoryIdForListings,
                                 rating: _minRating,
                                 minPrice: _minPrice,
                                 maxPrice: _maxPrice,
