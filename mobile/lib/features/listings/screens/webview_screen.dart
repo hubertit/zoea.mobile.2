@@ -31,73 +31,135 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   void initState() {
     super.initState();
+    // Debug: Print URL to verify it's correct
+    debugPrint('WebViewScreen: Loading URL: ${widget.url}');
     _initializeWebView();
   }
 
   void _initializeWebView() {
+    // Parse and validate URL
+    Uri? uri;
+    try {
+      String urlToLoad = widget.url.trim();
+      
+      // The router already decodes query parameters, so use URL as-is
+      // But ensure it's a valid URI
+      uri = Uri.tryParse(urlToLoad);
+      
+      // If parsing failed, try adding https://
+      if (uri == null || !uri.hasScheme) {
+        if (!urlToLoad.startsWith('http://') && !urlToLoad.startsWith('https://')) {
+          urlToLoad = 'https://$urlToLoad';
+        }
+        uri = Uri.parse(urlToLoad);
+      }
+      
+      debugPrint('WebViewScreen: Loading URL: ${uri.toString()}');
+    } catch (e) {
+      debugPrint('WebViewScreen: Error parsing URL: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = 'Invalid URL: ${widget.url}';
+        });
+      }
+      return;
+    }
+
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1')
+      ..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading state based on progress
-            setState(() {
-              _loadingProgress = progress;
-              _isLoading = progress < 100;
-            });
+            if (mounted) {
+              setState(() {
+                _loadingProgress = progress;
+                _isLoading = progress < 100;
+              });
+            }
           },
           onPageStarted: (String url) {
-            setState(() {
-              _isLoading = true;
-              _hasError = false;
-              _errorMessage = null;
-            });
+            if (mounted) {
+              setState(() {
+                _isLoading = true;
+                _hasError = false;
+                _errorMessage = null;
+                _loadingProgress = 0;
+              });
+            }
           },
           onPageFinished: (String url) {
-            setState(() {
-              _isLoading = false;
-            });
-            // Get page title
-            _controller.getTitle().then((title) {
-              if (mounted) {
-                setState(() {
-                  _currentTitle = title ?? widget.title ?? 'Loading...';
-                });
-              }
-            });
-            // Check navigation state
-            _controller.canGoBack().then((canGoBack) {
-              if (mounted) {
-                setState(() {
-                  _canGoBack = canGoBack;
-                });
-              }
-            });
-            _controller.canGoForward().then((canGoForward) {
-              if (mounted) {
-                setState(() {
-                  _canGoForward = canGoForward;
-                });
-              }
-            });
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+                _loadingProgress = 100;
+              });
+              // Get page title
+              _controller.getTitle().then((title) {
+                if (mounted) {
+                  setState(() {
+                    _currentTitle = title ?? widget.title ?? 'Loading...';
+                  });
+                }
+              });
+              // Check navigation state
+              _controller.canGoBack().then((canGoBack) {
+                if (mounted) {
+                  setState(() {
+                    _canGoBack = canGoBack;
+                  });
+                }
+              });
+              _controller.canGoForward().then((canGoForward) {
+                if (mounted) {
+                  setState(() {
+                    _canGoForward = canGoForward;
+                  });
+                }
+              });
+            }
           },
           onWebResourceError: (WebResourceError error) {
-            setState(() {
-              _isLoading = false;
-              _hasError = true;
-              _errorMessage = error.description ?? 'Failed to load page';
-            });
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+                _hasError = true;
+                final baseMessage = error.description ?? 'Failed to load page';
+                _errorMessage = 'Error ${error.errorCode}: $baseMessage';
+              });
+            }
           },
           onHttpError: (HttpResponseError error) {
-            setState(() {
-              _isLoading = false;
-              _hasError = true;
-              _errorMessage = 'HTTP Error: ${error.response?.statusCode ?? 'Unknown'}';
-            });
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+                _hasError = true;
+                _errorMessage = 'HTTP Error: ${error.response?.statusCode ?? 'Unknown'}';
+              });
+            }
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            // Allow all navigation
+            return NavigationDecision.navigate;
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.url));
+      ..loadRequest(uri);
+
+    // Add timeout to detect if page is stuck loading
+    Future.delayed(const Duration(seconds: 30), () {
+      if (mounted && _isLoading && !_hasError) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = 'Page is taking too long to load. Please check your internet connection.';
+        });
+      }
+    });
   }
 
   void _reload() {
@@ -191,22 +253,20 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   } else {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        AppTheme.errorSnackBar(
-                          message: 'Could not open URL in external browser',
-                        ),
-                      );
-                    }
-                  }
-                } catch (e) {
-                  if (mounted) {
+                    if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       AppTheme.errorSnackBar(
-                        message: 'Error opening browser: ${e.toString()}',
+                        message: 'Could not open URL in external browser',
                       ),
                     );
                   }
+                } catch (e) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    AppTheme.errorSnackBar(
+                      message: 'Error opening browser: ${e.toString()}',
+                    ),
+                  );
                 }
               }
             },
@@ -269,9 +329,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       color: AppTheme.errorColor.withOpacity(0.6),
                     ),
                     const SizedBox(height: 16),
-                    Text(
+                    const Text(
                       'Failed to load page',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.primaryTextColor,

@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/event.dart';
-import '../../../core/config/app_config.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final Event event;
@@ -47,10 +46,11 @@ class EventDetailScreen extends ConsumerWidget {
                       : '';
                   final dateText = dateFormat.format(startDate);
                   
-                  final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText! Join me on Zoea!';
-                  final shareUrl = '${AppConfig.apiBaseUrl.replaceAll('/api', '')}/events/${event.id}';
+                  // Share Sinc link instead of Zoea link
+                  final sincUrl = 'https://www.sinc.events/${event.slug}';
+                  final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
                   
-                  await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
+                  await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
                 },
               ),
               IconButton(
@@ -286,7 +286,7 @@ class EventDetailScreen extends ConsumerWidget {
                       style: AppTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
-                    ...eventDetails.tickets.map((ticket) => _buildTicketCard(ticket)),
+                    ...eventDetails.tickets.map((ticket) => _buildTicketCard(context, ticket, eventDetails.name)),
                     const SizedBox(height: 24),
                   ],
                 ],
@@ -322,7 +322,7 @@ class EventDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTicketCard(EventTicket ticket) {
+  Widget _buildTicketCard(BuildContext context, EventTicket ticket, String eventName) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 1,
@@ -383,8 +383,11 @@ class EventDetailScreen extends ConsumerWidget {
             const SizedBox(width: 16),
             ElevatedButton(
               onPressed: ticket.disabled ? null : () {
-                // TODO: Implement ticket purchase
-                _showTicketPurchaseDialog(ticket);
+                // Open Sinc page in webview
+                final sincUrl = 'https://www.sinc.events/${event.slug}';
+                context.push(
+                  '/webview?url=${Uri.encodeComponent(sincUrl)}&title=${Uri.encodeComponent(eventName)}',
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
@@ -450,13 +453,11 @@ class EventDetailScreen extends ConsumerWidget {
               flex: 2,
               child: ElevatedButton(
                 onPressed: () {
-                  if (hasTickets) {
-                    // Show ticket selection
-                    _showTicketSelectionDialog();
-                  } else {
-                    // Free event
-                    _showFreeEventDialog();
-                  }
+                  // Open Sinc page in webview for both ticket selection and free events
+                  final sincUrl = 'https://www.sinc.events/${event.slug}';
+                  context.push(
+                    '/webview?url=${Uri.encodeComponent(sincUrl)}&title=${Uri.encodeComponent(eventDetails.name)}',
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
@@ -488,19 +489,5 @@ class EventDetailScreen extends ConsumerWidget {
     return price.toString();
   }
 
-  void _showTicketPurchaseDialog(EventTicket ticket) {
-    // TODO: Implement ticket purchase dialog
-    // Purchase ticket: ${ticket.name} - ${ticket.price} ${ticket.currency}
-  }
-
-  void _showTicketSelectionDialog() {
-    // TODO: Implement ticket selection dialog
-    // Show ticket selection
-  }
-
-  void _showFreeEventDialog() {
-    // TODO: Implement free event join dialog
-    // Join free event
-  }
 }
 

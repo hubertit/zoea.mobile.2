@@ -234,10 +234,12 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   ),
                   selected: isSelected,
                   onSelected: (selected) {
-                    setState(() {
-                      _selectedSubCategory = subCategory['value']!;
-                      _selectedSubCategoryId = subCategory['id'];
-                    });
+                    if (selected) {
+                      setState(() {
+                        _selectedSubCategory = subCategory['value']!;
+                        _selectedSubCategoryId = subCategory['id'];
+                      });
+                    }
                   },
                   selectedColor: AppTheme.primaryColor,
                   backgroundColor: AppTheme.backgroundColor,
@@ -286,6 +288,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               limit: 100, // Fetch enough results for search
               category: categoryIdForListings,
               search: _searchQuery.isEmpty ? null : _searchQuery,
+              status: 'active', // Only fetch active listings
             ),
           ),
         );
@@ -314,8 +317,9 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     ListingsParams(
                       page: 1,
                       limit: 100,
-                      category: categoryId,
+                      category: categoryIdForListings,
                       search: _searchQuery.isEmpty ? null : _searchQuery,
+                      status: 'active',
                     ),
                   ),
                 );
