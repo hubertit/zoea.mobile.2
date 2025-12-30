@@ -149,15 +149,15 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                   
                   const SizedBox(height: AppTheme.spacing16),
                   
-                  // Message
-                  Text(
-                    'Our servers are currently undergoing maintenance to serve you better. We\'ll be back online shortly.',
-                    style: AppTheme.bodyLarge.copyWith(
-                      color: AppTheme.secondaryTextColor,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                      // Message
+                      Text(
+                        'Our systems are currently undergoing maintenance to serve you better. We\'ll be back online shortly.',
+                        style: AppTheme.bodyLarge.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                   
                   const SizedBox(height: AppTheme.spacing32),
                   
