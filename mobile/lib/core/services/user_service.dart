@@ -272,26 +272,65 @@ class UserService {
   }
 
   /// Get user preferences
+  /// Now returns all fields including new UX-first data collection fields
   Future<UserPreferences> getPreferences() async {
     try {
       final response = await _dio.get('${AppConfig.usersEndpoint}/me/preferences');
 
       if (response.statusCode == 200) {
-        final prefsData = response.data;
+        final prefsData = response.data as Map<String, dynamic>;
+        
+        // Transform API response to match our model format
+        // API uses preferredLanguage/preferredCurrency, but our model uses language/currency
+        final transformedData = <String, dynamic>{
+          'language': prefsData['preferredLanguage']?.toString(),
+          'currency': prefsData['preferredCurrency']?.toString() ?? 'RWF',
+          'interests': prefsData['interests'] != null && prefsData['interests'] is List
+              ? List<String>.from(prefsData['interests'])
+              : [],
+        };
+
+        // Handle notification preferences
         final notificationPrefs = prefsData['notificationPreferences'] as Map<String, dynamic>?;
         final notificationsEnabled = notificationPrefs?['push'] ?? 
                                      notificationPrefs?['email'] ?? 
                                      true;
-        
-        return UserPreferences(
-          language: prefsData['preferredLanguage']?.toString(),
-          currency: prefsData['preferredCurrency']?.toString() ?? 'RWF',
-          notificationsEnabled: notificationsEnabled,
-          locationEnabled: !(prefsData['isPrivate'] ?? false), // Inverse of isPrivate
-          interests: prefsData['interests'] != null && prefsData['interests'] is List
-              ? List<String>.from(prefsData['interests'])
-              : [],
-        );
+        transformedData['notificationsEnabled'] = notificationsEnabled;
+
+        // Handle location (API uses isPrivate, inverse of locationEnabled)
+        transformedData['locationEnabled'] = !(prefsData['isPrivate'] ?? false);
+
+        // Include new UX-first fields if present
+        if (prefsData['countryOfOrigin'] != null) {
+          transformedData['countryOfOrigin'] = prefsData['countryOfOrigin'];
+        }
+        if (prefsData['userType'] != null) {
+          transformedData['userType'] = prefsData['userType'];
+        }
+        if (prefsData['visitPurpose'] != null) {
+          transformedData['visitPurpose'] = prefsData['visitPurpose'];
+        }
+        if (prefsData['ageRange'] != null) {
+          transformedData['ageRange'] = prefsData['ageRange'];
+        }
+        if (prefsData['gender'] != null) {
+          transformedData['gender'] = prefsData['gender'];
+        }
+        if (prefsData['lengthOfStay'] != null) {
+          transformedData['lengthOfStay'] = prefsData['lengthOfStay'];
+        }
+        if (prefsData['travelParty'] != null) {
+          transformedData['travelParty'] = prefsData['travelParty'];
+        }
+        if (prefsData['dataCollectionFlags'] != null) {
+          transformedData['dataCollectionFlags'] = prefsData['dataCollectionFlags'];
+        }
+        if (prefsData['dataCollectionCompletedAt'] != null) {
+          transformedData['dataCollectionCompletedAt'] = prefsData['dataCollectionCompletedAt'];
+        }
+
+        // Use fromJson to parse all fields
+        return UserPreferences.fromJson(transformedData);
       } else {
         throw Exception('Failed to fetch preferences: ${response.statusMessage}');
       }
@@ -321,17 +360,27 @@ class UserService {
   }
 
   /// Update user preferences
+  /// Now supports both existing and new UX-first data collection fields
   Future<UserPreferences> updatePreferences({
     String? language,
     String? currency,
     bool? notificationsEnabled,
     bool? locationEnabled,
     List<String>? interests,
+    // New UX-first fields
+    String? countryOfOrigin,
+    UserType? userType,
+    VisitPurpose? visitPurpose,
+    AgeRange? ageRange,
+    Gender? gender,
+    LengthOfStay? lengthOfStay,
+    TravelParty? travelParty,
+    Map<String, bool>? dataCollectionFlags,
   }) async {
     try {
       final data = <String, dynamic>{};
       
-      // API uses preferredLanguage and preferredCurrency at root level
+      // Existing fields - API uses preferredLanguage and preferredCurrency at root level
       if (language != null) data['preferredLanguage'] = language;
       if (currency != null) data['preferredCurrency'] = currency;
       if (interests != null) data['interests'] = interests;
@@ -345,6 +394,16 @@ class UserService {
         };
       }
 
+      // New UX-first fields
+      if (countryOfOrigin != null) data['countryOfOrigin'] = countryOfOrigin;
+      if (userType != null) data['userType'] = userType.apiValue;
+      if (visitPurpose != null) data['visitPurpose'] = visitPurpose.apiValue;
+      if (ageRange != null) data['ageRange'] = ageRange.apiValue;
+      if (gender != null) data['gender'] = gender.apiValue;
+      if (lengthOfStay != null) data['lengthOfStay'] = lengthOfStay.apiValue;
+      if (travelParty != null) data['travelParty'] = travelParty.apiValue;
+      if (dataCollectionFlags != null) data['dataCollectionFlags'] = dataCollectionFlags;
+
       final response = await _dio.put(
         '${AppConfig.usersEndpoint}/me/preferences',
         data: data,
@@ -352,20 +411,8 @@ class UserService {
 
       if (response.statusCode == 200) {
         final prefsData = response.data;
-        final notificationPrefs = prefsData['notificationPreferences'] as Map<String, dynamic>?;
-        final notifEnabled = notificationPrefs?['push'] ?? 
-                            notificationPrefs?['email'] ?? 
-                            true;
-        
-        return UserPreferences(
-          language: prefsData['preferredLanguage']?.toString(),
-          currency: prefsData['preferredCurrency']?.toString() ?? 'RWF',
-          notificationsEnabled: notifEnabled,
-          locationEnabled: !(prefsData['isPrivate'] ?? false),
-          interests: prefsData['interests'] != null && prefsData['interests'] is List
-              ? List<String>.from(prefsData['interests'])
-              : [],
-        );
+        // Use fromJson to parse all fields including new ones
+        return UserPreferences.fromJson(prefsData);
       } else {
         throw Exception('Failed to update preferences: ${response.statusMessage}');
       }

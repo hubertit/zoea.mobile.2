@@ -1,0 +1,254 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
+import '../config/app_config.dart';
+
+/// Service for passive data collection (searches, views, interactions)
+/// Respects user consent and batches data for efficient upload
+class AnalyticsService {
+  static const String _analyticsQueueKey = 'analytics_queue';
+  static const String _analyticsConsentKey = 'analytics_consent';
+  static const int _maxBatchSize = 50; // Max events per batch
+
+  final Dio _dio = AppConfig.dioInstance();
+
+  /// Check if analytics consent is given
+  Future<bool> hasConsent() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_analyticsConsentKey) ?? false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Set analytics consent
+  Future<void> setConsent(bool consent) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_analyticsConsentKey, consent);
+      
+      // If consent revoked, clear queue
+      if (!consent) {
+        await clearQueue();
+      }
+    } catch (e) {
+      // Silently fail
+    }
+  }
+
+  /// Track a search query
+  Future<void> trackSearch({
+    required String query,
+    String? category,
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'search',
+      data: {
+        'query': query,
+        if (category != null) 'category': category,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track a listing view
+  Future<void> trackListingView({
+    required String listingId,
+    String? category,
+    String? categorySlug,
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'listing_view',
+      data: {
+        'listingId': listingId,
+        if (category != null) 'category': category,
+        if (categorySlug != null) 'categorySlug': categorySlug,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track an event view
+  Future<void> trackEventView({
+    required String eventId,
+    String? eventType,
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'event_view',
+      data: {
+        'eventId': eventId,
+        if (eventType != null) 'eventType': eventType,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track navigation usage (zones only, aggregated)
+  Future<void> trackNavigation({
+    required String zone, // e.g., "Kigali", "Musanze", etc.
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'navigation',
+      data: {
+        'zone': zone,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track app usage (session start)
+  Future<void> trackSessionStart() async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'session_start',
+      data: {
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track booking attempt
+  Future<void> trackBookingAttempt({
+    required String listingId,
+    String? listingType,
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'booking_attempt',
+      data: {
+        'listingId': listingId,
+        if (listingType != null) 'listingType': listingType,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Track booking completion
+  Future<void> trackBookingCompletion({
+    required String bookingId,
+    required String listingId,
+  }) async {
+    if (!await hasConsent()) return;
+
+    await _addEvent(
+      type: 'booking_completion',
+      data: {
+        'bookingId': bookingId,
+        'listingId': listingId,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Add an event to the queue
+  Future<void> _addEvent({
+    required String type,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final queueJson = prefs.getString(_analyticsQueueKey);
+      final queue = queueJson != null
+          ? List<Map<String, dynamic>>.from(jsonDecode(queueJson))
+          : <Map<String, dynamic>>[];
+
+      queue.add({
+        'type': type,
+        'data': data,
+      });
+
+      // Limit queue size
+      if (queue.length > _maxBatchSize * 2) {
+        queue.removeRange(0, queue.length - _maxBatchSize);
+      }
+
+      await prefs.setString(_analyticsQueueKey, jsonEncode(queue));
+
+      // Try to upload if queue is large enough
+      if (queue.length >= _maxBatchSize) {
+        await uploadBatch();
+      }
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
+  }
+
+  /// Upload batched events to the server
+  Future<void> uploadBatch() async {
+    if (!await hasConsent()) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final queueJson = prefs.getString(_analyticsQueueKey);
+      if (queueJson == null || queueJson.isEmpty) return;
+
+      final queue = List<Map<String, dynamic>>.from(jsonDecode(queueJson));
+      if (queue.isEmpty) return;
+
+      // Take up to maxBatchSize events
+      final batch = queue.length > _maxBatchSize
+          ? queue.sublist(0, _maxBatchSize)
+          : queue;
+
+      // Upload to server
+      final response = await _dio.post(
+        '${AppConfig.usersEndpoint}/me/analytics',
+        data: {
+          'events': batch,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Remove uploaded events from queue
+        final remaining = queue.length > _maxBatchSize
+            ? queue.sublist(_maxBatchSize)
+            : <Map<String, dynamic>>[];
+
+        await prefs.setString(_analyticsQueueKey, jsonEncode(remaining));
+      }
+    } catch (e) {
+      // Silently fail - will retry on next batch
+    }
+  }
+
+  /// Clear the analytics queue
+  Future<void> clearQueue() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_analyticsQueueKey);
+    } catch (e) {
+      // Silently fail
+    }
+  }
+
+  /// Get queue size (for debugging)
+  Future<int> getQueueSize() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final queueJson = prefs.getString(_analyticsQueueKey);
+      if (queueJson == null || queueJson.isEmpty) return 0;
+
+      final queue = List<Map<String, dynamic>>.from(jsonDecode(queueJson));
+      return queue.length;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /// Force upload (call periodically or on app close)
+  Future<void> forceUpload() async {
+    await uploadBatch();
+  }
+}
+
