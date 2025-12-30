@@ -19,6 +19,7 @@ import { MerchantsModule } from './modules/merchants/merchants.module';
 import { MediaModule } from './modules/media/media.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     MediaModule,
     AdminModule,
     AnalyticsModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

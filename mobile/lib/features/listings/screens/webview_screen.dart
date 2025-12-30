@@ -128,7 +128,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
               setState(() {
                 _isLoading = false;
                 _hasError = true;
-                final baseMessage = error.description ?? 'Failed to load page';
+                // error.description is non-nullable, use it directly
+                final baseMessage = error.description.isEmpty 
+                    ? 'Failed to load page'
+                    : error.description;
                 _errorMessage = 'Error ${error.errorCode}: $baseMessage';
               });
             }

@@ -341,7 +341,6 @@ class AnalyticsService {
 
   /// Generate a random string for session ID
   String _generateRandomString(int length) {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     final random = DateTime.now().millisecondsSinceEpoch % 1000000;
     return random.toString().padLeft(length, '0');
   }

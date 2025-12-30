@@ -8,6 +8,7 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/services/data_inference_service.dart';
+import '../../../core/services/health_check_service.dart';
 import '../../../core/models/user.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -59,6 +60,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
     
     if (!mounted) return;
+    
+    // First, check backend health
+    final isHealthy = await HealthCheckService.checkHealthWithRetry(
+      maxRetries: 2,
+      retryDelay: const Duration(seconds: 1),
+    );
+    
+    if (!mounted) return;
+    
+    if (!isHealthy) {
+      // Backend is down, show maintenance screen
+      if (mounted) {
+        context.go('/maintenance');
+      }
+      return;
+    }
     
     // Wait for auth provider to finish initializing (loading user from storage)
     // Check auth state multiple times until it's no longer loading

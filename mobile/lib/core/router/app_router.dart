@@ -5,6 +5,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
+import '../../features/auth/screens/maintenance_screen.dart';
 import '../../features/user_data_collection/screens/onboarding_data_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
@@ -128,6 +129,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      
+      // Maintenance Screen (shown when backend is unavailable)
+      GoRoute(
+        path: '/maintenance',
+        builder: (context, state) => const MaintenanceScreen(),
       ),
       
       // Auth Routes
