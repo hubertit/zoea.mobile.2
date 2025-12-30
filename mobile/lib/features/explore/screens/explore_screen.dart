@@ -599,16 +599,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         label: 'Flight Info',
                         onTap: () {
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Checking flight information...',
-                                style: AppTheme.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppTheme.primaryColor,
-                            ),
+                          // Open RwandAir website in webview
+                          context.push(
+                            '/webview?url=${Uri.encodeComponent('https://www.rwandair.com/')}&title=${Uri.encodeComponent('RwandAir')}',
                           );
                         },
                       ),
@@ -618,17 +611,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         isCustomIcon: true, // Flag to indicate custom icon/logo
                         onTap: () {
                           Navigator.pop(context);
-                          // TODO: Add Irembo functionality
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Opening Irembo...',
-                                style: AppTheme.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppTheme.primaryColor,
-                            ),
+                          // Open Irembo website in webview
+                          context.push(
+                            '/webview?url=${Uri.encodeComponent('https://irembo.gov.rw/')}&title=${Uri.encodeComponent('Irembo')}',
                           );
                         },
                       ),
@@ -638,17 +623,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         isCustomIcon: true, // Flag to indicate custom icon/logo
                         onTap: () {
                           Navigator.pop(context);
-                          // TODO: Add Visit Rwanda functionality
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Opening Visit Rwanda...',
-                                style: AppTheme.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppTheme.primaryColor,
-                            ),
+                          // Open Visit Rwanda website in webview
+                          context.push(
+                            '/webview?url=${Uri.encodeComponent('https://visitrwanda.com/')}&title=${Uri.encodeComponent('Visit Rwanda')}',
                           );
                         },
                       ),
