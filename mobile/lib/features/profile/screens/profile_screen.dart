@@ -123,7 +123,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     context.go('/profile/edit');
                   },
                 ),
-                _buildCompleteProfileMenuItem(),
                 _buildMenuItem(
                   icon: Icons.email_outlined,
                   title: 'Email & Phone',
@@ -522,110 +521,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildCompleteProfileMenuItem() {
-    final completionAsync = ref.watch(profileCompletionPercentageProvider);
-    
-    return completionAsync.when(
-      data: (percentage) {
-        final isComplete = percentage >= 100;
-        return InkWell(
-          onTap: () {
-            context.go('/profile/edit?tab=1');
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: isComplete
-                        ? AppTheme.successColor.withOpacity(0.1)
-                        : AppTheme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    isComplete ? Icons.check_circle : Icons.person_add_outlined,
-                    color: isComplete
-                        ? AppTheme.successColor
-                        : AppTheme.primaryColor,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Complete Profile',
-                            style: AppTheme.bodyMedium.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          if (!isComplete) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryColor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                '$percentage%',
-                                style: AppTheme.labelSmall.copyWith(
-                                  color: AppTheme.primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        isComplete
-                            ? 'Your profile is complete'
-                            : 'Help us personalize your experience',
-                        style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: AppTheme.secondaryTextColor,
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      loading: () => _buildMenuItem(
-        icon: Icons.person_add_outlined,
-        title: 'Complete Profile',
-        subtitle: 'Loading...',
-        onTap: () {},
-      ),
-      error: (_, __) => _buildMenuItem(
-        icon: Icons.person_add_outlined,
-        title: 'Complete Profile',
-        subtitle: 'Help us personalize your experience',
-        onTap: () {
-          context.go('/profile/complete-profile');
-        },
-      ),
-    );
-  }
 
   Widget _buildMenuItem({
     required IconData icon,
