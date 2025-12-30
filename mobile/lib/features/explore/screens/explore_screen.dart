@@ -533,24 +533,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                 _buildQuickActionItem(
-                  icon: Icons.atm,
-                  label: 'Find ATM',
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Finding nearby ATMs...',
-                          style: AppTheme.bodyMedium.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        backgroundColor: AppTheme.primaryColor,
-                      ),
-                    );
-                  },
-                ),
-                _buildQuickActionItem(
                   icon: Icons.tour,
                   label: 'Book Tour',
                   onTap: () {
