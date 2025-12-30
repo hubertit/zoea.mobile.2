@@ -674,24 +674,26 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
+          children: [
+            Icon(
               icon,
               color: AppTheme.primaryColor,
-              size: 24,
+              size: 22, // Match category card icon size
             ),
-            const SizedBox(height: 8),
-                  Text(
+            const SizedBox(height: 6), // Match category card spacing
+            Text(
               label,
-                    style: AppTheme.bodySmall.copyWith(
+              style: AppTheme.bodySmall.copyWith(
                 color: AppTheme.primaryTextColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 11,
-                    ),
-              textAlign: TextAlign.center,
-                  ),
-                ],
+                fontWeight: FontWeight.w500,
+                fontSize: 11,
               ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
