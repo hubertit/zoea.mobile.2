@@ -1624,13 +1624,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             color: Colors.grey[200]!,
             width: 1,
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1675,13 +1668,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             color: Colors.grey[200]!, // Match quick actions border
             width: 1,
           ),
-          boxShadow: [ // Add shadow like quick actions
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
