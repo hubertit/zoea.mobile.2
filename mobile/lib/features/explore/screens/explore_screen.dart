@@ -682,8 +682,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             // Use custom logo for Irembo if available, otherwise use icon
             if (isCustomIcon && label == 'Irembo')
-              // TODO: Replace with Irembo logo asset when available
-              // Image.asset('assets/images/irembo_logo.png', width: 22, height: 22)
+              // Irembo logo - uncomment when logo is added to assets/images/irembo_logo.png
+              // Image.asset(
+              //   'assets/images/irembo_logo.png',
+              //   width: 22,
+              //   height: 22,
+              //   errorBuilder: (context, error, stackTrace) => Icon(
+              //     icon,
+              //     color: AppTheme.primaryColor,
+              //     size: 22,
+              //   ),
+              // )
               Icon(
                 icon,
                 color: AppTheme.primaryColor,
