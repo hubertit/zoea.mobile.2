@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
+import '../../user_data_collection/utils/prompt_helper.dart';
 import '../../../core/providers/reviews_provider.dart';
 import '../../../core/config/app_config.dart';
 
@@ -404,6 +405,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                       padding: EdgeInsets.zero,
                       onPressed: () async {
                         try {
+                          final wasFavorited = isFavoritedAsync.value ?? false;
                           final favoritesService = ref.read(favoritesServiceProvider);
                           await favoritesService.toggleFavorite(listingId: listingId);
                           ref.invalidate(isListingFavoritedProvider(listingId));
@@ -411,11 +413,20 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               AppTheme.successSnackBar(
-                                message: isFavoritedAsync.value ?? false
+                                message: wasFavorited
                                     ? AppConfig.favoriteRemovedMessage
                                     : AppConfig.favoriteAddedMessage,
                               ),
                             );
+                            
+                            // Show interests prompt if place was just added to favorites
+                            if (!wasFavorited && context.mounted) {
+                              Future.delayed(const Duration(seconds: 1), () {
+                                if (context.mounted) {
+                                  PromptHelper.checkAndShowPromptAfterSavePlace(context, ref);
+                                }
+                              });
+                            }
                           }
                         } catch (e) {
                           if (context.mounted) {

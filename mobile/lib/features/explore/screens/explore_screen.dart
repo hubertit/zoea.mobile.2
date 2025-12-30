@@ -12,6 +12,7 @@ import '../../../core/providers/favorites_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
+import '../../user_data_collection/utils/prompt_helper.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -66,6 +67,15 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       parent: _rewardsAnimationController,
       curve: Curves.easeInOut,
     ));
+
+    // Check and show progressive prompt based on session count (after first frame)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          PromptHelper.checkAndShowPromptBasedOnSessions(context, ref);
+        }
+      });
+    });
   }
 
   @override

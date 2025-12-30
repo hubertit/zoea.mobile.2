@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/event.dart';
+import '../../user_data_collection/utils/prompt_helper.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final Event event;
@@ -22,6 +23,15 @@ class EventDetailScreen extends ConsumerWidget {
     final endDate = eventDetails.endDate;
     final dateFormat = DateFormat('EEEE, MMMM dd, yyyy');
     final timeFormat = DateFormat('HH:mm');
+
+    // Check and show prompt after viewing event (after first frame)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 2), () {
+        if (context.mounted) {
+          PromptHelper.checkAndShowPromptAfterViewEvent(context, ref);
+        }
+      });
+    });
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
