@@ -133,10 +133,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 TextFormField(
                   controller: _fullNameController,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Full Name',
                     hintText: 'Enter your full name',
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -158,10 +169,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'Enter your email address',
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -199,6 +221,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           _isPasswordVisible = !_isPasswordVisible;
                         });
                       },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -238,6 +271,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                         });
                       },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
                     ),
                   ),
                   validator: (value) {

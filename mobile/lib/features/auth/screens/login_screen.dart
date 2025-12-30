@@ -281,10 +281,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Email Address',
                         hintText: 'your.email@example.com',
-                        prefixIcon: Icon(Icons.email_outlined),
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                          borderSide: const BorderSide(color: AppTheme.dividerColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                          borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -357,6 +368,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 prefixIcon: const Icon(Icons.phone_outlined),
                                 hintText: '788606765',
                                 hintStyle: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                                  borderSide: const BorderSide(color: AppTheme.dividerColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                                  borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                                ),
                               ),
                               validator: PhoneValidator.validateInternationalPhone,
                             ),
@@ -387,6 +409,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             _isPasswordVisible = !_isPasswordVisible;
                           });
                         },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                        borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
                       ),
                     ),
                     validator: (value) {
