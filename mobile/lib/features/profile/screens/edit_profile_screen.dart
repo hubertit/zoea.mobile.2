@@ -214,26 +214,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           ),
           const SizedBox(width: 16),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
-          indicatorColor: AppTheme.primaryColor,
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelStyle: AppTheme.bodyMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: AppTheme.bodyMedium,
-          tabs: const [
-            Tab(text: 'Basic Info'),
-            Tab(text: 'Preferences'),
-          ],
-        ),
       ),
       body: Column(
         children: [
-          // Completion Badge
+          // Completion Badge (above tabs)
           _buildCompletionBadge(completionPercentage),
+          
+          // TabBar (below completion badge)
+          TabBar(
+            controller: _tabController,
+            labelColor: AppTheme.primaryColor,
+            unselectedLabelColor: AppTheme.secondaryTextColor,
+            indicatorColor: AppTheme.primaryColor,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelStyle: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+            unselectedLabelStyle: AppTheme.bodyMedium,
+            tabs: const [
+              Tab(text: 'Basic Info'),
+              Tab(text: 'Preferences'),
+            ],
+          ),
           
           // Tab Content with animation
           Expanded(
