@@ -353,6 +353,8 @@ export class UsersService {
         userType: true,
         visitPurpose: true,
         ageRange: true,
+        ageRangeUpdatedAt: true,
+        dateOfBirth: true,
         gender: true,
         lengthOfStay: true,
         travelParty: true,

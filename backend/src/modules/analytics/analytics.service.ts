@@ -103,7 +103,7 @@ export class AnalyticsService {
     // Extract IP address from request
     const ipAddress = req?.ip || batchData.ipAddress || null;
 
-    await this.prisma.contentViews.create({
+    await this.prisma.content_views.create({
       data: {
         content_type: 'listing',
         content_id: data.listingId,
@@ -189,7 +189,7 @@ export class AnalyticsService {
     // Extract IP address from request
     const ipAddress = req?.ip || batchData.ipAddress || null;
 
-    await this.prisma.contentViews.create({
+    await this.prisma.content_views.create({
       data: {
         content_type: 'event',
         content_id: data.eventId,
@@ -229,7 +229,7 @@ export class AnalyticsService {
       throw new Error('query is required for search event');
     }
 
-    await this.prisma.searchAnalytics.create({
+    await this.prisma.search_analytics.create({
       data: {
         user_id: userId || null,
         session_id: batchData.sessionId || null,
@@ -240,7 +240,6 @@ export class AnalyticsService {
         clicked_result_type: data.clickedResultType || null,
         clicked_position: data.clickedPosition || null,
         source: data.source || batchData.deviceType || null,
-        ip_address: req?.ip || batchData.ipAddress || null,
       },
     });
   }
@@ -304,7 +303,7 @@ export class AnalyticsService {
     // Extract IP address from request
     const ipAddress = req?.ip || null;
 
-    await this.prisma.contentViews.create({
+    await this.prisma.content_views.create({
       data: {
         content_type: dto.contentType,
         content_id: dto.contentId,
@@ -348,7 +347,7 @@ export class AnalyticsService {
    * Get view count for a content item
    */
   async getContentViewCount(contentType: 'listing' | 'event', contentId: string): Promise<number> {
-    return this.prisma.contentViews.count({
+    return this.prisma.content_views.count({
       where: {
         content_type: contentType,
         content_id: contentId,
@@ -360,7 +359,7 @@ export class AnalyticsService {
    * Get unique viewer count for a content item
    */
   async getUniqueViewerCount(contentType: 'listing' | 'event', contentId: string): Promise<number> {
-    const result = await this.prisma.contentViews.groupBy({
+    const result = await this.prisma.content_views.groupBy({
       by: ['user_id'],
       where: {
         content_type: contentType,
