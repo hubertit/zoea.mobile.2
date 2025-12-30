@@ -461,6 +461,66 @@ class AuthService {
     );
   }
 
+  /// Request password reset - sends reset code to email/phone
+  Future<Map<String, dynamic>> requestPasswordReset(String identifier) async {
+    try {
+      final response = await _dio.post(
+        '${AppConfig.authEndpoint}/password/reset/request',
+        data: {
+          'identifier': identifier,
+        },
+      );
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'Failed to request password reset';
+        throw Exception(errorMessage);
+      }
+      throw Exception('An error occurred. Please try again.');
+    }
+  }
+
+  /// Verify reset code
+  Future<Map<String, dynamic>> verifyResetCode(String identifier, String code) async {
+    try {
+      final response = await _dio.post(
+        '${AppConfig.authEndpoint}/password/reset/verify',
+        data: {
+          'identifier': identifier,
+          'code': code,
+        },
+      );
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'Invalid or expired reset code';
+        throw Exception(errorMessage);
+      }
+      throw Exception('An error occurred. Please try again.');
+    }
+  }
+
+  /// Reset password with verified code
+  Future<Map<String, dynamic>> resetPassword(String identifier, String code, String newPassword) async {
+    try {
+      final response = await _dio.post(
+        '${AppConfig.authEndpoint}/password/reset',
+        data: {
+          'identifier': identifier,
+          'code': code,
+          'newPassword': newPassword,
+        },
+      );
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'Failed to reset password';
+        throw Exception(errorMessage);
+      }
+      throw Exception('An error occurred. Please try again.');
+    }
+  }
+
   Future<void> signOut() async {
     await _tokenStorage?.clearTokens();
     await _tokenStorage?.clearUserData();

@@ -6,6 +6,9 @@ import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/auth/screens/maintenance_screen.dart';
+import '../../features/auth/screens/request_password_reset_screen.dart';
+import '../../features/auth/screens/verify_reset_code_screen.dart';
+import '../../features/auth/screens/new_password_screen.dart';
 import '../../features/user_data_collection/screens/onboarding_data_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
@@ -153,6 +156,28 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      // Password Reset Routes
+      GoRoute(
+        path: '/auth/reset-password/request',
+        builder: (context, state) => const RequestPasswordResetScreen(),
+      ),
+      GoRoute(
+        path: '/auth/reset-password/verify',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final identifier = extra?['identifier'] as String? ?? '';
+          return VerifyResetCodeScreen(identifier: identifier);
+        },
+      ),
+      GoRoute(
+        path: '/auth/reset-password/new-password',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final identifier = extra?['identifier'] as String? ?? '';
+          final code = extra?['code'] as String? ?? '';
+          return NewPasswordScreen(identifier: identifier, code: code);
+        },
       ),
 
       // Main App Shell

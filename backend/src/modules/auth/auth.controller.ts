@@ -1,7 +1,7 @@
-import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Post, Get, Body, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, RefreshTokenDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, RefreshTokenDto, RequestPasswordResetDto, VerifyResetCodeDto, ResetPasswordDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('Auth')
@@ -33,6 +33,77 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user profile' })
   async getProfile(@Request() req) {
     return this.authService.getProfile(req.user.id);
+  }
+
+  @Post('password/reset/request')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Request password reset',
+    description: 'Sends a reset code to the user\'s email or phone. Currently uses placeholder code "0000". SMS and email notifications will be implemented later.'
+  })
+  @ApiBody({ type: RequestPasswordResetDto })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Reset code sent successfully (if account exists)',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'If the account exists, a reset code has been sent.' },
+        code: { type: 'string', example: '0000', description: 'Only returned in development mode' }
+      }
+    }
+  })
+  async requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
+    return this.authService.requestPasswordReset(dto);
+  }
+
+  @Post('password/reset/verify')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Verify reset code',
+    description: 'Verifies that the reset code is valid and not expired. Code expires after 15 minutes.'
+  })
+  @ApiBody({ type: VerifyResetCodeDto })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Reset code verified successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Reset code verified successfully.' }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Invalid or expired reset code' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async verifyResetCode(@Body() dto: VerifyResetCodeDto) {
+    return this.authService.verifyResetCode(dto);
+  }
+
+  @Post('password/reset')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Reset password',
+    description: 'Resets the user\'s password using a verified reset code. The reset code must be valid and not expired.'
+  })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Password reset successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Password reset successfully.' }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Invalid or expired reset code' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }
 
