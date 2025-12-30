@@ -45,7 +45,6 @@ import '../../features/profile/screens/help_center_screen.dart';
 import '../../features/profile/screens/about_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
-import '../../features/user_data_collection/screens/complete_profile_screen.dart';
 import '../widgets/shell.dart';
 import '../providers/auth_provider.dart';
 import '../providers/listings_provider.dart';
@@ -257,10 +256,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           final initialTab = tabParam != null ? int.tryParse(tabParam) : null;
           return EditProfileScreen(initialTab: initialTab);
         },
-      ),
-      GoRoute(
-        path: '/profile/complete-profile',
-        builder: (context, state) => const CompleteProfileScreen(),
       ),
       GoRoute(
         path: '/profile/privacy-security',
