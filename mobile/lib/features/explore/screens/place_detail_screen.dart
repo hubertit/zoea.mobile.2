@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/reviews_provider.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class PlaceDetailScreen extends ConsumerStatefulWidget {
   final String placeId;
@@ -33,6 +34,22 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     _tabController = TabController(length: 4, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    
+    // Track listing view for analytics (after first frame)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackListingView();
+    });
+  }
+
+  void _trackListingView() {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackListingView(
+        listingId: widget.placeId,
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
   }
 
   void _onScroll() {

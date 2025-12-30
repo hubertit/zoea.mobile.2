@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/event.dart';
 import '../../user_data_collection/utils/prompt_helper.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final Event event;
@@ -24,8 +25,11 @@ class EventDetailScreen extends ConsumerWidget {
     final dateFormat = DateFormat('EEEE, MMMM dd, yyyy');
     final timeFormat = DateFormat('HH:mm');
 
-    // Check and show prompt after viewing event (after first frame)
+    // Track event view for analytics (after first frame)
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackEventView(ref);
+      
+      // Check and show prompt after viewing event
       Future.delayed(const Duration(seconds: 2), () {
         if (context.mounted) {
           PromptHelper.checkAndShowPromptAfterViewEvent(context, ref);
@@ -499,5 +503,16 @@ class EventDetailScreen extends ConsumerWidget {
     return price.toString();
   }
 
+  void _trackEventView(WidgetRef ref) {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackEventView(
+        eventId: event.id,
+        eventType: event.event.eventType,
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
+  }
 }
 

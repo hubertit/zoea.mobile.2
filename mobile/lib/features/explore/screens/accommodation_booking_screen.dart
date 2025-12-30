@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/services/token_storage_service.dart';
 import '../../../core/providers/listings_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class AccommodationBookingScreen extends ConsumerStatefulWidget {
   final String accommodationId;
@@ -47,6 +48,23 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     _checkInDate = widget.checkInDate;
     _checkOutDate = widget.checkOutDate;
     _guestCount = widget.guestCount ?? 1;
+    
+    // Track booking attempt for analytics
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackBookingAttempt();
+    });
+  }
+
+  void _trackBookingAttempt() {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackBookingAttempt(
+        listingId: widget.accommodationId,
+        listingType: 'accommodation',
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
   }
 
   @override
@@ -953,6 +971,17 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       );
 
       if (mounted) {
+        // Track booking completion for analytics
+        try {
+          final analyticsService = ref.read(analyticsServiceProvider);
+          analyticsService.trackBookingCompletion(
+            bookingId: booking['id'] as String,
+            listingId: widget.accommodationId,
+          );
+        } catch (e) {
+          // Silently fail
+        }
+        
         // Navigate to confirmation screen with booking ID
         context.push('/booking-confirmation/${booking['id'] as String}');
       }

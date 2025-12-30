@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class DiningBookingScreen extends ConsumerStatefulWidget {
   final String placeId;
@@ -56,6 +57,23 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     _fullNameController = TextEditingController();
     _contactNumberController = TextEditingController();
     _emailController = TextEditingController();
+    
+    // Track booking attempt for analytics
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackBookingAttempt();
+    });
+  }
+
+  void _trackBookingAttempt() {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackBookingAttempt(
+        listingId: widget.placeId,
+        listingType: 'restaurant',
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
   }
   
   void _prefillUserData() {
@@ -1023,6 +1041,17 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                         );
                         
                         if (mounted) {
+                          // Track booking completion for analytics
+                          try {
+                            final analyticsService = ref.read(analyticsServiceProvider);
+                            analyticsService.trackBookingCompletion(
+                              bookingId: booking['id'],
+                              listingId: widget.placeId,
+                            );
+                          } catch (e) {
+                            // Silently fail
+                          }
+                          
                           Navigator.of(context).pop();
                           // Navigate to confirmation screen with actual booking ID
                           context.push('/dining-booking-confirmation', extra: {

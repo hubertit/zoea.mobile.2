@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/search_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   final String? initialQuery;
@@ -60,11 +61,29 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // Debounce search to avoid too many API calls
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       if (mounted) {
+        final trimmedQuery = query.trim();
         setState(() {
-          _searchQuery = query.trim();
+          _searchQuery = trimmedQuery;
         });
+        
+        // Track search for analytics (if query is not empty)
+        if (trimmedQuery.isNotEmpty) {
+          _trackSearch(trimmedQuery);
+        }
       }
     });
+  }
+
+  void _trackSearch(String query) {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackSearch(
+        query: query,
+        category: widget.category,
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
   }
 
   @override

@@ -7,6 +7,7 @@ import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
 import '../../user_data_collection/utils/prompt_helper.dart';
 import '../../../core/providers/reviews_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/config/app_config.dart';
 
 class AccommodationDetailScreen extends ConsumerStatefulWidget {
@@ -43,6 +44,22 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     _tabController = TabController(length: 5, vsync: this, initialIndex: 1); // Rooms tab is index 1
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    
+    // Track listing view for analytics (after first frame)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _trackListingView();
+    });
+  }
+
+  void _trackListingView() {
+    try {
+      final analyticsService = ref.read(analyticsServiceProvider);
+      analyticsService.trackListingView(
+        listingId: widget.accommodationId,
+      );
+    } catch (e) {
+      // Silently fail - analytics should never break the app
+    }
   }
 
   void _onScroll() {
