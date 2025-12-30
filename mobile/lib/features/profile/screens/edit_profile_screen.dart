@@ -32,6 +32,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   bool _isLoading = false;
   bool _isSaving = false;
   String? _profileImagePath;
+  bool _hasUnsavedChanges = false;
 
   // Preferences state
   AgeRange? _selectedAgeRange;
@@ -54,6 +55,30 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         // Tab animation completed
       }
     });
+    
+    // Add listeners to text controllers to track changes
+    _nameController.addListener(() {
+      if (mounted) {
+        setState(() {
+          _hasUnsavedChanges = _checkForUnsavedChanges();
+        });
+      }
+    });
+    _emailController.addListener(() {
+      if (mounted) {
+        setState(() {
+          _hasUnsavedChanges = _checkForUnsavedChanges();
+        });
+      }
+    });
+    _phoneController.addListener(() {
+      if (mounted) {
+        setState(() {
+          _hasUnsavedChanges = _checkForUnsavedChanges();
+        });
+      }
+    });
+    
     _loadUserData();
   }
 
@@ -74,8 +99,86 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           _selectedInterests = List<String>.from(prefs.interests);
           _selectedTravelParty = prefs.travelParty;
         }
+        
+        _hasUnsavedChanges = false; // Reset after loading
       });
     }
+  }
+
+  /// Check if there are unsaved changes
+  bool _checkForUnsavedChanges() {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return false;
+
+    // Check basic info changes
+    final nameChanged = _nameController.text.trim() != user.fullName;
+    final emailChanged = _emailController.text.trim() != user.email;
+    final phoneChanged = _phoneController.text.trim() != (user.phoneNumber ?? '');
+    
+    // Check preferences changes
+    final prefs = user.preferences;
+    final ageChanged = _selectedAgeRange != prefs?.ageRange;
+    final genderChanged = _selectedGender != prefs?.gender;
+    final lengthOfStayChanged = _selectedLengthOfStay != prefs?.lengthOfStay;
+    final interestsChanged = !_listEquals(_selectedInterests, prefs?.interests ?? []);
+    final travelPartyChanged = _selectedTravelParty != prefs?.travelParty;
+
+    return nameChanged || emailChanged || phoneChanged || 
+           ageChanged || genderChanged || lengthOfStayChanged || 
+           interestsChanged || travelPartyChanged || _profileImagePath != null;
+  }
+
+  /// Helper to compare lists
+  bool _listEquals(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  /// Show confirmation dialog before navigating away
+  Future<bool> _showUnsavedChangesDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.backgroundColor,
+        title: Text(
+          'Unsaved Changes',
+          style: AppTheme.titleMedium.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: Text(
+          'You have unsaved changes. Are you sure you want to leave?',
+          style: AppTheme.bodyMedium,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'Cancel',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Discard',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 
   @override
@@ -104,7 +207,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () => context.go('/profile'),
+          onPressed: () async {
+            // Check for unsaved changes before navigating away
+            if (_checkForUnsavedChanges()) {
+              final shouldLeave = await _showUnsavedChangesDialog();
+              if (shouldLeave && mounted) {
+                context.go('/profile');
+              }
+            } else {
+              context.go('/profile');
+            }
+          },
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
             foregroundColor: AppTheme.primaryTextColor,
@@ -304,6 +417,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onRangeSelected: (range) {
                 setState(() {
                   _selectedAgeRange = range;
+                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -320,6 +434,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onGenderSelected: (gender) {
                 setState(() {
                   _selectedGender = gender;
+                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -337,6 +452,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 onLengthSelected: (length) {
                   setState(() {
                     _selectedLengthOfStay = length;
+                    _hasUnsavedChanges = true;
                   });
                 },
               ),
@@ -354,6 +470,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onInterestsChanged: (interests) {
                 setState(() {
                   _selectedInterests = interests;
+                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -370,6 +487,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onPartySelected: (party) {
                 setState(() {
                   _selectedTravelParty = party;
+                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -787,6 +905,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       // Refresh user data
       ref.invalidate(currentUserProvider);
       ref.invalidate(currentUserProfileProvider);
+      
+      // Reset unsaved changes flag
+      setState(() {
+        _hasUnsavedChanges = false;
+      });
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
