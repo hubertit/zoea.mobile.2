@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/user_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class PrivacySecurityScreen extends ConsumerStatefulWidget {
   const PrivacySecurityScreen({super.key});
@@ -16,12 +17,13 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
   bool _locationEnabled = true;
   bool _notificationsEnabled = true;
   bool _dataSharingEnabled = false;
-  bool _analyticsEnabled = true;
   bool _biometricEnabled = false;
   bool _twoFactorEnabled = false;
 
+
   @override
   Widget build(BuildContext context) {
+    final analyticsConsentAsync = ref.watch(analyticsConsentProvider);
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
@@ -80,15 +82,92 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
               });
             },
           ),
-          _buildSwitchTile(
-            icon: Icons.analytics,
-            title: 'Analytics',
-            subtitle: 'Help us improve the app with usage analytics',
-            value: _analyticsEnabled,
-            onChanged: (value) {
-              setState(() {
-                _analyticsEnabled = value;
-              });
+          // Analytics toggle - connected to AnalyticsService
+          analyticsConsentAsync.when(
+            data: (hasConsent) => _buildSwitchTile(
+              icon: Icons.analytics,
+              title: 'Analytics',
+              subtitle: 'Help us improve the app with usage analytics',
+              value: hasConsent,
+              onChanged: (value) async {
+                try {
+                  final analyticsService = ref.read(analyticsServiceProvider);
+                  await analyticsService.setConsent(value);
+                  if (mounted) {
+                    ref.invalidate(analyticsConsentProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          value 
+                              ? 'Analytics enabled' 
+                              : 'Analytics disabled',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: value 
+                            ? AppTheme.successColor 
+                            : AppTheme.secondaryTextColor,
+                        behavior: SnackBarBehavior.floating,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      AppTheme.errorSnackBar(
+                        message: 'Failed to update analytics settings',
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+            loading: () => _buildSwitchTile(
+              icon: Icons.analytics,
+              title: 'Analytics',
+              subtitle: 'Loading...',
+              value: false,
+              onChanged: (_) {},
+            ),
+            error: (_, __) => _buildSwitchTile(
+              icon: Icons.analytics,
+              title: 'Analytics',
+              subtitle: 'Help us improve the app with usage analytics',
+              value: true,
+              onChanged: (value) async {
+                try {
+                  final analyticsService = ref.read(analyticsServiceProvider);
+                  await analyticsService.setConsent(value);
+                  if (mounted) {
+                    ref.invalidate(analyticsConsentProvider);
+                  }
+                } catch (e) {
+                  // Silently fail
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Data & Privacy Section
+          _buildSectionHeader('Data & Privacy'),
+          const SizedBox(height: 16),
+          _buildActionTile(
+            icon: Icons.info_outline,
+            title: 'What Data We Collect',
+            subtitle: 'View what information is collected and why',
+            onTap: () {
+              _showDataCollectionInfo();
+            },
+          ),
+          _buildActionTile(
+            icon: Icons.delete_sweep,
+            title: 'Clear Analytics Data',
+            subtitle: 'Delete all stored analytics data',
+            onTap: () {
+              _showClearAnalyticsDialog();
             },
           ),
           const SizedBox(height: 32),
@@ -851,6 +930,243 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
               'Delete',
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.red,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDataCollectionInfo() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppTheme.backgroundColor,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'What Data We Collect',
+              style: AppTheme.titleMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Data collection info
+            _buildDataInfoItem(
+              icon: Icons.person_outline,
+              title: 'Profile Information',
+              description: 'Country, language, age range, gender, interests, travel preferences',
+              purpose: 'Personalize your experience and recommendations',
+            ),
+            const SizedBox(height: 16),
+            _buildDataInfoItem(
+              icon: Icons.search,
+              title: 'Search Queries',
+              description: 'What you search for in the app',
+              purpose: 'Improve search results and suggest relevant content',
+            ),
+            const SizedBox(height: 16),
+            _buildDataInfoItem(
+              icon: Icons.visibility,
+              title: 'Content Views',
+              description: 'Places and events you view',
+              purpose: 'Understand your interests and improve recommendations',
+            ),
+            const SizedBox(height: 16),
+            _buildDataInfoItem(
+              icon: Icons.event,
+              title: 'App Usage',
+              description: 'How you use the app, session duration, features used',
+              purpose: 'Improve app performance and user experience',
+            ),
+            const SizedBox(height: 24),
+            
+            // Privacy note
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.privacy_tip_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'All data is anonymized and used only to improve your experience. You can disable analytics or clear your data anytime.',
+                      style: AppTheme.bodySmall.copyWith(
+                        color: AppTheme.secondaryTextColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            
+            // Close button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  'Got it',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataInfoItem({
+    required IconData icon,
+    required String title,
+    required String description,
+    required String purpose,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.dividerColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            color: AppTheme.primaryColor,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: AppTheme.bodySmall.copyWith(
+                    color: AppTheme.secondaryTextColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Purpose: $purpose',
+                  style: AppTheme.bodySmall.copyWith(
+                    color: AppTheme.primaryColor,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showClearAnalyticsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Clear Analytics Data',
+          style: AppTheme.titleMedium,
+        ),
+        content: Text(
+          'This will delete all stored analytics data from your device. This action cannot be undone.',
+          style: AppTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                final analyticsService = ref.read(analyticsServiceProvider);
+                await analyticsService.clearQueue();
+                
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Analytics data cleared successfully',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      backgroundColor: AppTheme.successColor,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    AppTheme.errorSnackBar(
+                      message: 'Failed to clear analytics data',
+                    ),
+                  );
+                }
+              }
+            },
+            child: Text(
+              'Clear Data',
+              style: AppTheme.bodyMedium.copyWith(
+                color: AppTheme.primaryColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
