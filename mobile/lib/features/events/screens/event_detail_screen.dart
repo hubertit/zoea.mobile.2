@@ -9,7 +9,7 @@ import '../../../core/models/event.dart';
 import '../../user_data_collection/utils/prompt_helper.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 
-class EventDetailScreen extends ConsumerWidget {
+class EventDetailScreen extends ConsumerStatefulWidget {
   final Event event;
 
   const EventDetailScreen({
@@ -18,7 +18,38 @@ class EventDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrolled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final isScrolled = _scrollController.offset > 200; // Adjust threshold as needed
+    if (isScrolled != _isScrolled) {
+      setState(() {
+        _isScrolled = isScrolled;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final event = widget.event;
     final eventDetails = event.event;
     final startDate = eventDetails.startDate;
     final endDate = eventDetails.endDate;
@@ -27,7 +58,7 @@ class EventDetailScreen extends ConsumerWidget {
 
     // Track event view for analytics (after first frame)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _trackEventView(ref);
+      _trackEventView();
       
       // Check and show prompt after viewing event
       Future.delayed(const Duration(seconds: 2), () {
@@ -40,38 +71,95 @@ class EventDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // App Bar with image
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            backgroundColor: AppTheme.backgroundColor,
-            leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.white, size: 32),
-              onPressed: () => context.go('/events'),
+            backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
+            leading: Container(
+              width: 36,
+              height: 36,
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _isScrolled 
+                    ? Colors.grey[200] 
+                    : Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.chevron_left,
+                  color: _isScrolled 
+                      ? AppTheme.primaryTextColor 
+                      : Colors.white,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                onPressed: () => context.go('/events'),
+              ),
             ),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.share, color: Colors.white),
-                onPressed: () async {
-                  final eventName = eventDetails.name;
-                  final location = eventDetails.locationName.isNotEmpty 
-                      ? eventDetails.locationName 
-                      : '';
-                  final dateText = dateFormat.format(startDate);
-                  
-                  // Share Sinc link instead of Zoea link
-                  final sincUrl = 'https://www.sinc.events/${event.slug}';
-                  final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
-                  
-                  await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
-                },
+              // Share button (shown when collapsed)
+              Container(
+                width: 36,
+                height: 36,
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: _isScrolled 
+                      ? Colors.grey[200] 
+                      : Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.share,
+                    color: _isScrolled 
+                        ? AppTheme.primaryTextColor 
+                        : Colors.white,
+                    size: 18,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: () async {
+                    final eventName = eventDetails.name;
+                    final location = eventDetails.locationName.isNotEmpty 
+                        ? eventDetails.locationName 
+                        : '';
+                    final dateText = dateFormat.format(startDate);
+                    
+                    // Share Sinc link instead of Zoea link
+                    final sincUrl = 'https://www.sinc.events/${event.slug}';
+                    final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
+                    
+                    await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
+                  },
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.favorite_border, color: Colors.white),
-                onPressed: () {
-                  // TODO: Implement favorite functionality
-                },
+              // Favorite button (shown when collapsed)
+              Container(
+                width: 36,
+                height: 36,
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: _isScrolled 
+                      ? Colors.grey[200] 
+                      : Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.favorite_border,
+                    color: _isScrolled 
+                        ? AppTheme.primaryTextColor 
+                        : Colors.white,
+                    size: 18,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    // TODO: Implement favorite functionality
+                  },
+                ),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -105,12 +193,98 @@ class EventDetailScreen extends ConsumerWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
+                          Colors.black.withOpacity(0.3),
                           Colors.transparent,
                           Colors.black.withOpacity(0.7),
                         ],
                       ),
                     ),
                   ),
+                  // Back button at top left (only show when not scrolled/expanded)
+                  if (!_isScrolled)
+                    Positioned(
+                      top: 50,
+                      left: 16,
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.chevron_left,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          padding: EdgeInsets.zero,
+                          onPressed: () => context.go('/events'),
+                        ),
+                      ),
+                    ),
+                  // Action buttons at top right (only show when not scrolled/expanded)
+                  if (!_isScrolled)
+                    Positioned(
+                      top: 50,
+                      right: 16,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Share button
+                          Container(
+                            width: 36,
+                            height: 36,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.share,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                final eventName = eventDetails.name;
+                                final location = eventDetails.locationName.isNotEmpty 
+                                    ? eventDetails.locationName 
+                                    : '';
+                                final dateText = dateFormat.format(startDate);
+                                
+                                // Share Sinc link instead of Zoea link
+                                final sincUrl = 'https://www.sinc.events/${event.slug}';
+                                final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
+                                
+                                await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
+                              },
+                            ),
+                          ),
+                          // Favorite button
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                // TODO: Implement favorite functionality
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -337,6 +511,7 @@ class EventDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildTicketCard(BuildContext context, EventTicket ticket, String eventName) {
+    final event = widget.event;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 1,
@@ -423,6 +598,7 @@ class EventDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildBottomBar(BuildContext context) {
+    final event = widget.event;
     final eventDetails = event.event;
     final hasTickets = eventDetails.tickets.isNotEmpty;
     final cheapestTicket = hasTickets 
@@ -503,8 +679,9 @@ class EventDetailScreen extends ConsumerWidget {
     return price.toString();
   }
 
-  void _trackEventView(WidgetRef ref) {
+  void _trackEventView() {
     try {
+      final event = widget.event;
       final analyticsService = ref.read(analyticsServiceProvider);
       analyticsService.trackEventView(
         eventId: event.id.toString(),

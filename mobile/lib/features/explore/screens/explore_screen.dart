@@ -1171,18 +1171,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildSkeletonEventCard() {
-    // Responsive width for skeleton event cards
-    final skeletonCardWidth = _getResponsiveWidth(
-      context: context,
-      xs: 0.85,  // 85% on extra small screens
-      sm: 0.70,  // 70% on small screens
-      md: 0.50,  // 50% on medium screens
-      lg: 0.40,  // 40% on large screens
-      xl: 0.32,  // 32% on extra large screens
-    );
-    
     return Container(
-      width: skeletonCardWidth,
+      width: 200, // Fixed width for horizontal scrolling
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -1281,22 +1271,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       timeText = '${dateFormat.format(startDate)}, ${timeFormat.format(startDate)}';
     }
     
-    // Responsive width for event cards
-    final eventCardWidth = _getResponsiveWidth(
-      context: context,
-      xs: 0.85,  // 85% on extra small screens
-      sm: 0.70,  // 70% on small screens
-      md: 0.50,  // 50% on medium screens
-      lg: 0.40,  // 40% on large screens
-      xl: 0.32,  // 32% on extra large screens
-    );
-    
     return GestureDetector(
       onTap: () {
         context.go('/event/${event.id}', extra: event);
       },
       child: Container(
-        width: eventCardWidth,
+        width: 200, // Fixed width for horizontal scrolling
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -1355,9 +1335,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     children: [
                       Text(
                         eventDetails.name,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: AppTheme.bodySmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1387,18 +1368,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     required String time,
     required String imageUrl,
   }) {
-    // Responsive width for event cards
-    final eventCardWidth = _getResponsiveWidth(
-      context: context,
-      xs: 0.85,  // 85% on extra small screens
-      sm: 0.70,  // 70% on small screens
-      md: 0.50,  // 50% on medium screens
-      lg: 0.40,  // 40% on large screens
-      xl: 0.32,  // 32% on extra large screens
-    );
-    
     return Container(
-      width: eventCardWidth,
+      width: 200, // Fixed width for horizontal scrolling
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -1847,22 +1818,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final category = listing['category']?['name'] ?? listing['type'] ?? 'Place';
     final id = listing['id'] ?? '';
 
-    // Responsive width for listing cards
-    final listingCardWidth = _getResponsiveWidth(
-      context: context,
-      xs: 0.80,  // 80% on extra small screens
-      sm: 0.65,  // 65% on small screens
-      md: 0.45,  // 45% on medium screens
-      lg: 0.35,  // 35% on large screens
-      xl: 0.28,  // 28% on extra large screens
-    );
-
     return GestureDetector(
       onTap: () {
         context.push('/listing/$id');
       },
       child: Container(
-        width: listingCardWidth,
+        width: 160, // Fixed width for horizontal scrolling
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -2069,18 +2030,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildSkeletonRecommendCard() {
-    // Responsive width for skeleton listing cards
-    final skeletonListingWidth = _getResponsiveWidth(
-      context: context,
-      xs: 0.80,  // 80% on extra small screens
-      sm: 0.65,  // 65% on small screens
-      md: 0.45,  // 45% on medium screens
-      lg: 0.35,  // 35% on large screens
-      xl: 0.28,  // 28% on extra large screens
-    );
-    
     return Container(
-      width: skeletonListingWidth,
+      width: 160, // Fixed width for horizontal scrolling
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
