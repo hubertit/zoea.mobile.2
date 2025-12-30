@@ -683,12 +683,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Use custom logo for Irembo
+            // Use custom logo for Irembo (reduced size to fit card)
             if (isCustomIcon && label == 'Irembo')
               SvgPicture.asset(
                 'assets/images/irembo_logo.svg',
-                width: 22,
-                height: 22,
+                width: 16,
+                height: 16,
                 colorFilter: ColorFilter.mode(
                   AppTheme.primaryColor,
                   BlendMode.srcIn,
@@ -699,12 +699,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   size: 22,
                 ),
               )
-            // Use custom logo for Visit Rwanda
+            // Use custom logo for Visit Rwanda (doubled size)
             else if (isCustomIcon && label == 'Visit Rwanda')
               Image.asset(
                 'assets/images/visit-rwanda.png',
-                width: 22,
-                height: 22,
+                width: 44,
+                height: 44,
                 errorBuilder: (context, error, stackTrace) => Icon(
                   icon,
                   color: AppTheme.primaryColor,
