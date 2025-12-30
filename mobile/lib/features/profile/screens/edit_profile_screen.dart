@@ -48,6 +48,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       vsync: this,
       initialIndex: widget.initialTab ?? 0,
     );
+    // Add animation listener for smooth tab transitions
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        // Tab animation completed
+      }
+    });
     _loadUserData();
   }
 
@@ -122,6 +128,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           labelColor: AppTheme.primaryColor,
           unselectedLabelColor: AppTheme.secondaryTextColor,
           indicatorColor: AppTheme.primaryColor,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelStyle: AppTheme.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: AppTheme.bodyMedium,
           tabs: const [
             Tab(text: 'Basic Info'),
             Tab(text: 'Preferences'),
@@ -133,10 +144,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           // Completion Badge
           _buildCompletionBadge(completionPercentage),
           
-          // Tab Content
+          // Tab Content with animation
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const BouncingScrollPhysics(), // Smooth scrolling animation
               children: [
                 _buildBasicInfoTab(),
                 _buildPreferencesTab(),
