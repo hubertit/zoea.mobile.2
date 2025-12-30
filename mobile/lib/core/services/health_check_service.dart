@@ -3,8 +3,7 @@ import '../config/app_config.dart';
 
 /// Service to check backend API health status
 class HealthCheckService {
-  // TODO: Change back to '/health' after testing  
-  static const String _healthEndpoint = '/healthx'; // Using wrong endpoint for testing - will return 404
+  static const String _healthEndpoint = '/health';
   static const Duration _timeout = Duration(seconds: 5);
 
   /// Check if the backend API is available
