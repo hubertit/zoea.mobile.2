@@ -6,8 +6,14 @@ import '../services/token_storage_service.dart';
 
 /// Service for managing UX-first user data collection
 class UserDataCollectionService {
-  final Dio _dio = AppConfig.dioInstance();
+  Dio? _dio;
   final TokenStorageService _tokenStorage = TokenStorageService.getInstance() as TokenStorageService;
+
+  /// Get authenticated Dio instance
+  Future<Dio> _getDio() async {
+    _dio ??= await AppConfig.authenticatedDioInstance();
+    return _dio!;
+  }
 
   /// Save mandatory onboarding data
   /// This is called after the user completes the initial onboarding screen
@@ -37,7 +43,7 @@ class UserDataCollectionService {
         },
       };
 
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/preferences',
         data: data,
       );
@@ -134,7 +140,7 @@ class UserDataCollectionService {
 
       preferences['dataCollectionFlags'] = flags;
 
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/preferences',
         data: preferences,
       );
@@ -185,7 +191,7 @@ class UserDataCollectionService {
         'dataCollectionFlags': mergedFlags,
       };
 
-      await _dio.put(
+      await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/preferences',
         data: data,
       );

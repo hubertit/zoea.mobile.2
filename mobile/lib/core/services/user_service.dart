@@ -4,12 +4,18 @@ import '../models/user.dart';
 import '../utils/phone_validator.dart';
 
 class UserService {
-  final Dio _dio = AppConfig.dioInstance();
+  Dio? _dio;
+
+  /// Get authenticated Dio instance
+  Future<Dio> _getDio() async {
+    _dio ??= await AppConfig.authenticatedDioInstance();
+    return _dio!;
+  }
 
   /// Get current user profile
   Future<User> getCurrentUser() async {
     try {
-      final response = await _dio.get('${AppConfig.usersEndpoint}/me');
+      final response = await (await _getDio()).get('${AppConfig.usersEndpoint}/me');
 
       if (response.statusCode == 200) {
         final userData = response.data;
@@ -61,7 +67,7 @@ class UserService {
       if (bio != null) data['bio'] = bio;
       if (preferences != null) data['preferences'] = preferences;
 
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me',
         data: data,
       );
@@ -102,7 +108,7 @@ class UserService {
   /// Update email address
   Future<void> updateEmail(String newEmail) async {
     try {
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/email',
         data: {'email': newEmail.trim()},
       );
@@ -142,7 +148,7 @@ class UserService {
   /// Update phone number
   Future<void> updatePhone(String newPhone) async {
     try {
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/phone',
         data: {'phoneNumber': PhoneValidator.cleanPhoneNumber(newPhone)},
       );
@@ -185,7 +191,7 @@ class UserService {
     required String newPassword,
   }) async {
     try {
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/password',
         data: {
           'currentPassword': currentPassword,
@@ -233,7 +239,7 @@ class UserService {
         ),
       });
 
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/profile-image',
         data: formData,
       );
@@ -275,7 +281,7 @@ class UserService {
   /// Now returns all fields including new UX-first data collection fields
   Future<UserPreferences> getPreferences() async {
     try {
-      final response = await _dio.get('${AppConfig.usersEndpoint}/me/preferences');
+      final response = await (await _getDio()).get('${AppConfig.usersEndpoint}/me/preferences');
 
       if (response.statusCode == 200) {
         final prefsData = response.data as Map<String, dynamic>;
@@ -404,7 +410,7 @@ class UserService {
       if (travelParty != null) data['travelParty'] = travelParty.apiValue;
       if (dataCollectionFlags != null) data['dataCollectionFlags'] = dataCollectionFlags;
 
-      final response = await _dio.put(
+      final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/preferences',
         data: data,
       );
@@ -447,7 +453,7 @@ class UserService {
   /// Returns: {bookings: int, reviews: int, favorites: int, visitedPlaces: int}
   Future<Map<String, dynamic>> getUserStats() async {
     try {
-      final response = await _dio.get('${AppConfig.usersEndpoint}/me/stats');
+      final response = await (await _getDio()).get('${AppConfig.usersEndpoint}/me/stats');
 
       if (response.statusCode == 200) {
         final statsData = response.data as Map<String, dynamic>;
@@ -489,7 +495,7 @@ class UserService {
   /// Delete account (soft delete)
   Future<void> deleteAccount() async {
     try {
-      final response = await _dio.delete('${AppConfig.usersEndpoint}/me');
+      final response = await (await _getDio()).delete('${AppConfig.usersEndpoint}/me');
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         throw Exception('Failed to delete account: ${response.statusMessage}');
