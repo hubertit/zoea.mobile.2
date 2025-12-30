@@ -32,9 +32,23 @@ This directory contains utility scripts for the backend.
 ./scripts/test-endpoints.sh <JWT_TOKEN>
 ```
 
+## Category Management
+
+- **move-categories-to-experiences.ts** - Move Hiking, National Parks, and Museums under Experiences category
+
+### Running Category Scripts
+
+```bash
+# Move categories under Experiences
+npx ts-node scripts/move-categories-to-experiences.ts
+```
+
+**Note**: Requires DATABASE_URL environment variable
+
 ## Requirements
 
 - `curl` - For HTTP requests
 - `jq` - For JSON parsing (optional but recommended)
 - `sshpass` - For deployment scripts (if using password authentication)
+- Node.js and TypeScript for category management scripts
 
