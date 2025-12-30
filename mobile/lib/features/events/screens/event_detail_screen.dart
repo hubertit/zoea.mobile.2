@@ -507,8 +507,8 @@ class EventDetailScreen extends ConsumerWidget {
     try {
       final analyticsService = ref.read(analyticsServiceProvider);
       analyticsService.trackEventView(
-        eventId: event.id,
-        eventType: event.event.eventType,
+        eventId: event.id.toString(),
+        eventType: event.type.isNotEmpty ? event.type : null,
       );
     } catch (e) {
       // Silently fail - analytics should never break the app
