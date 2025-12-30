@@ -687,8 +687,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             if (isCustomIcon && label == 'Irembo')
               SvgPicture.asset(
                 'assets/images/irembo_logo.svg',
-                width: 8,
-                height: 8,
+                width: 16,
+                height: 16,
                 colorFilter: ColorFilter.mode(
                   AppTheme.primaryColor,
                   BlendMode.srcIn,
