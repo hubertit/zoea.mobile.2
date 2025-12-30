@@ -1,130 +1,197 @@
 # Zoea Project Documentation
 
-Welcome to the Zoea project documentation. This directory contains comprehensive documentation for the entire project.
+**Comprehensive documentation for the entire Zoea platform**
 
-## Documentation Index
-
-### Important Notes
-- **[Temporary Changes](./TEMPORARY_CHANGES.md)** - Documents temporary changes that need to be reverted in the future
-
-### 📋 Overview & Structure
-- **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Project description, technology stack, and architecture overview
-- **[FEATURES.md](./FEATURES.md)** - Complete feature breakdown by application
-- **[RESPONSIBILITIES.md](./RESPONSIBILITIES.md)** - Who does what, ownership matrix, and decision-making
-
-### 🔄 Flows & Processes
-- **[USER_FLOWS.md](./USER_FLOWS.md)** - Detailed user flows, system flows, and data flow diagrams
-
-### 💻 Development
-- **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)** - Getting started, development workflows, and best practices
-
-### 📊 Analysis & Integration
-- **[API_CODEBASE_ANALYSIS.md](./API_CODEBASE_ANALYSIS.md)** - Backend API analysis
-- **[API_COMPARISON_ANALYSIS.md](./API_COMPARISON_ANALYSIS.md)** - API comparison and integration status
-- **[API_REFERENCE.md](./API_REFERENCE.md)** - Quick API endpoint reference
-- **[AUTH_INTEGRATION_SUMMARY.md](./AUTH_INTEGRATION_SUMMARY.md)** - Authentication integration details
-- **[BOOKING_ANALYSIS.md](./BOOKING_ANALYSIS.md)** - Booking system analysis (hotel vs restaurant)
-- **[CODEBASE_ANALYSIS.md](./CODEBASE_ANALYSIS.md)** - Flutter codebase analysis
-- **[COMPREHENSIVE_CODEBASE_ANALYSIS.md](./COMPREHENSIVE_CODEBASE_ANALYSIS.md)** - Comprehensive codebase overview
-- **[SESSION_PERSISTENCE_IMPROVEMENTS.md](./SESSION_PERSISTENCE_IMPROVEMENTS.md)** - Session management improvements
-
-### 🛠️ Setup & Operations
-- **[ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)** - Complete environment setup guide
-- **[INTELLIJ_SETUP.md](./INTELLIJ_SETUP.md)** - IntelliJ IDEA project setup guide
-- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
-- **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database schema documentation
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines
-- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Testing strategies and examples
-
-### 🏗️ Architecture
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture documentation
-- **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)** - Visual architecture diagrams
-- **[PROJECT_STRUCTURE_RECOMMENDATION.md](./PROJECT_STRUCTURE_RECOMMENDATION.md)** - Recommended project structure (consumer, merchant, admin)
-
-## Quick Links
-
-### Applications
-- **Consumer Mobile**: `/mobile/` - Flutter consumer mobile app
-- **Merchant Mobile**: `/merchant-mobile/` - Flutter merchant mobile app
-- **Backend**: `/backend/` - NestJS backend API
-- **Admin**: `/admin/` - Next.js admin & partners dashboard
-- **Consumer Web**: `/web/` - Consumer web application (future)
-- **Merchant Web**: `/merchant-web/` - Merchant web portal (future)
-
-### Key Directories
-- **Documentation**: `/docs/` - This directory (all project documentation)
-  - `/docs/backend/` - Backend-specific documentation (analysis, migration, deployment)
-  - `/docs/admin/` - Admin dashboard documentation (codebase analysis, database docs)
-  - `/docs/merchant-mobile/` - Merchant mobile app documentation
-- **Database**: `/database/` - Database schemas and dumps
-- **Migrations**: `/migration/` - Database migration scripts
-- **Scripts**: `/scripts/` - Shared utility scripts
-
-## Application-Specific Documentation
-
-### Backend Documentation
-See `/docs/backend/` for:
-- Backend codebase analysis
-- Migration guides and history
-- Deployment documentation
-- API analysis
-
-### Admin Dashboard Documentation
-See `/docs/admin/` for:
-- Admin codebase analysis
-- Database analysis and analytics
-- Merchant module documentation
-- Test credentials
-
-### Merchant Mobile App Documentation
-See `/docs/merchant-mobile/` for:
-- Merchant mobile app analysis
-- Feature documentation
-
-## Project Status
-
-### ✅ Completed
-- Project restructure (monorepo)
-- Mobile app API integration (auth, listings, favorites, reviews)
-- Backend API development
-- Admin dashboard
-- Documentation structure
-
-### 🚧 In Progress
-- Booking system integration
-- Payment processing
-- Push notifications
-
-### ⏳ Planned
-- Public web app
-- Advanced analytics
-- Offline mode
-- Maps integration
-
-## Getting Help
-
-### For Mobile Development
-- See `DEVELOPMENT_GUIDE.md` → Mobile Development section
-- Check `mobile/README.md` (if exists)
-
-### For Backend Development
-- See `DEVELOPMENT_GUIDE.md` → Backend Development section
-- Check `backend/README.md`
-- API docs: `https://zoea-africa.qtsoftwareltd.com/api/docs`
-
-### For Admin Development
-- See `DEVELOPMENT_GUIDE.md` → Admin Development section
-- Check `admin/README.md`
-
-## Contributing
-
-1. Read the relevant documentation
-2. Follow the development guide
-3. Maintain code style
-4. Write tests
-5. Update documentation
-
-## Last Updated
-
-**Date**: December 28, 2024  
+**Last Updated**: December 30, 2024  
 **Version**: 2.0.0
+
+---
+
+## 📚 Documentation Index
+
+### [01. Project Overview](./01-project-overview/)
+- [Project Overview](./01-project-overview/01-project-overview.md) - Complete project description and structure
+- [Project Status](./01-project-overview/02-project-status.md) - Current status of all applications
+- [Features](./01-project-overview/03-features.md) - Complete feature breakdown by application
+- [Quick Reference](./01-project-overview/04-quick-reference.md) - Quick commands and links
+
+### [02. Architecture](./02-architecture/)
+- [System Architecture](./02-architecture/01-system-architecture.md) - Overall system architecture
+- [Architecture Diagrams](./02-architecture/02-architecture-diagrams.md) - Visual architecture representations
+- [Project Structure](./02-architecture/03-project-structure.md) - Recommended project structure
+- [Admin Merchant Architecture](./02-architecture/04-admin-merchant-architecture.md) - Admin and merchant app architecture
+
+### [03. Mobile App (Consumer)](./03-mobile/)
+- [Overview](./03-mobile/01-overview.md) - Mobile app overview and structure
+- [Codebase Analysis](./03-mobile/02-codebase-analysis.md) - Comprehensive codebase analysis
+- [Features](./03-mobile/03-features.md) - Mobile app features documentation
+- [User Data Collection](./03-mobile/04-user-data-collection.md) - UX-first data collection module
+- [API Integration](./03-mobile/05-api-integration.md) - API integration guide
+- [Authentication](./03-mobile/06-authentication.md) - Authentication implementation
+- [Bookings](./03-mobile/07-bookings.md) - Booking system implementation
+- [Search](./03-mobile/08-search.md) - Search feature implementation
+
+### [04. Merchant Mobile App](./04-merchant-mobile/)
+- [Overview](./04-merchant-mobile/01-overview.md) - Merchant mobile app overview
+- [Codebase Analysis](./04-merchant-mobile/02-codebase-analysis.md) - Merchant app analysis
+- [Features](./04-merchant-mobile/03-features.md) - Merchant app features
+
+### [05. Backend API](./05-backend/)
+- [Overview](./05-backend/01-overview.md) - Backend API overview
+- [Codebase Analysis](./05-backend/02-codebase-analysis.md) - Backend codebase analysis
+- [API Reference](./05-backend/03-api-reference.md) - Complete API endpoint reference
+- [Database Schema](./05-backend/04-database-schema.md) - Database schema documentation
+- [Migration Guide](./05-backend/05-migration-guide.md) - Database migration documentation
+- [Deployment](./05-backend/06-deployment.md) - Backend deployment guide
+- [Filters and Sorting](./05-backend/07-filters-and-sorting.md) - Filtering and sorting implementation
+
+### [06. Admin Dashboard](./06-admin/)
+- [Overview](./06-admin/01-overview.md) - Admin dashboard overview
+- [Codebase Analysis](./06-admin/02-codebase-analysis.md) - Admin codebase analysis
+- [Merchants Module](./06-admin/03-merchants-module.md) - Merchants management module
+- [Database Analysis](./06-admin/04-database-analysis.md) - Admin database analysis
+- [Dashboard Analytics](./06-admin/05-dashboard-analytics.md) - Analytics implementation
+
+### [07. Web Applications](./07-web/)
+- [Consumer Web](./07-web/01-consumer-web.md) - Consumer web app (planned)
+- [Merchant Web](./07-web/02-merchant-web.md) - Merchant web portal (planned)
+
+### [08. Database](./08-database/)
+- [Database Schema](./08-database/01-database-schema.md) - Complete database schema
+- [Schema Analysis](./08-database/02-schema-analysis.md) - Database schema analysis
+- [Migration History](./08-database/03-migration-history.md) - Database migration history
+- [Optimization](./08-database/04-optimization.md) - Database optimization guides
+
+### [09. Deployment](./09-deployment/)
+- [Deployment Guide](./09-deployment/01-deployment-guide.md) - Complete deployment guide
+- [Deployment Checklist](./09-deployment/02-deployment-checklist.md) - Pre-deployment checklist
+- [Environment Setup](./09-deployment/03-environment-setup.md) - Environment configuration
+- [Deployment Test Results](./09-deployment/04-deployment-test-results.md) - Deployment test results
+
+### [10. Development](./10-development/)
+- [Development Guide](./10-development/01-development-guide.md) - Getting started guide
+- [Environment Setup](./10-development/02-environment-setup.md) - Development environment setup
+- [IntelliJ Setup](./10-development/03-intellij-setup.md) - IntelliJ IDEA configuration
+- [IntelliJ Run Configurations](./10-development/04-intellij-run-configurations.md) - Run configurations
+- [Contributing](./10-development/05-contributing.md) - Contribution guidelines
+- [Code Style](./10-development/06-code-style.md) - Code style and conventions
+
+### [11. API Reference](./11-api-reference/)
+- [API Overview](./11-api-reference/01-api-overview.md) - API overview and authentication
+- [Endpoints](./11-api-reference/02-endpoints.md) - Complete endpoint reference
+- [API Comparison](./11-api-reference/03-api-comparison.md) - API comparison and integration status
+- [Codebase Analysis](./11-api-reference/04-api-codebase-analysis.md) - API codebase analysis
+
+### [12. Features](./12-features/)
+- [Features Overview](./12-features/01-features-overview.md) - Complete features breakdown
+- [User Flows](./12-features/02-user-flows.md) - User flow documentation
+- [Bookings](./12-features/03-bookings.md) - Booking system analysis
+- [Search](./12-features/04-search.md) - Search feature analysis
+- [Session Management](./12-features/05-session-management.md) - Session persistence improvements
+
+### [13. Testing](./13-testing/)
+- [Testing Guide](./13-testing/01-testing-guide.md) - Testing strategies and examples
+- [Test Credentials](./13-testing/02-test-credentials.md) - Test accounts and credentials
+
+### [14. Troubleshooting](./14-troubleshooting/)
+- [Troubleshooting Guide](./14-troubleshooting/01-troubleshooting.md) - Common issues and solutions
+- [Temporary Changes](./14-troubleshooting/02-temporary-changes.md) - Temporary changes log
+
+---
+
+## 🚀 Quick Start
+
+### For New Developers
+1. Start with [Project Overview](./01-project-overview/01-project-overview.md)
+2. Read [Development Guide](./10-development/01-development-guide.md)
+3. Set up your [Environment](./10-development/02-environment-setup.md)
+4. Check [Project Status](./01-project-overview/02-project-status.md) for current state
+
+### For Mobile Developers
+- [Mobile App Overview](./03-mobile/01-overview.md)
+- [Mobile Features](./03-mobile/03-features.md)
+- [API Integration](./03-mobile/05-api-integration.md)
+
+### For Backend Developers
+- [Backend Overview](./05-backend/01-overview.md)
+- [API Reference](./05-backend/03-api-reference.md)
+- [Database Schema](./05-backend/04-database-schema.md)
+
+### For Admin Developers
+- [Admin Overview](./06-admin/01-overview.md)
+- [Merchants Module](./06-admin/03-merchants-module.md)
+
+---
+
+## 📁 Project Structure
+
+```
+zoea2/
+├── mobile/              # Consumer mobile app (Flutter)
+├── merchant-mobile/     # Merchant mobile app (Flutter)
+├── backend/             # NestJS backend API
+├── admin/               # Admin dashboard (Next.js)
+├── web/                 # Consumer web app (Next.js - planned)
+├── merchant-web/        # Merchant web portal (Next.js - planned)
+├── docs/                # This documentation directory
+├── database/            # Database schemas and dumps
+├── scripts/            # Shared utility scripts
+└── README.md           # Main project README
+```
+
+---
+
+## 🔗 Important Links
+
+- **API Base URL**: `https://zoea-africa.qtsoftwareltd.com/api`
+- **Swagger Docs**: `https://zoea-africa.qtsoftwareltd.com/api/docs`
+- **Git Repositories**:
+  - Mobile: `https://github.com/hubertit/zoea.mobile.2.git`
+  - Merchant Mobile: `https://github.com/zoea-africa/zoea-partner-mobile.git`
+  - Backend: `https://github.com/zoea-africa/zoea2-apis.git`
+
+---
+
+## 📊 Project Status Summary
+
+| Application | Status | Progress | Last Updated |
+|------------|--------|----------|--------------|
+| Consumer Mobile | ✅ Active | 85% | Dec 30, 2024 |
+| Merchant Mobile | ✅ Active | 70% | - |
+| Backend API | ✅ Production | 95% | Dec 30, 2024 |
+| Admin Dashboard | ✅ Active | 80% | - |
+| Consumer Web | ⏳ Planned | 0% | - |
+| Merchant Web | ⏳ Planned | 0% | - |
+
+---
+
+## 📝 Documentation Standards
+
+### Naming Convention
+- All documentation files use lowercase with hyphens: `example-file-name.md`
+- Directories use numbers for ordering: `01-project-overview/`
+- Each directory has a README.md with overview
+
+### File Structure
+- Each major section has its own directory
+- Related documentation is grouped together
+- Cross-references use relative paths
+
+### Updates
+- Documentation is updated with code changes
+- Last updated date is maintained
+- Version numbers track major changes
+
+---
+
+## 🤝 Contributing to Documentation
+
+1. Follow the naming conventions
+2. Update the relevant index files
+3. Maintain cross-references
+4. Update "Last Updated" dates
+5. Keep documentation in sync with code
+
+---
+
+**For questions or improvements, see [Contributing Guide](./10-development/05-contributing.md)**
