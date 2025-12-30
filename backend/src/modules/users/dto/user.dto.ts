@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEmail, IsBoolean, IsArray, IsNumber, IsUUID, MinLength, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsBoolean, IsArray, IsNumber, IsUUID, MinLength, IsDateString, IsIn, Matches } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ example: 'John Doe' })
@@ -157,6 +157,61 @@ export class UpdatePreferencesDto {
   @ApiPropertyOptional({ example: false })
   @IsBoolean() @IsOptional()
   isPrivate?: boolean;
+
+  // UX-First User Data Collection fields
+  @ApiPropertyOptional({ example: 'RW', description: 'ISO 2-letter country code' })
+  @IsString()
+  @Matches(/^[A-Z]{2}$/, { message: 'countryOfOrigin must be a valid ISO 2-letter country code (e.g., RW, US, KE)' })
+  @IsOptional()
+  countryOfOrigin?: string;
+
+  @ApiPropertyOptional({ example: 'resident', enum: ['resident', 'visitor'] })
+  @IsString()
+  @IsIn(['resident', 'visitor'], { message: 'userType must be either "resident" or "visitor"' })
+  @IsOptional()
+  userType?: string;
+
+  @ApiPropertyOptional({ example: 'leisure', enum: ['leisure', 'business', 'mice'] })
+  @IsString()
+  @IsIn(['leisure', 'business', 'mice'], { message: 'visitPurpose must be one of: leisure, business, mice' })
+  @IsOptional()
+  visitPurpose?: string;
+
+  @ApiPropertyOptional({ example: '18-25', enum: ['under-18', '18-25', '26-35', '36-45', '46-55', '56+'] })
+  @IsString()
+  @IsIn(['under-18', '18-25', '26-35', '36-45', '46-55', '56+'], { message: 'ageRange must be one of: under-18, 18-25, 26-35, 36-45, 46-55, 56+' })
+  @IsOptional()
+  ageRange?: string;
+
+  @ApiPropertyOptional({ example: 'male', enum: ['male', 'female', 'other', 'prefer_not_to_say'] })
+  @IsString()
+  @IsIn(['male', 'female', 'other', 'prefer_not_to_say'], { message: 'gender must be one of: male, female, other, prefer_not_to_say' })
+  @IsOptional()
+  gender?: string;
+
+  @ApiPropertyOptional({ 
+    example: '1-3 days', 
+    enum: ['1-3 days', '4-7 days', '1-2 weeks', '2+ weeks'],
+    description: 'Length of stay in Rwanda. Only applicable for visitors, not residents.' 
+  })
+  @IsString()
+  @IsIn(['1-3 days', '4-7 days', '1-2 weeks', '2+ weeks'], { message: 'lengthOfStay must be one of: 1-3 days, 4-7 days, 1-2 weeks, 2+ weeks' })
+  @IsOptional()
+  lengthOfStay?: string;
+
+  @ApiPropertyOptional({ example: 'solo', enum: ['solo', 'couple', 'family', 'group'] })
+  @IsString()
+  @IsIn(['solo', 'couple', 'family', 'group'], { message: 'travelParty must be one of: solo, couple, family, group' })
+  @IsOptional()
+  travelParty?: string;
+
+  @ApiPropertyOptional({ example: { 'ageAsked': true, 'genderAsked': false }, type: Object })
+  @IsOptional()
+  dataCollectionFlags?: Record<string, boolean>;
+
+  @ApiPropertyOptional({ description: 'Timestamp when data collection was completed' })
+  @IsDateString() @IsOptional()
+  dataCollectionCompletedAt?: string;
 }
 
 export class CreateMerchantProfileDto {

@@ -5,6 +5,63 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Calculate age range from date of birth
+   * Returns: 'under-18', '18-25', '26-35', '36-45', '46-55', or '56+'
+   */
+  private calculateAgeRange(dateOfBirth: Date): string {
+    const today = new Date();
+    const age = today.getFullYear() - dateOfBirth.getFullYear();
+    const monthDiff = today.getMonth() - dateOfBirth.getMonth();
+    const dayDiff = today.getDate() - dateOfBirth.getDate();
+    
+    // Adjust if birthday hasn't occurred this year
+    const actualAge = (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) 
+      ? age - 1 
+      : age;
+
+    if (actualAge < 18) return 'under-18';
+    if (actualAge >= 18 && actualAge <= 25) return '18-25';
+    if (actualAge >= 26 && actualAge <= 35) return '26-35';
+    if (actualAge >= 36 && actualAge <= 45) return '36-45';
+    if (actualAge >= 46 && actualAge <= 55) return '46-55';
+    return '56+';
+  }
+
+  /**
+   * Check if age range needs updating
+   * Updates if older than 1 year or never updated
+   */
+  private shouldUpdateAgeRange(ageRangeUpdatedAt: Date | null): boolean {
+    if (!ageRangeUpdatedAt) return true;
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return ageRangeUpdatedAt < oneYearAgo;
+  }
+
+  /**
+   * Auto-update age range from date of birth if needed
+   * Called automatically when user data is accessed
+   */
+  private async autoUpdateAgeRange(userId: string, dateOfBirth: Date | null, currentAgeRange: string | null, ageRangeUpdatedAt: Date | null): Promise<void> {
+    // Only update if dateOfBirth exists and age range is outdated
+    if (!dateOfBirth) return;
+    if (!this.shouldUpdateAgeRange(ageRangeUpdatedAt)) return;
+
+    const calculatedAgeRange = this.calculateAgeRange(dateOfBirth);
+    
+    // Only update if different from current
+    if (calculatedAgeRange !== currentAgeRange) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          ageRange: calculatedAgeRange,
+          ageRangeUpdatedAt: new Date(),
+        },
+      });
+    }
+  }
+
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -23,8 +80,48 @@ export class UsersService {
     });
 
     if (!user) throw new NotFoundException('User not found');
-    const { passwordHash, ...safeUser } = user;
-    return safeUser;
+
+    // Auto-update age range if dateOfBirth exists and range is outdated
+    await this.autoUpdateAgeRange(
+      id,
+      user.dateOfBirth,
+      user.ageRange,
+      user.ageRangeUpdatedAt,
+    );
+
+    // Re-fetch to get updated data
+    const updatedUser = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        city: { select: { id: true, name: true } },
+        country: { select: { id: true, name: true, code: true } },
+        profileImage: { select: { id: true, url: true, thumbnailUrl: true } },
+        _count: {
+          select: {
+            bookings: true,
+            reviews: true,
+            favorites: true,
+          },
+        },
+      },
+    });
+
+    if (!updatedUser) throw new NotFoundException('User not found');
+    const { passwordHash, ...safeUser } = updatedUser;
+
+    // Add calculated age range to response
+    if (updatedUser.dateOfBirth) {
+      return {
+        ...safeUser,
+        calculatedAgeRange: this.calculateAgeRange(updatedUser.dateOfBirth),
+        ageRangeSource: 'calculated',
+      };
+    }
+
+    return {
+      ...safeUser,
+      ageRangeSource: 'user-selected',
+    };
   }
 
   async findByEmail(email: string) {
@@ -79,12 +176,21 @@ export class UsersService {
       if (existing) throw new BadRequestException('Username already taken');
     }
 
+    const updateData: any = {
+      ...data,
+      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
+    };
+
+    // If dateOfBirth is being updated, recalculate age range
+    if (data.dateOfBirth) {
+      const calculatedAgeRange = this.calculateAgeRange(new Date(data.dateOfBirth));
+      updateData.ageRange = calculatedAgeRange;
+      updateData.ageRangeUpdatedAt = new Date();
+    }
+
     const updated = await this.prisma.user.update({
       where: { id },
-      data: {
-        ...data,
-        dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
-      },
+      data: updateData,
       include: {
         city: { select: { id: true, name: true } },
         country: { select: { id: true, name: true } },
@@ -93,7 +199,20 @@ export class UsersService {
     });
 
     const { passwordHash, ...safeUser } = updated;
-    return safeUser;
+    
+    // Add calculated age range to response
+    if (updated.dateOfBirth) {
+      return {
+        ...safeUser,
+        calculatedAgeRange: this.calculateAgeRange(updated.dateOfBirth),
+        ageRangeSource: 'calculated',
+      };
+    }
+
+    return {
+      ...safeUser,
+      ageRangeSource: 'user-selected',
+    };
   }
 
   async updateEmail(userId: string, email: string, password: string) {
@@ -192,10 +311,66 @@ export class UsersService {
         dietaryPreferences: true,
         accessibilityNeeds: true,
         isPrivate: true,
+        // UX-First User Data Collection fields
+        countryOfOrigin: true,
+        userType: true,
+        visitPurpose: true,
+        ageRange: true,
+        ageRangeUpdatedAt: true,
+        dateOfBirth: true,
+        gender: true,
+        lengthOfStay: true,
+        travelParty: true,
+        dataCollectionFlags: true,
+        dataCollectionCompletedAt: true,
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+
+    // Auto-update age range if dateOfBirth exists and range is outdated
+    await this.autoUpdateAgeRange(
+      userId,
+      user.dateOfBirth,
+      user.ageRange,
+      user.ageRangeUpdatedAt,
+    );
+
+    // Re-fetch to get updated age range
+    const updatedUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        preferredCurrency: true,
+        preferredLanguage: true,
+        timezone: true,
+        maxDistance: true,
+        notificationPreferences: true,
+        marketingConsent: true,
+        interests: true,
+        dietaryPreferences: true,
+        accessibilityNeeds: true,
+        isPrivate: true,
+        countryOfOrigin: true,
+        userType: true,
+        visitPurpose: true,
+        ageRange: true,
+        gender: true,
+        lengthOfStay: true,
+        travelParty: true,
+        dataCollectionFlags: true,
+        dataCollectionCompletedAt: true,
+      },
+    });
+
+    // Calculate current age range for response (if dateOfBirth exists)
+    const calculatedAgeRange = updatedUser?.dateOfBirth
+      ? this.calculateAgeRange(updatedUser.dateOfBirth)
+      : updatedUser?.ageRange;
+
+    return {
+      ...updatedUser,
+      calculatedAgeRange, // Always include calculated value
+      ageRangeSource: updatedUser?.dateOfBirth ? 'calculated' : 'user-selected',
+    };
   }
 
   async updatePreferences(userId: string, data: {
@@ -209,10 +384,33 @@ export class UsersService {
     dietaryPreferences?: string[];
     accessibilityNeeds?: string[];
     isPrivate?: boolean;
+    // UX-First User Data Collection fields
+    countryOfOrigin?: string;
+    userType?: string;
+    visitPurpose?: string;
+    ageRange?: string;
+    gender?: string;
+    lengthOfStay?: string;
+    travelParty?: string;
+    dataCollectionFlags?: Record<string, boolean>;
+    dataCollectionCompletedAt?: string;
   }) {
-    return this.prisma.user.update({
+    // Prepare update data
+    const updateData: any = { ...data };
+    
+    // Convert dataCollectionCompletedAt string to DateTime if provided
+    if (data.dataCollectionCompletedAt) {
+      updateData.dataCollectionCompletedAt = new Date(data.dataCollectionCompletedAt);
+    }
+
+    // If ageRange is being updated manually, set ageRangeUpdatedAt
+    if (data.ageRange !== undefined) {
+      updateData.ageRangeUpdatedAt = new Date();
+    }
+
+    const updated = await this.prisma.user.update({
       where: { id: userId },
-      data,
+      data: updateData,
       select: {
         preferredCurrency: true,
         preferredLanguage: true,
@@ -224,8 +422,31 @@ export class UsersService {
         dietaryPreferences: true,
         accessibilityNeeds: true,
         isPrivate: true,
+        // New fields
+        countryOfOrigin: true,
+        userType: true,
+        visitPurpose: true,
+        ageRange: true,
+        ageRangeUpdatedAt: true,
+        dateOfBirth: true,
+        gender: true,
+        lengthOfStay: true,
+        travelParty: true,
+        dataCollectionFlags: true,
+        dataCollectionCompletedAt: true,
       },
     });
+
+    // Calculate current age range for response (if dateOfBirth exists)
+    const calculatedAgeRange = updated.dateOfBirth
+      ? this.calculateAgeRange(updated.dateOfBirth)
+      : updated.ageRange;
+
+    return {
+      ...updated,
+      calculatedAgeRange,
+      ageRangeSource: updated.dateOfBirth ? 'calculated' : 'user-selected',
+    };
   }
 
   async getStats(userId: string) {
@@ -236,6 +457,130 @@ export class UsersService {
     ]);
 
     return { bookings, reviews, favorites, visitedPlaces: bookings };
+  }
+
+  async getCompletionStatus(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        countryOfOrigin: true,
+        userType: true,
+        visitPurpose: true,
+        preferredLanguage: true,
+        ageRange: true,
+        gender: true,
+        lengthOfStay: true,
+        travelParty: true,
+        interests: true,
+        preferredCurrency: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    // Mandatory fields
+    const mandatoryFields = {
+      countryOfOrigin: user.countryOfOrigin != null && user.countryOfOrigin.length > 0,
+      userType: user.userType != null,
+      visitPurpose: user.visitPurpose != null,
+      preferredLanguage: user.preferredLanguage != null && user.preferredLanguage.length > 0,
+    };
+
+    const isMandatoryComplete = Object.values(mandatoryFields).every(v => v === true);
+
+    // Optional fields
+    const optionalFields = {
+      ageRange: user.ageRange != null,
+      gender: user.gender != null,
+      lengthOfStay: user.lengthOfStay != null,
+      travelParty: user.travelParty != null,
+      interests: user.interests != null && user.interests.length > 0,
+      preferredCurrency: user.preferredCurrency != null && user.preferredCurrency.length > 0,
+    };
+
+    const isOptionalComplete = Object.values(optionalFields).every(v => v === true);
+
+    // Calculate completion percentage
+    const totalFields = Object.keys(mandatoryFields).length + Object.keys(optionalFields).length;
+    const completedFields = 
+      Object.values(mandatoryFields).filter(v => v).length +
+      Object.values(optionalFields).filter(v => v).length;
+    const completionPercentage = Math.round((completedFields / totalFields) * 100);
+
+    // Missing fields
+    const missingMandatoryFields = Object.entries(mandatoryFields)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key);
+    
+    const missingOptionalFields = Object.entries(optionalFields)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key);
+
+    return {
+      isMandatoryComplete,
+      isOptionalComplete,
+      completionPercentage,
+      missingMandatoryFields,
+      missingOptionalFields,
+    };
+  }
+
+  async getProfileCompletion(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        countryOfOrigin: true,
+        userType: true,
+        visitPurpose: true,
+        preferredLanguage: true,
+        ageRange: true,
+        gender: true,
+        lengthOfStay: true,
+        travelParty: true,
+        interests: true,
+        preferredCurrency: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const fields = [
+      { key: 'countryOfOrigin', value: user.countryOfOrigin },
+      { key: 'userType', value: user.userType },
+      { key: 'visitPurpose', value: user.visitPurpose },
+      { key: 'preferredLanguage', value: user.preferredLanguage },
+      { key: 'ageRange', value: user.ageRange },
+      { key: 'gender', value: user.gender },
+      { key: 'lengthOfStay', value: user.lengthOfStay },
+      { key: 'travelParty', value: user.travelParty },
+      { key: 'interests', value: user.interests },
+      { key: 'preferredCurrency', value: user.preferredCurrency },
+    ];
+
+    const totalFields = fields.length;
+    const completedFields = fields.filter(f => {
+      if (f.key === 'interests') {
+        return f.value != null && Array.isArray(f.value) && f.value.length > 0;
+      }
+      return f.value != null && (typeof f.value !== 'string' || f.value.length > 0);
+    }).length;
+
+    const percentage = Math.round((completedFields / totalFields) * 100);
+    const missingFields = fields
+      .filter(f => {
+        if (f.key === 'interests') {
+          return f.value == null || !Array.isArray(f.value) || f.value.length === 0;
+        }
+        return f.value == null || (typeof f.value === 'string' && f.value.length === 0);
+      })
+      .map(f => f.key);
+
+    return {
+      percentage,
+      completedFields,
+      totalFields,
+      missingFields,
+    };
   }
 
   async getVisitedPlaces(userId: string, page = 1, limit = 20) {

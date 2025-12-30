@@ -110,21 +110,23 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   ),
                   const SizedBox(height: AppTheme.spacing24),
 
-                  // Length of Stay
-                  _buildSection(
-                    title: 'Length of Stay',
-                    subtitle: 'How long are you staying in Rwanda?',
-                    isComplete: _selectedLengthOfStay != null,
-                    child: LengthOfStaySelector(
-                      selectedLength: _selectedLengthOfStay,
-                      onLengthSelected: (length) {
-                        setState(() {
-                          _selectedLengthOfStay = length;
-                        });
-                      },
+                  // Length of Stay (only for visitors)
+                  if (user?.preferences?.userType == UserType.visitor) ...[
+                    _buildSection(
+                      title: 'Length of Stay',
+                      subtitle: 'How long are you staying in Rwanda?',
+                      isComplete: _selectedLengthOfStay != null,
+                      child: LengthOfStaySelector(
+                        selectedLength: _selectedLengthOfStay,
+                        onLengthSelected: (length) {
+                          setState(() {
+                            _selectedLengthOfStay = length;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppTheme.spacing24),
+                    const SizedBox(height: AppTheme.spacing24),
+                  ],
 
                   // Interests
                   _buildSection(
@@ -355,9 +357,18 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         );
       }
 
-      if (_selectedLengthOfStay != null) {
+      // Only save lengthOfStay for visitors
+      final currentUser = ref.read(currentUserProvider);
+      final userType = currentUser?.preferences?.userType;
+      if (userType == UserType.visitor && _selectedLengthOfStay != null) {
         await service.saveProgressiveData(
           lengthOfStay: _selectedLengthOfStay,
+          flagKey: 'lengthOfStayAsked',
+        );
+      } else if (userType == UserType.resident && _selectedLengthOfStay != null) {
+        // Clear lengthOfStay if user is a resident (shouldn't have this)
+        await service.saveProgressiveData(
+          lengthOfStay: null,
           flagKey: 'lengthOfStayAsked',
         );
       }

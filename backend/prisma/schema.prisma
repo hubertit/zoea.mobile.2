@@ -45,6 +45,16 @@ model User {
   maxDistance                                                       Int?                        @default(50) @map("max_distance")
   notificationPreferences                                           Json?                       @default("{\"sms\": false, \"push\": true, \"email\": true}") @map("notification_preferences")
   marketingConsent                                                  Boolean?                    @default(false) @map("marketing_consent")
+  // UX-First User Data Collection fields
+  countryOfOrigin                                                   String?                     @map("country_of_origin") @db.VarChar(3)
+  userType                                                          String?                     @map("user_type") @db.VarChar(20)
+  visitPurpose                                                      String?                     @map("visit_purpose") @db.VarChar(20)
+  ageRange                                                          String?                     @map("age_range") @db.VarChar(10)
+  ageRangeUpdatedAt                                                 DateTime?                   @map("age_range_updated_at") @db.Timestamptz(6)
+  lengthOfStay                                                      String?                     @map("length_of_stay") @db.VarChar(20)
+  travelParty                                                       String?                     @map("travel_party") @db.VarChar(20)
+  dataCollectionFlags                                               Json?                       @default("{}") @map("data_collection_flags")
+  dataCollectionCompletedAt                                         DateTime?                   @map("data_collection_completed_at") @db.Timestamptz(6)
   marketing_consent_at                                              DateTime?                   @db.Timestamptz(6)
   emailVerifiedAt                                                   DateTime?                   @map("email_verified_at") @db.Timestamptz(6)
   phoneVerifiedAt                                                   DateTime?                   @map("phone_verified_at") @db.Timestamptz(6)
@@ -382,7 +392,7 @@ model Listing {
   createdAt                  DateTime?                    @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt                  DateTime?                    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt                  DateTime?                    @map("deleted_at") @db.Timestamptz(6)
-  legacyId                   Int?                        @map("legacy_id")
+  legacyId                   Int?                         @map("legacy_id")
   bookings                   Booking[]
   favorites                  Favorite[]
   amenities                  ListingAmenity[]

@@ -87,12 +87,28 @@ export class UsersController {
     return this.usersService.getPreferences(req.user.id);
   }
 
+  @Get('me/preferences/completion-status')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get data collection completion status' })
+  async getCompletionStatus(@Request() req) {
+    return this.usersService.getCompletionStatus(req.user.id);
+  }
+
   @Put('me/preferences')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user preferences' })
   async updatePreferences(@Request() req, @Body() data: UpdatePreferencesDto) {
     return this.usersService.updatePreferences(req.user.id, data);
+  }
+
+  @Get('me/profile/completion')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get profile completion percentage' })
+  async getProfileCompletion(@Request() req) {
+    return this.usersService.getProfileCompletion(req.user.id);
   }
 
   @Get('me/stats')

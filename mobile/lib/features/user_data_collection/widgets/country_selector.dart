@@ -1,148 +1,171 @@
 import 'package:flutter/material.dart';
+import 'package:country_picker/country_picker.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// Widget for selecting country of origin
-/// Uses chip-based selection with auto-detected country highlighted
+/// Uses standard country_picker package for consistency with app design patterns
 class CountrySelector extends StatelessWidget {
-  final String? selectedCountry;
-  final String? autoDetectedCountry;
-  final Function(String) onCountrySelected;
-  final List<String> commonCountries;
+  final String? selectedCountry; // ISO 2-letter code (e.g., "RW", "US")
+  final String? autoDetectedCountry; // ISO 2-letter code
+  final Function(String) onCountrySelected; // Returns ISO 2-letter code
 
   const CountrySelector({
     super.key,
     required this.selectedCountry,
     this.autoDetectedCountry,
     required this.onCountrySelected,
-    this.commonCountries = const [
-      'RW', // Rwanda
-      'US', // United States
-      'GB', // United Kingdom
-      'KE', // Kenya
-      'UG', // Uganda
-      'TZ', // Tanzania
-      'ZA', // South Africa
-      'NG', // Nigeria
-      'FR', // France
-      'DE', // Germany
-      'IT', // Italy
-      'ES', // Spain
-      'CA', // Canada
-      'AU', // Australia
-      'IN', // India
-      'CN', // China
-      'JP', // Japan
-      'BR', // Brazil
-    ],
   });
 
-  String _getCountryName(String code) {
-    const countryNames = {
-      'RW': 'Rwanda',
-      'US': 'United States',
-      'GB': 'United Kingdom',
-      'KE': 'Kenya',
-      'UG': 'Uganda',
-      'TZ': 'Tanzania',
-      'ZA': 'South Africa',
-      'NG': 'Nigeria',
-      'FR': 'France',
-      'DE': 'Germany',
-      'IT': 'Italy',
-      'ES': 'Spain',
-      'CA': 'Canada',
-      'AU': 'Australia',
-      'IN': 'India',
-      'CN': 'China',
-      'JP': 'Japan',
-      'BR': 'Brazil',
-    };
-    return countryNames[code] ?? code;
+  /// Get country name from ISO code
+  String? _getCountryName(String? code) {
+    if (code == null) return null;
+    try {
+      final country = Country.parse(code);
+      return country.name;
+    } catch (e) {
+      return code;
+    }
   }
 
-  String _getCountryFlag(String code) {
-    // Simple emoji flags for common countries
-    const flags = {
-      'RW': '🇷🇼',
-      'US': '🇺🇸',
-      'GB': '🇬🇧',
-      'KE': '🇰🇪',
-      'UG': '🇺🇬',
-      'TZ': '🇹🇿',
-      'ZA': '🇿🇦',
-      'NG': '🇳🇬',
-      'FR': '🇫🇷',
-      'DE': '🇩🇪',
-      'IT': '🇮🇹',
-      'ES': '🇪🇸',
-      'CA': '🇨🇦',
-      'AU': '🇦🇺',
-      'IN': '🇮🇳',
-      'CN': '🇨🇳',
-      'JP': '🇯🇵',
-      'BR': '🇧🇷',
-    };
-    return flags[code] ?? '🌍';
+  /// Get country flag emoji from ISO code
+  String _getCountryFlag(String? code) {
+    if (code == null) return '🌍';
+    try {
+      final country = Country.parse(code);
+      return country.flagEmoji;
+    } catch (e) {
+      return '🌍';
+    }
+  }
+
+  /// Show country picker bottom sheet
+  void _showCountryPicker(BuildContext context) {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: false, // We don't need phone codes for country of origin
+      favorite: autoDetectedCountry != null
+          ? [autoDetectedCountry!]
+          : [],
+      countryListTheme: CountryListThemeData(
+        flagSize: 25,
+        backgroundColor: AppTheme.backgroundColor,
+        textStyle: AppTheme.bodyLarge,
+        searchTextStyle: AppTheme.bodyMedium,
+        inputDecoration: InputDecoration(
+          labelText: 'Search country',
+          hintText: 'Start typing to search',
+          prefixIcon: const Icon(Icons.search),
+          filled: true,
+          fillColor: AppTheme.backgroundColor,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: AppTheme.dividerColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: AppTheme.dividerColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: AppTheme.primaryColor,
+              width: 2,
+            ),
+          ),
+        ),
+        bottomSheetHeight: 500,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+      ),
+      onSelect: (Country country) {
+        // Return ISO 2-letter code
+        onCountrySelected(country.countryCode);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Show auto-detected country first if available
-    final countriesToShow = autoDetectedCountry != null &&
-            !commonCountries.contains(autoDetectedCountry)
-        ? [autoDetectedCountry!, ...commonCountries]
-        : commonCountries;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Auto-detected country hint
         if (autoDetectedCountry != null && selectedCountry == null)
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacing12),
             child: _buildAutoDetectedCard(),
           ),
-        Wrap(
-          spacing: AppTheme.spacing8,
-          runSpacing: AppTheme.spacing8,
-          children: countriesToShow.map((countryCode) {
-            final isSelected = selectedCountry == countryCode;
-            final isAutoDetected = autoDetectedCountry == countryCode;
-
-            return FilterChip(
-              avatar: Text(
-                _getCountryFlag(countryCode),
-                style: const TextStyle(fontSize: 20),
-              ),
-              label: Text(
-                _getCountryName(countryCode),
-                style: AppTheme.bodyMedium.copyWith(
-                  color: isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.primaryTextColor,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-              selected: isSelected,
-              onSelected: (_) => onCountrySelected(countryCode),
-              selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-              checkmarkColor: AppTheme.primaryColor,
-              backgroundColor: isAutoDetected && !isSelected
-                  ? AppTheme.primaryColor.withOpacity(0.1)
-                  : AppTheme.backgroundColor,
-              side: BorderSide(
-                color: isSelected
+        // Country selection button
+        InkWell(
+          onTap: () => _showCountryPicker(context),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+          child: Container(
+            padding: const EdgeInsets.all(AppTheme.spacing16),
+            decoration: BoxDecoration(
+              color: AppTheme.backgroundColor,
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+              border: Border.all(
+                color: selectedCountry != null
                     ? AppTheme.primaryColor
-                    : isAutoDetected
-                        ? AppTheme.primaryColor.withOpacity(0.3)
-                        : AppTheme.dividerColor,
-                width: isSelected ? 2 : 1,
+                    : AppTheme.dividerColor,
+                width: selectedCountry != null ? 2 : 1,
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacing12,
-                vertical: AppTheme.spacing8,
-              ),
-            );
-          }).toList(),
+            ),
+            child: Row(
+              children: [
+                // Flag
+                Text(
+                  _getCountryFlag(selectedCountry ?? autoDetectedCountry),
+                  style: const TextStyle(fontSize: 32),
+                ),
+                const SizedBox(width: AppTheme.spacing12),
+                // Country name
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selectedCountry != null
+                            ? _getCountryName(selectedCountry) ?? 'Select country'
+                            : autoDetectedCountry != null
+                                ? '${_getCountryName(autoDetectedCountry)} (Detected)'
+                                : 'Select your country',
+                        style: AppTheme.bodyLarge.copyWith(
+                          color: selectedCountry != null
+                              ? AppTheme.primaryTextColor
+                              : AppTheme.secondaryTextColor,
+                          fontWeight: selectedCountry != null
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                      if (selectedCountry == null && autoDetectedCountry != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppTheme.spacing4),
+                          child: Text(
+                            'Tap to change',
+                            style: AppTheme.bodySmall.copyWith(
+                              color: AppTheme.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Chevron icon
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -163,7 +186,7 @@ class CountrySelector extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.location_on,
             color: AppTheme.primaryColor,
             size: 20,
@@ -171,7 +194,7 @@ class CountrySelector extends StatelessWidget {
           const SizedBox(width: AppTheme.spacing8),
           Expanded(
             child: Text(
-              'We detected ${_getCountryName(autoDetectedCountry!)} ${_getCountryFlag(autoDetectedCountry!)}',
+              'We detected ${_getCountryName(autoDetectedCountry)} ${_getCountryFlag(autoDetectedCountry)}',
               style: AppTheme.bodySmall.copyWith(
                 color: AppTheme.primaryColor,
                 fontWeight: FontWeight.w500,

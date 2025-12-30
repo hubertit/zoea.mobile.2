@@ -107,7 +107,7 @@ class UserPreferences {
   final String? countryOfOrigin; // ISO country code (e.g., "RW", "US")
   final UserType? userType; // resident, visitor
   final VisitPurpose? visitPurpose; // leisure, business, mice
-  final AgeRange? ageRange; // e.g., "18-25", "26-35", etc.
+  final AgeRange? ageRange; // e.g., "under-18", "18-25", "26-35", etc.
   final Gender? gender; // male, female, other, prefer_not_to_say
   final LengthOfStay? lengthOfStay; // "1-3 days", "4-7 days", etc.
   final TravelParty? travelParty; // solo, couple, family, group
@@ -191,8 +191,16 @@ class UserPreferences {
   }
 
   /// Get profile completion percentage (0-100)
+  /// Note: lengthOfStay is only counted for visitors, not residents
   int get profileCompletionPercentage {
-    int totalFields = 10; // Total optional + mandatory fields
+    // Base fields (always counted)
+    int totalFields = 9; // Mandatory + optional fields (excluding lengthOfStay)
+    
+    // Add lengthOfStay to total only if user is a visitor
+    if (userType == UserType.visitor) {
+      totalFields = 10; // Include lengthOfStay for visitors
+    }
+
     int completedFields = 0;
 
     if (countryOfOrigin != null && countryOfOrigin!.isNotEmpty) completedFields++;
@@ -201,12 +209,13 @@ class UserPreferences {
     if (language != null && language!.isNotEmpty) completedFields++;
     if (ageRange != null) completedFields++;
     if (gender != null) completedFields++;
-    if (lengthOfStay != null) completedFields++;
+    // Only count lengthOfStay for visitors
+    if (userType == UserType.visitor && lengthOfStay != null) completedFields++;
     if (travelParty != null) completedFields++;
     if (interests.isNotEmpty) completedFields++;
     if (currency != null && currency!.isNotEmpty) completedFields++;
 
-    return ((completedFields / totalFields) * 100).round();
+    return totalFields > 0 ? ((completedFields / totalFields) * 100).round() : 0;
   }
 
   /// Create a copy with updated fields
@@ -367,6 +376,7 @@ extension VisitPurposeExtension on VisitPurpose {
 }
 
 enum AgeRange {
+  rangeUnder18,
   range18_25,
   range26_35,
   range36_45,
@@ -377,6 +387,8 @@ enum AgeRange {
 extension AgeRangeExtension on AgeRange {
   String get displayName {
     switch (this) {
+      case AgeRange.rangeUnder18:
+        return 'Under 18';
       case AgeRange.range18_25:
         return '18-25';
       case AgeRange.range26_35:
@@ -392,6 +404,8 @@ extension AgeRangeExtension on AgeRange {
 
   String get apiValue {
     switch (this) {
+      case AgeRange.rangeUnder18:
+        return 'under-18';
       case AgeRange.range18_25:
         return '18-25';
       case AgeRange.range26_35:
@@ -408,6 +422,8 @@ extension AgeRangeExtension on AgeRange {
   static AgeRange? fromString(String? value) {
     if (value == null) return null;
     switch (value) {
+      case 'under-18':
+        return AgeRange.rangeUnder18;
       case '18-25':
         return AgeRange.range18_25;
       case '26-35':

@@ -6,26 +6,48 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
+import '../../user_data_collection/widgets/age_range_selector.dart';
+import '../../user_data_collection/widgets/gender_selector.dart';
+import '../../user_data_collection/widgets/length_of_stay_selector.dart';
+import '../../user_data_collection/widgets/interests_chips.dart';
+import '../../user_data_collection/widgets/travel_party_selector.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  const EditProfileScreen({super.key});
+  final int? initialTab; // 0 = Basic Info, 1 = Preferences
+
+  const EditProfileScreen({super.key, this.initialTab});
 
   @override
   ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isSaving = false;
   String? _profileImagePath;
+
+  // Preferences state
+  AgeRange? _selectedAgeRange;
+  Gender? _selectedGender;
+  LengthOfStay? _selectedLengthOfStay;
+  List<String> _selectedInterests = [];
+  TravelParty? _selectedTravelParty;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTab ?? 0,
+    );
     _loadUserData();
   }
 
@@ -36,12 +58,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         _nameController.text = user.fullName;
         _emailController.text = user.email;
         _phoneController.text = user.phoneNumber ?? '';
+        
+        // Load preferences
+        if (user.preferences != null) {
+          final prefs = user.preferences!;
+          _selectedAgeRange = prefs.ageRange;
+          _selectedGender = prefs.gender;
+          _selectedLengthOfStay = prefs.lengthOfStay;
+          _selectedInterests = List<String>.from(prefs.interests);
+          _selectedTravelParty = prefs.travelParty;
+        }
       });
     }
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -50,6 +83,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(currentUserProvider);
+    final completionPercentage = user?.preferences?.profileCompletionPercentage ?? 0;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
@@ -70,7 +106,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: _isLoading ? null : _saveProfile,
+            onPressed: (_isLoading || _isSaving) ? null : _saveAll,
             child: Text(
               'Save',
               style: AppTheme.bodyMedium.copyWith(
@@ -81,70 +117,306 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           ),
           const SizedBox(width: 16),
         ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Profile Picture Section
-            _buildProfilePictureSection(),
-            const SizedBox(height: 24),
-            
-            // Personal Information
-            _buildSectionHeader('Personal Information'),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _nameController,
-              label: 'Full Name',
-              hint: 'Enter your full name',
-              icon: Icons.person,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your full name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _emailController,
-              label: 'Email Address',
-              hint: 'Enter your email address',
-              icon: Icons.email,
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your email address';
-                }
-                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _phoneController,
-              label: 'Phone Number',
-              hint: 'Enter your phone number',
-              icon: Icons.phone,
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your phone number';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 32),
-            
-            // Save Button
-            _buildSaveButton(),
-            const SizedBox(height: 16),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: AppTheme.primaryColor,
+          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: AppTheme.primaryColor,
+          tabs: const [
+            Tab(text: 'Basic Info'),
+            Tab(text: 'Preferences'),
           ],
         ),
       ),
+      body: Column(
+        children: [
+          // Completion Badge
+          _buildCompletionBadge(completionPercentage),
+          
+          // Tab Content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildBasicInfoTab(),
+                _buildPreferencesTab(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompletionBadge(int percentage) {
+    Color badgeColor;
+    if (percentage >= 80) {
+      badgeColor = AppTheme.successColor;
+    } else if (percentage >= 50) {
+      badgeColor = Colors.orange;
+    } else {
+      badgeColor = AppTheme.secondaryTextColor;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacing16,
+        vertical: AppTheme.spacing12,
+      ),
+      decoration: BoxDecoration(
+        color: badgeColor.withOpacity(0.1),
+        border: Border(
+          bottom: BorderSide(
+            color: AppTheme.dividerColor,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            color: badgeColor,
+            size: 20,
+          ),
+          const SizedBox(width: AppTheme.spacing8),
+          Expanded(
+            child: Text(
+              'Profile Completion: $percentage%',
+              style: AppTheme.bodyMedium.copyWith(
+                color: badgeColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Container(
+            width: 100,
+            height: 8,
+            decoration: BoxDecoration(
+              color: AppTheme.dividerColor,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: percentage / 100,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: badgeColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBasicInfoTab() {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Profile Picture Section
+          _buildProfilePictureSection(),
+          const SizedBox(height: 24),
+          
+          // Personal Information
+          _buildSectionHeader('Personal Information'),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _nameController,
+            label: 'Full Name',
+            hint: 'Enter your full name',
+            icon: Icons.person,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your full name';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _emailController,
+            label: 'Email Address',
+            hint: 'Enter your email address',
+            icon: Icons.email,
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your email address';
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                return 'Please enter a valid email address';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _phoneController,
+            label: 'Phone Number',
+            hint: 'Enter your phone number',
+            icon: Icons.phone,
+            keyboardType: TextInputType.phone,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your phone number';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreferencesTab() {
+    final user = ref.watch(currentUserProvider);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.spacing24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Age Range
+          _buildPreferencesSection(
+            title: 'Age Range',
+            subtitle: 'Help us personalize content for you',
+            isComplete: _selectedAgeRange != null,
+            child: AgeRangeSelector(
+              selectedRange: _selectedAgeRange,
+              onRangeSelected: (range) {
+                setState(() {
+                  _selectedAgeRange = range;
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacing24),
+
+          // Gender
+          _buildPreferencesSection(
+            title: 'Gender',
+            subtitle: 'Optional - helps with personalization',
+            isComplete: _selectedGender != null,
+            child: GenderSelector(
+              selectedGender: _selectedGender,
+              onGenderSelected: (gender) {
+                setState(() {
+                  _selectedGender = gender;
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacing24),
+
+          // Length of Stay (only for visitors)
+          if (user?.preferences?.userType == UserType.visitor) ...[
+            _buildPreferencesSection(
+              title: 'Length of Stay',
+              subtitle: 'How long are you staying in Rwanda?',
+              isComplete: _selectedLengthOfStay != null,
+              child: LengthOfStaySelector(
+                selectedLength: _selectedLengthOfStay,
+                onLengthSelected: (length) {
+                  setState(() {
+                    _selectedLengthOfStay = length;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacing24),
+          ],
+
+          // Interests
+          _buildPreferencesSection(
+            title: 'Interests',
+            subtitle: 'Select all that apply',
+            isComplete: _selectedInterests.isNotEmpty,
+            child: InterestsChips(
+              selectedInterests: _selectedInterests,
+              onInterestsChanged: (interests) {
+                setState(() {
+                  _selectedInterests = interests;
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacing24),
+
+          // Travel Party
+          _buildPreferencesSection(
+            title: 'Travel Party',
+            subtitle: 'Who are you traveling with?',
+            isComplete: _selectedTravelParty != null,
+            child: TravelPartySelector(
+              selectedParty: _selectedTravelParty,
+              onPartySelected: (party) {
+                setState(() {
+                  _selectedTravelParty = party;
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacing32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreferencesSection({
+    required String title,
+    required String subtitle,
+    required bool isComplete,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTheme.titleMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.spacing4),
+                  Text(
+                    subtitle,
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isComplete)
+              Container(
+                padding: const EdgeInsets.all(AppTheme.spacing8),
+                decoration: BoxDecoration(
+                  color: AppTheme.successColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: AppTheme.successColor,
+                  size: 16,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppTheme.spacing16),
+        child,
+      ],
     );
   }
 
@@ -327,40 +599,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: _isLoading ? null : _saveProfile,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: AppTheme.primaryColor,
-          side: const BorderSide(color: AppTheme.primaryColor),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: _isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                'Save Changes',
-                style: AppTheme.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-      ),
-    );
-  }
-
   void _changeProfilePicture() {
     showModalBottomSheet(
       context: context,
@@ -439,13 +677,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  void _saveProfile() async {
+  Future<void> _saveAll() async {
+    // Validate basic info form
     if (!_formKey.currentState!.validate()) {
+      // Switch to basic info tab if validation fails
+      _tabController.animateTo(0);
       return;
     }
 
     setState(() {
-      _isLoading = true;
+      _isSaving = true;
     });
 
     try {
@@ -456,12 +697,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         throw Exception('User not found. Please login again.');
       }
 
-      // Check what changed
+      // Save basic info
       final nameChanged = _nameController.text.trim() != currentUser.fullName;
       final emailChanged = _emailController.text.trim() != currentUser.email;
       final phoneChanged = _phoneController.text.trim() != (currentUser.phoneNumber ?? '');
 
-      // Update profile (name and phone)
       if (nameChanged || phoneChanged) {
         await userService.updateProfile(
           fullName: nameChanged ? _nameController.text.trim() : null,
@@ -469,33 +709,77 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         );
       }
 
-      // Update email separately if changed
       if (emailChanged) {
         await userService.updateEmail(_emailController.text.trim());
       }
 
-      // Update profile image if changed
       if (_profileImagePath != null) {
         await userService.updateProfileImage(_profileImagePath!);
       }
 
-      // Refresh user data - invalidate providers to refetch
+      // Save preferences in a single API call
+      final userType = currentUser.preferences?.userType;
+      final existingFlags = currentUser.preferences?.dataCollectionFlags ?? {};
+      final updatedFlags = <String, bool>{...existingFlags};
+      
+      // Build flags for fields that are being set
+      if (_selectedAgeRange != null) updatedFlags['ageAsked'] = true;
+      if (_selectedGender != null) updatedFlags['genderAsked'] = true;
+      if (userType == UserType.visitor && _selectedLengthOfStay != null) {
+        updatedFlags['lengthOfStayAsked'] = true;
+      }
+      if (_selectedInterests.isNotEmpty) updatedFlags['interestsAsked'] = true;
+      if (_selectedTravelParty != null) updatedFlags['travelPartyAsked'] = true;
+
+      // Prepare preferences data
+      final preferencesData = <String, dynamic>{
+        'dataCollectionFlags': updatedFlags,
+      };
+      
+      if (_selectedAgeRange != null) {
+        preferencesData['ageRange'] = _selectedAgeRange!.apiValue;
+      }
+      if (_selectedGender != null) {
+        preferencesData['gender'] = _selectedGender!.apiValue;
+      }
+      
+      // Handle lengthOfStay based on user type
+      if (userType == UserType.visitor) {
+        if (_selectedLengthOfStay != null) {
+          preferencesData['lengthOfStay'] = _selectedLengthOfStay!.apiValue;
+        }
+      } else {
+        // Clear lengthOfStay for residents
+        preferencesData['lengthOfStay'] = null;
+      }
+      
+      if (_selectedInterests.isNotEmpty) {
+        preferencesData['interests'] = _selectedInterests;
+      }
+      if (_selectedTravelParty != null) {
+        preferencesData['travelParty'] = _selectedTravelParty!.apiValue;
+      }
+
+      // Save all preferences in one API call
+      if (preferencesData.isNotEmpty) {
+        await userService.updatePreferences(
+          ageRange: _selectedAgeRange,
+          gender: _selectedGender,
+          lengthOfStay: userType == UserType.visitor ? _selectedLengthOfStay : null,
+          interests: _selectedInterests.isNotEmpty ? _selectedInterests : null,
+          travelParty: _selectedTravelParty,
+          dataCollectionFlags: updatedFlags,
+        );
+      }
+
+      // Refresh user data
+      ref.invalidate(currentUserProvider);
       ref.invalidate(currentUserProfileProvider);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Profile updated successfully!',
-              style: AppTheme.bodyMedium.copyWith(
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: AppTheme.successColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+          AppTheme.successSnackBar(
+            message: 'Profile updated successfully!',
           ),
         );
         
@@ -506,27 +790,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (mounted) {
         final errorMessage = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              errorMessage.isNotEmpty 
-                  ? errorMessage 
-                  : 'Failed to update profile. Please try again.',
-              style: AppTheme.bodyMedium.copyWith(
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: AppTheme.errorColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+          AppTheme.errorSnackBar(
+            message: errorMessage.isNotEmpty 
+                ? errorMessage 
+                : 'Failed to update profile. Please try again.',
           ),
         );
       }
     } finally {
       if (mounted) {
         setState(() {
-          _isLoading = false;
+          _isSaving = false;
         });
       }
     }

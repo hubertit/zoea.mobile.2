@@ -20,38 +20,31 @@ class UserDataCollectionService {
   }) async {
     try {
       final data = <String, dynamic>{
-        'preferences': {
-          'countryOfOrigin': countryOfOrigin,
-          'userType': userType.apiValue,
-          'visitPurpose': visitPurpose.apiValue,
-          'preferredLanguage': language,
-          'notificationPreferences': {
-            'push': analyticsConsent,
-            'email': analyticsConsent,
-          },
-          'dataCollectionFlags': {
-            'countryAsked': true,
-            'userTypeAsked': true,
-            'visitPurposeAsked': true,
-            'languageAsked': true,
-            'analyticsConsentAsked': true,
-          },
+        'countryOfOrigin': countryOfOrigin,
+        'userType': userType.apiValue,
+        'visitPurpose': visitPurpose.apiValue,
+        'preferredLanguage': language,
+        'notificationPreferences': {
+          'push': analyticsConsent,
+          'email': analyticsConsent,
+        },
+        'dataCollectionFlags': {
+          'countryAsked': true,
+          'userTypeAsked': true,
+          'visitPurposeAsked': true,
+          'languageAsked': true,
+          'analyticsConsentAsked': true,
         },
       };
 
       final response = await _dio.put(
-        '${AppConfig.usersEndpoint}/me',
+        '${AppConfig.usersEndpoint}/me/preferences',
         data: data,
       );
 
       if (response.statusCode == 200) {
-        final userData = response.data;
-        final preferencesData = userData['preferences'] as Map<String, dynamic>?;
-        
-        if (preferencesData != null) {
-          return UserPreferences.fromJson(preferencesData);
-        }
-        throw Exception('Invalid response format');
+        final prefsData = response.data;
+        return UserPreferences.fromJson(prefsData);
       } else {
         throw Exception('Failed to save mandatory data: ${response.statusMessage}');
       }
@@ -84,6 +77,7 @@ class UserDataCollectionService {
 
   /// Save optional progressive data (age range, gender, etc.)
   /// This is called when user completes a progressive prompt
+  /// Note: lengthOfStay is only saved for visitors, not residents
   Future<UserPreferences> saveProgressiveData({
     AgeRange? ageRange,
     Gender? gender,
@@ -96,6 +90,10 @@ class UserDataCollectionService {
       final preferences = <String, dynamic>{};
       final flags = <String, bool>{};
 
+      // Check if user is a visitor before saving lengthOfStay
+      final currentUser = await _tokenStorage.getUserData();
+      final userType = currentUser?.preferences?.userType;
+
       if (ageRange != null) {
         preferences['ageRange'] = ageRange.apiValue;
         flags['ageAsked'] = true;
@@ -104,9 +102,18 @@ class UserDataCollectionService {
         preferences['gender'] = gender.apiValue;
         flags['genderAsked'] = true;
       }
+      // Only save lengthOfStay for visitors
       if (lengthOfStay != null) {
-        preferences['lengthOfStay'] = lengthOfStay.apiValue;
-        flags['lengthOfStayAsked'] = true;
+        if (userType == UserType.visitor) {
+          preferences['lengthOfStay'] = lengthOfStay.apiValue;
+          flags['lengthOfStayAsked'] = true;
+        } else {
+          // Clear lengthOfStay if user is a resident
+          preferences['lengthOfStay'] = null;
+        }
+      } else if (userType == UserType.resident) {
+        // Explicitly clear lengthOfStay for residents
+        preferences['lengthOfStay'] = null;
       }
       if (travelParty != null) {
         preferences['travelParty'] = travelParty.apiValue;
@@ -121,20 +128,15 @@ class UserDataCollectionService {
       }
 
       // Merge with existing flags if any
-      final currentUser = await _tokenStorage.getUserData();
       if (currentUser?.preferences?.dataCollectionFlags.isNotEmpty == true) {
         flags.addAll(currentUser!.preferences!.dataCollectionFlags);
       }
 
       preferences['dataCollectionFlags'] = flags;
 
-      final data = <String, dynamic>{
-        'preferences': preferences,
-      };
-
       final response = await _dio.put(
         '${AppConfig.usersEndpoint}/me/preferences',
-        data: data,
+        data: preferences,
       );
 
       if (response.statusCode == 200) {
@@ -180,9 +182,7 @@ class UserDataCollectionService {
       final mergedFlags = {...existingFlags, ...flags};
 
       final data = <String, dynamic>{
-        'preferences': {
-          'dataCollectionFlags': mergedFlags,
-        },
+        'dataCollectionFlags': mergedFlags,
       };
 
       await _dio.put(

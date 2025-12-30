@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/token_storage_service.dart';
+import '../models/user.dart';
 
 /// Service for managing when to show progressive data collection prompts
 /// Implements smart timing logic to avoid annoying users
@@ -164,6 +165,7 @@ class PromptTimingService {
 
   /// Get the next prompt type to show based on missing data
   /// Returns the first missing field that hasn't been asked
+  /// Note: lengthOfStay is only shown for visitors, not residents
   Future<String?> getNextPromptType() async {
     try {
       final user = await _tokenStorage.getUserData();
@@ -171,6 +173,7 @@ class PromptTimingService {
 
       final prefs = user!.preferences!;
       final flags = prefs.dataCollectionFlags;
+      final isVisitor = prefs.userType == UserType.visitor;
 
       // Check in priority order
       if (prefs.ageRange == null && flags['ageAsked'] != true) {
@@ -182,7 +185,8 @@ class PromptTimingService {
       if (prefs.interests.isEmpty && flags['interestsAsked'] != true) {
         return 'interests';
       }
-      if (prefs.lengthOfStay == null && flags['lengthOfStayAsked'] != true) {
+      // Only show lengthOfStay for visitors
+      if (isVisitor && prefs.lengthOfStay == null && flags['lengthOfStayAsked'] != true) {
         return 'lengthOfStay';
       }
       if (prefs.travelParty == null && flags['travelPartyAsked'] != true) {
@@ -242,9 +246,14 @@ class PromptTimingService {
           break;
 
         case 'use_navigation':
-          // Show length of stay prompt if not collected
+          // Show length of stay prompt if not collected (only for visitors)
           if (suggestedPromptType == 'lengthOfStay' || suggestedPromptType == null) {
-            if (!await hasDataBeenCollected('lengthOfStayAsked')) {
+            // Check if user is a visitor
+            final user = await _tokenStorage.getUserData();
+            final isVisitor = user?.preferences?.userType == UserType.visitor;
+            
+            // Only show for visitors
+            if (isVisitor && !await hasDataBeenCollected('lengthOfStayAsked')) {
               return true;
             }
           }

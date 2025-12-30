@@ -530,7 +530,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         final isComplete = percentage >= 100;
         return InkWell(
           onTap: () {
-            context.go('/profile/complete-profile');
+            context.go('/profile/edit?tab=1');
           },
           borderRadius: BorderRadius.circular(12),
           child: Padding(

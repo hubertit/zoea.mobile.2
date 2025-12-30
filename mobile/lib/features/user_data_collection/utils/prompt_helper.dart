@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
+import '../../../core/providers/auth_provider.dart';
+import '../../../core/models/user.dart';
 import '../screens/progressive_prompt_screen.dart';
 
 /// Helper utility for showing progressive prompts after user actions
@@ -77,11 +79,21 @@ class PromptHelper {
   }
 
   /// Check and show prompt after using navigation (length of stay prompt)
+  /// Only shows for visitors, not residents
   static Future<void> checkAndShowPromptAfterNavigation(
     BuildContext context,
     WidgetRef ref,
   ) async {
     try {
+      // Check if user is a visitor (length of stay only applies to visitors)
+      final user = ref.read(currentUserProvider);
+      final userType = user?.preferences?.userType;
+      
+      // Skip if user is a resident (length of stay doesn't apply)
+      if (userType != UserType.visitor) {
+        return;
+      }
+
       final timingService = ref.read(promptTimingServiceProvider);
       
       final shouldShow = await timingService.shouldShowPromptAfterAction(

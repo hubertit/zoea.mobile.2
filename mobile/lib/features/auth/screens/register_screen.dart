@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/auth_provider.dart';
-import '../../../core/models/user.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -23,7 +22,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
   bool _agreeToTerms = false;
-  UserRole _selectedUserRole = UserRole.explorer;
 
   @override
   void dispose() {
@@ -257,98 +255,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   delay: 700.ms,
                   curve: Curves.easeOut,
                 ),
-                
-                const SizedBox(height: AppTheme.spacing16),
-                
-                // User Type Selection
-                Text(
-                  'Select your account type',
-                  style: AppTheme.titleMedium,
-                ).animate().slideX(
-                  begin: -1,
-                  duration: 600.ms,
-                  delay: 800.ms,
-                  curve: Curves.easeOut,
-                ),
-                
-                const SizedBox(height: AppTheme.spacing12),
-                
-                // User Type Cards
-                ...UserRole.values.where((role) => role != UserRole.admin).map((role) {
-                  final isSelected = _selectedUserRole == role;
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: AppTheme.spacing12),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _selectedUserRole = role;
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
-                      child: Container(
-                        padding: const EdgeInsets.all(AppTheme.spacing16),
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
-                          border: Border.all(
-                            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
-                            width: isSelected ? 2 : 1,
-                          ),
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
-                                  width: 2,
-                                ),
-                                color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-                              ),
-                              child: isSelected
-                                  ? const Icon(
-                                      Icons.check,
-                                      size: 12,
-                                      color: Colors.white,
-                                    )
-                                  : null,
-                            ),
-                            const SizedBox(width: AppTheme.spacing12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    role.displayName,
-                                    style: AppTheme.titleMedium.copyWith(
-                                      color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppTheme.spacing4),
-                                  Text(
-                                    role.description,
-                                    style: AppTheme.bodySmall.copyWith(
-                                      color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ).animate().slideX(
-                    begin: -1,
-                    duration: 600.ms,
-                    delay: (900 + (UserRole.values.indexOf(role) * 100)).ms,
-                    curve: Curves.easeOut,
-                  );
-                }),
                 
                 const SizedBox(height: AppTheme.spacing16),
                 
