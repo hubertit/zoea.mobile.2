@@ -30,11 +30,17 @@ export class UpdateUserDto {
   @IsString() @IsOptional()
   gender?: string;
 
-  @ApiPropertyOptional({ example: 'uuid' })
+  @ApiPropertyOptional({ 
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'UUID of the country where the user is located (operational country, not country of origin)'
+  })
   @IsUUID() @IsOptional()
   countryId?: string;
 
-  @ApiPropertyOptional({ example: 'uuid' })
+  @ApiPropertyOptional({ 
+    example: '123e4567-e89b-12d3-a456-426614174001',
+    description: 'UUID of the city where the user is located'
+  })
   @IsUUID() @IsOptional()
   cityId?: string;
 
@@ -205,11 +211,18 @@ export class UpdatePreferencesDto {
   @IsOptional()
   travelParty?: string;
 
-  @ApiPropertyOptional({ example: { 'ageAsked': true, 'genderAsked': false }, type: Object })
+  @ApiPropertyOptional({ 
+    example: { 'ageAsked': true, 'genderAsked': false, 'interestsAsked': true },
+    type: Object,
+    description: 'JSON object tracking which data collection prompts have been shown to the user. Keys are prompt identifiers (e.g., "ageAsked", "genderAsked"), values are booleans indicating if the prompt was shown.'
+  })
   @IsOptional()
   dataCollectionFlags?: Record<string, boolean>;
 
-  @ApiPropertyOptional({ description: 'Timestamp when data collection was completed' })
+  @ApiPropertyOptional({ 
+    description: 'ISO 8601 timestamp when mandatory data collection was completed',
+    example: '2024-01-15T10:30:00Z'
+  })
   @IsDateString() @IsOptional()
   dataCollectionCompletedAt?: string;
 }
