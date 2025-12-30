@@ -32,7 +32,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   bool _isLoading = false;
   bool _isSaving = false;
   String? _profileImagePath;
-  bool _hasUnsavedChanges = false;
 
   // Preferences state
   AgeRange? _selectedAgeRange;
@@ -56,28 +55,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       }
     });
     
-    // Add listeners to text controllers to track changes
-    _nameController.addListener(() {
-      if (mounted) {
-        setState(() {
-          _hasUnsavedChanges = _checkForUnsavedChanges();
-        });
-      }
-    });
-    _emailController.addListener(() {
-      if (mounted) {
-        setState(() {
-          _hasUnsavedChanges = _checkForUnsavedChanges();
-        });
-      }
-    });
-    _phoneController.addListener(() {
-      if (mounted) {
-        setState(() {
-          _hasUnsavedChanges = _checkForUnsavedChanges();
-        });
-      }
-    });
+    // Listeners are not needed - we check dynamically when needed
     
     _loadUserData();
   }
@@ -100,7 +78,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           _selectedTravelParty = prefs.travelParty;
         }
         
-        _hasUnsavedChanges = false; // Reset after loading
+        // Data loaded, ready for editing
       });
     }
   }
@@ -417,7 +395,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onRangeSelected: (range) {
                 setState(() {
                   _selectedAgeRange = range;
-                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -434,7 +411,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onGenderSelected: (gender) {
                 setState(() {
                   _selectedGender = gender;
-                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -452,7 +428,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 onLengthSelected: (length) {
                   setState(() {
                     _selectedLengthOfStay = length;
-                    _hasUnsavedChanges = true;
                   });
                 },
               ),
@@ -470,7 +445,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onInterestsChanged: (interests) {
                 setState(() {
                   _selectedInterests = interests;
-                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -487,7 +461,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onPartySelected: (party) {
                 setState(() {
                   _selectedTravelParty = party;
-                  _hasUnsavedChanges = true;
                 });
               },
             ),
@@ -905,11 +878,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       // Refresh user data
       ref.invalidate(currentUserProvider);
       ref.invalidate(currentUserProfileProvider);
-      
-      // Reset unsaved changes flag
-      setState(() {
-        _hasUnsavedChanges = false;
-      });
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
