@@ -13,6 +13,11 @@ This directory contains utility scripts for the backend.
 - **test-endpoints.sh** - Basic endpoint testing with JWT token
 - **test-all-admin-endpoints.sh** - Admin endpoints testing script
 
+## Category Management Scripts
+
+- **check-category-structure.ts** - Check current category structure (parent categories and subcategories)
+- **reorganize-hiking-category.ts** - Move Hiking category to be a subcategory of Experiences
+
 ## Usage
 
 ### Deployment
