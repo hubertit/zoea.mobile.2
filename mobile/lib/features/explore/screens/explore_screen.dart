@@ -491,7 +491,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               crossAxisCount: 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 1.2,
+              childAspectRatio: 1.3, // Match category cards height
               children: [
                 _buildQuickActionItem(
                   icon: Icons.emergency,
