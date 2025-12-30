@@ -170,28 +170,31 @@ export class AuthService {
     }
 
     // Generate reset code (placeholder: "0000")
+    // For testing, we use "0000" but make it unique per user by appending user ID hash
+    // In production, this will be a random 4-6 digit code
     const resetCode = '0000';
 
     // Expire in 15 minutes
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
-    // Invalidate any existing reset tokens for this user
-    await this.prisma.password_reset_tokens.updateMany({
+    // Delete any existing unused reset tokens for this user first
+    // This prevents unique constraint violations
+    await this.prisma.password_reset_tokens.deleteMany({
       where: {
         user_id: user.id,
         used_at: null,
       },
-      data: {
-        used_at: new Date(), // Mark as used
-      },
     });
 
-    // Create new reset token
+    // Create new reset token with unique token (user-specific for placeholder)
+    // In production, generate a truly unique random code
+    const uniqueToken = `${resetCode}-${user.id.substring(0, 8)}`;
+    
     await this.prisma.password_reset_tokens.create({
       data: {
         user_id: user.id,
-        token: resetCode,
+        token: uniqueToken,
         expires_at: expiresAt,
       },
     });
@@ -224,10 +227,17 @@ export class AuthService {
     }
 
     // Find valid reset token
+    // For placeholder code "0000", check if token starts with "0000-" followed by user ID prefix
+    const expectedTokenPrefix = dto.code === '0000' 
+      ? `0000-${user.id.substring(0, 8)}`
+      : dto.code;
+    
     const resetToken = await this.prisma.password_reset_tokens.findFirst({
       where: {
         user_id: user.id,
-        token: dto.code,
+        token: {
+          startsWith: expectedTokenPrefix,
+        },
         used_at: null,
         expires_at: {
           gte: new Date(), // Not expired
@@ -264,10 +274,17 @@ export class AuthService {
     }
 
     // Find valid reset token
+    // For placeholder code "0000", check if token starts with "0000-" followed by user ID prefix
+    const expectedTokenPrefix = dto.code === '0000' 
+      ? `0000-${user.id.substring(0, 8)}`
+      : dto.code;
+    
     const resetToken = await this.prisma.password_reset_tokens.findFirst({
       where: {
         user_id: user.id,
-        token: dto.code,
+        token: {
+          startsWith: expectedTokenPrefix,
+        },
         used_at: null,
         expires_at: {
           gte: new Date(), // Not expired
