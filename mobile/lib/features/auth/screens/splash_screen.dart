@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
+import '../../../core/services/prompt_timing_service.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -83,6 +84,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     
     // Navigate based on auth state
     if (isLoggedIn) {
+      // Increment session count for prompt timing
+      try {
+        final timingService = ref.read(promptTimingServiceProvider);
+        await timingService.incrementSessionCount();
+      } catch (e) {
+        // Silently fail - session tracking should not block navigation
+      }
+
       // Check if mandatory data collection is complete
       try {
         final isComplete = await ref.read(isMandatoryDataCompleteProvider.future);

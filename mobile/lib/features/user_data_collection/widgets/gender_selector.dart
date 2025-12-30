@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/models/user.dart';
+
+/// Widget for selecting gender
+/// Uses icon-based cards with "Prefer not to say" option
+class GenderSelector extends StatelessWidget {
+  final Gender? selectedGender;
+  final Function(Gender) onGenderSelected;
+
+  const GenderSelector({
+    super.key,
+    required this.selectedGender,
+    required this.onGenderSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _buildGenderCard(
+                gender: Gender.male,
+                icon: Icons.person,
+                label: 'Male',
+              ),
+            ),
+            const SizedBox(width: AppTheme.spacing12),
+            Expanded(
+              child: _buildGenderCard(
+                gender: Gender.female,
+                icon: Icons.person_outline,
+                label: 'Female',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppTheme.spacing12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildGenderCard(
+                gender: Gender.other,
+                icon: Icons.person_outline_rounded,
+                label: 'Other',
+              ),
+            ),
+            const SizedBox(width: AppTheme.spacing12),
+            Expanded(
+              child: _buildGenderCard(
+                gender: Gender.preferNotToSay,
+                icon: Icons.block,
+                label: 'Prefer not to say',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGenderCard({
+    required Gender gender,
+    required IconData icon,
+    required String label,
+  }) {
+    final isSelected = selectedGender == gender;
+
+    return GestureDetector(
+      onTap: () => onGenderSelected(gender),
+      child: Container(
+        padding: const EdgeInsets.all(AppTheme.spacing16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppTheme.primaryColor.withOpacity(0.1)
+              : AppTheme.backgroundColor,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
+          border: Border.all(
+            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 32,
+              color: isSelected
+                  ? AppTheme.primaryColor
+                  : AppTheme.secondaryTextColor,
+            ),
+            const SizedBox(height: AppTheme.spacing8),
+            Text(
+              label,
+              style: AppTheme.bodyMedium.copyWith(
+                color: isSelected
+                    ? AppTheme.primaryColor
+                    : AppTheme.primaryTextColor,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (isSelected)
+              const SizedBox(height: AppTheme.spacing4),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                size: 16,
+                color: AppTheme.primaryColor,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
