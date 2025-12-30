@@ -18,6 +18,21 @@ This directory contains utility scripts for the backend.
 - **check-category-structure.ts** - Check current category structure (parent categories and subcategories)
 - **reorganize-hiking-category.ts** - Move Hiking category to be a subcategory of Experiences
 
+### Running Category Scripts
+
+```bash
+# Check current category structure
+npx ts-node scripts/check-category-structure.ts
+
+# Reorganize Hiking to be under Experiences
+npx ts-node scripts/reorganize-hiking-category.ts
+```
+
+**Note**: These scripts require:
+- Database connection (DATABASE_URL environment variable)
+- Node.js and TypeScript
+- All dependencies installed (`npm install`)
+
 ## Usage
 
 ### Deployment
