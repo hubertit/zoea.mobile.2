@@ -66,10 +66,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           _searchQuery = trimmedQuery;
         });
         
-        // Track search for analytics (if query is not empty)
-        if (trimmedQuery.isNotEmpty) {
-          _trackSearch(trimmedQuery);
-        }
+        // Don't track search here - only track when user actually selects a result or submits
       }
     });
   }
@@ -124,6 +121,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onSubmitted: (value) {
             if (value.trim().isNotEmpty) {
               _performSearch(value);
+              // Track search when user submits (presses enter)
+              _trackSearch(value.trim());
             }
           },
         ),
@@ -563,6 +562,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ],
         ),
         onTap: () {
+          // Track search when user taps on a result
+          if (_searchQuery.isNotEmpty) {
+            _trackSearch(_searchQuery);
+          }
+          
           final id = result['id'] ?? '';
           if (resultType == 'event' || result['event'] != null) {
             context.push('/event/$id');
@@ -639,6 +643,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             _currentQuery = query;
           });
           _performSearch(query);
+          // Track search when user taps on a recent search item
+          _trackSearch(query);
         },
       ),
     );
@@ -663,6 +669,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             _currentQuery = search;
           });
           _performSearch(search);
+          // Track search when user taps on a popular search item
+          _trackSearch(search);
         },
       ),
     );
