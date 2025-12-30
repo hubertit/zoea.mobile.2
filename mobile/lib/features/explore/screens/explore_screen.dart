@@ -632,6 +632,26 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           );
                         },
                       ),
+                      _buildQuickActionItem(
+                        icon: Icons.tour, // Placeholder icon - will be replaced with Visit Rwanda logo
+                        label: 'Visit Rwanda',
+                        isCustomIcon: true, // Flag to indicate custom icon/logo
+                        onTap: () {
+                          Navigator.pop(context);
+                          // TODO: Add Visit Rwanda functionality
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Opening Visit Rwanda...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
+                      ),
               ],
             ),
             
@@ -674,6 +694,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   BlendMode.srcIn,
                 ),
                 placeholderBuilder: (context) => Icon(
+                  icon,
+                  color: AppTheme.primaryColor,
+                  size: 22,
+                ),
+              )
+            // Use custom logo for Visit Rwanda
+            else if (isCustomIcon && label == 'Visit Rwanda')
+              Image.asset(
+                'assets/images/visit-rwanda.png',
+                width: 22,
+                height: 22,
+                errorBuilder: (context, error, stackTrace) => Icon(
                   icon,
                   color: AppTheme.primaryColor,
                   size: 22,
