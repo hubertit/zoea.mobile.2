@@ -681,23 +681,21 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Use custom logo for Irembo if available, otherwise use icon
+            // Use custom logo for Irembo
             if (isCustomIcon && label == 'Irembo')
-              // Irembo logo - uncomment when logo is added to assets/images/irembo_logo.png
-              // Image.asset(
-              //   'assets/images/irembo_logo.png',
-              //   width: 22,
-              //   height: 22,
-              //   errorBuilder: (context, error, stackTrace) => Icon(
-              //     icon,
-              //     color: AppTheme.primaryColor,
-              //     size: 22,
-              //   ),
-              // )
-              Icon(
-                icon,
-                color: AppTheme.primaryColor,
-                size: 22,
+              SvgPicture.asset(
+                'assets/images/irembo_logo.svg',
+                width: 22,
+                height: 22,
+                colorFilter: ColorFilter.mode(
+                  AppTheme.primaryColor,
+                  BlendMode.srcIn,
+                ),
+                placeholderBuilder: (context) => Icon(
+                  icon,
+                  color: AppTheme.primaryColor,
+                  size: 22,
+                ),
               )
             else
               Icon(
