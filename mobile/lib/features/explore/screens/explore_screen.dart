@@ -683,12 +683,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Use custom logo for Irembo (reduced by 75% to fit card)
+            // Use custom logo for Irembo
             if (isCustomIcon && label == 'Irembo')
               SvgPicture.asset(
                 'assets/images/irembo_logo.svg',
-                width: 4,
-                height: 4,
+                width: 8,
+                height: 8,
                 colorFilter: ColorFilter.mode(
                   AppTheme.primaryColor,
                   BlendMode.srcIn,
