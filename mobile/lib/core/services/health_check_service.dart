@@ -3,8 +3,8 @@ import '../config/app_config.dart';
 
 /// Service to check backend API health status
 class HealthCheckService {
-  // TODO: Change back to '/health' after testing
-  static const String _healthEndpoint = '/healthx'; // Using wrong endpoint for testing
+  // TODO: Change back to '/health' after testing  
+  static const String _healthEndpoint = '/healthx'; // Using wrong endpoint for testing - will return 404
   static const Duration _timeout = Duration(seconds: 5);
 
   /// Check if the backend API is available
@@ -20,34 +20,33 @@ class HealthCheckService {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
+        ),
+      );
+
+      final response = await dio.get(
+        _healthEndpoint,
+        options: Options(
           validateStatus: (status) {
-            // Only consider 200-299 as success
+            // Only consider 200-299 as success, throw error for others
             return status != null && status >= 200 && status < 300;
           },
         ),
       );
-
-      final response = await dio.get(_healthEndpoint);
       
-      // Check if we got a successful response with status 'ok'
-      if (response.statusCode != null && 
-          response.statusCode! >= 200 && 
-          response.statusCode! < 300) {
-        // Verify the response has the expected structure
-        final data = response.data;
-        if (data is Map && data['status'] == 'ok') {
-          return true;
-        }
-        // If status is ok but structure is different, still consider healthy
+      // If we get here, status is 200-299
+      // Verify the response has the expected structure
+      final data = response.data;
+      if (data is Map && data['status'] == 'ok') {
         return true;
       }
       
-      return false;
-    } on DioException catch (e) {
+      // If status code is 200-299 but structure is different, still consider healthy
+      return true;
+    } on DioException {
       // Handle Dio-specific errors
       // Connection errors, timeouts, 404s, etc. all mean API is not available
       return false;
-    } catch (e) {
+    } catch (_) {
       // Any other error means API is not available
       return false;
     }
