@@ -1317,7 +1317,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
 
   Widget _buildBottomBar(Map<String, dynamic> listing, String? contactPhone) {
     final listingType = listing['type']?.toString().toLowerCase() ?? '';
-    final acceptsBookings = listing['acceptsBookings'] as bool? ?? false;
+    // Get acceptsBookings from listing data (defaults to false if not set)
+    final acceptsBookings = (listing['acceptsBookings'] as bool?) ?? false;
     final category = listing['category'] as Map<String, dynamic>?;
     final categorySlug = category?['slug'] as String? ?? '';
     final categoryName = category?['name'] as String? ?? '';

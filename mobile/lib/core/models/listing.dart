@@ -18,6 +18,7 @@ class Listing {
   final List<String> tags;
   final bool isVerified;
   final bool isFeatured;
+  final bool acceptsBookings;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? contactPhone;
@@ -39,6 +40,7 @@ class Listing {
     this.tags = const [],
     this.isVerified = false,
     this.isFeatured = false,
+    this.acceptsBookings = false,
     required this.createdAt,
     required this.updatedAt,
     this.contactPhone,
