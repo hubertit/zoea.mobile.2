@@ -19,17 +19,46 @@ class VerifyResetCodeScreen extends ConsumerStatefulWidget {
 
 class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _codeController = TextEditingController();
+  final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _codeController.dispose();
+    for (var controller in _codeControllers) {
+      controller.dispose();
+    }
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
 
+  void _onCodeChanged(int index, String value) {
+    // Only allow single digit
+    if (value.length > 1) {
+      _codeControllers[index].text = value.substring(0, 1);
+    }
+    
+    // Move to next field if digit entered
+    if (value.isNotEmpty && index < 3) {
+      _focusNodes[index + 1].requestFocus();
+    }
+    
+    // Auto-submit if all 4 digits entered
+    if (_getCode().length == 4) {
+      _handleVerifyCode();
+    }
+  }
+
+
+  String _getCode() {
+    return _codeControllers.map((c) => c.text).join();
+  }
+
   Future<void> _handleVerifyCode() async {
-    if (!_formKey.currentState!.validate()) return;
+    final code = _getCode();
+    if (code.length != 4) return;
 
     setState(() {
       _isLoading = true;
@@ -39,14 +68,14 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
       final authService = ref.read(authServiceProvider);
       await authService.verifyResetCode(
         widget.identifier,
-        _codeController.text.trim(),
+        code,
       );
 
       if (mounted) {
         // Navigate to new password screen
         context.push('/auth/reset-password/new-password', extra: {
           'identifier': widget.identifier,
-          'code': _codeController.text.trim(),
+          'code': code,
         });
       }
     } catch (e) {
@@ -56,6 +85,11 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
             message: e.toString().replaceFirst('Exception: ', ''),
           ),
         );
+        // Clear code on error
+        for (var controller in _codeControllers) {
+          controller.clear();
+        }
+        _focusNodes[0].requestFocus();
       }
     } finally {
       if (mounted) {
@@ -125,45 +159,68 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                 
                 const SizedBox(height: AppTheme.spacing32),
                 
-                // Code Input
-                TextFormField(
-                  controller: _codeController,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4),
-                  ],
-                  onFieldSubmitted: (_) => _handleVerifyCode(),
-                  textAlign: TextAlign.center,
-                  style: AppTheme.headlineMedium.copyWith(
-                    letterSpacing: 8,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Reset Code',
-                    hintText: '0000',
-                    prefixIcon: const Icon(Icons.pin),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the reset code';
-                    }
-                    if (value.length != 4) {
-                      return 'Code must be 4 digits';
-                    }
-                    return null;
-                  },
+                // Code Input - 4 separate fields
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(4, (index) {
+                    return Container(
+                      width: 60,
+                      margin: EdgeInsets.only(
+                        right: index < 3 ? AppTheme.spacing12 : 0,
+                      ),
+                      child: TextField(
+                        controller: _codeControllers[index],
+                        focusNode: _focusNodes[index],
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        maxLength: 1,
+                        style: AppTheme.headlineMedium.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        decoration: InputDecoration(
+                          counterText: '',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                            borderSide: const BorderSide(
+                              color: AppTheme.dividerColor,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                            borderSide: const BorderSide(
+                              color: AppTheme.primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppTheme.backgroundColor,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged: (value) => _onCodeChanged(index, value),
+                        onTap: () {
+                          // Select all text when tapping
+                          _codeControllers[index].selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: _codeControllers[index].text.length,
+                          );
+                        },
+                        onSubmitted: (_) {
+                          if (index < 3) {
+                            _focusNodes[index + 1].requestFocus();
+                          } else {
+                            _handleVerifyCode();
+                          }
+                        },
+                      ),
+                    );
+                  }),
                 ),
                 
                 const SizedBox(height: AppTheme.spacing32),
