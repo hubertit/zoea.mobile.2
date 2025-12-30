@@ -695,7 +695,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   size: 22,
                 ),
               )
-            // Use custom logo for Visit Rwanda (doubled size)
+            // Use custom logo for Visit Rwanda
             else if (isCustomIcon && label == 'Visit Rwanda')
               Image.asset(
                 'assets/images/visit-rwanda.png',
@@ -713,18 +713,21 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 color: AppTheme.primaryColor,
                 size: 22, // Match category card icon size
               ),
-            const SizedBox(height: 6), // Match category card spacing
-            Text(
-              label,
-              style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.primaryTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 11,
+            // No spacing for Visit Rwanda and Irembo (they don't have text labels)
+            if (label != 'Visit Rwanda' && label != 'Irembo') const SizedBox(height: 6),
+            // Hide text label for Visit Rwanda and Irembo (logos already contain names)
+            if (label != 'Visit Rwanda' && label != 'Irembo')
+              Text(
+                label,
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryTextColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
           ],
         ),
       ),
