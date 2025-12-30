@@ -9,7 +9,7 @@ PRIMARY_SERVER="qt@172.16.40.61"
 BACKUP_SERVER="qt@172.16.40.60"
 PASSWORD="Easy2Use$"
 BACKEND_DIR="~/zoea-backend"
-LOCAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOCAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "🔄 Syncing Zoea Backend Across All Environments"
 echo "================================================"

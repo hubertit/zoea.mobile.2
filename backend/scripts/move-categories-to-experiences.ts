@@ -5,6 +5,9 @@ import * as dotenv from 'dotenv';
  * Script to move categories under Experiences
  * Moves: Hiking, National Parks, Museums
  * 
+ * NOTE: This script uses direct database access. For production use,
+ * prefer the API-based script: move-categories-api.sh
+ * 
  * Usage: npx ts-node scripts/move-categories-to-experiences.ts
  * 
  * Make sure DATABASE_URL is set in .env file

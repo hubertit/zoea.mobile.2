@@ -88,6 +88,8 @@
 - [Bookings](./12-features/03-bookings.md) - Booking system analysis
 - [Search](./12-features/04-search.md) - Search feature analysis
 - [Session Management](./12-features/05-session-management.md) - Session persistence improvements
+- [Category Analysis](./12-features/08-category-analysis.md) - Category structure and relationships
+- [Category Reorganization 2024](./12-features/08a-category-reorganization-2024.md) - December 2024 category reorganization
 
 ### [13. Testing](./13-testing/)
 - [Testing Guide](./13-testing/01-testing-guide.md) - Testing strategies and examples

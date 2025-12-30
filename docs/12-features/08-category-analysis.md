@@ -27,6 +27,18 @@ This document explains the differences between four key concepts in the Zoea pla
 - Historical sites
 - Cultural landmarks
 - Natural landmarks
+- Statues & Memorials
+- Architectural sites
+
+### Current Subcategories (as of December 2024)
+1. **Monuments** (`monuments`)
+2. **Viewpoints** (`viewpoints`)
+3. **Historical Sites** (`historical-sites`)
+4. **Cultural Landmarks** (`cultural-landmarks`)
+5. **Natural Landmarks** (`natural-landmarks`)
+6. **Statues & Memorials** (`statues-memorials`)
+7. **Architectural Sites** (`architectural-sites`)
+8. **Museums** (`museums`)
 
 ### Key Points
 - Attractions are **static locations** - they don't move or have schedules
@@ -56,6 +68,19 @@ This document explains the differences between four key concepts in the Zoea pla
 - Workshops
 - Classes
 - Guided activities
+- Hiking
+- National Parks
+
+### Current Subcategories (as of December 2024)
+1. **Adventure** (`adventure`)
+2. **Cultural** (`cultural`)
+3. **Nature** (`nature`)
+4. **Water** (`water`)
+5. **National Parks** (`national-parks`)
+6. **CarFree Zone** (`carfree-zone`)
+7. **Cinema** (`cinema`)
+8. **Hiking** (`hiking`)
+9. **Tour and Travel** (`tour-and-travel`)
 
 ### Key Points
 - Experiences is a **parent category** that can contain multiple types of activities
@@ -188,25 +213,44 @@ This document explains the differences between four key concepts in the Zoea pla
    - Experiences is a category that can contain tours
    - Some tours might be better categorized under Experiences rather than having their own category
 
-### Suggested Structure
+### Current Category Structure (as of December 2024)
 
 ```
+Attractions (Parent Category)
+├── Monuments
+├── Viewpoints
+├── Historical Sites
+├── Cultural Landmarks
+├── Natural Landmarks
+├── Statues & Memorials
+├── Architectural Sites
+└── Museums
+
 Experiences (Parent Category)
-├── Tours (can be subcategory or separate entity)
-│   ├── Hiking Tours (type='hiking')
-│   ├── Wildlife Tours (type='wildlife')
-│   ├── Cultural Tours (type='cultural')
-│   └── Adventure Tours (type='adventure')
-├── Activities
-└── Workshops
+├── Adventure
+├── Cultural
+├── Nature
+├── Water
+├── National Parks
+├── CarFree Zone
+├── Cinema
+├── Hiking
+└── Tour and Travel
 
-Hiking (Category)
-├── Hiking Tours (Tour entity with type='hiking')
-├── Hiking Trails (Listing entity)
-└── Hiking Events (Event entity)
-
-Attractions (Category)
-└── Static Locations (Listing entity with type='attraction')
+Top-Level Categories
+├── Accommodation
+├── Attractions (with subcategories)
+├── Dining
+├── Events
+├── Experiences (with subcategories)
+├── Kids
+├── Nightlife
+├── Real Estate
+├── Religious Institutions
+├── Services
+├── Shopping
+├── Sports
+└── Transport
 ```
 
 ---

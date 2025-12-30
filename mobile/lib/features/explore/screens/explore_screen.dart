@@ -30,6 +30,33 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   late Animation<double> _shimmerAnimation;
   late Animation<Color?> _rewardsColorAnimation;
 
+  // Responsive width helper - similar to Bootstrap columns
+  double _getResponsiveWidth({
+    required BuildContext context,
+    double xs = 1.0,  // Extra small (< 576px) - fraction of screen width
+    double? sm,        // Small (≥ 576px)
+    double? md,        // Medium (≥ 768px)
+    double? lg,        // Large (≥ 992px)
+    double? xl,        // Extra large (≥ 1200px)
+  }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = MediaQuery.of(context).padding.left + MediaQuery.of(context).padding.right;
+    final availableWidth = screenWidth - padding - 40; // Account for screen padding and widget padding
+    
+    // Use the largest breakpoint that fits
+    if (xl != null && screenWidth >= 1200) {
+      return availableWidth * xl;
+    } else if (lg != null && screenWidth >= 992) {
+      return availableWidth * lg;
+    } else if (md != null && screenWidth >= 768) {
+      return availableWidth * md;
+    } else if (sm != null && screenWidth >= 576) {
+      return availableWidth * sm;
+    } else {
+      return availableWidth * xs;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -209,24 +236,23 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildQuickInfoWidgets() {
     return SizedBox(
       height: 80,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-      children: [
-        // Weather Widget
-          SizedBox(
-            width: 130,
-          child: _buildWeatherWidget(),
-        ),
+      child: Row(
+        children: [
+          // Weather Widget - takes proportional space
+          Expanded(
+            flex: 3, // 3 parts
+            child: _buildWeatherWidget(),
+          ),
           const SizedBox(width: 8),
-        // Currency Widget
-          SizedBox(
-            width: 130,
-          child: _buildCurrencyWidget(),
-        ),
+          // Currency Widget - takes proportional space
+          Expanded(
+            flex: 3, // 3 parts
+            child: _buildCurrencyWidget(),
+          ),
           const SizedBox(width: 8),
-          // Quick Actions Widget
-          SizedBox(
-            width: 100,
+          // Quick Actions Widget - takes proportional space
+          Expanded(
+            flex: 2, // 2 parts (slightly smaller)
             child: _buildQuickActionsWidget(),
           ),
         ],
@@ -541,20 +567,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                 _buildQuickActionItem(
-                  icon: Icons.local_hospital,
-                  label: 'Find Hospital',
+                  icon: Icons.sim_card,
+                  label: 'eSim',
                   onTap: () {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Finding nearby hospitals...',
-                          style: AppTheme.bodyMedium.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        backgroundColor: AppTheme.primaryColor,
-                      ),
+                    // Open eSim deeplink in webview
+                    context.push(
+                      '/webview?url=${Uri.encodeComponent('https://amadeus-api.optionizr.com/api/esim/deeplink?site=P02XP02X')}&title=${Uri.encodeComponent('eSim')}',
                     );
                   },
                 ),
@@ -1149,8 +1168,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildSkeletonEventCard() {
+    // Responsive width for skeleton event cards
+    final skeletonCardWidth = _getResponsiveWidth(
+      context: context,
+      xs: 0.85,  // 85% on extra small screens
+      sm: 0.70,  // 70% on small screens
+      md: 0.50,  // 50% on medium screens
+      lg: 0.40,  // 40% on large screens
+      xl: 0.32,  // 32% on extra large screens
+    );
+    
     return Container(
-      width: 200,
+      width: skeletonCardWidth,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -1249,12 +1278,22 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       timeText = '${dateFormat.format(startDate)}, ${timeFormat.format(startDate)}';
     }
     
+    // Responsive width for event cards
+    final eventCardWidth = _getResponsiveWidth(
+      context: context,
+      xs: 0.85,  // 85% on extra small screens
+      sm: 0.70,  // 70% on small screens
+      md: 0.50,  // 50% on medium screens
+      lg: 0.40,  // 40% on large screens
+      xl: 0.32,  // 32% on extra large screens
+    );
+    
     return GestureDetector(
       onTap: () {
         context.go('/event/${event.id}', extra: event);
       },
       child: Container(
-        width: 200,
+        width: eventCardWidth,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -1345,8 +1384,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     required String time,
     required String imageUrl,
   }) {
+    // Responsive width for event cards
+    final eventCardWidth = _getResponsiveWidth(
+      context: context,
+      xs: 0.85,  // 85% on extra small screens
+      sm: 0.70,  // 70% on small screens
+      md: 0.50,  // 50% on medium screens
+      lg: 0.40,  // 40% on large screens
+      xl: 0.32,  // 32% on extra large screens
+    );
+    
     return Container(
-      width: 200,
+      width: eventCardWidth,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -1795,12 +1844,22 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     final category = listing['category']?['name'] ?? listing['type'] ?? 'Place';
     final id = listing['id'] ?? '';
 
+    // Responsive width for listing cards
+    final listingCardWidth = _getResponsiveWidth(
+      context: context,
+      xs: 0.80,  // 80% on extra small screens
+      sm: 0.65,  // 65% on small screens
+      md: 0.45,  // 45% on medium screens
+      lg: 0.35,  // 35% on large screens
+      xl: 0.28,  // 28% on extra large screens
+    );
+
     return GestureDetector(
       onTap: () {
         context.push('/listing/$id');
       },
       child: Container(
-        width: 160,
+        width: listingCardWidth,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -2007,8 +2066,18 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   }
 
   Widget _buildSkeletonRecommendCard() {
+    // Responsive width for skeleton listing cards
+    final skeletonListingWidth = _getResponsiveWidth(
+      context: context,
+      xs: 0.80,  // 80% on extra small screens
+      sm: 0.65,  // 65% on small screens
+      md: 0.45,  // 45% on medium screens
+      lg: 0.35,  // 35% on large screens
+      xl: 0.28,  // 28% on extra large screens
+    );
+    
     return Container(
-      width: 160,
+      width: skeletonListingWidth,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),

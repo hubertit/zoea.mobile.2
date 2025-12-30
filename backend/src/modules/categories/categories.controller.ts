@@ -49,6 +49,13 @@ export class CategoriesController {
     return this.categoriesService.findBySlug(slug);
   }
 
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a category' })
+  @ApiParam({ name: 'id', description: 'Category ID' })
+  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.categoriesService.update(id, updateCategoryDto);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get category by ID' })
   async findOne(@Param('id') id: string) {
@@ -59,13 +66,6 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Create a new category' })
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
-  }
-
-  @Put(':id')
-  @ApiOperation({ summary: 'Update a category' })
-  @ApiParam({ name: 'id', description: 'Category ID' })
-  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoriesService.update(id, updateCategoryDto);
   }
 }
 
