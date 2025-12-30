@@ -5,6 +5,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/user_data_collection_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -81,20 +82,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final user = ref.read(authProvider).value;
     
     // Navigate based on auth state
-    // If user has tokens (isLoggedIn), keep them logged in even if user data is missing
-    // User data can be fetched from API if needed
     if (isLoggedIn) {
-      if (user != null) {
-        // User is logged in and has valid user data, go to explore
+      // Check if mandatory data collection is complete
+      try {
+        final isComplete = await ref.read(isMandatoryDataCompleteProvider.future);
+        
+        if (!mounted) return;
+        
+        if (!isComplete) {
+          // Mandatory data not complete, redirect to onboarding data screen
+          if (mounted) {
+            context.go('/onboarding-data');
+          }
+          return;
+        }
+      } catch (e) {
+        // If check fails, still allow navigation to explore
+        // (graceful degradation - don't block user)
         if (mounted) {
           context.go('/explore');
         }
-      } else {
-        // User has tokens but no user data - still keep them logged in
-        // Navigate to explore, user data will be fetched if needed
-        if (mounted) {
-          context.go('/explore');
-        }
+        return;
+      }
+      
+      // Mandatory data is complete, go to explore
+      if (mounted) {
+        context.go('/explore');
       }
     } else {
       // Not logged in (no tokens), go to login screen

@@ -5,6 +5,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
+import '../../features/user_data_collection/screens/onboarding_data_screen.dart';
 import '../../features/explore/screens/explore_screen.dart';
 import '../../features/explore/screens/specials_screen.dart';
 import '../../features/explore/screens/map_screen.dart';
@@ -82,6 +83,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                           state.matchedLocation == '/register' || 
                           state.matchedLocation == '/onboarding';
       
+      // Allow /onboarding-data for logged-in users (mandatory data collection)
+      if (isLoggedIn && state.matchedLocation == '/onboarding-data') {
+        return null; // Allow access
+      }
+      
       // Define protected routes that require authentication
       final protectedRoutes = [
         '/profile',
@@ -128,6 +134,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding-data',
+        builder: (context, state) => const OnboardingDataScreen(),
       ),
       GoRoute(
         path: '/login',
