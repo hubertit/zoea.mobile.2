@@ -18,6 +18,7 @@ import { SearchModule } from './modules/search/search.module';
 import { MerchantsModule } from './modules/merchants/merchants.module';
 import { MediaModule } from './modules/media/media.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { AdminModule } from './modules/admin/admin.module';
     MerchantsModule,
     MediaModule,
     AdminModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}

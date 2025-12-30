@@ -24,6 +24,7 @@ class AppConfig {
   static const String reviewsEndpoint = '/reviews';
   static const String favoritesEndpoint = '/favorites';
   static const String uploadEndpoint = '/upload';
+  static const String analyticsEndpoint = '/analytics';
 
   // Cache Keys
   static const String authTokenKey = 'auth_token';

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../config/app_config.dart';
 
 /// Service for passive data collection (searches, views, interactions)
@@ -10,7 +12,13 @@ class AnalyticsService {
   static const String _analyticsConsentKey = 'analytics_consent';
   static const int _maxBatchSize = 50; // Max events per batch
 
-  final Dio _dio = AppConfig.dioInstance();
+  Dio? _dio;
+  
+  /// Get authenticated Dio instance
+  Future<Dio> _getDio() async {
+    _dio ??= await AppConfig.authenticatedDioInstance();
+    return _dio!;
+  }
 
   /// Check if analytics consent is given
   Future<bool> hasConsent() async {
@@ -201,11 +209,22 @@ class AnalyticsService {
           ? queue.sublist(0, _maxBatchSize)
           : queue;
 
+      // Get device info for analytics
+      final deviceInfo = await _getDeviceInfo();
+      
+      // Get authenticated Dio instance
+      final dio = await _getDio();
+      
       // Upload to server
-      final response = await _dio.post(
-        '${AppConfig.usersEndpoint}/me/analytics',
+      final response = await dio.post(
+        '${AppConfig.analyticsEndpoint}/events',
         data: {
           'events': batch,
+          'sessionId': deviceInfo['sessionId'],
+          'deviceType': deviceInfo['deviceType'],
+          'os': deviceInfo['os'],
+          'browser': deviceInfo['browser'],
+          'appVersion': deviceInfo['appVersion'],
         },
       );
 
@@ -249,6 +268,82 @@ class AnalyticsService {
   /// Force upload (call periodically or on app close)
   Future<void> forceUpload() async {
     await uploadBatch();
+  }
+
+  /// Get device information for analytics
+  Future<Map<String, String>> _getDeviceInfo() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      String deviceType = 'unknown';
+      String os = 'unknown';
+      String browser = 'mobile_app';
+      String appVersion = AppConfig.appVersion;
+      String sessionId = await _getOrCreateSessionId();
+
+      if (Platform.isAndroid) {
+        deviceType = 'android';
+        final androidInfo = await deviceInfo.androidInfo;
+        os = 'Android ${androidInfo.version.release}';
+      } else if (Platform.isIOS) {
+        deviceType = 'ios';
+        final iosInfo = await deviceInfo.iosInfo;
+        os = 'iOS ${iosInfo.systemVersion}';
+      }
+
+      return {
+        'sessionId': sessionId,
+        'deviceType': deviceType,
+        'os': os,
+        'browser': browser,
+        'appVersion': appVersion,
+      };
+    } catch (e) {
+      // Return defaults if device info fails
+      return {
+        'sessionId': await _getOrCreateSessionId(),
+        'deviceType': 'unknown',
+        'os': 'unknown',
+        'browser': 'mobile_app',
+        'appVersion': AppConfig.appVersion,
+      };
+    }
+  }
+
+  /// Get or create a session ID
+  Future<String> _getOrCreateSessionId() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final sessionIdKey = 'analytics_session_id';
+      final sessionTimestampKey = 'analytics_session_timestamp';
+      
+      // Check if we have a valid session (less than 30 minutes old)
+      final existingSessionId = prefs.getString(sessionIdKey);
+      final sessionTimestamp = prefs.getInt(sessionTimestampKey) ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      const sessionTimeout = 30 * 60 * 1000; // 30 minutes
+
+      if (existingSessionId != null && 
+          (now - sessionTimestamp) < sessionTimeout) {
+        return existingSessionId;
+      }
+
+      // Create new session ID
+      final newSessionId = '${DateTime.now().millisecondsSinceEpoch}_${_generateRandomString(8)}';
+      await prefs.setString(sessionIdKey, newSessionId);
+      await prefs.setInt(sessionTimestampKey, now);
+      
+      return newSessionId;
+    } catch (e) {
+      // Fallback to timestamp-based session ID
+      return '${DateTime.now().millisecondsSinceEpoch}_fallback';
+    }
+  }
+
+  /// Generate a random string for session ID
+  String _generateRandomString(int length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final random = DateTime.now().millisecondsSinceEpoch % 1000000;
+    return random.toString().padLeft(length, '0');
   }
 }
 

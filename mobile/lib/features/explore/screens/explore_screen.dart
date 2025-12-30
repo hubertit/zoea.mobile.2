@@ -410,13 +410,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -678,13 +671,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             color: Colors.grey[200]!,
             width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
