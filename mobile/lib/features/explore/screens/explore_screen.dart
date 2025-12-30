@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
@@ -514,19 +515,20 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildQuickActionItem(
                   icon: Icons.local_taxi,
                   label: 'Call Taxi',
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Finding nearby taxis...',
-                          style: AppTheme.bodyMedium.copyWith(
-                            color: Colors.white,
+                    final Uri phoneUri = Uri(scheme: 'tel', path: '1010');
+                    if (await canLaunchUrl(phoneUri)) {
+                      await launchUrl(phoneUri);
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          AppTheme.errorSnackBar(
+                            message: 'Unable to make phone call',
                           ),
-                        ),
-                        backgroundColor: AppTheme.primaryColor,
-                      ),
-                    );
+                        );
+                      }
+                    }
                   },
                 ),
                 _buildQuickActionItem(
@@ -574,14 +576,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                       _buildQuickActionItem(
-                        icon: Icons.security,
-                        label: 'Police',
+                        icon: Icons.admin_panel_settings, // Placeholder icon - will be replaced with Irembo logo
+                        label: 'Irembo',
+                        isCustomIcon: true, // Flag to indicate custom icon/logo
                         onTap: () {
                           Navigator.pop(context);
+                          // TODO: Add Irembo functionality
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Connecting to police...',
+                                'Opening Irembo...',
                                 style: AppTheme.bodyMedium.copyWith(
                                   color: Colors.white,
                                 ),
@@ -660,6 +664,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    bool isCustomIcon = false,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -675,11 +680,21 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: AppTheme.primaryColor,
-              size: 22, // Match category card icon size
-            ),
+            // Use custom logo for Irembo if available, otherwise use icon
+            if (isCustomIcon && label == 'Irembo')
+              // TODO: Replace with Irembo logo asset when available
+              // Image.asset('assets/images/irembo_logo.png', width: 22, height: 22)
+              Icon(
+                icon,
+                color: AppTheme.primaryColor,
+                size: 22,
+              )
+            else
+              Icon(
+                icon,
+                color: AppTheme.primaryColor,
+                size: 22, // Match category card icon size
+              ),
             const SizedBox(height: 6), // Match category card spacing
             Text(
               label,
