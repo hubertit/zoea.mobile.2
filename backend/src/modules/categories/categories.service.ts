@@ -111,5 +111,53 @@ export class CategoriesService {
       },
     });
   }
+
+  async update(id: string, data: {
+    name?: string;
+    slug?: string;
+    parentId?: string | null;
+    icon?: string;
+    description?: string;
+    sortOrder?: number;
+    isActive?: boolean;
+  }) {
+    // Check if category exists
+    const existing = await this.prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new Error(`Category with id "${id}" not found`);
+    }
+
+    // If slug is being updated, check if new slug already exists
+    if (data.slug && data.slug !== existing.slug) {
+      const slugExists = await this.prisma.category.findUnique({
+        where: { slug: data.slug },
+      });
+
+      if (slugExists) {
+        throw new Error(`Category with slug "${data.slug}" already exists`);
+      }
+    }
+
+    return this.prisma.category.update({
+      where: { id },
+      data: {
+        ...(data.name && { name: data.name }),
+        ...(data.slug && { slug: data.slug }),
+        ...(data.parentId !== undefined && { parentId: data.parentId }),
+        ...(data.icon !== undefined && { icon: data.icon }),
+        ...(data.description !== undefined && { description: data.description }),
+        ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
+        ...(data.isActive !== undefined && { isActive: data.isActive }),
+      },
+      include: {
+        parent: true,
+        children: { where: { isActive: true }, orderBy: { sortOrder: 'asc' } },
+        _count: { select: { listings: true, tours: true } },
+      },
+    });
+  }
 }
 
