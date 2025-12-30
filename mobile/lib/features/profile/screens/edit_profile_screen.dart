@@ -508,12 +508,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               Container(
                 padding: const EdgeInsets.all(AppTheme.spacing8),
                 decoration: BoxDecoration(
-                  color: AppTheme.successColor.withOpacity(0.1),
+                  color: Colors.green.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.check,
-                  color: AppTheme.successColor,
+                  color: Colors.green,
                   size: 16,
                 ),
               ),
