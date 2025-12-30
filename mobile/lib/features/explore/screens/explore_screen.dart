@@ -559,26 +559,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                       _buildQuickActionItem(
-                        icon: Icons.admin_panel_settings, // Placeholder icon - will be replaced with Irembo logo
-                        label: 'Irembo',
-                        isCustomIcon: true, // Flag to indicate custom icon/logo
-                        onTap: () {
-                          Navigator.pop(context);
-                          // TODO: Add Irembo functionality
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Opening Irembo...',
-                                style: AppTheme.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppTheme.primaryColor,
-                            ),
-                          );
-                        },
-                      ),
-                      _buildQuickActionItem(
                         icon: Icons.local_pharmacy,
                         label: 'Pharmacy',
                         onTap: () {
@@ -623,6 +603,26 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             SnackBar(
                               content: Text(
                                 'Checking flight information...',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: AppTheme.primaryColor,
+                            ),
+                          );
+                        },
+                      ),
+                      _buildQuickActionItem(
+                        icon: Icons.admin_panel_settings, // Placeholder icon - will be replaced with Irembo logo
+                        label: 'Irembo',
+                        isCustomIcon: true, // Flag to indicate custom icon/logo
+                        onTap: () {
+                          Navigator.pop(context);
+                          // TODO: Add Irembo functionality
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Opening Irembo...',
                                 style: AppTheme.bodyMedium.copyWith(
                                   color: Colors.white,
                                 ),
