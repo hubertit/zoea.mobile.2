@@ -510,10 +510,10 @@ export default function UserDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {user.favorites.map((fav) => (
-                <div key={fav.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
-                  <div className="flex-1">
+                <div key={fav.id} className="p-3 border border-gray-200 rounded-sm">
+                  <div>
                     {fav.listing && (
                       <Link href={`/dashboard/listings/${fav.listing.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
                         {fav.listing.name} ({fav.listing.type?.replace(/_/g, ' ')})
@@ -554,25 +554,23 @@ export default function UserDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {user.searchHistory.map((search) => (
-                <div key={search.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{search.query}</p>
-                    <div className="flex items-center gap-4 mt-1">
-                      {search.resultCount !== null && (
-                        <span className="text-xs text-gray-500">{search.resultCount} results</span>
-                      )}
-                      <span className="text-xs text-gray-500">
-                        {new Date(search.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                    </div>
+                <div key={search.id} className="p-3 border border-gray-200 rounded-sm">
+                  <p className="text-sm font-medium text-gray-900">{search.query}</p>
+                  <div className="flex items-center gap-4 mt-1">
+                    {search.resultCount !== null && (
+                      <span className="text-xs text-gray-500">{search.resultCount} results</span>
+                    )}
+                    <span className="text-xs text-gray-500">
+                      {new Date(search.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -593,33 +591,31 @@ export default function UserDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {user.recentlyViewed.map((viewed) => (
-                <div key={viewed.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
-                  <div className="flex-1">
-                    {viewed.listing && (
-                      <Link href={`/dashboard/listings/${viewed.listing.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
-                        {viewed.listing.name} ({viewed.listing.type?.replace(/_/g, ' ')})
-                      </Link>
-                    )}
-                    {viewed.event && (
-                      <Link href={`/dashboard/events/${viewed.event.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
-                        {viewed.event.name}
-                      </Link>
-                    )}
-                    {viewed.tour && (
-                      <span className="text-sm font-medium text-gray-900">{viewed.tour.name}</span>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      {new Date(viewed.viewedAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
+                <div key={viewed.id} className="p-3 border border-gray-200 rounded-sm">
+                  {viewed.listing && (
+                    <Link href={`/dashboard/listings/${viewed.listing.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                      {viewed.listing.name} ({viewed.listing.type?.replace(/_/g, ' ')})
+                    </Link>
+                  )}
+                  {viewed.event && (
+                    <Link href={`/dashboard/events/${viewed.event.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                      {viewed.event.name}
+                    </Link>
+                  )}
+                  {viewed.tour && (
+                    <span className="text-sm font-medium text-gray-900">{viewed.tour.name}</span>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    {new Date(viewed.viewedAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
                 </div>
               ))}
             </div>
@@ -641,31 +637,36 @@ export default function UserDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {user.bookings.map((booking) => (
                 <Link key={booking.id} href={`/dashboard/bookings/${booking.id}`}>
-                  <div className="flex items-center justify-between p-3 border border-gray-200 rounded-sm hover:bg-gray-50 cursor-pointer">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">#{booking.bookingNumber}</p>
-                      <div className="flex items-center gap-4 mt-1">
-                        {booking.listing && (
-                          <span className="text-xs text-gray-500">{booking.listing.name}</span>
-                        )}
-                        {booking.event && (
-                          <span className="text-xs text-gray-500">{booking.event.name}</span>
-                        )}
-                        <span className="text-xs text-gray-500">
-                          {booking.currency || 'RWF'} {booking.totalAmount?.toLocaleString() || '0'}
-                        </span>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          booking.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          booking.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {booking.status}
-                        </span>
-                      </div>
+                  <div className="p-3 border border-gray-200 rounded-sm hover:bg-gray-50 cursor-pointer">
+                    <p className="text-sm font-medium text-gray-900">#{booking.bookingNumber}</p>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      {booking.listing && (
+                        <span className="text-xs text-gray-500">{booking.listing.name}</span>
+                      )}
+                      {booking.event && (
+                        <span className="text-xs text-gray-500">{booking.event.name}</span>
+                      )}
+                      <span className="text-xs font-medium text-gray-700">
+                        {booking.currency || 'RWF'} {booking.totalAmount?.toLocaleString() || '0'}
+                      </span>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                        booking.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        booking.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {booking.status}
+                      </span>
                     </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(booking.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -686,45 +687,41 @@ export default function UserDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {user.reviews.map((review) => (
                 <div key={review.id} className="p-3 border border-gray-200 rounded-sm">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Icon
-                              key={i}
-                              icon={faStar}
-                              className={i < (review.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
-                              size="xs"
-                            />
-                          ))}
-                        </div>
-                        {review.listing && (
-                          <Link href={`/dashboard/listings/${review.listing.id}`} className="text-xs text-[#0e1a30] hover:underline">
-                            {review.listing.name}
-                          </Link>
-                        )}
-                        {review.event && (
-                          <Link href={`/dashboard/events/${review.event.id}`} className="text-xs text-[#0e1a30] hover:underline">
-                            {review.event.name}
-                          </Link>
-                        )}
-                      </div>
-                      {review.comment && (
-                        <p className="text-sm text-gray-700 mt-1">{review.comment}</p>
-                      )}
-                      <p className="text-xs text-gray-500 mt-1">
-                        {new Date(review.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <Icon
+                          key={i}
+                          icon={faStar}
+                          className={i < (review.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
+                          size="xs"
+                        />
+                      ))}
                     </div>
+                    {review.listing && (
+                      <Link href={`/dashboard/listings/${review.listing.id}`} className="text-xs text-[#0e1a30] hover:underline">
+                        {review.listing.name}
+                      </Link>
+                    )}
+                    {review.event && (
+                      <Link href={`/dashboard/events/${review.event.id}`} className="text-xs text-[#0e1a30] hover:underline">
+                        {review.event.name}
+                      </Link>
+                    )}
                   </div>
+                  {review.comment && (
+                    <p className="text-sm text-gray-700 mb-2">{review.comment}</p>
+                  )}
+                  <p className="text-xs text-gray-500">
+                    {new Date(review.createdAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </p>
                 </div>
               ))}
             </div>
