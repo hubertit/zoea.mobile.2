@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookingsAPI, UsersAPI, ListingsAPI, EventsAPI, type Booking, type BookingStatus, type PaymentStatus, type CreateBookingParams, type User, type Listing, type Event, type BookingType } from '@/src/lib/api';
-import Icon, { faSearch, faPlus, faTimes, faClipboardList } from '@/app/components/Icon';
+import Icon, { faSearch, faPlus, faTimes, faClipboardList, faChevronDown, faChevronUp } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Modal, Input, Select } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
@@ -76,6 +76,11 @@ export default function BookingsPage() {
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<PaymentStatus | ''>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [minAmount, setMinAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
@@ -116,8 +121,36 @@ export default function BookingsPage() {
         }
 
         const response = await BookingsAPI.listBookings(params);
-        setBookings(response.data || []);
-        setTotal(response.meta?.total || 0);
+        
+        // Client-side filtering for date and amount
+        let filteredData = response.data || [];
+        
+        if (dateFrom || dateTo) {
+          filteredData = filteredData.filter((booking: Booking) => {
+            const bookingDate = booking.bookingDate || booking.createdAt;
+            if (!bookingDate) return false;
+            const date = new Date(bookingDate);
+            if (dateFrom && date < new Date(dateFrom)) return false;
+            if (dateTo) {
+              const toDate = new Date(dateTo);
+              toDate.setHours(23, 59, 59, 999);
+              if (date > toDate) return false;
+            }
+            return true;
+          });
+        }
+        
+        if (minAmount || maxAmount) {
+          filteredData = filteredData.filter((booking: Booking) => {
+            const amount = booking.totalAmount || 0;
+            if (minAmount && amount < parseFloat(minAmount)) return false;
+            if (maxAmount && amount > parseFloat(maxAmount)) return false;
+            return true;
+          });
+        }
+        
+        setBookings(filteredData);
+        setTotal(filteredData.length);
       } catch (error: any) {
         console.error('Failed to fetch bookings:', error);
         toast.error(error?.message || 'Failed to load bookings');
@@ -127,7 +160,7 @@ export default function BookingsPage() {
     };
 
     fetchBookings();
-  }, [page, pageSize, debouncedSearch, statusFilter, paymentStatusFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, paymentStatusFilter, dateFrom, dateTo, minAmount, maxAmount]);
 
   // Fetch users, listings, events for create modal
   useEffect(() => {
@@ -332,7 +365,116 @@ export default function BookingsPage() {
               ))}
             </select>
           </div>
+
+          {/* Advanced Filters Toggle */}
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="w-full"
+              icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+            >
+              {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+            </Button>
+          </div>
         </div>
+
+        {/* Advanced Filters */}
+        {showAdvancedFilters && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-sm border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Booking Date From */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Booking Date From
+                </label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Booking Date To */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Booking Date To
+                </label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Min Amount */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Min Amount
+                </label>
+                <input
+                  type="number"
+                  value={minAmount}
+                  onChange={(e) => {
+                    setMinAmount(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="0"
+                  min="0"
+                  step="0.01"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Max Amount */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Max Amount
+                </label>
+                <input
+                  type="number"
+                  value={maxAmount}
+                  onChange={(e) => {
+                    setMaxAmount(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Any"
+                  min="0"
+                  step="0.01"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(dateFrom || dateTo || minAmount || maxAmount) && (
+              <div className="mt-4 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setDateFrom('');
+                    setDateTo('');
+                    setMinAmount('');
+                    setMaxAmount('');
+                    setPage(1);
+                  }}
+                >
+                  Clear Advanced Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Table */}
