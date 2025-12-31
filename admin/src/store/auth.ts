@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import apiClient from '@/src/lib/api/client';
 
 interface User {
   id: string;
   email: string;
+  phoneNumber?: string;
   name?: string;
   fullName?: string;
   roles?: Array<{ id: string; name: string; code: string }>;
@@ -13,6 +15,7 @@ interface User {
 interface AuthState {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -31,43 +34,47 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       token: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
 
-      login: async (email: string, password: string) => {
+      login: async (identifier: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          // TODO: Replace with actual API call
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/login`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
+          const response = await apiClient.post('/auth/login', {
+            identifier: identifier, // Backend expects 'identifier' which can be email or phone
+            password,
           });
 
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Login failed' }));
-            throw new Error(errorData.message || 'Login failed');
-          }
-
-          const data = await response.json();
+          const data = response.data;
           
           set({
-            user: data.user,
-            token: data.accessToken || data.token,
+            user: {
+              id: data.user.id,
+              email: data.user.email,
+              phoneNumber: data.user.phoneNumber,
+              fullName: data.user.fullName,
+              name: data.user.fullName,
+              roles: data.user.roles || [],
+            },
+            token: data.accessToken,
+            refreshToken: data.refreshToken,
             isAuthenticated: true,
             isLoading: false,
             error: null,
           });
         } catch (error: any) {
+          const errorMessage = error?.response?.data?.message || 
+                              error?.message || 
+                              'Login failed. Please check your credentials.';
+          
           set({
             isLoading: false,
-            error: error.message || 'Login failed. Please check your credentials.',
+            error: errorMessage,
             isAuthenticated: false,
           });
-          throw error;
+          throw new Error(errorMessage);
         }
       },
 
@@ -75,6 +82,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           token: null,
+          refreshToken: null,
           isAuthenticated: false,
           error: null,
         });
@@ -105,20 +113,18 @@ export const useAuthStore = create<AuthState>()(
 
         set({ isLoading: true });
         try {
-          // TODO: Replace with actual API call to verify token
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/users/me`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
+          const response = await apiClient.get('/users/me');
 
-          if (!response.ok) {
-            throw new Error('Token invalid');
-          }
-
-          const user = await response.json();
+          const userData = response.data;
           set({
-            user,
+            user: {
+              id: userData.id,
+              email: userData.email,
+              phoneNumber: userData.phoneNumber,
+              fullName: userData.fullName,
+              name: userData.fullName,
+              roles: userData.roles || [],
+            },
             isAuthenticated: true,
             isLoading: false,
           });
@@ -127,6 +133,7 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
             user: null,
             token: null,
+            refreshToken: null,
             isLoading: false,
           });
           if (typeof window !== 'undefined') {
@@ -140,9 +147,9 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }
   )
 );
-
