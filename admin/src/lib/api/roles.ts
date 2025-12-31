@@ -1,4 +1,4 @@
-import apiClient from './client';
+import { UsersAPI } from './users';
 
 export type UserRole = 'explorer' | 'merchant' | 'event_organizer' | 'tour_operator' | 'admin' | 'super_admin';
 
@@ -22,11 +22,36 @@ export const RolesAPI = {
    */
   getRoleStats: async (): Promise<RoleStats> => {
     // Since there's no backend endpoint, we'll fetch users and calculate stats
-    const response = await apiClient.get<{ data: any[]; meta: any }>('/admin/users', {
-      params: { limit: 1000 }, // Get a large number to calculate stats
-    });
-    
-    const users = response.data.data || [];
+    try {
+      // The API has a max limit of 100, so we need to paginate to get all users
+      let allUsers: any[] = [];
+      let currentPage = 1;
+      const limit = 100; // Max allowed by API
+      let hasMore = true;
+
+      // Fetch all users by paginating
+      while (hasMore) {
+        const response = await UsersAPI.listUsers({
+          limit,
+          page: currentPage,
+        });
+        
+        const users = response?.data || [];
+        allUsers = [...allUsers, ...users];
+        
+        // Check if there are more pages
+        const totalPages = response?.meta?.totalPages || 1;
+        hasMore = currentPage < totalPages;
+        currentPage++;
+        
+        // Safety limit to prevent infinite loops
+        if (currentPage > 100) {
+          console.warn('Reached pagination safety limit');
+          break;
+        }
+      }
+      
+      const users = allUsers;
     const roleCounts: Record<UserRole, number> = {
       explorer: 0,
       merchant: 0,
@@ -85,11 +110,26 @@ export const RolesAPI = {
       userCount: roleCounts[role],
     }));
 
-    return {
-      totalRoles: roles.length,
-      totalUsers: users.length,
-      roles: roles.sort((a, b) => b.userCount - a.userCount),
-    };
+      return {
+        totalRoles: roles.length,
+        totalUsers: users.length,
+        roles: roles.sort((a, b) => b.userCount - a.userCount),
+      };
+    } catch (error: any) {
+      console.error('Error fetching role stats:', error);
+      // Log more details about the error
+      if (error?.response) {
+        console.error('Error response:', error.response.status, error.response.data);
+      } else if (error?.message) {
+        console.error('Error message:', error.message);
+      }
+      // Return empty stats on error
+      return {
+        totalRoles: 0,
+        totalUsers: 0,
+        roles: [],
+      };
+    }
   },
 };
 

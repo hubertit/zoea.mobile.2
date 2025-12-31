@@ -78,10 +78,10 @@ export const ReviewsAPI = {
   },
 
   /**
-   * Delete review
+   * Delete review (admin only - can delete any review)
    */
   deleteReview: async (id: string): Promise<void> => {
-    await apiClient.delete(`/reviews/${id}`);
+    await apiClient.delete(`/admin/reviews/${id}`);
   },
 };
 

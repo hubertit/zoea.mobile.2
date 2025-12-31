@@ -159,5 +159,39 @@ export class CategoriesService {
       },
     });
   }
+
+  async delete(id: string) {
+    // Check if category exists
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: { select: { listings: true, tours: true, children: true } },
+      },
+    });
+
+    if (!category) {
+      throw new Error(`Category with id "${id}" not found`);
+    }
+
+    // Prevent deletion if category has associated listings or tours
+    if (category._count.listings > 0 || category._count.tours > 0) {
+      throw new Error(
+        `Cannot delete category "${category.name}" because it has ${category._count.listings} listings and ${category._count.tours} tours. Please remove or reassign them first.`
+      );
+    }
+
+    // Prevent deletion if category has children
+    if (category._count.children > 0) {
+      throw new Error(
+        `Cannot delete category "${category.name}" because it has ${category._count.children} subcategories. Please delete or reassign them first.`
+      );
+    }
+
+    // Soft delete by setting isActive to false
+    return this.prisma.category.update({
+      where: { id },
+      data: { isActive: false },
+    });
+  }
 }
 

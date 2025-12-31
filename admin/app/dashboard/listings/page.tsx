@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, type Listing, type ListingStatus, type ListingType } from '@/src/lib/api';
-import Icon, { faSearch, faPlus, faTimes, faBox } from '@/app/components/Icon';
+import { ListingsAPI, CategoriesAPI, type Listing, type ListingStatus, type ListingType, type Category } from '@/src/lib/api';
+import Icon, { faSearch, faPlus, faTimes, faBox, faTags } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
@@ -52,7 +52,9 @@ const getStatusBadgeColor = (status: ListingStatus) => {
 
 export default function ListingsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [listings, setListings] = useState<Listing[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -60,6 +62,28 @@ export default function ListingsPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ListingStatus | ''>('');
   const [typeFilter, setTypeFilter] = useState<ListingType | ''>('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
+
+  // Get categoryId from URL params
+  useEffect(() => {
+    const categoryId = searchParams.get('categoryId');
+    if (categoryId) {
+      setCategoryFilter(categoryId);
+    }
+  }, [searchParams]);
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await CategoriesAPI.listCategories();
+        setCategories(data);
+      } catch (error: any) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Fetch listings
   useEffect(() => {
@@ -83,6 +107,10 @@ export default function ListingsPage() {
           params.type = typeFilter;
         }
 
+        if (categoryFilter) {
+          params.categoryId = categoryFilter;
+        }
+
         const response = await ListingsAPI.listListings(params);
         setListings(response.data || []);
         setTotal(response.meta?.total || 0);
@@ -95,7 +123,7 @@ export default function ListingsPage() {
     };
 
     fetchListings();
-  }, [page, pageSize, search, statusFilter, typeFilter]);
+  }, [page, pageSize, search, statusFilter, typeFilter, categoryFilter]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -124,6 +152,20 @@ export default function ListingsPage() {
       sortable: false,
       render: (_: any, row: Listing) => (
         <span className="text-sm text-gray-900">{row?.merchant?.businessName || '-'}</span>
+      ),
+    },
+    {
+      key: 'category',
+      label: 'Category',
+      sortable: false,
+      render: (_: any, row: Listing) => (
+        row?.category ? (
+          <Link href={`/dashboard/categories/${row.category.id}`} className="text-sm text-[#0e1a30] hover:underline">
+            {row.category.name}
+          </Link>
+        ) : (
+          <span className="text-sm text-gray-400">-</span>
+        )
       ),
     },
     {
@@ -199,7 +241,7 @@ export default function ListingsPage() {
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-sm p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Search */}
           <div className="md:col-span-2">
             <div className="relative">
@@ -267,7 +309,54 @@ export default function ListingsPage() {
               ))}
             </select>
           </div>
+
+          {/* Category Filter */}
+          <div>
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setPage(1);
+                // Update URL without navigation
+                const params = new URLSearchParams(searchParams.toString());
+                if (e.target.value) {
+                  params.set('categoryId', e.target.value);
+                } else {
+                  params.delete('categoryId');
+                }
+                router.push(`/dashboard/listings?${params.toString()}`, { scroll: false });
+              }}
+              className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+        {categoryFilter && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-sm text-gray-600">Filtered by category:</span>
+            <Link href={`/dashboard/categories/${categoryFilter}`} className="text-sm text-[#0e1a30] hover:underline font-medium">
+              {categories.find(c => c.id === categoryFilter)?.name || categoryFilter}
+            </Link>
+            <button
+              onClick={() => {
+                setCategoryFilter('');
+                setPage(1);
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('categoryId');
+                router.push(`/dashboard/listings?${params.toString()}`, { scroll: false });
+              }}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              <Icon icon={faTimes} size="xs" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Table */}

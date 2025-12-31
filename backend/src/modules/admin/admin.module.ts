@@ -15,9 +15,12 @@ import { AdminEventsService } from './events/admin-events.service';
 import { AdminEventsController } from './events/admin-events.controller';
 import { AdminNotificationsService } from './notifications/admin-notifications.service';
 import { AdminNotificationsController } from './notifications/admin-notifications.controller';
+import { AdminReviewsService } from './reviews/admin-reviews.service';
+import { AdminReviewsController } from './reviews/admin-reviews.controller';
+import { ReviewsModule } from '../reviews/reviews.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, ReviewsModule],
   controllers: [
     AdminUsersController,
     AdminMerchantsController,
@@ -26,6 +29,7 @@ import { AdminNotificationsController } from './notifications/admin-notification
     AdminPaymentsController,
     AdminEventsController,
     AdminNotificationsController,
+    AdminReviewsController,
   ],
   providers: [
     AdminUsersService,
@@ -35,6 +39,7 @@ import { AdminNotificationsController } from './notifications/admin-notification
     AdminPaymentsService,
     AdminEventsService,
     AdminNotificationsService,
+    AdminReviewsService,
     RolesGuard,
   ],
 })

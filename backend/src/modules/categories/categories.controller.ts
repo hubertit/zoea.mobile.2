@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Put, Param, Query, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -143,6 +146,9 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
     summary: 'Update a category',
     description: 'Updates an existing category. Supports updating name, description, icon, image, parent relationship, and sort order. Requires admin privileges.'
@@ -158,6 +164,25 @@ export class CategoriesController {
   @ApiResponse({ status: 404, description: 'Category not found' })
   async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(id, updateCategoryDto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'super_admin')
+  @ApiOperation({ 
+    summary: 'Delete a category',
+    description: 'Deletes a category. Prevents deletion if category has associated listings or tours. Requires admin privileges.'
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Category UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Category deleted successfully'
+  })
+  @ApiResponse({ status: 400, description: 'Bad request - Category has associated listings or tours' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
+  async delete(@Param('id') id: string) {
+    return this.categoriesService.delete(id);
   }
 
   @Get(':id')
@@ -177,6 +202,9 @@ export class CategoriesController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
     summary: 'Create a new category',
     description: 'Creates a new category. Can be a top-level category or a subcategory (via parentId). Requires admin privileges.'

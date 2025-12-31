@@ -38,6 +38,7 @@ export class AdminListingsService {
     if (dto.merchantId) andFilters.push({ merchantId: dto.merchantId });
     if (dto.countryId) andFilters.push({ countryId: dto.countryId });
     if (dto.cityId) andFilters.push({ cityId: dto.cityId });
+    if (dto.categoryId) andFilters.push({ categoryId: dto.categoryId });
 
     if (andFilters.length) {
       where.AND = andFilters;

@@ -211,7 +211,7 @@ export class ReviewsService {
     return { success: true };
   }
 
-  private async updateAverageRating(listingId?: string | null, eventId?: string | null, tourId?: string | null) {
+  async updateAverageRating(listingId?: string | null, eventId?: string | null, tourId?: string | null) {
     if (listingId) {
       const result = await this.prisma.review.aggregate({
         where: { listingId, status: 'approved', deletedAt: null },

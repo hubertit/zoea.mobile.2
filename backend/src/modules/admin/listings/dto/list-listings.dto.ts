@@ -46,6 +46,11 @@ export class AdminListListingsDto extends PaginationDto {
   @IsOptional()
   @IsString()
   cityId?: string;
+
+  @ApiPropertyOptional({ description: 'Category ID', format: 'uuid' })
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 }
 
 

@@ -7,8 +7,10 @@ import { CategoriesAPI, type Category } from '@/src/lib/api';
 import Icon, { 
   faArrowLeft, 
   faEdit, 
+  faTrash,
   faTags,
   faChevronRight,
+  faBox,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { Button, Modal } from '@/app/components';
@@ -23,7 +25,9 @@ export default function CategoryDetailPage() {
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [formData, setFormData] = useState({
@@ -103,6 +107,23 @@ export default function CategoryDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!categoryId) return;
+
+    setDeleting(true);
+    try {
+      await CategoriesAPI.deleteCategory(categoryId);
+      toast.success('Category deleted successfully');
+      router.push('/dashboard/categories');
+    } catch (error: any) {
+      console.error('Failed to delete category:', error);
+      toast.error(error?.message || 'Failed to delete category');
+    } finally {
+      setDeleting(false);
+      setDeleteModalOpen(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -136,6 +157,17 @@ export default function CategoryDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {category._count && (category._count.listings > 0 || category._count.tours > 0) && (
+            <Link href={`/dashboard/listings?categoryId=${categoryId}`}>
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={faBox}
+              >
+                View Listings ({category._count.listings || 0})
+              </Button>
+            </Link>
+          )}
           <Button
             onClick={() => {
               setEditModalOpen(true);
@@ -145,6 +177,16 @@ export default function CategoryDetailPage() {
             icon={faEdit}
           >
             Edit Category
+          </Button>
+          <Button
+            onClick={() => {
+              setDeleteModalOpen(true);
+            }}
+            variant="danger"
+            size="sm"
+            icon={faTrash}
+          >
+            Delete
           </Button>
         </div>
       </div>
@@ -346,6 +388,51 @@ export default function CategoryDetailPage() {
               loading={saving}
             >
               Save Changes
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title="Delete Category"
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-700">
+            Are you sure you want to delete the category <strong>"{category.name}"</strong>?
+          </p>
+          {category._count && (category._count.listings > 0 || category._count.tours > 0 || (category.children && category.children.length > 0)) && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-sm p-4">
+              <p className="text-sm text-yellow-800">
+                <strong>Warning:</strong> This category has:
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {category._count.listings > 0 && <li>{category._count.listings} listing(s)</li>}
+                  {category._count.tours > 0 && <li>{category._count.tours} tour(s)</li>}
+                  {category.children && category.children.length > 0 && <li>{category.children.length} subcategor(ies)</li>}
+                </ul>
+                You must remove or reassign them before deleting this category.
+              </p>
+            </div>
+          )}
+          <div className="flex items-center gap-2 justify-end pt-4 border-t border-gray-200">
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setDeleteModalOpen(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              size="md"
+              onClick={handleDelete}
+              loading={deleting}
+            >
+              Delete Category
             </Button>
           </div>
         </div>

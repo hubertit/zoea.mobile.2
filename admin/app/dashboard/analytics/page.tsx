@@ -25,30 +25,89 @@ export default function AnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
+  // Helper function to paginate through all data
+  const fetchAllPaginated = async <T,>(
+    fetchFn: (params: { limit: number; page: number }) => Promise<{ data: T[]; meta: { totalPages: number } }>,
+    maxLimit: number = 100
+  ): Promise<T[]> => {
+    let allData: T[] = [];
+    let currentPage = 1;
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await fetchFn({ limit: maxLimit, page: currentPage });
+      const data = response?.data || [];
+      allData = [...allData, ...data];
+      
+      const totalPages = response?.meta?.totalPages || 1;
+      hasMore = currentPage < totalPages;
+      currentPage++;
+      
+      // Safety limit
+      if (currentPage > 1000) {
+        console.warn('Reached pagination safety limit');
+        break;
+      }
+    }
+
+    return allData;
+  };
+
   useEffect(() => {
     const fetchAnalytics = async () => {
       setLoading(true);
+      let hasAnyData = false;
+      
       try {
         // Fetch dashboard stats
-        const stats = await getDashboardStats();
+        try {
+          await getDashboardStats();
+        } catch (e) {
+          console.warn('Could not fetch dashboard stats:', e);
+        }
 
-        // Fetch users for growth chart
-        const usersRes = await UsersAPI.listUsers({ limit: 1000, page: 1 });
-        const users = usersRes.data || [];
+        // Fetch users for growth chart (paginated)
+        let users: any[] = [];
+        try {
+          users = await fetchAllPaginated(
+            async (params) => UsersAPI.listUsers(params),
+            100
+          );
+          hasAnyData = hasAnyData || users.length > 0;
+        } catch (e) {
+          console.warn('Could not fetch users:', e);
+        }
 
-        // Fetch bookings for trends
-        const bookingsRes = await BookingsAPI.listBookings({ limit: 1000, page: 1 });
-        const bookings = bookingsRes.data || [];
+        // Fetch bookings for trends (paginated)
+        let bookings: any[] = [];
+        try {
+          bookings = await fetchAllPaginated(
+            async (params) => BookingsAPI.listBookings(params),
+            100
+          );
+          hasAnyData = hasAnyData || bookings.length > 0;
+        } catch (e) {
+          console.warn('Could not fetch bookings:', e);
+        }
 
-        // Fetch events
-        const eventsRes = await EventsAPI.listEvents({ limit: 1000, page: 1 });
-        const events = eventsRes.data || [];
+        // Fetch events (paginated)
+        let events: any[] = [];
+        try {
+          events = await fetchAllPaginated(
+            async (params) => EventsAPI.listEvents(params),
+            100
+          );
+        } catch (e) {
+          console.warn('Could not fetch events:', e);
+        }
 
-        // Fetch transactions for revenue
+        // Fetch transactions for revenue (paginated)
         let transactions: any[] = [];
         try {
-          const transactionsRes = await PaymentsAPI.listTransactions({ limit: 1000, page: 1 });
-          transactions = transactionsRes.data || [];
+          transactions = await fetchAllPaginated(
+            async (params) => PaymentsAPI.listTransactions(params),
+            100
+          );
         } catch (e) {
           console.warn('Could not fetch transactions:', e);
         }
@@ -132,8 +191,11 @@ export default function AnalyticsPage() {
           revenueBySource: revenueBySourceArray,
         });
       } catch (error: any) {
-        console.error('Failed to fetch analytics:', error);
-        toast.error(error?.message || 'Failed to load analytics data');
+        console.error('Failed to process analytics data:', error);
+        // Only show error if we couldn't get any data at all
+        if (!hasAnyData) {
+          toast.error(error?.message || 'Failed to load analytics data');
+        }
       } finally {
         setLoading(false);
       }

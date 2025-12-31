@@ -45,6 +45,7 @@ export interface ListListingsParams {
   merchantId?: string;
   countryId?: string;
   cityId?: string;
+  categoryId?: string;
 }
 
 export interface ListListingsResponse {
