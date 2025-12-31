@@ -102,4 +102,5 @@ export {
   faRoute,
   faImage,
   faHeart,
+  faSave,
 } from '@fortawesome/free-solid-svg-icons';
