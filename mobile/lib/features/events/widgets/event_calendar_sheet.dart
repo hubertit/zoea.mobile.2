@@ -153,6 +153,25 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   shape: BoxShape.circle,
                 ),
               ),
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, date, events) {
+                  if (events.isNotEmpty) {
+                    if (events.length > 3) {
+                      // Show fire emoji for more than 3 events
+                      return const Positioned(
+                        right: 1,
+                        bottom: 1,
+                        child: Text(
+                          '🔥',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      );
+                    }
+                    // Return null to use default dots for 3 or fewer events
+                  }
+                  return null;
+                },
+              ),
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
