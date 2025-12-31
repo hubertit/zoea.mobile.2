@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { UsersAPI, type User, type UserRole, type VerificationStatus, type CreateUserParams } from '@/src/lib/api';
-import Icon, { faSearch, faPlus, faTimes, faUser } from '@/app/components/Icon';
+import Icon, { faSearch, faPlus, faTimes, faUser, faFilter, faChevronDown, faChevronUp } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Modal, Input, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
@@ -71,6 +71,10 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const [verificationFilter, setVerificationFilter] = useState<VerificationStatus | ''>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [isBlockedFilter, setIsBlockedFilter] = useState<'' | 'true' | 'false'>('');
   const [creating, setCreating] = useState(false);
   const [formData, setFormData] = useState<CreateUserParams & { confirmPassword: string }>({
     email: '',
@@ -107,7 +111,33 @@ export default function UsersPage() {
           params.verificationStatus = verificationFilter;
         }
 
+        if (isBlockedFilter !== '') {
+          params.isBlocked = isBlockedFilter === 'true';
+        }
+
+        // Note: Backend may not support date range directly, so we'll filter client-side if needed
+        // For now, we'll pass the params and let the backend handle what it can
+
         const response = await UsersAPI.listUsers(params);
+        
+        // Client-side date filtering if backend doesn't support it
+        let filteredData = response.data || [];
+        if (dateFrom || dateTo) {
+          filteredData = filteredData.filter((user: User) => {
+            if (!user.createdAt) return false;
+            const userDate = new Date(user.createdAt);
+            if (dateFrom && userDate < new Date(dateFrom)) return false;
+            if (dateTo) {
+              const toDate = new Date(dateTo);
+              toDate.setHours(23, 59, 59, 999); // Include entire end date
+              if (userDate > toDate) return false;
+            }
+            return true;
+          });
+        }
+        
+        setUsers(filteredData);
+        setTotal(filteredData.length); // Update total for client-side filtered results
         setUsers(response.data || []);
         setTotal(response.meta?.total || 0);
       } catch (error: any) {
@@ -137,7 +167,7 @@ export default function UsersPage() {
     };
 
     fetchUsers();
-  }, [page, pageSize, debouncedSearch, statusFilter, roleFilter, verificationFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, roleFilter, verificationFilter, isBlockedFilter, dateFrom, dateTo]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -307,7 +337,96 @@ export default function UsersPage() {
               ))}
             </select>
           </div>
+
+          {/* Advanced Filters Toggle */}
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="w-full"
+              icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+            >
+              {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+            </Button>
+          </div>
         </div>
+
+        {/* Advanced Filters */}
+        {showAdvancedFilters && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-sm border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Date From */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Created From
+                </label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Date To */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Created To
+                </label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Blocked Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Blocked Status
+                </label>
+                <select
+                  value={isBlockedFilter}
+                  onChange={(e) => {
+                    setIsBlockedFilter(e.target.value as '' | 'true' | 'false');
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                >
+                  <option value="">All</option>
+                  <option value="false">Not Blocked</option>
+                  <option value="true">Blocked</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(dateFrom || dateTo || isBlockedFilter) && (
+              <div className="mt-4 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setDateFrom('');
+                    setDateTo('');
+                    setIsBlockedFilter('');
+                    setPage(1);
+                  }}
+                >
+                  Clear Date Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Table */}
