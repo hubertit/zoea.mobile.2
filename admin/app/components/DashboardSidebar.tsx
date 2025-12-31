@@ -92,10 +92,20 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
 
   useEffect(() => {
     if (user) {
-      let roleLabel = 'Admin';
       const userRoles = user.roles || [];
-      if (userRoles.some((r: any) => (r.code || r.name) === 'SUPER_ADMIN')) roleLabel = 'Super Admin';
-      else if (userRoles.some((r: any) => (r.code || r.name) === 'ADMIN')) roleLabel = 'Admin';
+      let roleLabel = 'Admin';
+      const roleValues = userRoles.map((r: any) => {
+        if (typeof r === 'string') return r.toLowerCase();
+        return (r.code || r.name || '').toLowerCase();
+      });
+      
+      if (roleValues.includes('super_admin')) {
+        roleLabel = 'Super Admin';
+      } else if (roleValues.includes('admin')) {
+        roleLabel = 'Admin';
+      } else if (roleValues.includes('merchant')) {
+        roleLabel = 'Merchant';
+      }
       
       setUserInfo({
         name: user.name || user.fullName || 'Admin',
@@ -128,9 +138,10 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
   }, []);
 
   const userRoles = user?.roles || [];
-  const userRoleCodes = userRoles.map((r: any) => 
-    (r.code || r.name || 'ADMIN').toUpperCase()
-  );
+  const userRoleCodes = userRoles.map((r: any) => {
+    if (typeof r === 'string') return r.toUpperCase();
+    return (r.code || r.name || 'admin').toUpperCase();
+  });
 
   const allMenuItems: MenuItem[] = [
     { 
@@ -138,6 +149,12 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
       label: 'Dashboard', 
       href: '/dashboard',
       roles: ['SUPER_ADMIN', 'ADMIN'],
+    },
+    { 
+      icon: faHome, 
+      label: 'Dashboard', 
+      href: '/dashboard/my-dashboard',
+      roles: ['MERCHANT', 'merchant'],
     },
     {
       icon: faBox,
@@ -297,6 +314,42 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
           href: '/dashboard/settings',
         },
       ],
+    },
+    // Merchant-specific menus
+    {
+      icon: faBox,
+      label: 'My Content',
+      roles: ['MERCHANT', 'merchant'],
+      children: [
+        {
+          icon: faList,
+          label: 'My Listings',
+          href: '/dashboard/my-listings',
+        },
+        {
+          icon: faCalendar,
+          label: 'My Events',
+          href: '/dashboard/my-events',
+        },
+      ],
+    },
+    {
+      icon: faClipboardList,
+      label: 'My Bookings',
+      href: '/dashboard/my-bookings',
+      roles: ['MERCHANT', 'merchant'],
+    },
+    {
+      icon: faChartLine,
+      label: 'Analytics',
+      href: '/dashboard/my-analytics',
+      roles: ['MERCHANT', 'merchant'],
+    },
+    {
+      icon: faUser,
+      label: 'Profile',
+      href: '/dashboard/profile',
+      roles: ['MERCHANT', 'merchant'],
     },
   ];
 

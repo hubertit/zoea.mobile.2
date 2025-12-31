@@ -144,5 +144,13 @@ export const MerchantsAPI = {
     const response = await apiClient.patch<Merchant>(`/admin/merchants/${id}/restore`);
     return response.data;
   },
+
+  /**
+   * Get current user's merchant profiles
+   */
+  getMyMerchantProfiles: async (): Promise<Merchant[]> => {
+    const response = await apiClient.get<Merchant[]>('/users/me/businesses');
+    return response.data;
+  },
 };
 

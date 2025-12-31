@@ -1,0 +1,353 @@
+import apiClient from './client';
+
+// ============ TYPES ============
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'revision_requested';
+export type ListingStatus = 'draft' | 'pending_review' | 'active' | 'inactive' | 'suspended';
+export type BookingStatus = 'pending' | 'confirmed' | 'checked_in' | 'completed' | 'cancelled' | 'no_show' | 'refunded';
+
+export interface Business {
+  id: string;
+  userId: string;
+  businessName: string;
+  businessType?: string | null;
+  businessRegistrationNumber?: string | null;
+  taxId?: string | null;
+  description?: string | null;
+  businessEmail?: string | null;
+  businessPhone?: string | null;
+  website?: string | null;
+  socialLinks?: Record<string, any> | null;
+  registrationStatus: ApprovalStatus;
+  isVerified: boolean;
+  countryId?: string | null;
+  cityId?: string | null;
+  districtId?: string | null;
+  address?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: {
+    listings: number;
+    bookings: number;
+  };
+}
+
+export interface MerchantListing {
+  id: string;
+  name: string;
+  slug?: string | null;
+  description?: string | null;
+  shortDescription?: string | null;
+  type?: string | null;
+  status: ListingStatus;
+  isFeatured: boolean;
+  isVerified: boolean;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  priceUnit?: string | null;
+  contactPhone?: string | null;
+  contactEmail?: string | null;
+  website?: string | null;
+  address?: string | null;
+  merchantId: string;
+  categoryId?: string | null;
+  countryId?: string | null;
+  cityId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MerchantBooking {
+  id: string;
+  bookingNumber: string;
+  status: BookingStatus;
+  bookingType: string;
+  checkInDate?: string | null;
+  checkOutDate?: string | null;
+  bookingDate?: string | null;
+  bookingTime?: string | null;
+  partySize?: number | null;
+  totalAmount: number;
+  currency: string;
+  notes?: string | null;
+  userId: string;
+  listingId: string;
+  merchantId: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    fullName: string;
+    email: string;
+    phoneNumber?: string;
+  };
+  listing?: {
+    id: string;
+    name: string;
+    type?: string;
+  };
+}
+
+export interface MerchantReview {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  response?: string | null;
+  responseDate?: string | null;
+  listingId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    fullName: string;
+  };
+  listing?: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface DashboardData {
+  overview: {
+    totalRevenue: number;
+    totalBookings: number;
+    averageRating: number;
+    totalListings: number;
+    activeListings: number;
+  };
+  thisMonth: {
+    bookings: number;
+    revenue: number;
+    bookingsChange: string;
+    revenueChange: string;
+  };
+  pendingBookings: number;
+  recentBookings: MerchantBooking[];
+  topListings: Array<{
+    id: string;
+    name: string;
+    bookingCount: number;
+    rating: number;
+  }>;
+  reviews: {
+    averageRating: number;
+    totalReviews: number;
+  };
+}
+
+// ============ API ============
+export const MerchantPortalAPI = {
+  // ============ BUSINESSES ============
+  getMyBusinesses: async (): Promise<Business[]> => {
+    const response = await apiClient.get<Business[]>('/merchants/businesses');
+    return response.data;
+  },
+
+  getBusiness: async (businessId: string): Promise<Business> => {
+    const response = await apiClient.get<Business>(`/merchants/businesses/${businessId}`);
+    return response.data;
+  },
+
+  createBusiness: async (data: {
+    businessName: string;
+    businessType: string;
+    businessRegistrationNumber?: string;
+    taxId?: string;
+    description?: string;
+    businessEmail?: string;
+    businessPhone?: string;
+    website?: string;
+    socialLinks?: Record<string, any>;
+    countryId?: string;
+    cityId?: string;
+    districtId?: string;
+    address?: string;
+    logoId?: string;
+  }): Promise<Business> => {
+    const response = await apiClient.post<Business>('/merchants/businesses', data);
+    return response.data;
+  },
+
+  updateBusiness: async (businessId: string, data: Partial<{
+    businessName: string;
+    businessType: string;
+    description: string;
+    businessEmail: string;
+    businessPhone: string;
+    website: string;
+    socialLinks: Record<string, any>;
+    countryId: string;
+    cityId: string;
+    districtId: string;
+    address: string;
+  }>): Promise<Business> => {
+    const response = await apiClient.put<Business>(`/merchants/businesses/${businessId}`, data);
+    return response.data;
+  },
+
+  deleteBusiness: async (businessId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}`);
+  },
+
+  // ============ LISTINGS ============
+  getListings: async (
+    businessId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      status?: ListingStatus;
+    }
+  ): Promise<{ data: MerchantListing[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/listings`, { params });
+    return response.data;
+  },
+
+  getListing: async (businessId: string, listingId: string): Promise<MerchantListing> => {
+    const response = await apiClient.get<MerchantListing>(`/merchants/businesses/${businessId}/listings/${listingId}`);
+    return response.data;
+  },
+
+  createListing: async (businessId: string, data: {
+    name: string;
+    slug?: string;
+    description?: string;
+    shortDescription?: string;
+    type?: string;
+    categoryId?: string;
+    countryId?: string;
+    cityId?: string;
+    districtId?: string;
+    address?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    priceUnit?: string;
+    contactPhone?: string;
+    contactEmail?: string;
+    website?: string;
+    status?: ListingStatus;
+  }): Promise<MerchantListing> => {
+    const response = await apiClient.post<MerchantListing>(`/merchants/businesses/${businessId}/listings`, data);
+    return response.data;
+  },
+
+  updateListing: async (businessId: string, listingId: string, data: Partial<{
+    name: string;
+    description: string;
+    shortDescription: string;
+    type: string;
+    categoryId: string;
+    countryId: string;
+    cityId: string;
+    districtId: string;
+    address: string;
+    minPrice: number;
+    maxPrice: number;
+    priceUnit: string;
+    contactPhone: string;
+    contactEmail: string;
+    website: string;
+  }>): Promise<MerchantListing> => {
+    const response = await apiClient.put<MerchantListing>(`/merchants/businesses/${businessId}/listings/${listingId}`, data);
+    return response.data;
+  },
+
+  deleteListing: async (businessId: string, listingId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}/listings/${listingId}`);
+  },
+
+  submitListing: async (businessId: string, listingId: string): Promise<MerchantListing> => {
+    const response = await apiClient.post<MerchantListing>(`/merchants/businesses/${businessId}/listings/${listingId}/submit`);
+    return response.data;
+  },
+
+  // ============ BOOKINGS ============
+  getBookings: async (
+    businessId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      status?: BookingStatus;
+      listingId?: string;
+      startDate?: string;
+      endDate?: string;
+    }
+  ): Promise<{ data: MerchantBooking[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/bookings`, { params });
+    return response.data;
+  },
+
+  getBooking: async (businessId: string, bookingId: string): Promise<MerchantBooking> => {
+    const response = await apiClient.get<MerchantBooking>(`/merchants/businesses/${businessId}/bookings/${bookingId}`);
+    return response.data;
+  },
+
+  updateBookingStatus: async (
+    businessId: string,
+    bookingId: string,
+    data: {
+      status: BookingStatus;
+      notes?: string;
+      cancellationReason?: string;
+    }
+  ): Promise<MerchantBooking> => {
+    const response = await apiClient.put<MerchantBooking>(`/merchants/businesses/${businessId}/bookings/${bookingId}/status`, data);
+    return response.data;
+  },
+
+  // ============ REVIEWS ============
+  getReviews: async (
+    businessId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      listingId?: string;
+      rating?: number;
+    }
+  ): Promise<{ data: MerchantReview[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/reviews`, { params });
+    return response.data;
+  },
+
+  respondToReview: async (businessId: string, reviewId: string, response: string): Promise<MerchantReview> => {
+    const result = await apiClient.post<MerchantReview>(`/merchants/businesses/${businessId}/reviews/${reviewId}/respond`, { response });
+    return result.data;
+  },
+
+  // ============ DASHBOARD ============
+  getDashboard: async (businessId: string): Promise<DashboardData> => {
+    const response = await apiClient.get<DashboardData>(`/merchants/businesses/${businessId}/dashboard`);
+    return response.data;
+  },
+
+  // ============ ANALYTICS ============
+  getRevenueAnalytics: async (
+    businessId: string,
+    params?: {
+      startDate?: string;
+      endDate?: string;
+      groupBy?: 'day' | 'week' | 'month' | 'year';
+    }
+  ): Promise<{
+    totalRevenue: number;
+    periodData: Array<{
+      period: string;
+      revenue: number;
+      bookingCount: number;
+    }>;
+  }> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/analytics/revenue`, { params });
+    return response.data;
+  },
+
+  getBookingAnalytics: async (
+    businessId: string,
+    params?: {
+      startDate?: string;
+      endDate?: string;
+    }
+  ): Promise<any> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/analytics/bookings`, { params });
+    return response.data;
+  },
+};
+
