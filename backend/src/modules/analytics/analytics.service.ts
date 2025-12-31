@@ -417,14 +417,10 @@ export class AnalyticsService {
         if (view.content_type === 'listing') {
           content = await this.prisma.listing.findUnique({
             where: { id: view.content_id },
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              description: true,
+            include: {
               images: {
                 take: 1,
-                select: {
+                include: {
                   media: {
                     select: {
                       url: true,
@@ -432,44 +428,33 @@ export class AnalyticsService {
                     },
                   },
                 },
+                orderBy: { sortOrder: 'asc' },
               },
-              location: {
+              city: {
                 select: {
-                  address: true,
-                  city: {
+                  name: true,
+                  country: {
                     select: {
                       name: true,
-                      country: {
-                        select: {
-                          name: true,
-                        },
-                      },
                     },
                   },
                 },
               },
-              rating: true,
-              reviewCount: true,
               category: {
                 select: {
                   name: true,
                   slug: true,
                 },
               },
-              type: true,
             },
           });
         } else if (view.content_type === 'event') {
           content = await this.prisma.event.findUnique({
             where: { id: view.content_id },
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              description: true,
-              images: {
+            include: {
+              attachments: {
                 take: 1,
-                select: {
+                include: {
                   media: {
                     select: {
                       url: true,
@@ -477,24 +462,18 @@ export class AnalyticsService {
                     },
                   },
                 },
+                orderBy: { sortOrder: 'asc' },
               },
-              location: {
+              city: {
                 select: {
-                  address: true,
-                  city: {
+                  name: true,
+                  country: {
                     select: {
                       name: true,
-                      country: {
-                        select: {
-                          name: true,
-                        },
-                      },
                     },
                   },
                 },
               },
-              rating: true,
-              reviewCount: true,
               category: {
                 select: {
                   name: true,
