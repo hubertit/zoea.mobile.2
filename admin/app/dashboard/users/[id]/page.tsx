@@ -23,7 +23,7 @@ import Icon, {
   faMapMarkerAlt,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { Button, Modal } from '@/app/components';
+import { Button, Modal, Breadcrumbs } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Input from '@/app/components/Input';
 import Select from '@/app/components/Select';
@@ -192,6 +192,11 @@ export default function UserDetailPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[
+        { label: 'Users', href: '/dashboard/users' },
+        { label: user?.fullName || 'User Details' }
+      ]} />
+      
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">

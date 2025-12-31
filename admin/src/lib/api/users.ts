@@ -141,6 +141,14 @@ export interface UpdateUserRolesParams {
   roles: UserRole[];
 }
 
+export interface CreateUserParams {
+  email?: string;
+  phoneNumber?: string;
+  password: string;
+  fullName?: string;
+  roles?: UserRole[];
+}
+
 export const UsersAPI = {
   /**
    * List users with filters and pagination
@@ -172,6 +180,29 @@ export const UsersAPI = {
   updateUserRoles: async (id: string, data: UpdateUserRolesParams): Promise<{ id: string; roles: UserRole[]; updatedAt: string }> => {
     const response = await apiClient.patch(`/admin/users/${id}/roles`, data);
     return response.data;
+  },
+
+  /**
+   * Create a new user (uses registration endpoint, then assigns roles if provided)
+   */
+  createUser: async (data: CreateUserParams): Promise<User> => {
+    // First, register the user
+    const registerResponse = await apiClient.post<{ user: { id: string } }>('/auth/register', {
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      password: data.password,
+      fullName: data.fullName,
+    });
+    
+    const userId = registerResponse.data.user.id;
+    
+    // If roles are provided, assign them
+    if (data.roles && data.roles.length > 0) {
+      await apiClient.patch(`/admin/users/${userId}/roles`, { roles: data.roles });
+    }
+    
+    // Fetch and return the created user
+    return UsersAPI.getUserById(userId);
   },
 };
 

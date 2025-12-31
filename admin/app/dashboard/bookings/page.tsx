@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { BookingsAPI, type Booking, type BookingStatus, type PaymentStatus } from '@/src/lib/api';
+import { BookingsAPI, UsersAPI, ListingsAPI, EventsAPI, type Booking, type BookingStatus, type PaymentStatus, type CreateBookingParams, type User, type Listing, type Event, type BookingType } from '@/src/lib/api';
 import Icon, { faSearch, faPlus, faTimes, faClipboardList } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Select } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -75,6 +74,25 @@ export default function BookingsPage() {
   const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | ''>('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<PaymentStatus | ''>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [formData, setFormData] = useState<Partial<CreateBookingParams>>({
+    userId: '',
+    bookingType: 'hotel',
+    listingId: '',
+    eventId: '',
+    checkInDate: '',
+    checkOutDate: '',
+    bookingDate: '',
+    bookingTime: '',
+    guestCount: undefined,
+    adults: undefined,
+    children: undefined,
+    specialRequests: '',
+  });
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -110,6 +128,27 @@ export default function BookingsPage() {
 
     fetchBookings();
   }, [page, pageSize, debouncedSearch, statusFilter, paymentStatusFilter]);
+
+  // Fetch users, listings, events for create modal
+  useEffect(() => {
+    if (showCreateModal) {
+      const fetchData = async () => {
+        try {
+          const [usersRes, listingsRes, eventsRes] = await Promise.all([
+            UsersAPI.listUsers({ limit: 100, page: 1 }),
+            ListingsAPI.listListings({ limit: 100, page: 1 }),
+            EventsAPI.listEvents({ limit: 100, page: 1 }),
+          ]);
+          setUsers(usersRes.data || []);
+          setListings(listingsRes.data || []);
+          setEvents(eventsRes.data || []);
+        } catch (error: any) {
+          console.error('Failed to fetch data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [showCreateModal]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -218,11 +257,9 @@ export default function BookingsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Bookings</h1>
           <p className="text-gray-600 mt-1">Manage all bookings and reservations</p>
         </div>
-        <Link href="/dashboard/bookings/create">
-          <Button variant="primary" size="md" icon={faPlus}>
-            Create Booking
-          </Button>
-        </Link>
+        <Button variant="primary" size="md" icon={faPlus} onClick={() => setShowCreateModal(true)}>
+          Create Booking
+        </Button>
       </div>
 
       {/* Filters */}
@@ -315,8 +352,265 @@ export default function BookingsPage() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={total}
         />
       )}
+
+      {/* Create Booking Modal */}
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setFormData({
+            userId: '',
+            bookingType: 'hotel',
+            listingId: '',
+            eventId: '',
+            checkInDate: '',
+            checkOutDate: '',
+            bookingDate: '',
+            bookingTime: '',
+            guestCount: undefined,
+            adults: undefined,
+            children: undefined,
+            specialRequests: '',
+          });
+        }}
+        title="Create New Booking"
+        size="lg"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                User <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.userId || ''}
+                onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+                options={[
+                  { value: '', label: 'Select user' },
+                  ...users.map(u => ({ value: u.id, label: `${u.fullName || u.email || u.phoneNumber} (${u.email || u.phoneNumber})` })),
+                ]}
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Booking Type <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.bookingType || 'hotel'}
+                onChange={(e) => setFormData({ ...formData, bookingType: e.target.value as BookingType, listingId: '', eventId: '' })}
+                options={[
+                  { value: 'hotel', label: 'Hotel' },
+                  { value: 'restaurant', label: 'Restaurant' },
+                  { value: 'event', label: 'Event' },
+                  { value: 'tour', label: 'Tour' },
+                  { value: 'experience', label: 'Experience' },
+                ]}
+              />
+            </div>
+
+            {(formData.bookingType === 'hotel' || formData.bookingType === 'restaurant') && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Listing <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  value={formData.listingId || ''}
+                  onChange={(e) => setFormData({ ...formData, listingId: e.target.value || undefined })}
+                  options={[
+                    { value: '', label: 'Select listing' },
+                    ...listings.map(l => ({ value: l.id, label: l.name })),
+                  ]}
+                />
+              </div>
+            )}
+
+            {formData.bookingType === 'event' && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  value={formData.eventId || ''}
+                  onChange={(e) => setFormData({ ...formData, eventId: e.target.value || undefined })}
+                  options={[
+                    { value: '', label: 'Select event' },
+                    ...events.map(e => ({ value: e.id, label: e.name })),
+                  ]}
+                />
+              </div>
+            )}
+
+            {formData.bookingType === 'hotel' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Check-in Date <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="date"
+                    value={formData.checkInDate || ''}
+                    onChange={(e) => setFormData({ ...formData, checkInDate: e.target.value || undefined })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Check-out Date <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="date"
+                    value={formData.checkOutDate || ''}
+                    onChange={(e) => setFormData({ ...formData, checkOutDate: e.target.value || undefined })}
+                  />
+                </div>
+              </>
+            )}
+
+            {formData.bookingType === 'restaurant' && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Booking Date <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="datetime-local"
+                  value={formData.bookingDate || ''}
+                  onChange={(e) => setFormData({ ...formData, bookingDate: e.target.value || undefined })}
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Guest Count
+              </label>
+              <Input
+                type="number"
+                value={formData.guestCount || ''}
+                onChange={(e) => setFormData({ ...formData, guestCount: e.target.value ? parseInt(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Adults
+              </label>
+              <Input
+                type="number"
+                value={formData.adults || ''}
+                onChange={(e) => setFormData({ ...formData, adults: e.target.value ? parseInt(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Children
+              </label>
+              <Input
+                type="number"
+                value={formData.children || ''}
+                onChange={(e) => setFormData({ ...formData, children: e.target.value ? parseInt(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Special Requests
+              </label>
+              <Input
+                value={formData.specialRequests || ''}
+                onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value || undefined })}
+                placeholder="Enter special requests"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCreateModal(false);
+                setFormData({
+                  userId: '',
+                  bookingType: 'hotel',
+                  listingId: '',
+                  eventId: '',
+                  checkInDate: '',
+                  checkOutDate: '',
+                  bookingDate: '',
+                  bookingTime: '',
+                  guestCount: undefined,
+                  adults: undefined,
+                  children: undefined,
+                  specialRequests: '',
+                });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!formData.userId || !formData.bookingType) {
+                  toast.error('Please provide user and booking type');
+                  return;
+                }
+                if ((formData.bookingType === 'hotel' || formData.bookingType === 'restaurant') && !formData.listingId) {
+                  toast.error('Please select a listing');
+                  return;
+                }
+                if (formData.bookingType === 'event' && !formData.eventId) {
+                  toast.error('Please select an event');
+                  return;
+                }
+                
+                setCreating(true);
+                try {
+                  await BookingsAPI.createBooking(formData as CreateBookingParams);
+                  toast.success('Booking created successfully');
+                  setShowCreateModal(false);
+                  setFormData({
+                    userId: '',
+                    bookingType: 'hotel',
+                    listingId: '',
+                    eventId: '',
+                    checkInDate: '',
+                    checkOutDate: '',
+                    bookingDate: '',
+                    bookingTime: '',
+                    guestCount: undefined,
+                    adults: undefined,
+                    children: undefined,
+                    specialRequests: '',
+                  });
+                  // Refresh bookings
+                  const response = await BookingsAPI.listBookings({ page, limit: pageSize });
+                  setBookings(response.data || []);
+                  setTotal(response.meta?.total || 0);
+                } catch (error: any) {
+                  console.error('Failed to create booking:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to create booking');
+                } finally {
+                  setCreating(false);
+                }
+              }}
+              loading={creating}
+            >
+              Create Booking
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -35,4 +35,7 @@ export * from './notifications';
 export * from './reviews';
 export * from './categories';
 export { RolesAPI, type RoleInfo, type RoleStats } from './roles';
+export * from './locations';
+export * from './media';
+export * from './organizers';
 

@@ -6,23 +6,8 @@ import { Button, DataTable, Pagination } from '@/app/components';
 import Icon, { faMapMarkerAlt, faPlus, faEdit, faTrash, faSearch, faTimes } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import PageSkeleton from '@/app/components/PageSkeleton';
-import apiClient from '@/src/lib/api/client';
+import { LocationsAPI, type Country, type City } from '@/src/lib/api';
 
-interface Country {
-  id: string;
-  name: string;
-  code: string;
-  flag?: string;
-  createdAt?: string;
-}
-
-interface City {
-  id: string;
-  name: string;
-  countryId: string;
-  country?: Country;
-  createdAt?: string;
-}
 
 export default function LocationsPage() {
   const [activeTab, setActiveTab] = useState<'countries' | 'cities'>('countries');
@@ -35,13 +20,12 @@ export default function LocationsPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // TODO: Replace with actual API endpoints when available
-        // const countriesRes = await apiClient.get('/admin/locations/countries');
-        // const citiesRes = await apiClient.get('/admin/locations/cities');
-        
-        // For now, show placeholder data
-        setCountries([]);
-        setCities([]);
+        const [countriesRes, citiesRes] = await Promise.all([
+          LocationsAPI.getCountries(),
+          LocationsAPI.getCities(),
+        ]);
+        setCountries(countriesRes || []);
+        setCities(citiesRes || []);
       } catch (error: any) {
         console.error('Failed to fetch locations:', error);
         toast.error(error?.message || 'Failed to load locations');
@@ -74,9 +58,6 @@ export default function LocationsPage() {
       sortable: false,
       render: (_: any, row: Country) => (
         <div className="flex items-center gap-3">
-          {row.flag && (
-            <span className="text-2xl">{row.flag}</span>
-          )}
           <div>
             <p className="text-sm font-medium text-gray-900">{row.name}</p>
             <p className="text-xs text-gray-500">{row.code}</p>

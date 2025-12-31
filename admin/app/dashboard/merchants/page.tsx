@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { MerchantsAPI, type Merchant, type ApprovalStatus } from '@/src/lib/api';
+import { MerchantsAPI, UsersAPI, LocationsAPI, type Merchant, type ApprovalStatus, type CreateMerchantParams, type User, type Country, type City, type ListingType } from '@/src/lib/api';
 import Icon, { faSearch, faPlus, faTimes, faBuilding } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Select, Textarea } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -42,6 +41,40 @@ export default function MerchantsPage() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<ApprovalStatus | ''>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [formData, setFormData] = useState<Partial<CreateMerchantParams>>({
+    userId: '',
+    businessName: '',
+    businessType: undefined,
+    businessRegistrationNumber: '',
+    taxId: '',
+    description: '',
+    businessEmail: '',
+    businessPhone: '',
+    website: '',
+    countryId: '',
+    cityId: '',
+    address: '',
+  });
+
+  const BUSINESS_TYPES: { value: ListingType | ''; label: string }[] = [
+    { value: '', label: 'Select type' },
+    { value: 'hotel', label: 'Hotel' },
+    { value: 'restaurant', label: 'Restaurant' },
+    { value: 'attraction', label: 'Attraction' },
+    { value: 'bar', label: 'Bar' },
+    { value: 'club', label: 'Club' },
+    { value: 'lounge', label: 'Lounge' },
+    { value: 'cafe', label: 'Cafe' },
+    { value: 'fast_food', label: 'Fast Food' },
+    { value: 'mall', label: 'Mall' },
+    { value: 'market', label: 'Market' },
+    { value: 'boutique', label: 'Boutique' },
+  ];
 
   useEffect(() => {
     const fetchMerchants = async () => {
@@ -73,6 +106,34 @@ export default function MerchantsPage() {
 
     fetchMerchants();
   }, [page, pageSize, debouncedSearch, statusFilter]);
+
+  // Fetch users, countries for create modal
+  useEffect(() => {
+    if (showCreateModal) {
+      const fetchData = async () => {
+        try {
+          const [usersRes, countriesRes] = await Promise.all([
+            UsersAPI.listUsers({ limit: 100, page: 1 }),
+            LocationsAPI.getCountries(),
+          ]);
+          setUsers(usersRes.data || []);
+          setCountries(countriesRes || []);
+        } catch (error: any) {
+          console.error('Failed to fetch data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [showCreateModal]);
+
+  // Fetch cities when country changes
+  useEffect(() => {
+    if (formData.countryId) {
+      LocationsAPI.getCities(formData.countryId).then(setCities).catch(console.error);
+    } else {
+      setCities([]);
+    }
+  }, [formData.countryId]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -162,11 +223,9 @@ export default function MerchantsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Merchants</h1>
           <p className="text-gray-600 mt-1">Manage merchant profiles and businesses</p>
         </div>
-        <Link href="/dashboard/merchants/create">
-          <Button variant="primary" size="md" icon={faPlus}>
-            Create Merchant
-          </Button>
-        </Link>
+        <Button variant="primary" size="md" icon={faPlus} onClick={() => setShowCreateModal(true)}>
+          Create Merchant
+        </Button>
       </div>
 
       {/* Filters */}
@@ -241,8 +300,255 @@ export default function MerchantsPage() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={total}
         />
       )}
+
+      {/* Create Merchant Modal */}
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setFormData({
+            userId: '',
+            businessName: '',
+            businessType: undefined,
+            businessRegistrationNumber: '',
+            taxId: '',
+            description: '',
+            businessEmail: '',
+            businessPhone: '',
+            website: '',
+            countryId: '',
+            cityId: '',
+            address: '',
+          });
+        }}
+        title="Create New Merchant"
+        size="lg"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                User (Owner) <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.userId || ''}
+                onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+                options={[
+                  { value: '', label: 'Select user' },
+                  ...users.map(u => ({ value: u.id, label: `${u.fullName || u.email || u.phoneNumber} (${u.email || u.phoneNumber})` })),
+                ]}
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Business Name <span className="text-red-500">*</span>
+              </label>
+              <Input
+                value={formData.businessName || ''}
+                onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                placeholder="Enter business name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Business Type
+              </label>
+              <Select
+                value={formData.businessType || ''}
+                onChange={(e) => setFormData({ ...formData, businessType: e.target.value as ListingType || undefined })}
+                options={BUSINESS_TYPES}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Registration Number
+              </label>
+              <Input
+                value={formData.businessRegistrationNumber || ''}
+                onChange={(e) => setFormData({ ...formData, businessRegistrationNumber: e.target.value || undefined })}
+                placeholder="Enter registration number"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tax ID
+              </label>
+              <Input
+                value={formData.taxId || ''}
+                onChange={(e) => setFormData({ ...formData, taxId: e.target.value || undefined })}
+                placeholder="Enter tax ID"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Business Email
+              </label>
+              <Input
+                type="email"
+                value={formData.businessEmail || ''}
+                onChange={(e) => setFormData({ ...formData, businessEmail: e.target.value || undefined })}
+                placeholder="Enter business email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Business Phone
+              </label>
+              <Input
+                type="tel"
+                value={formData.businessPhone || ''}
+                onChange={(e) => setFormData({ ...formData, businessPhone: e.target.value || undefined })}
+                placeholder="Enter business phone"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Website
+              </label>
+              <Input
+                type="url"
+                value={formData.website || ''}
+                onChange={(e) => setFormData({ ...formData, website: e.target.value || undefined })}
+                placeholder="https://example.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <Select
+                value={formData.countryId || ''}
+                onChange={(e) => setFormData({ ...formData, countryId: e.target.value || undefined, cityId: '' })}
+                options={[
+                  { value: '', label: 'Select country' },
+                  ...countries.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <Select
+                value={formData.cityId || ''}
+                onChange={(e) => setFormData({ ...formData, cityId: e.target.value || undefined })}
+                options={[
+                  { value: '', label: 'Select city' },
+                  ...cities.map(c => ({ value: c.id, label: c.name })),
+                ]}
+                disabled={!formData.countryId}
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <Input
+                value={formData.address || ''}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value || undefined })}
+                placeholder="Enter address"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <Textarea
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value || undefined })}
+                placeholder="Enter business description"
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCreateModal(false);
+                setFormData({
+                  userId: '',
+                  businessName: '',
+                  businessType: undefined,
+                  businessRegistrationNumber: '',
+                  taxId: '',
+                  description: '',
+                  businessEmail: '',
+                  businessPhone: '',
+                  website: '',
+                  countryId: '',
+                  cityId: '',
+                  address: '',
+                });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!formData.userId || !formData.businessName) {
+                  toast.error('Please provide user and business name');
+                  return;
+                }
+                
+                setCreating(true);
+                try {
+                  await MerchantsAPI.createMerchant(formData as CreateMerchantParams);
+                  toast.success('Merchant created successfully');
+                  setShowCreateModal(false);
+                  setFormData({
+                    userId: '',
+                    businessName: '',
+                    businessType: undefined,
+                    businessRegistrationNumber: '',
+                    taxId: '',
+                    description: '',
+                    businessEmail: '',
+                    businessPhone: '',
+                    website: '',
+                    countryId: '',
+                    cityId: '',
+                    address: '',
+                  });
+                  // Refresh merchants
+                  const response = await MerchantsAPI.listMerchants({ page, limit: pageSize });
+                  setMerchants(response.data || []);
+                  setTotal(response.meta?.total || 0);
+                } catch (error: any) {
+                  console.error('Failed to create merchant:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to create merchant');
+                } finally {
+                  setCreating(false);
+                }
+              }}
+              loading={creating}
+            >
+              Create Merchant
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

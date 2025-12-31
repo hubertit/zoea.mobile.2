@@ -13,7 +13,7 @@ import Icon, {
   faBox,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { Button, Modal } from '@/app/components';
+import { Button, Modal, ConfirmDialog } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Input from '@/app/components/Input';
 
@@ -393,50 +393,22 @@ export default function CategoryDetailPage() {
         </div>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
-      <Modal
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
         title="Delete Category"
-        size="md"
-      >
-        <div className="space-y-4">
-          <p className="text-sm text-gray-700">
-            Are you sure you want to delete the category <strong>"{category.name}"</strong>?
-          </p>
-          {category._count && (category._count.listings > 0 || category._count.tours > 0 || (category.children && category.children.length > 0)) && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-sm p-4">
-              <p className="text-sm text-yellow-800">
-                <strong>Warning:</strong> This category has:
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {category._count.listings > 0 && <li>{category._count.listings} listing(s)</li>}
-                  {category._count.tours > 0 && <li>{category._count.tours} tour(s)</li>}
-                  {category.children && category.children.length > 0 && <li>{category.children.length} subcategor(ies)</li>}
-                </ul>
-                You must remove or reassign them before deleting this category.
-              </p>
-            </div>
-          )}
-          <div className="flex items-center gap-2 justify-end pt-4 border-t border-gray-200">
-            <Button
-              variant="secondary"
-              size="md"
-              onClick={() => setDeleteModalOpen(false)}
-              disabled={deleting}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              size="md"
-              onClick={handleDelete}
-              loading={deleting}
-            >
-              Delete Category
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        message={`Are you sure you want to delete the category "${category.name}"?`}
+        confirmText="Delete Category"
+        variant="danger"
+        loading={deleting}
+        warningMessage={
+          category._count && (category._count.listings > 0 || category._count.tours > 0 || (category.children && category.children.length > 0))
+            ? `Warning: This category has ${category._count.listings || 0} listing(s), ${category._count.tours || 0} tour(s), and ${category.children?.length || 0} subcategor(ies). You must remove or reassign them before deleting this category.`
+            : undefined
+        }
+      />
     </div>
   );
 }

@@ -287,6 +287,12 @@ export default function RolesPage() {
                   currentPage={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
+                  pageSize={pageSize}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setPage(1);
+                  }}
+                  totalItems={total}
                 />
               </div>
             )}

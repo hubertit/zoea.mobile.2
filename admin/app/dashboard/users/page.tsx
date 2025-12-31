@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { UsersAPI, type User, type UserRole, type VerificationStatus } from '@/src/lib/api';
+import { UsersAPI, type User, type UserRole, type VerificationStatus, type CreateUserParams } from '@/src/lib/api';
 import Icon, { faSearch, faPlus, faTimes, faUser } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -71,6 +70,16 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const [verificationFilter, setVerificationFilter] = useState<VerificationStatus | ''>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [formData, setFormData] = useState<CreateUserParams & { confirmPassword: string }>({
+    email: '',
+    phoneNumber: '',
+    password: '',
+    confirmPassword: '',
+    fullName: '',
+    roles: [],
+  });
 
   // Fetch users
   useEffect(() => {
@@ -215,17 +224,17 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[{ label: 'Users' }]} />
+      
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Users</h1>
           <p className="text-gray-600 mt-1">Manage system users and their roles</p>
         </div>
-        <Link href="/dashboard/users/create">
-          <Button variant="primary" size="md" icon={faPlus}>
-            Create User
-          </Button>
-        </Link>
+        <Button variant="primary" size="md" icon={faPlus} onClick={() => setShowCreateModal(true)}>
+          Create User
+        </Button>
       </div>
 
       {/* Filters */}
@@ -318,8 +327,189 @@ export default function UsersPage() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={total}
         />
       )}
+
+      {/* Create User Modal */}
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setFormData({
+            email: '',
+            phoneNumber: '',
+            password: '',
+            confirmPassword: '',
+            fullName: '',
+            roles: [],
+          });
+        }}
+        title="Create New User"
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Full Name
+            </label>
+            <Input
+              value={formData.fullName || ''}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              placeholder="Enter full name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <Input
+              type="email"
+              value={formData.email || ''}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="Enter email"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number
+            </label>
+            <Input
+              type="tel"
+              value={formData.phoneNumber || ''}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              placeholder="Enter phone number"
+            />
+            <p className="text-xs text-gray-500 mt-1">At least one of email or phone is required</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <Input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              placeholder="Enter password (min 6 characters)"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+            <Input
+              type="password"
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              placeholder="Confirm password"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Roles
+            </label>
+            <div className="space-y-2">
+              {ROLES.filter(r => r.value).map((role) => (
+                <label key={role.value} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.roles?.includes(role.value as UserRole) || false}
+                    onChange={(e) => {
+                      const currentRoles = formData.roles || [];
+                      if (e.target.checked) {
+                        setFormData({ ...formData, roles: [...currentRoles, role.value as UserRole] });
+                      } else {
+                        setFormData({ ...formData, roles: currentRoles.filter(r => r !== role.value) });
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-gray-700">{role.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCreateModal(false);
+                setFormData({
+                  email: '',
+                  phoneNumber: '',
+                  password: '',
+                  confirmPassword: '',
+                  fullName: '',
+                  roles: [],
+                });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!formData.email && !formData.phoneNumber) {
+                  toast.error('Please provide either email or phone number');
+                  return;
+                }
+                if (formData.password.length < 6) {
+                  toast.error('Password must be at least 6 characters');
+                  return;
+                }
+                if (formData.password !== formData.confirmPassword) {
+                  toast.error('Passwords do not match');
+                  return;
+                }
+                
+                setCreating(true);
+                try {
+                  await UsersAPI.createUser({
+                    email: formData.email || undefined,
+                    phoneNumber: formData.phoneNumber || undefined,
+                    password: formData.password,
+                    fullName: formData.fullName || undefined,
+                    roles: formData.roles && formData.roles.length > 0 ? formData.roles : undefined,
+                  });
+                  toast.success('User created successfully');
+                  setShowCreateModal(false);
+                  setFormData({
+                    email: '',
+                    phoneNumber: '',
+                    password: '',
+                    confirmPassword: '',
+                    fullName: '',
+                    roles: [],
+                  });
+                  // Refresh users list
+                  const response = await UsersAPI.listUsers({ page, limit: pageSize });
+                  setUsers(response.data || []);
+                  setTotal(response.meta?.total || 0);
+                } catch (error: any) {
+                  console.error('Failed to create user:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to create user');
+                } finally {
+                  setCreating(false);
+                }
+              }}
+              loading={creating}
+            >
+              Create User
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

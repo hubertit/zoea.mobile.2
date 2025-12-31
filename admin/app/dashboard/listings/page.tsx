@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, CategoriesAPI, type Listing, type ListingStatus, type ListingType, type Category } from '@/src/lib/api';
+import { ListingsAPI, CategoriesAPI, MerchantsAPI, LocationsAPI, type Listing, type ListingStatus, type ListingType, type Category, type CreateListingParams, type Merchant, type Country, type City } from '@/src/lib/api';
 import Icon, { faSearch, faPlus, faTimes, faBox, faTags } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Select, Textarea, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -65,6 +65,28 @@ export default function ListingsPage() {
   const [statusFilter, setStatusFilter] = useState<ListingStatus | ''>('');
   const [typeFilter, setTypeFilter] = useState<ListingType | ''>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [formData, setFormData] = useState<Partial<CreateListingParams>>({
+    merchantId: '',
+    name: '',
+    description: '',
+    shortDescription: '',
+    type: undefined,
+    categoryId: '',
+    countryId: '',
+    cityId: '',
+    address: '',
+    minPrice: undefined,
+    maxPrice: undefined,
+    contactPhone: '',
+    contactEmail: '',
+    website: '',
+    status: 'draft',
+  });
 
   // Get categoryId from URL params
   useEffect(() => {
@@ -86,6 +108,34 @@ export default function ListingsPage() {
     };
     fetchCategories();
   }, []);
+
+  // Fetch merchants, countries, cities for create modal
+  useEffect(() => {
+    if (showCreateModal) {
+      const fetchData = async () => {
+        try {
+          const [merchantsRes, countriesRes] = await Promise.all([
+            MerchantsAPI.listMerchants({ limit: 100, page: 1 }),
+            LocationsAPI.getCountries(),
+          ]);
+          setMerchants(merchantsRes.data || []);
+          setCountries(countriesRes || []);
+        } catch (error: any) {
+          console.error('Failed to fetch data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [showCreateModal]);
+
+  // Fetch cities when country changes
+  useEffect(() => {
+    if (formData.countryId) {
+      LocationsAPI.getCities(formData.countryId).then(setCities).catch(console.error);
+    } else {
+      setCities([]);
+    }
+  }, [formData.countryId]);
 
   // Fetch listings
   useEffect(() => {
@@ -228,17 +278,17 @@ export default function ListingsPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[{ label: 'Listings' }]} />
+      
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Listings</h1>
           <p className="text-gray-600 mt-1">Manage business listings and venues</p>
         </div>
-        <Link href="/dashboard/listings/create">
-          <Button variant="primary" size="md" icon={faPlus}>
-            Create Listing
-          </Button>
-        </Link>
+        <Button variant="primary" size="md" icon={faPlus} onClick={() => setShowCreateModal(true)}>
+          Create Listing
+        </Button>
       </div>
 
       {/* Filters */}
@@ -378,8 +428,306 @@ export default function ListingsPage() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={total}
         />
       )}
+
+      {/* Create Listing Modal */}
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setFormData({
+            merchantId: '',
+            name: '',
+            description: '',
+            shortDescription: '',
+            type: undefined,
+            categoryId: '',
+            countryId: '',
+            cityId: '',
+            address: '',
+            minPrice: undefined,
+            maxPrice: undefined,
+            contactPhone: '',
+            contactEmail: '',
+            website: '',
+            status: 'draft',
+          });
+        }}
+        title="Create New Listing"
+        size="xl"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Merchant <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.merchantId || ''}
+                onChange={(e) => setFormData({ ...formData, merchantId: e.target.value })}
+                options={[
+                  { value: '', label: 'Select merchant' },
+                  ...merchants.map(m => ({ value: m.id, label: m.businessName })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <Input
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter listing name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Type
+              </label>
+              <Select
+                value={formData.type || ''}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as ListingType || undefined })}
+                options={[
+                  { value: '', label: 'Select type' },
+                  ...TYPES.filter(t => t.value).map(t => ({ value: t.value, label: t.label })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
+              <Select
+                value={formData.categoryId || ''}
+                onChange={(e) => setFormData({ ...formData, categoryId: e.target.value || undefined })}
+                options={[
+                  { value: '', label: 'Select category' },
+                  ...categories.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <Select
+                value={formData.countryId || ''}
+                onChange={(e) => setFormData({ ...formData, countryId: e.target.value || undefined, cityId: '' })}
+                options={[
+                  { value: '', label: 'Select country' },
+                  ...countries.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <Select
+                value={formData.cityId || ''}
+                onChange={(e) => setFormData({ ...formData, cityId: e.target.value || undefined })}
+                options={[
+                  { value: '', label: 'Select city' },
+                  ...cities.map(c => ({ value: c.id, label: c.name })),
+                ]}
+                disabled={!formData.countryId}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Min Price
+              </label>
+              <Input
+                type="number"
+                value={formData.minPrice || ''}
+                onChange={(e) => setFormData({ ...formData, minPrice: e.target.value ? parseFloat(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Max Price
+              </label>
+              <Input
+                type="number"
+                value={formData.maxPrice || ''}
+                onChange={(e) => setFormData({ ...formData, maxPrice: e.target.value ? parseFloat(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Phone
+              </label>
+              <Input
+                type="tel"
+                value={formData.contactPhone || ''}
+                onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value || undefined })}
+                placeholder="Enter phone number"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Email
+              </label>
+              <Input
+                type="email"
+                value={formData.contactEmail || ''}
+                onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value || undefined })}
+                placeholder="Enter email"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Website
+              </label>
+              <Input
+                type="url"
+                value={formData.website || ''}
+                onChange={(e) => setFormData({ ...formData, website: e.target.value || undefined })}
+                placeholder="https://example.com"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <Input
+                value={formData.address || ''}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value || undefined })}
+                placeholder="Enter address"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Short Description
+              </label>
+              <Textarea
+                value={formData.shortDescription || ''}
+                onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value || undefined })}
+                placeholder="Brief description"
+                rows={2}
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <Textarea
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value || undefined })}
+                placeholder="Full description"
+                rows={4}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
+              <Select
+                value={formData.status || 'draft'}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as ListingStatus })}
+                options={STATUSES.filter(s => s.value).map(s => ({ value: s.value, label: s.label }))}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCreateModal(false);
+                setFormData({
+                  merchantId: '',
+                  name: '',
+                  description: '',
+                  shortDescription: '',
+                  type: undefined,
+                  categoryId: '',
+                  countryId: '',
+                  cityId: '',
+                  address: '',
+                  minPrice: undefined,
+                  maxPrice: undefined,
+                  contactPhone: '',
+                  contactEmail: '',
+                  website: '',
+                  status: 'draft',
+                });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!formData.merchantId || !formData.name) {
+                  toast.error('Please provide merchant and name');
+                  return;
+                }
+                
+                setCreating(true);
+                try {
+                  await ListingsAPI.createListing(formData as CreateListingParams);
+                  toast.success('Listing created successfully');
+                  setShowCreateModal(false);
+                  setFormData({
+                    merchantId: '',
+                    name: '',
+                    description: '',
+                    shortDescription: '',
+                    type: undefined,
+                    categoryId: '',
+                    countryId: '',
+                    cityId: '',
+                    address: '',
+                    minPrice: undefined,
+                    maxPrice: undefined,
+                    contactPhone: '',
+                    contactEmail: '',
+                    website: '',
+                    status: 'draft',
+                  });
+                  // Refresh listings
+                  const response = await ListingsAPI.listListings({ page, limit: pageSize });
+                  setListings(response.data || []);
+                  setTotal(response.meta?.total || 0);
+                } catch (error: any) {
+                  console.error('Failed to create listing:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to create listing');
+                } finally {
+                  setCreating(false);
+                }
+              }}
+              loading={creating}
+            >
+              Create Listing
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

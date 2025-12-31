@@ -9,6 +9,10 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
   showPageNumbers?: boolean;
   maxVisiblePages?: number;
+  pageSize?: number;
+  onPageSizeChange?: (size: number) => void;
+  totalItems?: number;
+  pageSizeOptions?: number[];
 }
 
 export default function Pagination({
@@ -17,8 +21,12 @@ export default function Pagination({
   onPageChange,
   showPageNumbers = true,
   maxVisiblePages = 5,
+  pageSize,
+  onPageSizeChange,
+  totalItems,
+  pageSizeOptions = [10, 25, 50, 100],
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  if (totalPages <= 1 && !onPageSizeChange) return null;
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
@@ -73,11 +81,37 @@ export default function Pagination({
         </Button>
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
+        <div className="flex items-center gap-4">
           <p className="text-sm text-gray-700">
-            Page <span className="font-medium">{currentPage}</span> of{' '}
-            <span className="font-medium">{totalPages}</span>
+            {totalItems !== undefined && pageSize !== undefined ? (
+              <>
+                Showing <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> to{' '}
+                <span className="font-medium">{Math.min(currentPage * pageSize, totalItems)}</span> of{' '}
+                <span className="font-medium">{totalItems}</span> results
+              </>
+            ) : (
+              <>
+                Page <span className="font-medium">{currentPage}</span> of{' '}
+                <span className="font-medium">{totalPages}</span>
+              </>
+            )}
           </p>
+          {onPageSizeChange && pageSize && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-700">Show:</label>
+              <select
+                value={pageSize}
+                onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                className="px-2 py-1 text-sm border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30]"
+              >
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <div>
           <nav className="isolate inline-flex -space-x-px rounded-md" aria-label="Pagination">

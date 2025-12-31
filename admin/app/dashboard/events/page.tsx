@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { EventsAPI, type Event, type EventStatus } from '@/src/lib/api';
+import { EventsAPI, UsersAPI, LocationsAPI, type Event, type EventStatus, type CreateEventParams, type User, type Country, type City } from '@/src/lib/api';
 import Icon, { faSearch, faPlus, faTimes, faCalendar } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Select, Textarea } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -48,6 +47,24 @@ export default function EventsPage() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<EventStatus | ''>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [organizerUsers, setOrganizerUsers] = useState<User[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [formData, setFormData] = useState<Partial<CreateEventParams>>({
+    organizerId: '',
+    name: '',
+    description: '',
+    privacy: undefined,
+    setup: undefined,
+    countryId: '',
+    cityId: '',
+    address: '',
+    startDate: '',
+    endDate: '',
+    maxAttendance: undefined,
+  });
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -79,6 +96,34 @@ export default function EventsPage() {
 
     fetchEvents();
   }, [page, pageSize, debouncedSearch, statusFilter]);
+
+  // Fetch organizers, countries for create modal
+  useEffect(() => {
+    if (showCreateModal) {
+      const fetchData = async () => {
+        try {
+          const [organizersRes, countriesRes] = await Promise.all([
+            UsersAPI.listUsers({ role: 'event_organizer', limit: 100, page: 1 }),
+            LocationsAPI.getCountries(),
+          ]);
+          setOrganizerUsers(organizersRes.data || []);
+          setCountries(countriesRes || []);
+        } catch (error: any) {
+          console.error('Failed to fetch data:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [showCreateModal]);
+
+  // Fetch cities when country changes
+  useEffect(() => {
+    if (formData.countryId) {
+      LocationsAPI.getCities(formData.countryId).then(setCities).catch(console.error);
+    } else {
+      setCities([]);
+    }
+  }, [formData.countryId]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -170,11 +215,9 @@ export default function EventsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Events</h1>
           <p className="text-gray-600 mt-1">Manage events and activities</p>
         </div>
-        <Link href="/dashboard/events/create">
-          <Button variant="primary" size="md" icon={faPlus}>
-            Create Event
-          </Button>
-        </Link>
+        <Button variant="primary" size="md" icon={faPlus} onClick={() => setShowCreateModal(true)}>
+          Create Event
+        </Button>
       </div>
 
       {/* Filters */}
@@ -249,8 +292,250 @@ export default function EventsPage() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          pageSize={pageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          totalItems={total}
         />
       )}
+
+      {/* Create Event Modal */}
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setFormData({
+            organizerId: '',
+            name: '',
+            description: '',
+            privacy: undefined,
+            setup: undefined,
+            countryId: '',
+            cityId: '',
+            address: '',
+            startDate: '',
+            endDate: '',
+            maxAttendance: undefined,
+          });
+        }}
+        title="Create New Event"
+        size="lg"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Organizer (User) <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.organizerId || ''}
+                onChange={(e) => setFormData({ ...formData, organizerId: e.target.value })}
+                options={[
+                  { value: '', label: 'Select organizer user' },
+                  ...organizerUsers.map(u => ({ value: u.id, label: `${u.fullName || u.email || u.phoneNumber} (${u.email || u.phoneNumber})` })),
+                ]}
+              />
+              <p className="text-xs text-gray-500 mt-1">Note: The user must have an organizer profile. If not, create one first.</p>
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Event Name <span className="text-red-500">*</span>
+              </label>
+              <Input
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter event name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Privacy
+              </label>
+              <Select
+                value={formData.privacy || ''}
+                onChange={(e) => setFormData({ ...formData, privacy: e.target.value as any || undefined })}
+                options={[
+                  { value: '', label: 'Select privacy' },
+                  { value: 'public', label: 'Public' },
+                  { value: 'private', label: 'Private' },
+                  { value: 'invite_only', label: 'Invite Only' },
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Setup
+              </label>
+              <Select
+                value={formData.setup || ''}
+                onChange={(e) => setFormData({ ...formData, setup: e.target.value as any || undefined })}
+                options={[
+                  { value: '', label: 'Select setup' },
+                  { value: 'in_person', label: 'In Person' },
+                  { value: 'virtual', label: 'Virtual' },
+                  { value: 'hybrid', label: 'Hybrid' },
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <Select
+                value={formData.countryId || ''}
+                onChange={(e) => setFormData({ ...formData, countryId: e.target.value || undefined, cityId: '' })}
+                options={[
+                  { value: '', label: 'Select country' },
+                  ...countries.map(c => ({ value: c.id, label: c.name })),
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <Select
+                value={formData.cityId || ''}
+                onChange={(e) => setFormData({ ...formData, cityId: e.target.value || undefined })}
+                options={[
+                  { value: '', label: 'Select city' },
+                  ...cities.map(c => ({ value: c.id, label: c.name })),
+                ]}
+                disabled={!formData.countryId}
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <Input
+                value={formData.address || ''}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value || undefined })}
+                placeholder="Enter address"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Start Date
+              </label>
+              <Input
+                type="datetime-local"
+                value={formData.startDate || ''}
+                onChange={(e) => setFormData({ ...formData, startDate: e.target.value || undefined })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                End Date
+              </label>
+              <Input
+                type="datetime-local"
+                value={formData.endDate || ''}
+                onChange={(e) => setFormData({ ...formData, endDate: e.target.value || undefined })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Max Attendance
+              </label>
+              <Input
+                type="number"
+                value={formData.maxAttendance || ''}
+                onChange={(e) => setFormData({ ...formData, maxAttendance: e.target.value ? parseInt(e.target.value) : undefined })}
+                placeholder="0"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <Textarea
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value || undefined })}
+                placeholder="Enter event description"
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowCreateModal(false);
+                setFormData({
+                  organizerId: '',
+                  name: '',
+                  description: '',
+                  privacy: undefined,
+                  setup: undefined,
+                  countryId: '',
+                  cityId: '',
+                  address: '',
+                  startDate: '',
+                  endDate: '',
+                  maxAttendance: undefined,
+                });
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!formData.organizerId || !formData.name) {
+                  toast.error('Please provide organizer and event name');
+                  return;
+                }
+                
+                setCreating(true);
+                try {
+                  await EventsAPI.createEvent(formData as CreateEventParams);
+                  toast.success('Event created successfully');
+                  setShowCreateModal(false);
+                  setFormData({
+                    organizerId: '',
+                    name: '',
+                    description: '',
+                    privacy: undefined,
+                    setup: undefined,
+                    countryId: '',
+                    cityId: '',
+                    address: '',
+                    startDate: '',
+                    endDate: '',
+                    maxAttendance: undefined,
+                  });
+                  // Refresh events
+                  const response = await EventsAPI.listEvents({ page, limit: pageSize });
+                  setEvents(response.data || []);
+                  setTotal(response.meta?.total || 0);
+                } catch (error: any) {
+                  console.error('Failed to create event:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to create event');
+                } finally {
+                  setCreating(false);
+                }
+              }}
+              loading={creating}
+            >
+              Create Event
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

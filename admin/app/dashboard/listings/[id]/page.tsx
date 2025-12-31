@@ -16,7 +16,7 @@ import Icon, {
   faTimesCircle,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { Button, Modal } from '@/app/components';
+import { Button, Modal, Breadcrumbs } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Select from '@/app/components/Select';
 import Input from '@/app/components/Input';
