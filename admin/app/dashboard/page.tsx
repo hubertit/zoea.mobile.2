@@ -2,15 +2,17 @@
 
 import Card, { CardHeader, CardBody } from '../components/Card';
 import StatCard from '../components/StatCard';
-import Icon, { faUsers, faBox, faCalendar, faClipboardList } from '../components/Icon';
+import Icon, { faUsers, faBox, faCalendar, faClipboardList, faExclamationTriangle } from '../components/Icon';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import { useState, useEffect } from 'react';
 import { getDashboardStats, DashboardStats } from '@/src/lib/api/dashboard';
 import { toast } from '../components/Toaster';
+import { useAuthStore } from '@/src/store/auth';
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     async function fetchStats() {
@@ -20,17 +22,58 @@ export default function DashboardPage() {
         setStats(data);
       } catch (error: any) {
         console.error('Error fetching dashboard stats:', error);
-        toast.error('Failed to load dashboard statistics');
+        
+        // Check if it's a 403 error (access denied)
+        if (error?.status === 403) {
+          const hasAdminRole = user?.roles?.some(
+            (role: any) => role.code === 'admin' || role.code === 'super_admin'
+          );
+          
+          if (!hasAdminRole) {
+            toast.error('Access denied. You need admin or super_admin role to access this page.');
+          } else {
+            toast.error(error?.message || 'Access denied. Please contact your administrator.');
+          }
+        } else {
+          toast.error(error?.message || 'Failed to load dashboard statistics');
+        }
       } finally {
         setLoading(false);
       }
     }
 
     fetchStats();
-  }, []);
+  }, [user]);
+
+  // Check if user has admin role
+  const hasAdminRole = user?.roles?.some(
+    (role: any) => role.code === 'admin' || role.code === 'super_admin'
+  );
 
   if (loading) {
     return <DashboardSkeleton />;
+  }
+
+  // Show access denied message if user doesn't have admin role
+  if (!hasAdminRole) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Card className="max-w-md">
+          <CardBody className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon icon={faExclamationTriangle} className="text-red-600" size="2x" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              You need admin or super_admin role to access the dashboard.
+            </p>
+            <p className="text-xs text-gray-500">
+              Please contact your administrator to get the required permissions.
+            </p>
+          </CardBody>
+        </Card>
+      </div>
+    );
   }
 
   const formatNumber = (num: number) => {

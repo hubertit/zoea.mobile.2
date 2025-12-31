@@ -47,8 +47,8 @@ class ApiClient {
 
           // Handle 403 Forbidden
           if (status === 403) {
-            // TODO: Show access denied message
-            console.error('Access denied');
+            // Error will be caught by the calling component which can show toast
+            console.error('Access denied:', data?.message || 'You do not have permission to perform this action.');
           }
 
           // Handle 404 Not Found
@@ -68,6 +68,7 @@ class ApiClient {
             message: data?.message || error.message || 'An error occurred',
             status,
             data: data,
+            response: error.response,
           });
         }
 
