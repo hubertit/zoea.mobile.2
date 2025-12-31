@@ -32,4 +32,6 @@ export {
 } from './merchants';
 export * from './payments';
 export * from './notifications';
+export * from './reviews';
+export * from './categories';
 
