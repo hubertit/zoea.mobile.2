@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { EventsAPI, UsersAPI, LocationsAPI, type Event, type EventStatus, type CreateEventParams, type User, type Country, type City } from '@/src/lib/api';
-import Icon, { faSearch, faPlus, faTimes, faCalendar } from '@/app/components/Icon';
+import Icon, { faSearch, faPlus, faTimes, faCalendar, faChevronDown, faChevronUp } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Modal, Input, Select, Textarea } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
@@ -52,6 +52,14 @@ export default function EventsPage() {
   const [organizerUsers, setOrganizerUsers] = useState<User[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [organizerFilter, setOrganizerFilter] = useState<string>('');
+  const [countryFilter, setCountryFilter] = useState<string>('');
+  const [cityFilter, setCityFilter] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [filterCities, setFilterCities] = useState<City[]>([]);
+  const [allOrganizers, setAllOrganizers] = useState<User[]>([]);
   const [formData, setFormData] = useState<Partial<CreateEventParams>>({
     organizerId: '',
     name: '',
@@ -84,8 +92,38 @@ export default function EventsPage() {
         }
 
         const response = await EventsAPI.listEvents(params);
-        setEvents(response.data || []);
-        setTotal(response.meta?.total || 0);
+        
+        // Client-side filtering for location, organizer, and date
+        let filteredData = response.data || [];
+        
+        if (organizerFilter) {
+          filteredData = filteredData.filter((event: Event) => event.organizerId === organizerFilter);
+        }
+        
+        if (countryFilter) {
+          filteredData = filteredData.filter((event: Event) => event.countryId === countryFilter);
+        }
+        
+        if (cityFilter) {
+          filteredData = filteredData.filter((event: Event) => event.cityId === cityFilter);
+        }
+        
+        if (dateFrom || dateTo) {
+          filteredData = filteredData.filter((event: Event) => {
+            if (!event.startDate) return false;
+            const eventDate = new Date(event.startDate);
+            if (dateFrom && eventDate < new Date(dateFrom)) return false;
+            if (dateTo) {
+              const toDate = new Date(dateTo);
+              toDate.setHours(23, 59, 59, 999);
+              if (eventDate > toDate) return false;
+            }
+            return true;
+          });
+        }
+        
+        setEvents(filteredData);
+        setTotal(filteredData.length);
       } catch (error: any) {
         console.error('Failed to fetch events:', error);
         toast.error(error?.message || 'Failed to load events');
@@ -95,26 +133,35 @@ export default function EventsPage() {
     };
 
     fetchEvents();
-  }, [page, pageSize, debouncedSearch, statusFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, organizerFilter, countryFilter, cityFilter, dateFrom, dateTo]);
 
-  // Fetch organizers, countries for create modal
+  // Fetch organizers, countries for filters and create modal
   useEffect(() => {
-    if (showCreateModal) {
-      const fetchData = async () => {
-        try {
-          const [organizersRes, countriesRes] = await Promise.all([
-            UsersAPI.listUsers({ role: 'event_organizer', limit: 100, page: 1 }),
-            LocationsAPI.getCountries(),
-          ]);
-          setOrganizerUsers(organizersRes.data || []);
-          setCountries(countriesRes || []);
-        } catch (error: any) {
-          console.error('Failed to fetch data:', error);
-        }
-      };
-      fetchData();
+    const fetchData = async () => {
+      try {
+        const [organizersRes, countriesRes] = await Promise.all([
+          UsersAPI.listUsers({ role: 'event_organizer', limit: 100, page: 1 }),
+          LocationsAPI.getCountries(),
+        ]);
+        setAllOrganizers(organizersRes.data || []);
+        setOrganizerUsers(organizersRes.data || []);
+        setCountries(countriesRes || []);
+      } catch (error: any) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Fetch cities when country filter changes
+  useEffect(() => {
+    if (countryFilter) {
+      LocationsAPI.getCities(countryFilter).then(setFilterCities).catch(console.error);
+    } else {
+      setFilterCities([]);
+      setCityFilter('');
     }
-  }, [showCreateModal]);
+  }, [countryFilter]);
 
   // Fetch cities when country changes
   useEffect(() => {
@@ -272,7 +319,146 @@ export default function EventsPage() {
               ))}
             </select>
           </div>
+
+          {/* Advanced Filters Toggle */}
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="w-full"
+              icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+            >
+              {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+            </Button>
+          </div>
         </div>
+
+        {/* Advanced Filters */}
+        {showAdvancedFilters && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-sm border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Organizer Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Organizer
+                </label>
+                <select
+                  value={organizerFilter}
+                  onChange={(e) => {
+                    setOrganizerFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                >
+                  <option value="">All Organizers</option>
+                  {allOrganizers.map((organizer) => (
+                    <option key={organizer.id} value={organizer.id}>
+                      {organizer.fullName || organizer.email || organizer.phoneNumber}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Country Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country
+                </label>
+                <select
+                  value={countryFilter}
+                  onChange={(e) => {
+                    setCountryFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                >
+                  <option value="">All Countries</option>
+                  {countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* City Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  City
+                </label>
+                <select
+                  value={cityFilter}
+                  onChange={(e) => {
+                    setCityFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  disabled={!countryFilter}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                  <option value="">All Cities</option>
+                  {filterCities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Start Date From */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Date From
+                </label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Start Date To */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Date To
+                </label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(organizerFilter || countryFilter || cityFilter || dateFrom || dateTo) && (
+              <div className="mt-4 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setOrganizerFilter('');
+                    setCountryFilter('');
+                    setCityFilter('');
+                    setDateFrom('');
+                    setDateTo('');
+                    setPage(1);
+                  }}
+                >
+                  Clear Advanced Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Table */}
