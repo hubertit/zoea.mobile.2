@@ -102,8 +102,26 @@ export default function UsersPage() {
         setUsers(response.data || []);
         setTotal(response.meta?.total || 0);
       } catch (error: any) {
-        console.error('Failed to fetch users:', error);
-        toast.error(error?.message || 'Failed to load users');
+        // Log comprehensive error details
+        console.error('Failed to fetch users:', {
+          error,
+          message: error?.message,
+          status: error?.status,
+          response: error?.response,
+          responseData: error?.response?.data,
+          responseStatus: error?.response?.status,
+          stack: error?.stack,
+        });
+        
+        // Show user-friendly error message
+        const errorMessage = 
+          error?.response?.data?.message || 
+          error?.message || 
+          error?.response?.status === 403 ? 'Access denied. You do not have permission to view users.' :
+          error?.response?.status === 401 ? 'Session expired. Please log in again.' :
+          'Failed to load users. Please try again.';
+        
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }
