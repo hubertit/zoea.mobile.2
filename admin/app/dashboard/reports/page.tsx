@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
-import { Button } from '@/app/components';
+import { Button, Breadcrumbs } from '@/app/components';
 import Icon, { faFileAlt, faDownload } from '@/app/components/Icon';
 import { UsersAPI, BookingsAPI, PaymentsAPI } from '@/src/lib/api';
 import { toast } from '@/app/components/Toaster';
@@ -16,6 +16,29 @@ export default function ReportsPage() {
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y' | 'custom'>('30d');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // Helper to fetch all paginated data
+  const fetchAllPaginated = async (
+    fetchFn: (params: any) => Promise<any>,
+    params: any = {}
+  ): Promise<any[]> => {
+    const allData: any[] = [];
+    let page = 1;
+    const limit = 100; // API max limit
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await fetchFn({ ...params, page, limit });
+      const data = response.data || [];
+      allData.push(...data);
+      
+      const total = response.meta?.total || 0;
+      hasMore = allData.length < total && data.length === limit;
+      page++;
+    }
+
+    return allData;
+  };
 
   const exportToCSV = async (data: any[], filename: string) => {
     if (data.length === 0) {
@@ -48,19 +71,108 @@ export default function ReportsPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const exportToExcel = async (data: any[], filename: string) => {
+    if (data.length === 0) {
+      toast.error('No data to export');
+      return;
+    }
+
     // For Excel, we'll export as CSV with .xlsx extension
-    // In a real implementation, you'd use a library like xlsx
-    toast.info('Excel export will be available soon. Exporting as CSV for now.');
-    await exportToCSV(data, filename);
+    // In production, you'd use a library like xlsx or exceljs
+    // For now, we'll create a properly formatted CSV that Excel can open
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join('\t'), // Tab-separated for better Excel compatibility
+      ...data.map((row) =>
+        headers
+          .map((header) => {
+            const value = row[header];
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'object') return JSON.stringify(value);
+            return String(value).replace(/\t/g, ' '); // Replace tabs in values
+          })
+          .join('\t')
+      ),
+    ].join('\n');
+
+    // Create a blob with Excel-compatible MIME type
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}.xls`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const exportToPDF = async (data: any[], filename: string) => {
-    // For PDF, we'll show a message
-    // In a real implementation, you'd use a library like jsPDF or pdfmake
-    toast.info('PDF export will be available soon. Please use CSV export for now.');
+    if (data.length === 0) {
+      toast.error('No data to export');
+      return;
+    }
+
+    // For PDF, we'll create a simple HTML table and use browser print
+    // In production, you'd use a library like jsPDF or pdfmake
+    const headers = Object.keys(data[0]);
+    const tableRows = data.map((row) =>
+      `<tr>${headers.map((header) => {
+        const value = row[header];
+        const displayValue = value === null || value === undefined 
+          ? '' 
+          : (typeof value === 'object' ? JSON.stringify(value) : String(value));
+        return `<td>${displayValue}</td>`;
+      }).join('')}</tr>`
+    ).join('');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${filename}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #0e1a30; color: white; font-weight: bold; }
+            tr:nth-child(even) { background-color: #f2f2f2; }
+            @media print {
+              body { margin: 0; }
+              table { page-break-inside: auto; }
+              tr { page-break-inside: avoid; page-break-after: auto; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${filename}</h1>
+          <p>Generated on ${new Date().toLocaleString()}</p>
+          <table>
+            <thead>
+              <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    } else {
+      toast.info('Please allow pop-ups to generate PDF. Alternatively, use CSV export.');
+    }
   };
 
   const handleExport = async (format: ExportFormat) => {
@@ -88,8 +200,13 @@ export default function ReportsPage() {
 
       switch (reportType) {
         case 'users':
-          const usersRes = await UsersAPI.listUsers({ limit: 10000, page: 1 });
-          data = (usersRes.data || []).map((user: any) => ({
+          const allUsers = await fetchAllPaginated(UsersAPI.listUsers);
+          data = allUsers
+            .filter((user: any) => {
+              const userDate = new Date(user.createdAt);
+              return userDate >= start;
+            })
+            .map((user: any) => ({
             ID: user.id,
             'Full Name': user.fullName || '',
             Email: user.email || '',
@@ -106,8 +223,8 @@ export default function ReportsPage() {
           break;
 
         case 'bookings':
-          const bookingsRes = await BookingsAPI.listBookings({ limit: 10000, page: 1 });
-          data = (bookingsRes.data || [])
+          const allBookings = await fetchAllPaginated(BookingsAPI.listBookings);
+          data = allBookings
             .filter((booking: any) => {
               const bookingDate = new Date(booking.createdAt || booking.bookingDate);
               return bookingDate >= start;
@@ -128,8 +245,8 @@ export default function ReportsPage() {
           break;
 
         case 'transactions':
-          const transactionsRes = await PaymentsAPI.listTransactions({ limit: 10000, page: 1 });
-          data = (transactionsRes.data || [])
+          const allTransactions = await fetchAllPaginated(PaymentsAPI.listTransactions);
+          data = allTransactions
             .filter((tx: any) => {
               const txDate = new Date(tx.createdAt);
               return txDate >= start;
@@ -149,8 +266,8 @@ export default function ReportsPage() {
           break;
 
         case 'revenue':
-          const revenueRes = await PaymentsAPI.listTransactions({ limit: 10000, page: 1 });
-          data = (revenueRes.data || [])
+          const allRevenue = await fetchAllPaginated(PaymentsAPI.listTransactions);
+          data = allRevenue
             .filter((tx: any) => {
               const txDate = new Date(tx.createdAt);
               return txDate >= start && tx.status === 'completed';
@@ -172,9 +289,10 @@ export default function ReportsPage() {
         toast.success(`Report exported successfully as ${filename}.csv`);
       } else if (format === 'excel') {
         await exportToExcel(data, filename);
-        toast.success(`Report exported successfully as ${filename}.xlsx`);
+        toast.success(`Report exported successfully as ${filename}.xls`);
       } else if (format === 'pdf') {
         await exportToPDF(data, filename);
+        toast.success('PDF export opened in new window. Use browser print to save as PDF.');
       }
     } catch (error: any) {
       console.error('Failed to export report:', error);
@@ -186,6 +304,8 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[{ label: 'Reports' }]} />
+      
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
@@ -273,27 +393,25 @@ export default function ReportsPage() {
                 <Button
                   onClick={() => handleExport('csv')}
                   disabled={loading}
-                  className="flex items-center gap-2"
+                  loading={loading}
+                  icon={faFileAlt}
                 >
-                  <Icon icon={faFileAlt} size="sm" />
                   Export CSV
                 </Button>
                 <Button
                   onClick={() => handleExport('excel')}
                   disabled={loading}
                   variant="secondary"
-                  className="flex items-center gap-2"
+                  icon={faFileAlt}
                 >
-                  <Icon icon={faFileAlt} size="sm" />
                   Export Excel
                 </Button>
                 <Button
                   onClick={() => handleExport('pdf')}
                   disabled={loading}
                   variant="outline"
-                  className="flex items-center gap-2"
+                  icon={faFileAlt}
                 >
-                  <Icon icon={faFileAlt} size="sm" />
                   Export PDF
                 </Button>
               </div>
