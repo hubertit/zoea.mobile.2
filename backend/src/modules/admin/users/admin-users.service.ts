@@ -123,7 +123,7 @@ export class AdminUsersService {
           select: { 
             id: true, 
             rating: true, 
-            comment: true,
+            content: true,
             createdAt: true,
             listing: { select: { id: true, name: true } },
             event: { select: { id: true, name: true } },
@@ -151,7 +151,7 @@ export class AdminUsersService {
         },
         recentlyViewed: {
           take: 20,
-          orderBy: { viewedAt: 'desc' },
+          orderBy: { createdAt: 'desc' },
           include: {
             listing: { select: { id: true, name: true, type: true } },
             event: { select: { id: true, name: true } },
