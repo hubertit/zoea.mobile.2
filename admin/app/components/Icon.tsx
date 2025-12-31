@@ -98,4 +98,7 @@ export {
   faTh,
   faTable,
   faArrowLeft,
+  faTags,
+  faRoute,
+  faImage,
 } from '@fortawesome/free-solid-svg-icons';

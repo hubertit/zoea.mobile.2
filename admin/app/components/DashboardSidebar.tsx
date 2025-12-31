@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useAuthStore } from '@/src/store/auth';
 import Icon, {
   faHome,
   faBox,
@@ -21,6 +22,16 @@ import Icon, {
   faChevronDown,
   faChevronUp,
   faCalendar,
+  faList,
+  faStar,
+  faMapMarkerAlt,
+  faFileAlt,
+  faBell,
+  faImage,
+  faGlobe,
+  faShieldAlt,
+  faTags,
+  faRoute,
 } from './Icon';
 
 interface DashboardSidebarProps {
@@ -39,8 +50,7 @@ interface MenuItem {
 
 export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }: DashboardSidebarProps) {
   const pathname = usePathname();
-  // TODO: Get user from auth store when implemented
-  const user: any = null;
+  const { user } = useAuthStore();
   
   const getInitialCollapsed = () => {
     if (typeof window === 'undefined') return false;
@@ -130,52 +140,163 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
       roles: ['SUPER_ADMIN', 'ADMIN'],
     },
     {
+      icon: faBox,
+      label: 'Content',
+      roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faList,
+          label: 'Listings',
+          href: '/dashboard/listings',
+        },
+        {
+          icon: faCalendar,
+          label: 'Events',
+          href: '/dashboard/events',
+        },
+        {
+          icon: faTags,
+          label: 'Categories',
+          href: '/dashboard/categories',
+        },
+        {
+          icon: faStar,
+          label: 'Reviews',
+          href: '/dashboard/reviews',
+        },
+        {
+          icon: faRoute,
+          label: 'Tours',
+          href: '/dashboard/tours',
+        },
+      ],
+    },
+    {
       icon: faUsers,
       label: 'Users',
-      href: '/dashboard/users',
       roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faUser,
+          label: 'All Users',
+          href: '/dashboard/users',
+        },
+        {
+          icon: faShieldAlt,
+          label: 'Roles',
+          href: '/dashboard/users/roles',
+        },
+      ],
     },
     {
-      icon: faBox,
-      label: 'Listings',
-      href: '/dashboard/listings',
+      icon: faBuilding,
+      label: 'Business',
       roles: ['SUPER_ADMIN', 'ADMIN'],
-    },
-    {
-      icon: faCalendar,
-      label: 'Events',
-      href: '/dashboard/events',
-      roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faBuilding,
+          label: 'Merchants',
+          href: '/dashboard/merchants',
+        },
+        {
+          icon: faUserShield,
+          label: 'Organizers',
+          href: '/dashboard/organizers',
+        },
+        {
+          icon: faRoute,
+          label: 'Operators',
+          href: '/dashboard/tour-operators',
+        },
+      ],
     },
     {
       icon: faClipboardList,
       label: 'Bookings',
-      href: '/dashboard/bookings',
       roles: ['SUPER_ADMIN', 'ADMIN'],
-    },
-    {
-      icon: faBuilding,
-      label: 'Merchants',
-      href: '/dashboard/merchants',
-      roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faClipboardList,
+          label: 'All',
+          href: '/dashboard/bookings',
+        },
+        {
+          icon: faCalendar,
+          label: 'Events',
+          href: '/dashboard/bookings/events',
+        },
+        {
+          icon: faBox,
+          label: 'Listings',
+          href: '/dashboard/bookings/listings',
+        },
+      ],
     },
     {
       icon: faReceipt,
-      label: 'Payments',
-      href: '/dashboard/payments',
+      label: 'Financial',
       roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faReceipt,
+          label: 'Payments',
+          href: '/dashboard/payments',
+        },
+        {
+          icon: faFileAlt,
+          label: 'Transactions',
+          href: '/dashboard/transactions',
+        },
+        {
+          icon: faReceipt,
+          label: 'Payouts',
+          href: '/dashboard/payouts',
+        },
+      ],
     },
     {
       icon: faChartLine,
-      label: 'Reports',
-      href: '/dashboard/reports',
+      label: 'Analytics',
       roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faChartLine,
+          label: 'Analytics',
+          href: '/dashboard/analytics',
+        },
+        {
+          icon: faFileAlt,
+          label: 'Reports',
+          href: '/dashboard/reports',
+        },
+      ],
     },
-    { 
-      icon: faCog, 
-      label: 'Settings', 
-      href: '/dashboard/settings',
+    {
+      icon: faCog,
+      label: 'System',
       roles: ['SUPER_ADMIN', 'ADMIN'],
+      children: [
+        {
+          icon: faBell,
+          label: 'Notifications',
+          href: '/dashboard/notifications',
+        },
+        {
+          icon: faImage,
+          label: 'Media',
+          href: '/dashboard/media',
+        },
+        {
+          icon: faMapMarkerAlt,
+          label: 'Locations',
+          href: '/dashboard/locations',
+        },
+        {
+          icon: faCog,
+          label: 'Settings',
+          href: '/dashboard/settings',
+        },
+      ],
     },
   ];
 
