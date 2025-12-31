@@ -65,7 +65,7 @@ export default function Toast({ toast, onClose }: ToastProps) {
     <div
       className={`
         ${config.bgColor} ${config.borderColor} ${config.textColor}
-        border rounded-sm shadow-lg p-4 mb-3 min-w-[300px] max-w-[500px]
+        border rounded-sm p-4 mb-3 min-w-[300px] max-w-[500px]
         animate-slideIn
       `}
       role="alert"

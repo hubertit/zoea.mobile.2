@@ -68,7 +68,7 @@ export default function Modal({
       {/* Modal */}
       <div
         className={`
-          relative bg-white rounded-sm shadow-lg w-full ${sizeClasses[size]}
+          relative bg-white rounded-sm w-full ${sizeClasses[size]}
           max-h-[90vh] overflow-hidden flex flex-col
           animate-fade-in-up
         `}

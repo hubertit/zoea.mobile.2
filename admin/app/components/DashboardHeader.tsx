@@ -16,8 +16,7 @@ import Icon, {
   faUser,
   faSpinner,
 } from './Icon';
-// TODO: Import from auth store when implemented
-// import { useAuthStore } from '@/store/auth';
+import { useAuthStore } from '@/src/store/auth';
 
 interface DashboardHeaderProps {
   onMenuToggle?: () => void;
@@ -31,10 +30,7 @@ export default function DashboardHeader({
   sidebarCollapsed = false
 }: DashboardHeaderProps) {
   const router = useRouter();
-  // TODO: Get from auth store
-  // const { user, logout } = useAuthStore();
-  const user: any = null;
-  const logout = () => {};
+  const { user, logout } = useAuthStore();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
@@ -172,7 +168,7 @@ export default function DashboardHeader({
             />
 
             {searchOpen && searchTerm.trim() && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-sm shadow-lg z-50 p-4">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-sm z-50 p-4">
                 <p className="text-sm text-gray-500 text-center">Search functionality coming soon</p>
               </div>
             )}

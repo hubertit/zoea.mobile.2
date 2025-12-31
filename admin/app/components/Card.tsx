@@ -6,7 +6,6 @@ interface CardProps {
   children: ReactNode;
   className?: string;
   padding?: 'none' | 'sm' | 'md' | 'lg';
-  shadow?: boolean;
   onClick?: () => void;
 }
 
@@ -14,7 +13,6 @@ export default function Card({
   children,
   className = '',
   padding = 'md',
-  shadow = true,
   onClick,
 }: CardProps) {
   const paddingClasses = {
@@ -24,11 +22,9 @@ export default function Card({
     lg: 'p-8',
   };
 
-  const shadowClass = shadow ? 'shadow-card' : '';
-
   return (
     <div 
-      className={`card ${paddingClasses[padding]} ${shadowClass} ${className}`.trim()}
+      className={`card ${paddingClasses[padding]} ${className}`.trim()}
       onClick={onClick}
     >
       {children}
