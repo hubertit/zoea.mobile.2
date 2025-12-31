@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateReviewDto, UpdateReviewDto, MarkHelpfulDto, ReviewQueryDto } from './dto/review.dto';
@@ -16,10 +16,10 @@ export class ReviewsController {
   })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
-  @ApiQuery({ name: 'listingId', required: false, type: String, format: 'uuid', description: 'Filter reviews for a specific listing', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'eventId', required: false, type: String, format: 'uuid', description: 'Filter reviews for a specific event', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'tourId', required: false, type: String, format: 'uuid', description: 'Filter reviews for a specific tour', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'userId', required: false, type: String, format: 'uuid', description: 'Filter reviews by a specific user', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'listingId', required: false, type: String, description: 'Filter reviews for a specific listing', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'eventId', required: false, type: String, description: 'Filter reviews for a specific event', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'tourId', required: false, type: String, description: 'Filter reviews for a specific tour', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'userId', required: false, type: String, description: 'Filter reviews by a specific user', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'status', required: false, enum: ['pending', 'approved', 'rejected'], description: 'Filter by moderation status (default: approved)', example: 'approved' })
   @ApiResponse({ 
     status: 200, 
@@ -82,7 +82,7 @@ export class ReviewsController {
     summary: 'Get review by ID',
     description: 'Retrieves detailed information about a specific review including rating, comment, helpful count, and user information.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Review retrieved successfully',
@@ -107,13 +107,13 @@ export class ReviewsController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         rating: { type: 'number', example: 5, minimum: 1, maximum: 5 },
         comment: { type: 'string', example: 'Great experience!' },
         status: { type: 'string', enum: ['pending', 'approved', 'rejected'], example: 'pending' },
-        listingId: { type: 'string', format: 'uuid', nullable: true },
-        eventId: { type: 'string', format: 'uuid', nullable: true },
-        tourId: { type: 'string', format: 'uuid', nullable: true }
+        listingId: { type: 'string', nullable: true },
+        eventId: { type: 'string', nullable: true },
+        tourId: { type: 'string', nullable: true }
       }
     }
   })
@@ -131,7 +131,7 @@ export class ReviewsController {
     summary: 'Update a review',
     description: 'Updates an existing review. Only the review owner can update their review. Reviews that are already approved may require re-moderation after update.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateReviewDto })
   @ApiResponse({ 
     status: 200, 
@@ -153,7 +153,7 @@ export class ReviewsController {
     summary: 'Delete a review',
     description: 'Deletes a review. Only the review owner can delete their review. This action cannot be undone.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Review deleted successfully',
@@ -179,7 +179,7 @@ export class ReviewsController {
     summary: 'Mark review as helpful/not helpful',
     description: 'Toggles the helpful status of a review for the authenticated user. Helps other users identify useful reviews. Users cannot mark their own reviews as helpful.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Review UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: MarkHelpfulDto })
   @ApiResponse({ 
     status: 200, 

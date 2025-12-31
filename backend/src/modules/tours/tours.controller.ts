@@ -105,7 +105,7 @@ export class ToursController {
     summary: 'Get tour by ID',
     description: 'Retrieves detailed information about a specific tour including description, itinerary, pricing, schedules, and booking information.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Tour retrieved successfully',
@@ -121,9 +121,9 @@ export class ToursController {
     summary: 'Get available schedules for a tour',
     description: 'Retrieves available tour schedules within a date range. Useful for displaying booking options and checking availability. Returns schedules with available slots and pricing.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'startDate', required: false, type: String, format: 'date-time', description: 'Filter schedules starting from this date', example: '2024-12-31T00:00:00Z' })
-  @ApiQuery({ name: 'endDate', required: false, type: String, format: 'date-time', description: 'Filter schedules ending before this date', example: '2025-01-31T23:59:59Z' })
+  @ApiParam({ name: 'id', type: String, description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter schedules starting from this date', example: '2024-12-31T00:00:00Z' })
+  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter schedules ending before this date', example: '2025-01-31T23:59:59Z' })
   @ApiResponse({ 
     status: 200, 
     description: 'Tour schedules retrieved successfully',
@@ -132,10 +132,10 @@ export class ToursController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
-          tourId: { type: 'string', format: 'uuid' },
-          startDate: { type: 'string', format: 'date-time' },
-          endDate: { type: 'string', format: 'date-time' },
+          id: { type: 'string' },
+          tourId: { type: 'string' },
+          startDate: { type: 'string' },
+          endDate: { type: 'string' },
           availableSlots: { type: 'number', example: 10 },
           price: { type: 'number', example: 1500 }
         }
@@ -169,7 +169,7 @@ export class ToursController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         name: { type: 'string', example: 'Gorilla Trekking Adventure' },
         status: { type: 'string', enum: ['draft', 'active', 'inactive'], example: 'draft' }
       }
@@ -188,7 +188,7 @@ export class ToursController {
     summary: 'Update a tour',
     description: 'Updates an existing tour. Only the tour owner or admin can update a tour. All fields are optional.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateTourDto })
   @ApiResponse({ 
     status: 200, 
@@ -210,7 +210,7 @@ export class ToursController {
     summary: 'Delete a tour',
     description: 'Soft deletes a tour. Only the tour owner or admin can delete a tour. The tour will be marked as inactive and hidden from public listings.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Tour deleted successfully',

@@ -99,7 +99,7 @@ export class SearchController {
         type: 'object',
         properties: {
           query: { type: 'string', example: 'hotel kigali' },
-          createdAt: { type: 'string', format: 'date-time', example: '2024-12-30T16:00:00Z' }
+          createdAt: { type: 'string', example: '2024-12-30T16:00:00Z' }
         }
       }
     }
@@ -148,10 +148,10 @@ export class SearchController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           type: { type: 'string', enum: ['listing', 'event', 'tour'] },
           name: { type: 'string' },
-          viewedAt: { type: 'string', format: 'date-time' }
+          viewedAt: { type: 'string' }
         }
       }
     }

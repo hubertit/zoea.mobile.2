@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { MerchantsService } from './merchants.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
@@ -37,11 +37,11 @@ export class MerchantsController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           name: { type: 'string', example: 'Grand Hotel Kigali' },
           registrationStatus: { type: 'string', enum: ['pending', 'verified', 'rejected'], example: 'verified' },
           listingsCount: { type: 'number', example: 5 },
-          createdAt: { type: 'string', format: 'date-time' }
+          createdAt: { type: 'string' }
         }
       }
     }
@@ -56,7 +56,7 @@ export class MerchantsController {
     summary: 'Get business details',
     description: 'Retrieves detailed information about a specific business including profile, verification status, settings, listings summary, and statistics. Only the business owner can access this endpoint.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Business details retrieved successfully',
@@ -81,10 +81,10 @@ export class MerchantsController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         name: { type: 'string', example: 'Grand Hotel Kigali' },
         registrationStatus: { type: 'string', enum: ['pending', 'verified', 'rejected'], example: 'pending' },
-        createdAt: { type: 'string', format: 'date-time' }
+        createdAt: { type: 'string' }
       }
     }
   })
@@ -99,7 +99,7 @@ export class MerchantsController {
     summary: 'Update business details',
     description: 'Updates business profile information including name, description, contact details, and settings. Only the business owner can update their business. Some changes may require re-verification.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateBusinessDto })
   @ApiResponse({ 
     status: 200, 
@@ -119,7 +119,7 @@ export class MerchantsController {
     summary: 'Delete a business',
     description: 'Soft deletes a business profile. The business and all its listings will be hidden from public view. Only the business owner can delete their business. This action can be reversed by an admin.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Business deleted successfully',
@@ -144,7 +144,7 @@ export class MerchantsController {
     summary: 'Get all listings for a business',
     description: 'Retrieves paginated list of listings owned by a specific business. Supports filtering by listing status. Useful for managing business listings and viewing their approval status.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
   @ApiQuery({ name: 'status', required: false, enum: ['draft', 'pending_review', 'active', 'inactive', 'rejected'], description: 'Filter by listing status', example: 'active' })
@@ -231,8 +231,8 @@ export class MerchantsController {
     summary: 'Submit listing for review',
     description: 'Submits a draft listing for admin review. The listing status will change from "draft" to "pending_review". Once approved by an admin, the listing will become "active" and visible to users. Rejected listings can be resubmitted after making corrections.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiParam({ name: 'listingId', type: String, format: 'uuid', description: 'Listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'listingId', type: String, description: 'Listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Listing submitted for review successfully',
@@ -393,11 +393,11 @@ export class MerchantsController {
     summary: 'Get all bookings for a business',
     description: 'Retrieves paginated list of bookings for all listings owned by a business. Supports filtering by status, listing, and date range. Essential for managing reservations and tracking business bookings.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
   @ApiQuery({ name: 'status', required: false, enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'], description: 'Filter by booking status', example: 'confirmed' })
-  @ApiQuery({ name: 'listingId', required: false, type: String, format: 'uuid', description: 'Filter by specific listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'listingId', required: false, type: String, description: 'Filter by specific listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter bookings from this date (YYYY-MM-DD)', example: '2024-12-01' })
   @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter bookings until this date (YYYY-MM-DD)', example: '2024-12-31' })
   @ApiResponse({ 
@@ -453,8 +453,8 @@ export class MerchantsController {
     summary: 'Update booking status (confirm, cancel, complete, no-show)',
     description: 'Updates the status of a booking. Merchants can confirm pending bookings, mark bookings as completed or no-show, and cancel bookings. Status changes may trigger notifications to customers.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiParam({ name: 'bookingId', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'bookingId', type: String, description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateBookingStatusDto })
   @ApiResponse({ 
     status: 200, 
@@ -524,7 +524,7 @@ export class MerchantsController {
     summary: 'Get business dashboard overview',
     description: 'Retrieves comprehensive dashboard data for a business including key metrics, recent bookings, revenue summary, listing statistics, and review summaries. Essential for merchant dashboard screens.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Dashboard data retrieved successfully',
@@ -552,7 +552,7 @@ export class MerchantsController {
     summary: 'Get revenue analytics',
     description: 'Retrieves detailed revenue analytics for a business. Supports date range filtering and grouping by day, week, month, or year. Useful for revenue reports and financial analysis.'
   })
-  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'businessId', type: String, description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Start date for analytics (YYYY-MM-DD)', example: '2024-12-01' })
   @ApiQuery({ name: 'endDate', required: false, type: String, description: 'End date for analytics (YYYY-MM-DD)', example: '2024-12-31' })
   @ApiQuery({ name: 'groupBy', required: false, enum: ['day', 'week', 'month', 'year'], description: 'Group revenue data by time period', example: 'month' })

@@ -25,7 +25,7 @@ export class AuthController {
         user: { 
           type: 'object',
           properties: {
-            id: { type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000' },
+            id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
             email: { type: 'string', example: 'user@example.com' },
             phoneNumber: { type: 'string', example: '+250788000000' },
             fullName: { type: 'string', example: 'John Doe' },
@@ -59,7 +59,7 @@ export class AuthController {
         user: { 
           type: 'object',
           properties: {
-            id: { type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000' },
+            id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
             email: { type: 'string', example: 'user@example.com' },
             phoneNumber: { type: 'string', example: '+250788000000' },
             fullName: { type: 'string', example: 'John Doe' }
@@ -112,7 +112,7 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000' },
+        id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
         email: { type: 'string', example: 'user@example.com' },
         phoneNumber: { type: 'string', example: '+250788000000' },
         fullName: { type: 'string', example: 'John Doe' },

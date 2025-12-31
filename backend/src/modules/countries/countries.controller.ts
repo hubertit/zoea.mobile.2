@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CountriesService } from './countries.service';
 
 @ApiTags('Countries & Cities')
@@ -21,7 +21,7 @@ export class CountriesController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           name: { type: 'string', example: 'Rwanda' },
           code: { type: 'string', example: 'RW', description: 'ISO 3166-1 alpha-2 country code' },
           code3: { type: 'string', example: 'RWA', description: 'ISO 3166-1 alpha-3 country code' },
@@ -40,7 +40,7 @@ export class CountriesController {
     summary: 'Get all cities',
     description: 'Retrieves all cities in the system. Can be filtered by country or featured status. Useful for location selection and filtering.'
   })
-  @ApiQuery({ name: 'countryId', required: false, type: String, format: 'uuid', description: 'Filter cities by country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'countryId', required: false, type: String, description: 'Filter cities by country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'featured', required: false, type: Boolean, description: 'Filter to show only featured cities', example: true })
   @ApiResponse({ 
     status: 200, 
@@ -50,10 +50,10 @@ export class CountriesController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           name: { type: 'string', example: 'Kigali' },
           slug: { type: 'string', example: 'kigali' },
-          countryId: { type: 'string', format: 'uuid' },
+          countryId: { type: 'string' },
           isFeatured: { type: 'boolean', example: true }
         }
       }
@@ -90,7 +90,7 @@ export class CountriesController {
     summary: 'Get cities in a country',
     description: 'Retrieves all cities within a specific country. Can filter by active status and featured status. Useful for location-based filtering.'
   })
-  @ApiParam({ name: 'countryId', type: String, format: 'uuid', description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'countryId', type: String, description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'activeOnly', required: false, type: Boolean, description: 'Filter to show only active cities (default: true)', example: true })
   @ApiQuery({ name: 'featured', required: false, type: Boolean, description: 'Filter to show only featured cities', example: true })
   @ApiResponse({ 
@@ -118,7 +118,7 @@ export class CountriesController {
     summary: 'Get regions in a country',
     description: 'Retrieves administrative regions or provinces within a country. Useful for location hierarchy and filtering.'
   })
-  @ApiParam({ name: 'countryId', type: String, format: 'uuid', description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'countryId', type: String, description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Regions retrieved successfully',
@@ -127,9 +127,9 @@ export class CountriesController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           name: { type: 'string', example: 'Kigali Province' },
-          countryId: { type: 'string', format: 'uuid' }
+          countryId: { type: 'string' }
         }
       }
     }
@@ -144,7 +144,7 @@ export class CountriesController {
     summary: 'Get country by ID',
     description: 'Retrieves detailed information about a specific country including its cities, regions, and metadata.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Country retrieved successfully',
@@ -160,7 +160,7 @@ export class CountriesController {
     summary: 'Get city by ID',
     description: 'Retrieves detailed information about a specific city including its districts, country, and metadata.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'City UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'City UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'City retrieved successfully',
@@ -193,7 +193,7 @@ export class CountriesController {
     summary: 'Get districts in a city',
     description: 'Retrieves administrative districts or neighborhoods within a city. Useful for location hierarchy and detailed location filtering.'
   })
-  @ApiParam({ name: 'cityId', type: String, format: 'uuid', description: 'City UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'cityId', type: String, description: 'City UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Districts retrieved successfully',
@@ -202,9 +202,9 @@ export class CountriesController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string' },
           name: { type: 'string', example: 'Nyarugenge' },
-          cityId: { type: 'string', format: 'uuid' }
+          cityId: { type: 'string' }
         }
       }
     }

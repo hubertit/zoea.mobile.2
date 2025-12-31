@@ -22,6 +22,7 @@ import {
   ApiBody,
   ApiQuery,
   ApiParam,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -113,7 +114,7 @@ export class MediaController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000' },
+        id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
         url: { type: 'string', example: 'https://res.cloudinary.com/example/image/upload/v1234567890/image.jpg' },
         thumbnailUrl: { type: 'string', nullable: true, example: 'https://res.cloudinary.com/example/image/upload/c_thumb,w_200/v1234567890/image.jpg' },
         type: { type: 'string', enum: ['image', 'video', 'document', 'audio'], example: 'image' },
@@ -126,7 +127,7 @@ export class MediaController {
         width: { type: 'number', nullable: true, example: 1920, description: 'Image/video width in pixels' },
         height: { type: 'number', nullable: true, example: 1080, description: 'Image/video height in pixels' },
         storageProvider: { type: 'string', example: 'cloudinary' },
-        createdAt: { type: 'string', format: 'date-time' }
+        createdAt: { type: 'string' }
       }
     }
   })
@@ -229,7 +230,7 @@ export class MediaController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         url: { type: 'string', example: 'https://res.cloudinary.com/example/image/upload/v1234567890/image.jpg' },
         type: { type: 'string', enum: ['image', 'video', 'document', 'audio'] },
         category: { type: 'string', enum: Object.values(MediaCategory) },
@@ -298,14 +299,14 @@ export class MediaController {
     summary: 'Get media by ID',
     description: 'Retrieves detailed information about a specific media file including URLs, metadata, dimensions, file size, and storage information. This endpoint is public and does not require authentication.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Media retrieved successfully',
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         url: { type: 'string', example: 'https://res.cloudinary.com/example/image/upload/v1234567890/image.jpg' },
         thumbnailUrl: { type: 'string', nullable: true },
         type: { type: 'string', enum: ['image', 'video', 'document', 'audio'] },
@@ -318,7 +319,7 @@ export class MediaController {
         width: { type: 'number', nullable: true },
         height: { type: 'number', nullable: true },
         storageProvider: { type: 'string' },
-        createdAt: { type: 'string', format: 'date-time' }
+        createdAt: { type: 'string' }
       }
     }
   })
@@ -334,7 +335,7 @@ export class MediaController {
     summary: 'Update media metadata',
     description: 'Updates metadata for a media file (alt text, title, category). Only the media owner can update their media. The actual file cannot be changed; only metadata can be updated.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateMediaDto })
   @ApiResponse({ 
     status: 200, 
@@ -342,11 +343,11 @@ export class MediaController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         altText: { type: 'string', nullable: true },
         title: { type: 'string', nullable: true },
         category: { type: 'string', enum: Object.values(MediaCategory) },
-        updatedAt: { type: 'string', format: 'date-time' }
+        updatedAt: { type: 'string' }
       }
     }
   })
@@ -365,7 +366,7 @@ export class MediaController {
     summary: 'Delete media',
     description: 'Deletes a media file from cloud storage. Only the media owner can delete their media. The file is permanently removed from storage and cannot be recovered. This action cannot be undone.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Media UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Media deleted successfully',

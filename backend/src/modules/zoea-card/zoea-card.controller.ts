@@ -22,13 +22,13 @@ export class ZoeaCardController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
-        userId: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
+        userId: { type: 'string' },
         cardNumber: { type: 'string', example: '1234-5678-9012-3456', description: 'Masked card number' },
         balance: { type: 'number', example: 500.00, description: 'Current card balance' },
         currency: { type: 'string', example: 'RWF', description: 'Card currency' },
         status: { type: 'string', enum: ['active', 'suspended', 'closed'], example: 'active' },
-        createdAt: { type: 'string', format: 'date-time' }
+        createdAt: { type: 'string' }
       }
     }
   })
@@ -79,13 +79,13 @@ export class ZoeaCardController {
           items: {
             type: 'object',
             properties: {
-              id: { type: 'string', format: 'uuid' },
+              id: { type: 'string' },
               type: { type: 'string', enum: ['deposit', 'withdrawal', 'payment', 'refund'] },
               amount: { type: 'number', example: 100.00 },
               currency: { type: 'string', example: 'RWF' },
               description: { type: 'string', example: 'Payment for booking' },
               balanceAfter: { type: 'number', example: 400.00 },
-              createdAt: { type: 'string', format: 'date-time' }
+              createdAt: { type: 'string' }
             }
           }
         },

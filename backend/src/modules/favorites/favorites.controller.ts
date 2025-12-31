@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { FavoritesService } from './favorites.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AddFavoriteDto, FavoriteQueryDto } from './dto/favorite.dto';
@@ -71,9 +71,9 @@ export class FavoritesController {
     summary: 'Remove from favorites',
     description: 'Removes a listing, event, or tour from the authenticated user\'s favorites. At least one item ID must be provided.'
   })
-  @ApiQuery({ name: 'listingId', required: false, type: String, format: 'uuid', description: 'Listing UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'eventId', required: false, type: String, format: 'uuid', description: 'Event UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'tourId', required: false, type: String, format: 'uuid', description: 'Tour UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'listingId', required: false, type: String, description: 'Listing UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'eventId', required: false, type: String, description: 'Event UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'tourId', required: false, type: String, description: 'Tour UUID to remove from favorites', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Item removed from favorites successfully',
@@ -126,9 +126,9 @@ export class FavoritesController {
     summary: 'Check if item is favorited',
     description: 'Checks whether a specific listing, event, or tour is in the authenticated user\'s favorites. Useful for displaying favorite status in UI.'
   })
-  @ApiQuery({ name: 'listingId', required: false, type: String, format: 'uuid', description: 'Listing UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'eventId', required: false, type: String, format: 'uuid', description: 'Event UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'tourId', required: false, type: String, format: 'uuid', description: 'Tour UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'listingId', required: false, type: String, description: 'Listing UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'eventId', required: false, type: String, description: 'Event UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'tourId', required: false, type: String, description: 'Tour UUID to check', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Favorite status checked successfully',

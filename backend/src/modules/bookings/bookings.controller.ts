@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateBookingDto, UpdateBookingDto, CancelBookingDto, ConfirmPaymentDto, BookingQueryDto } from './dto/booking.dto';
@@ -67,7 +67,7 @@ export class BookingsController {
     summary: 'Get booking details',
     description: 'Retrieves detailed information about a specific booking including dates, guests, pricing, payment status, and cancellation policy.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Booking retrieved successfully',
@@ -92,12 +92,12 @@ export class BookingsController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         status: { type: 'string', enum: ['pending', 'confirmed', 'completed', 'cancelled'], example: 'pending' },
         totalAmount: { type: 'number', example: 150.00 },
         currency: { type: 'string', example: 'USD' },
-        checkInDate: { type: 'string', format: 'date-time' },
-        checkOutDate: { type: 'string', format: 'date-time', nullable: true }
+        checkInDate: { type: 'string' },
+        checkOutDate: { type: 'string', nullable: true }
       }
     }
   })
@@ -114,7 +114,7 @@ export class BookingsController {
     summary: 'Update a booking',
     description: 'Updates booking details such as guest counts, special requests, or contact information. Only pending or confirmed bookings can be updated. Some changes may require re-confirmation.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: UpdateBookingDto })
   @ApiResponse({ 
     status: 200, 
@@ -134,7 +134,7 @@ export class BookingsController {
     summary: 'Cancel a booking',
     description: 'Cancels a booking. Cancellation policies apply and refunds are processed according to the listing/event cancellation policy. Cancellation reason is required.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: CancelBookingDto })
   @ApiResponse({ 
     status: 200, 
@@ -161,7 +161,7 @@ export class BookingsController {
     summary: 'Confirm payment for a booking',
     description: 'Confirms payment for a booking. Updates booking status from "pending" to "confirmed". Requires payment method and payment reference (transaction ID).'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: ConfirmPaymentDto })
   @ApiResponse({ 
     status: 200, 

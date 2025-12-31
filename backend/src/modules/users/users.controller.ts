@@ -347,7 +347,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get specific business by ID' })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
   @ApiResponse({ status: 200, description: 'Business retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Business not found or does not belong to user' })
@@ -378,7 +378,7 @@ export class UsersController {
     summary: 'Update a business',
     description: 'Updates an existing merchant profile (business). All fields are optional. Only fields provided will be updated. The business must belong to the authenticated user.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
   @ApiResponse({ status: 200, description: 'Business updated successfully' })
   @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
@@ -395,7 +395,7 @@ export class UsersController {
     summary: 'Delete a business',
     description: 'Deletes a merchant profile (business). The business must belong to the authenticated user. This is a permanent deletion.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Business (merchant profile) UUID' })
   @ApiResponse({ status: 200, description: 'Business deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Business not found or does not belong to user' })
@@ -424,7 +424,7 @@ export class UsersController {
     summary: 'Get specific organizer profile',
     description: 'Retrieves a specific event organizer profile by ID. The profile must belong to the authenticated user.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
   @ApiResponse({ status: 200, description: 'Organizer profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Organizer profile not found or does not belong to user' })
@@ -455,7 +455,7 @@ export class UsersController {
     summary: 'Update organizer profile',
     description: 'Updates an existing event organizer profile. All fields are optional. Only fields provided will be updated. The profile must belong to the authenticated user.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
   @ApiResponse({ status: 200, description: 'Organizer profile updated successfully' })
   @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
@@ -472,7 +472,7 @@ export class UsersController {
     summary: 'Delete organizer profile',
     description: 'Deletes an event organizer profile. The profile must belong to the authenticated user. This is a permanent deletion.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Organizer profile UUID' })
   @ApiResponse({ status: 200, description: 'Organizer profile deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Organizer profile not found or does not belong to user' })
@@ -501,7 +501,7 @@ export class UsersController {
     summary: 'Get specific tour operator profile',
     description: 'Retrieves a specific tour operator profile by ID. The profile must belong to the authenticated user.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
   @ApiResponse({ status: 200, description: 'Tour operator profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Tour operator profile not found or does not belong to user' })
@@ -532,7 +532,7 @@ export class UsersController {
     summary: 'Update tour operator profile',
     description: 'Updates an existing tour operator profile. All fields are optional. Only fields provided will be updated. The profile must belong to the authenticated user.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
   @ApiResponse({ status: 200, description: 'Tour operator profile updated successfully' })
   @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
@@ -549,7 +549,7 @@ export class UsersController {
     summary: 'Delete tour operator profile',
     description: 'Deletes a tour operator profile. The profile must belong to the authenticated user. This is a permanent deletion.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'Tour operator profile UUID' })
   @ApiResponse({ status: 200, description: 'Tour operator profile deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 404, description: 'Tour operator profile not found or does not belong to user' })
@@ -590,7 +590,7 @@ export class UsersController {
     summary: 'Get user by ID (public profile)',
     description: 'Retrieves a user\'s public profile by UUID. This endpoint does not require authentication and returns only public information.'
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000', description: 'User UUID' })
+  @ApiParam({ name: 'id', type: 'string', example: '123e4567-e89b-12d3-a456-426614174000', description: 'User UUID' })
   @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(@Param('id') id: string) {

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Param, Query, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -29,12 +29,12 @@ export class NotificationsController {
           items: {
             type: 'object',
             properties: {
-              id: { type: 'string', format: 'uuid' },
+              id: { type: 'string' },
               title: { type: 'string', example: 'Booking Confirmed' },
               message: { type: 'string', example: 'Your booking at Grand Hotel has been confirmed' },
               type: { type: 'string', enum: ['booking', 'payment', 'review', 'system'], example: 'booking' },
               isRead: { type: 'boolean', example: false },
-              createdAt: { type: 'string', format: 'date-time' }
+              createdAt: { type: 'string' }
             }
           }
         },
@@ -84,7 +84,7 @@ export class NotificationsController {
     summary: 'Mark notification as read',
     description: 'Marks a specific notification as read. The notification will no longer appear in unread counts.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Notification UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Notification UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Notification marked as read successfully',
@@ -130,7 +130,7 @@ export class NotificationsController {
     summary: 'Delete a notification',
     description: 'Deletes a specific notification. This action cannot be undone.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Notification UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Notification UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Notification deleted successfully',

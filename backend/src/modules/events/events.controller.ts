@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateEventCommentDto } from './dto/event.dto';
@@ -20,8 +20,8 @@ export class EventsController {
   @ApiQuery({ name: 'cityId', required: false, type: String, description: 'Filter by city UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'countryId', required: false, type: String, description: 'Filter by country UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'category', required: false, type: String, description: 'Event context/category ID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiQuery({ name: 'startDate', required: false, type: String, format: 'date-time', description: 'Filter events starting from this date', example: '2024-12-31T00:00:00Z' })
-  @ApiQuery({ name: 'endDate', required: false, type: String, format: 'date-time', description: 'Filter events ending before this date', example: '2025-01-31T23:59:59Z' })
+  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter events starting from this date', example: '2024-12-31T00:00:00Z' })
+  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter events ending before this date', example: '2025-01-31T23:59:59Z' })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Search in event name and description', example: 'music festival' })
   @ApiQuery({ name: 'sort', required: false, enum: ['date_asc', 'date_desc', 'name_asc', 'name_desc'], description: 'Sort order', example: 'date_asc' })
   @ApiResponse({ 
@@ -70,8 +70,8 @@ export class EventsController {
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 25, description: 'Items per page (default: 25)' })
   @ApiQuery({ name: 'category', required: false, type: String, description: 'Event context/category ID' })
   @ApiQuery({ name: 'location', required: false, type: String, description: 'Location filter' })
-  @ApiQuery({ name: 'startDate', required: false, type: String, format: 'date-time', description: 'Filter events starting from this date (default: today)' })
-  @ApiQuery({ name: 'endDate', required: false, type: String, format: 'date-time', description: 'Filter events ending before this date' })
+  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter events starting from this date (default: today)' })
+  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter events ending before this date' })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Search query' })
   @ApiQuery({ name: 'sort', required: false, enum: ['date_asc', 'date_desc', 'name_asc', 'name_desc'], description: 'Sort order' })
   @ApiResponse({ 
@@ -165,7 +165,7 @@ export class EventsController {
     summary: 'Get event by ID',
     description: 'Retrieves detailed information about a specific event including description, images, location, dates, and ticket information.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Event retrieved successfully',
@@ -183,7 +183,7 @@ export class EventsController {
     summary: 'Like/unlike an event',
     description: 'Toggles the like status of an event for the authenticated user. If the event is already liked, it will be unliked, and vice versa.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiResponse({ 
     status: 200, 
     description: 'Like status toggled successfully',
@@ -206,7 +206,7 @@ export class EventsController {
     summary: 'Get event comments',
     description: 'Retrieves paginated comments for an event. Comments are sorted by creation date (newest first). Supports nested replies via parentId.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
   @ApiResponse({ 
@@ -238,7 +238,7 @@ export class EventsController {
     summary: 'Add a comment to an event',
     description: 'Creates a new comment on an event. Can be a top-level comment or a reply to another comment (via parentId). Comments are subject to moderation.'
   })
-  @ApiParam({ name: 'id', type: String, format: 'uuid', description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'id', type: String, description: 'Event UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiBody({ type: CreateEventCommentDto })
   @ApiResponse({ 
     status: 201, 
@@ -246,12 +246,12 @@ export class EventsController {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         content: { type: 'string', example: 'Great event!' },
-        userId: { type: 'string', format: 'uuid' },
-        eventId: { type: 'string', format: 'uuid' },
-        parentId: { type: 'string', format: 'uuid', nullable: true },
-        createdAt: { type: 'string', format: 'date-time' }
+        userId: { type: 'string' },
+        eventId: { type: 'string' },
+        parentId: { type: 'string', nullable: true },
+        createdAt: { type: 'string' }
       }
     }
   })
