@@ -1,5 +1,5 @@
-import { Controller, Post, Body, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Get, Body, UseGuards, Request, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AnalyticsService } from './analytics.service';
 import { BatchAnalyticsEventsDto, RecordContentViewDto } from './dto/analytics.dto';
@@ -71,6 +71,75 @@ export class AnalyticsController {
   async recordContentView(@Request() req, @Body() dto: RecordContentViewDto) {
     await this.analyticsService.recordContentView(req.user.id, dto, req);
     return { message: 'Content view recorded successfully' };
+  }
+
+  @Get('my-content-views')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ 
+    summary: 'Get my content views (places visited)',
+    description: 'Retrieves all listings and events viewed by the authenticated user. Returns paginated results with listing/event details. Useful for showing "Places Visited" in the user profile. Results are ordered by most recent view first.'
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
+  @ApiQuery({ name: 'contentType', required: false, enum: ['listing', 'event'], description: 'Filter by content type (default: all)' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Content views retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
+              contentType: { type: 'string', enum: ['listing', 'event'], example: 'listing' },
+              contentId: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
+              viewedAt: { type: 'string', format: 'date-time', example: '2024-12-30T16:00:00Z' },
+              content: {
+                type: 'object',
+                description: 'Full listing or event details',
+                properties: {
+                  id: { type: 'string' },
+                  name: { type: 'string', example: 'Grand Hotel Kigali' },
+                  images: { type: 'array', items: { type: 'object' } },
+                  location: { type: 'object' },
+                  rating: { type: 'number', example: 4.5 },
+                  reviewCount: { type: 'number', example: 120 }
+                }
+              }
+            }
+          }
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            total: { type: 'number', example: 45 },
+            page: { type: 'number', example: 1 },
+            limit: { type: 'number', example: 20 },
+            totalPages: { type: 'number', example: 3 }
+          }
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  async getMyContentViews(
+    @Request() req,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('contentType') contentType?: 'listing' | 'event',
+  ) {
+    return this.analyticsService.getMyContentViews(
+      req.user.id,
+      {
+        page: page ? parseInt(page, 10) : 1,
+        limit: limit ? parseInt(limit, 10) : 20,
+        contentType,
+      },
+    );
   }
 }
 

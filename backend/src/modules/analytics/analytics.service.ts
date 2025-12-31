@@ -369,5 +369,161 @@ export class AnalyticsService {
     });
     return result.length;
   }
+
+  /**
+   * Get content views for a specific user (places visited)
+   */
+  async getMyContentViews(
+    userId: string,
+    options: {
+      page?: number;
+      limit?: number;
+      contentType?: 'listing' | 'event';
+    } = {},
+  ) {
+    const page = options.page || 1;
+    const limit = options.limit || 20;
+    const skip = (page - 1) * limit;
+
+    const where: any = {
+      user_id: userId,
+    };
+
+    if (options.contentType) {
+      where.content_type = options.contentType;
+    }
+
+    // Get unique content views (group by content_id and content_type, get most recent view)
+    const uniqueViews = await this.prisma.content_views.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      distinct: ['content_type', 'content_id'],
+      select: {
+        id: true,
+        content_type: true,
+        content_id: true,
+        created_at: true,
+      },
+    });
+
+    const total = uniqueViews.length;
+    const paginatedViews = uniqueViews.slice(skip, skip + limit);
+
+    // Get full content details for each view
+    const contentViewsWithDetails = await Promise.all(
+      paginatedViews.map(async (view) => {
+        let content = null;
+
+        if (view.content_type === 'listing') {
+          content = await this.prisma.listing.findUnique({
+            where: { id: view.content_id },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              description: true,
+              images: {
+                take: 1,
+                select: {
+                  media: {
+                    select: {
+                      url: true,
+                      thumbnailUrl: true,
+                    },
+                  },
+                },
+              },
+              location: {
+                select: {
+                  address: true,
+                  city: {
+                    select: {
+                      name: true,
+                      country: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              rating: true,
+              reviewCount: true,
+              category: {
+                select: {
+                  name: true,
+                  slug: true,
+                },
+              },
+              type: true,
+            },
+          });
+        } else if (view.content_type === 'event') {
+          content = await this.prisma.event.findUnique({
+            where: { id: view.content_id },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              description: true,
+              images: {
+                take: 1,
+                select: {
+                  media: {
+                    select: {
+                      url: true,
+                      thumbnailUrl: true,
+                    },
+                  },
+                },
+              },
+              location: {
+                select: {
+                  address: true,
+                  city: {
+                    select: {
+                      name: true,
+                      country: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              rating: true,
+              reviewCount: true,
+              category: {
+                select: {
+                  name: true,
+                  slug: true,
+                },
+              },
+            },
+          });
+        }
+
+        return {
+          id: view.id,
+          contentType: view.content_type,
+          contentId: view.content_id,
+          viewedAt: view.created_at,
+          content,
+        };
+      }),
+    );
+
+    return {
+      data: contentViewsWithDetails,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 }
 
