@@ -8,6 +8,7 @@ import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Modal, Input, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
+import { validateForm, type ValidationErrors, commonRules } from '@/src/lib/validation';
 
 const STATUSES = [
   { value: '', label: 'All Status' },
@@ -84,6 +85,8 @@ export default function UsersPage() {
     fullName: '',
     roles: [],
   });
+  const [formErrors, setFormErrors] = useState<ValidationErrors>({});
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
   // Fetch users
   useEffect(() => {
@@ -470,68 +473,165 @@ export default function UsersPage() {
             fullName: '',
             roles: [],
           });
+          setFormErrors({});
+          setTouched({});
         }}
         title="Create New User"
         size="lg"
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
             <Input
+              label="Full Name"
               value={formData.fullName || ''}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, fullName: e.target.value });
+                if (touched.fullName) {
+                  const errors = validateForm({ fullName: e.target.value }, {
+                    fullName: { ...commonRules.name, required: false },
+                  });
+                  setFormErrors({ ...formErrors, fullName: errors.fullName || '' });
+                }
+              }}
+              onBlur={() => {
+                setTouched({ ...touched, fullName: true });
+                const errors = validateForm({ fullName: formData.fullName }, {
+                  fullName: { ...commonRules.name, required: false },
+                });
+                setFormErrors({ ...formErrors, fullName: errors.fullName || '' });
+              }}
               placeholder="Enter full name"
+              error={touched.fullName ? formErrors.fullName : undefined}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
             <Input
+              label="Email"
               type="email"
               value={formData.email || ''}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+                if (touched.email) {
+                  const errors = validateForm({ email: e.target.value }, {
+                    email: { ...commonRules.email, required: false },
+                  });
+                  setFormErrors({ ...formErrors, email: errors.email || '' });
+                }
+              }}
+              onBlur={() => {
+                setTouched({ ...touched, email: true });
+                const errors = validateForm({ email: formData.email }, {
+                  email: { ...commonRules.email, required: false },
+                });
+                setFormErrors({ ...formErrors, email: errors.email || '' });
+              }}
               placeholder="Enter email"
+              error={touched.email ? formErrors.email : undefined}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
             <Input
+              label="Phone Number"
               type="tel"
               value={formData.phoneNumber || ''}
-              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, phoneNumber: e.target.value });
+                if (touched.phoneNumber) {
+                  const errors = validateForm({ phoneNumber: e.target.value }, {
+                    phoneNumber: { ...commonRules.phone, required: false },
+                  });
+                  setFormErrors({ ...formErrors, phoneNumber: errors.phoneNumber || '' });
+                }
+              }}
+              onBlur={() => {
+                setTouched({ ...touched, phoneNumber: true });
+                const errors = validateForm({ phoneNumber: formData.phoneNumber }, {
+                  phoneNumber: { ...commonRules.phone, required: false },
+                });
+                setFormErrors({ ...formErrors, phoneNumber: errors.phoneNumber || '' });
+              }}
               placeholder="Enter phone number"
+              error={touched.phoneNumber ? formErrors.phoneNumber : undefined}
             />
             <p className="text-xs text-gray-500 mt-1">At least one of email or phone is required</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
             <Input
+              label="Password"
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+                if (touched.password) {
+                  const errors = validateForm({ password: e.target.value }, {
+                    password: commonRules.password,
+                  });
+                  setFormErrors({ ...formErrors, password: errors.password || '' });
+                }
+                // Also validate confirm password if it's been touched
+                if (touched.confirmPassword) {
+                  const confirmErrors = validateForm(
+                    { confirmPassword: formData.confirmPassword, password: e.target.value },
+                    {
+                      confirmPassword: {
+                        required: true,
+                        match: { field: 'password', message: 'Passwords do not match' },
+                      },
+                    }
+                  );
+                  setFormErrors({ ...formErrors, confirmPassword: confirmErrors.confirmPassword || '' });
+                }
+              }}
+              onBlur={() => {
+                setTouched({ ...touched, password: true });
+                const errors = validateForm({ password: formData.password }, {
+                  password: commonRules.password,
+                });
+                setFormErrors({ ...formErrors, password: errors.password || '' });
+              }}
               placeholder="Enter password (min 6 characters)"
+              error={touched.password ? formErrors.password : undefined}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
             <Input
+              label="Confirm Password"
               type="password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, confirmPassword: e.target.value });
+                if (touched.confirmPassword) {
+                  const errors = validateForm(
+                    { confirmPassword: e.target.value, password: formData.password },
+                    {
+                      confirmPassword: {
+                        required: true,
+                        match: { field: 'password', message: 'Passwords do not match' },
+                      },
+                    }
+                  );
+                  setFormErrors({ ...formErrors, confirmPassword: errors.confirmPassword || '' });
+                }
+              }}
+              onBlur={() => {
+                setTouched({ ...touched, confirmPassword: true });
+                const errors = validateForm(
+                  { confirmPassword: formData.confirmPassword, password: formData.password },
+                  {
+                    confirmPassword: {
+                      required: true,
+                      match: { field: 'password', message: 'Passwords do not match' },
+                    },
+                  }
+                );
+                setFormErrors({ ...formErrors, confirmPassword: errors.confirmPassword || '' });
+              }}
               placeholder="Confirm password"
+              error={touched.confirmPassword ? formErrors.confirmPassword : undefined}
             />
           </div>
 
@@ -581,16 +681,40 @@ export default function UsersPage() {
             <Button
               variant="primary"
               onClick={async () => {
+                // Mark all fields as touched
+                const allTouched = {
+                  email: true,
+                  phoneNumber: true,
+                  password: true,
+                  confirmPassword: true,
+                  fullName: true,
+                };
+                setTouched(allTouched);
+
+                // Validate all fields
+                const validationRules = {
+                  email: { ...commonRules.email, required: false },
+                  phoneNumber: { ...commonRules.phone, required: false },
+                  password: commonRules.password,
+                  confirmPassword: {
+                    required: true,
+                    match: { field: 'password', message: 'Passwords do not match' },
+                  },
+                  fullName: { ...commonRules.name, required: false },
+                };
+
+                const errors = validateForm(formData, validationRules);
+
+                // Custom validation: at least one of email or phone
                 if (!formData.email && !formData.phoneNumber) {
-                  toast.error('Please provide either email or phone number');
-                  return;
+                  errors.email = 'Either email or phone number is required';
+                  errors.phoneNumber = 'Either email or phone number is required';
                 }
-                if (formData.password.length < 6) {
-                  toast.error('Password must be at least 6 characters');
-                  return;
-                }
-                if (formData.password !== formData.confirmPassword) {
-                  toast.error('Passwords do not match');
+
+                setFormErrors(errors);
+
+                if (Object.keys(errors).length > 0) {
+                  toast.error('Please fix the errors in the form');
                   return;
                 }
                 
@@ -613,6 +737,8 @@ export default function UsersPage() {
                     fullName: '',
                     roles: [],
                   });
+                  setFormErrors({});
+                  setTouched({});
                   // Refresh users list
                   const response = await UsersAPI.listUsers({ page, limit: pageSize });
                   setUsers(response.data || []);
