@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Query, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ZoeaCardService } from './zoea-card.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DepositDto, WithdrawDto, PayDto } from './dto/zoea-card.dto';
