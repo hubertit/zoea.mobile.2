@@ -72,8 +72,15 @@ class ApiClient {
           });
         }
 
-        // Network error
+        // Network error - API might be down
         if (error.request) {
+          // Check if we're not already on maintenance page
+          if (typeof window !== 'undefined' && !window.location.pathname.includes('/maintenance')) {
+            // Redirect to maintenance page after a short delay
+            setTimeout(() => {
+              window.location.href = '/maintenance';
+            }, 1000);
+          }
           return Promise.reject({
             message: 'Network error. Please check your connection.',
             status: 0,

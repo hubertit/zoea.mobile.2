@@ -103,4 +103,11 @@ export {
   faImage,
   faHeart,
   faSave,
+  faCloud,
+  faSync,
+  faSyncAlt,
+  faRedo,
+  faRedoAlt,
+  faWifi,
+  faServer,
 } from '@fortawesome/free-solid-svg-icons';

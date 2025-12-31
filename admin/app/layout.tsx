@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Toaster from "./components/Toaster";
+import HealthCheckProvider from "./components/HealthCheckProvider";
 
 export const metadata: Metadata = {
   title: "Zoea Admin Portal",
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <HealthCheckProvider>
+          {children}
+        </HealthCheckProvider>
         <Toaster />
       </body>
     </html>
