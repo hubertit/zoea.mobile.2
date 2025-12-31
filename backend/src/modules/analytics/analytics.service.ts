@@ -474,7 +474,7 @@ export class AnalyticsService {
                   },
                 },
               },
-              category: {
+              eventContext: {
                 select: {
                   name: true,
                   slug: true,
