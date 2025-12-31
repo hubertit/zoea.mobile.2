@@ -173,9 +173,9 @@ export default function UsersPage() {
 
   const columns = [
     {
-      key: 'name',
+      key: 'fullName',
       label: 'Name',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: User) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#0e1a30]/10 rounded-full flex items-center justify-center">
@@ -191,9 +191,9 @@ export default function UsersPage() {
       ),
     },
     {
-      key: 'phone',
+      key: 'phoneNumber',
       label: 'Phone',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: User) => (
         <span className="text-sm text-gray-900">{row?.phoneNumber || '-'}</span>
       ),
@@ -438,6 +438,7 @@ export default function UsersPage() {
         emptyMessage="No users found"
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
+        enableClientSort={true}
       />
 
       {/* Pagination */}

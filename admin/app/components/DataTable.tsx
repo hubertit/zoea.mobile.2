@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState, useMemo } from 'react';
 import Icon, { faChevronUp, faChevronDown } from './Icon';
 import DataTableSkeleton from './DataTableSkeleton';
 
@@ -22,6 +22,7 @@ interface DataTableProps {
   emptyMessage?: string;
   showNumbering?: boolean;
   numberingStart?: number;
+  enableClientSort?: boolean; // Enable client-side sorting if onSort is not provided
 }
 
 export default function DataTable({
@@ -29,19 +30,88 @@ export default function DataTable({
   data,
   loading = false,
   onSort,
-  sortKey,
-  sortDirection,
+  sortKey: externalSortKey,
+  sortDirection: externalSortDirection,
   onRowClick,
   emptyMessage = 'No data available',
   showNumbering = false,
   numberingStart = 1,
+  enableClientSort = false,
 }: DataTableProps) {
-  const handleSort = (key: string) => {
-    if (!onSort) return;
+  const [internalSortKey, setInternalSortKey] = useState<string | undefined>();
+  const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc'>('asc');
 
-    const newDirection = sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
-    onSort(key, newDirection);
+  const sortKey = externalSortKey ?? internalSortKey;
+  const sortDirection = externalSortDirection ?? internalSortDirection;
+
+  const handleSort = (key: string) => {
+    if (onSort) {
+      const newDirection = sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
+      onSort(key, newDirection);
+    } else if (enableClientSort) {
+      const newDirection = sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
+      setInternalSortKey(key);
+      setInternalSortDirection(newDirection);
+    }
   };
+
+  // Client-side sorting
+  const sortedData = useMemo(() => {
+    if (!enableClientSort || !sortKey || !onSort) {
+      if (!enableClientSort || !sortKey) return data;
+      
+      return [...data].sort((a, b) => {
+        let aVal = a[sortKey];
+        let bVal = b[sortKey];
+        
+        // Handle nested properties (e.g., 'merchant.businessName')
+        if (sortKey.includes('.')) {
+          const keys = sortKey.split('.');
+          aVal = keys.reduce((obj: any, k) => obj?.[k], a);
+          bVal = keys.reduce((obj: any, k) => obj?.[k], b);
+        }
+        
+        // Handle null/undefined
+        if (aVal == null && bVal == null) return 0;
+        if (aVal == null) return 1;
+        if (bVal == null) return -1;
+        
+        // Handle date strings
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          const aDate = new Date(aVal);
+          const bDate = new Date(bVal);
+          if (!isNaN(aDate.getTime()) && !isNaN(bDate.getTime())) {
+            return sortDirection === 'asc' 
+              ? aDate.getTime() - bDate.getTime()
+              : bDate.getTime() - aDate.getTime();
+          }
+        }
+        
+        // Handle different types
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          return sortDirection === 'asc' 
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        }
+        
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        if (aVal instanceof Date && bVal instanceof Date) {
+          return sortDirection === 'asc' 
+            ? aVal.getTime() - bVal.getTime()
+            : bVal.getTime() - aVal.getTime();
+        }
+        
+        // Fallback to string comparison
+        return sortDirection === 'asc'
+          ? String(aVal).localeCompare(String(bVal))
+          : String(bVal).localeCompare(String(aVal));
+      });
+    }
+    return data;
+  }, [data, sortKey, sortDirection, enableClientSort, onSort]);
 
   if (loading) {
     return (
@@ -54,7 +124,9 @@ export default function DataTable({
     );
   }
 
-  if (data.length === 0) {
+  const displayData = sortedData;
+
+  if (displayData.length === 0) {
     return (
       <div className="bg-white rounded-sm border border-gray-200 p-6">
         <div className="text-center py-12">
@@ -98,7 +170,7 @@ export default function DataTable({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((row, index) => (
+            {displayData.map((row, index) => (
               <tr
                 key={index}
                 className={`hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}

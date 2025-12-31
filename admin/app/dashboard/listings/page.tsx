@@ -203,7 +203,7 @@ export default function ListingsPage() {
     {
       key: 'name',
       label: 'Name',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Listing) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#0e1a30]/10 rounded-full flex items-center justify-center">
@@ -219,9 +219,9 @@ export default function ListingsPage() {
       ),
     },
     {
-      key: 'merchant',
+      key: 'merchant.businessName',
       label: 'Merchant',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Listing) => (
         <span className="text-sm text-gray-900">{row?.merchant?.businessName || '-'}</span>
       ),
@@ -557,6 +557,7 @@ export default function ListingsPage() {
         emptyMessage="No listings found"
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
+        enableClientSort={true}
       />
 
       {/* Pagination */}

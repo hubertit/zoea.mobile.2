@@ -178,7 +178,7 @@ export default function EventsPage() {
     {
       key: 'name',
       label: 'Event Name',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Event) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#0e1a30]/10 rounded-full flex items-center justify-center">
@@ -194,9 +194,9 @@ export default function EventsPage() {
       ),
     },
     {
-      key: 'dates',
+      key: 'startDate',
       label: 'Dates',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Event) => (
         <div>
           {row?.startDate && (
@@ -470,6 +470,7 @@ export default function EventsPage() {
         emptyMessage="No events found"
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
+        enableClientSort={true}
       />
 
       {/* Pagination */}

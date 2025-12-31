@@ -189,7 +189,7 @@ export default function BookingsPage() {
     {
       key: 'bookingNumber',
       label: 'Booking #',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Booking) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#0e1a30]/10 rounded-full flex items-center justify-center">
@@ -221,9 +221,9 @@ export default function BookingsPage() {
       ),
     },
     {
-      key: 'amount',
+      key: 'totalAmount',
       label: 'Amount',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Booking) => (
         <div>
           <p className="text-sm font-medium text-gray-900">
@@ -248,9 +248,9 @@ export default function BookingsPage() {
       ),
     },
     {
-      key: 'date',
+      key: 'bookingDate',
       label: 'Booking Date',
-      sortable: false,
+      sortable: true,
       render: (_: any, row: Booking) => (
         <div>
           {row?.bookingDate && (
@@ -486,6 +486,7 @@ export default function BookingsPage() {
         emptyMessage="No bookings found"
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
+        enableClientSort={true}
       />
 
       {/* Pagination */}
