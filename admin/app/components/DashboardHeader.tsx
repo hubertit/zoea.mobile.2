@@ -15,8 +15,13 @@ import Icon, {
   faArrowRight,
   faUser,
   faSpinner,
+  faBox,
+  faCalendar,
+  faRoute,
 } from './Icon';
 import { useAuthStore } from '@/src/store/auth';
+import { SearchAPI, type SearchResult } from '@/src/lib/api/search';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 interface DashboardHeaderProps {
   onMenuToggle?: () => void;
@@ -35,6 +40,8 @@ export default function DashboardHeader({
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -68,19 +75,31 @@ export default function DashboardHeader({
     // return () => clearInterval(interval);
   }, [user]);
 
+  // Perform search when debounced term changes
   useEffect(() => {
-    if (!searchTerm.trim()) {
-      setSearchOpen(false);
-      return;
-    }
+    const performSearch = async () => {
+      if (!debouncedSearchTerm.trim() || debouncedSearchTerm.trim().length < 2) {
+        setSearchResults([]);
+        setSearchOpen(false);
+        setSearchLoading(false);
+        return;
+      }
 
-    const searchTimeout = setTimeout(() => {
-      setSearchLoading(false);
-      setSearchOpen(false);
-    }, 300);
+      setSearchLoading(true);
+      try {
+        const results = await SearchAPI.search(debouncedSearchTerm);
+        setSearchResults(results);
+        setSearchOpen(true);
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
 
-    return () => clearTimeout(searchTimeout);
-  }, [searchTerm]);
+    performSearch();
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,20 +124,30 @@ export default function DashboardHeader({
   }, [userMenuOpen, notificationsOpen, searchOpen]);
 
   const handleSearchFocus = () => {
-    if (searchTerm.trim()) {
+    if (searchTerm.trim() && searchResults.length > 0) {
       setSearchOpen(true);
     }
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim()) {
-      setSearchOpen(false);
-      // TODO: Implement search routing
-      // router.push(`/dashboard/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      // Navigate to first result or show all results
+      if (searchResults.length > 0) {
+        router.push(searchResults[0].href);
+        setSearchOpen(false);
+        setSearchTerm('');
+      }
     } else if (e.key === 'Escape') {
       setSearchOpen(false);
       searchInputRef.current?.blur();
     }
+  };
+
+  const handleResultClick = (href: string) => {
+    router.push(href);
+    setSearchOpen(false);
+    setSearchTerm('');
+    searchInputRef.current?.blur();
   };
 
   const handleLogout = () => {
@@ -168,8 +197,49 @@ export default function DashboardHeader({
             />
 
             {searchOpen && searchTerm.trim() && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-sm z-50 p-4">
-                <p className="text-sm text-gray-500 text-center">Search functionality coming soon</p>
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-sm z-50 max-h-96 overflow-y-auto">
+                {searchLoading ? (
+                  <div className="p-4 text-center">
+                    <Icon icon={faSpinner} className="animate-spin text-gray-400 mx-auto" />
+                    <p className="text-sm text-gray-500 mt-2">Searching...</p>
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div className="p-4 text-center">
+                    <p className="text-sm text-gray-500">No results found</p>
+                    <p className="text-xs text-gray-400 mt-1">Try a different search term</p>
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    {searchResults.map((result) => (
+                      <button
+                        key={`${result.type}-${result.id}`}
+                        onClick={() => handleResultClick(result.href)}
+                        className="w-full flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+                      >
+                        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
+                          <Icon
+                            icon={
+                              result.type === 'user' ? faUser :
+                              result.type === 'listing' ? faBox :
+                              result.type === 'event' ? faCalendar :
+                              faRoute
+                            }
+                            className="text-gray-600"
+                            size="sm"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{result.title}</p>
+                          {result.subtitle && (
+                            <p className="text-xs text-gray-500 truncate">{result.subtitle}</p>
+                          )}
+                          <p className="text-xs text-gray-400 mt-0.5 capitalize">{result.type}</p>
+                        </div>
+                        <Icon icon={faArrowRight} className="text-gray-400 flex-shrink-0" size="xs" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
