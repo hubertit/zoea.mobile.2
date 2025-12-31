@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { MerchantPortalAPI, type MerchantListing, type Business } from '@/src/lib/api';
+import { MerchantPortalAPI, type MerchantListing, type Business, MediaAPI } from '@/src/lib/api';
 import { toast } from '@/app/components/Toaster';
-import { Button, Modal, Input, Select, Textarea, Breadcrumbs, StatusBadge } from '@/app/components';
+import { Button, Modal, Input, Select, Textarea, Breadcrumbs, StatusBadge, ConfirmDialog } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
-import Icon, { faArrowLeft, faEdit, faBox, faCheckCircle } from '@/app/components/Icon';
+import Icon, { faArrowLeft, faEdit, faBox, faCheckCircle, faImage, faPlus, faTrash } from '@/app/components/Icon';
+import { faBed, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { CategoriesAPI } from '@/src/lib/api';
 
 export default function ListingDetailPage() {
@@ -22,6 +23,18 @@ export default function ListingDetailPage() {
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const [images, setImages] = useState<any[]>([]);
+  const [roomTypes, setRoomTypes] = useState<any[]>([]);
+  const [tables, setTables] = useState<any[]>([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [showRoomModal, setShowRoomModal] = useState(false);
+  const [showTableModal, setShowTableModal] = useState(false);
+  const [editingRoom, setEditingRoom] = useState<any>(null);
+  const [editingTable, setEditingTable] = useState<any>(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [deletingRoomId, setDeletingRoomId] = useState<string | null>(null);
+  const [deletingTableId, setDeletingTableId] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -54,6 +67,9 @@ export default function ListingDetailPage() {
     try {
       const data = await MerchantPortalAPI.getListing(businessId, listingId);
       setListing(data);
+      setImages(data.images || []);
+      setRoomTypes(data.roomTypes || []);
+      setTables(data.restaurantTables || []);
       setFormData({
         name: data.name || '',
         description: data.description || '',
@@ -142,6 +158,131 @@ export default function ListingDetailPage() {
       setSubmitting(false);
     }
   };
+
+  // Image Management
+  const handleImageUpload = async (file: File) => {
+    if (!businessId) return;
+    setUploadingImage(true);
+    try {
+      const media = await MediaAPI.upload({ file, category: 'listing' });
+      await MerchantPortalAPI.addListingImage(businessId, listingId, { mediaId: media.id });
+      toast.success('Image added successfully');
+      fetchListing();
+      setShowImageModal(false);
+    } catch (error: any) {
+      console.error('Failed to upload image:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemoveImage = async (imageId: string) => {
+    if (!businessId) return;
+    try {
+      await MerchantPortalAPI.removeListingImage(businessId, listingId, imageId);
+      toast.success('Image removed successfully');
+      fetchListing();
+      setDeletingImageId(null);
+    } catch (error: any) {
+      console.error('Failed to remove image:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to remove image');
+    }
+  };
+
+  // Room Types Management
+  const fetchRoomTypes = async () => {
+    if (!businessId || listing?.type !== 'hotel') return;
+    try {
+      const data = await MerchantPortalAPI.getRoomTypes(businessId, listingId);
+      setRoomTypes(data);
+    } catch (error: any) {
+      console.error('Failed to fetch room types:', error);
+    }
+  };
+
+  const handleSaveRoom = async (roomData: any) => {
+    if (!businessId) return;
+    try {
+      if (editingRoom) {
+        await MerchantPortalAPI.updateRoomType(businessId, editingRoom.id, roomData);
+        toast.success('Room type updated successfully');
+      } else {
+        await MerchantPortalAPI.createRoomType(businessId, listingId, roomData);
+        toast.success('Room type created successfully');
+      }
+      fetchRoomTypes();
+      setShowRoomModal(false);
+      setEditingRoom(null);
+    } catch (error: any) {
+      console.error('Failed to save room type:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to save room type');
+    }
+  };
+
+  const handleDeleteRoom = async (roomTypeId: string) => {
+    if (!businessId) return;
+    try {
+      await MerchantPortalAPI.deleteRoomType(businessId, roomTypeId);
+      toast.success('Room type deleted successfully');
+      fetchRoomTypes();
+      setDeletingRoomId(null);
+    } catch (error: any) {
+      console.error('Failed to delete room type:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to delete room type');
+    }
+  };
+
+  // Tables Management
+  const fetchTables = async () => {
+    if (!businessId || listing?.type !== 'restaurant') return;
+    try {
+      const data = await MerchantPortalAPI.getTables(businessId, listingId);
+      setTables(data);
+    } catch (error: any) {
+      console.error('Failed to fetch tables:', error);
+    }
+  };
+
+  const handleSaveTable = async (tableData: any) => {
+    if (!businessId) return;
+    try {
+      if (editingTable) {
+        await MerchantPortalAPI.updateTable(businessId, editingTable.id, tableData);
+        toast.success('Table updated successfully');
+      } else {
+        await MerchantPortalAPI.createTable(businessId, listingId, tableData);
+        toast.success('Table created successfully');
+      }
+      fetchTables();
+      setShowTableModal(false);
+      setEditingTable(null);
+    } catch (error: any) {
+      console.error('Failed to save table:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to save table');
+    }
+  };
+
+  const handleDeleteTable = async (tableId: string) => {
+    if (!businessId) return;
+    try {
+      await MerchantPortalAPI.deleteTable(businessId, tableId);
+      toast.success('Table deleted successfully');
+      fetchTables();
+      setDeletingTableId(null);
+    } catch (error: any) {
+      console.error('Failed to delete table:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to delete table');
+    }
+  };
+
+  useEffect(() => {
+    if (listing?.type === 'hotel') {
+      fetchRoomTypes();
+    } else if (listing?.type === 'restaurant') {
+      fetchTables();
+    }
+  }, [listing?.type, businessId, listingId]);
 
   if (loading) {
     return <PageSkeleton />;
@@ -463,7 +604,411 @@ export default function ListingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Images Section */}
+      <div className="bg-white border border-gray-200 rounded-sm p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Images</h2>
+          <Button
+            variant="primary"
+            size="sm"
+            icon={faPlus}
+            onClick={() => setShowImageModal(true)}
+          >
+            Add Image
+          </Button>
+        </div>
+        {images.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {images.map((image) => (
+              <div key={image.id} className="relative group">
+                <img
+                  src={image.media?.thumbnailUrl || image.media?.url || ''}
+                  alt="Listing"
+                  className="w-full h-32 object-cover rounded-sm"
+                />
+                {image.isPrimary && (
+                  <span className="absolute top-2 left-2 bg-[#0e1a30] text-white text-xs px-2 py-1 rounded">
+                    Primary
+                  </span>
+                )}
+                <button
+                  onClick={() => setDeletingImageId(image.id)}
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Icon icon={faTrash} className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center py-8">No images uploaded yet</p>
+        )}
+      </div>
+
+      {/* Room Types Section (Hotels) */}
+      {listing?.type === 'hotel' && (
+        <div className="bg-white border border-gray-200 rounded-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <Icon icon={faBed as any} /> Room Types
+            </h2>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={faPlus}
+              onClick={() => {
+                setEditingRoom(null);
+                setShowRoomModal(true);
+              }}
+            >
+              Add Room Type
+            </Button>
+          </div>
+          {roomTypes.length > 0 ? (
+            <div className="space-y-4">
+              {roomTypes.map((room) => (
+                <div key={room.id} className="border border-gray-200 rounded-sm p-4 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{room.name}</h3>
+                    {room.description && <p className="text-sm text-gray-600 mt-1">{room.description}</p>}
+                    <div className="flex gap-4 mt-2 text-sm text-gray-600">
+                      <span>Max Occupancy: {room.maxOccupancy}</span>
+                      <span>Price: {room.basePrice.toLocaleString()} RWF/night</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={faEdit}
+                      onClick={() => {
+                        setEditingRoom(room);
+                        setShowRoomModal(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={faTrash}
+                      onClick={() => setDeletingRoomId(room.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-8">No room types added yet</p>
+          )}
+        </div>
+      )}
+
+      {/* Tables Section (Restaurants) */}
+      {listing?.type === 'restaurant' && (
+        <div className="bg-white border border-gray-200 rounded-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <Icon icon={faUtensils as any} /> Tables
+            </h2>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={faPlus}
+              onClick={() => {
+                setEditingTable(null);
+                setShowTableModal(true);
+              }}
+            >
+              Add Table
+            </Button>
+          </div>
+          {tables.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tables.map((table) => (
+                <div key={table.id} className="border border-gray-200 rounded-sm p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-gray-900">Table {table.tableNumber}</h3>
+                    <StatusBadge status={table.isAvailable ? 'active' : 'inactive'} />
+                  </div>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <p>Capacity: {table.capacity} guests</p>
+                    {table.location && <p>Location: {table.location}</p>}
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={faEdit}
+                      onClick={() => {
+                        setEditingTable(table);
+                        setShowTableModal(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={faTrash}
+                      onClick={() => setDeletingTableId(table.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-8">No tables added yet</p>
+          )}
+        </div>
+      )}
+
+      {/* Image Upload Modal */}
+      <Modal
+        isOpen={showImageModal}
+        onClose={() => setShowImageModal(false)}
+        title="Upload Image"
+      >
+        <div className="space-y-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                handleImageUpload(file);
+              }
+            }}
+            className="w-full"
+            disabled={uploadingImage}
+          />
+          {uploadingImage && <p className="text-sm text-gray-600">Uploading...</p>}
+        </div>
+      </Modal>
+
+      {/* Room Type Modal */}
+      <RoomTypeModal
+        isOpen={showRoomModal}
+        onClose={() => {
+          setShowRoomModal(false);
+          setEditingRoom(null);
+        }}
+        onSave={handleSaveRoom}
+        room={editingRoom}
+      />
+
+      {/* Table Modal */}
+      <TableModal
+        isOpen={showTableModal}
+        onClose={() => {
+          setShowTableModal(false);
+          setEditingTable(null);
+        }}
+        onSave={handleSaveTable}
+        table={editingTable}
+      />
+
+      {/* Delete Confirmations */}
+      <ConfirmDialog
+        isOpen={deletingImageId !== null}
+        onClose={() => setDeletingImageId(null)}
+        onConfirm={() => deletingImageId && handleRemoveImage(deletingImageId)}
+        title="Delete Image"
+        message="Are you sure you want to remove this image?"
+      />
+      <ConfirmDialog
+        isOpen={deletingRoomId !== null}
+        onClose={() => setDeletingRoomId(null)}
+        onConfirm={() => deletingRoomId && handleDeleteRoom(deletingRoomId)}
+        title="Delete Room Type"
+        message="Are you sure you want to delete this room type?"
+      />
+      <ConfirmDialog
+        isOpen={deletingTableId !== null}
+        onClose={() => setDeletingTableId(null)}
+        onConfirm={() => deletingTableId && handleDeleteTable(deletingTableId)}
+        title="Delete Table"
+        message="Are you sure you want to delete this table?"
+      />
     </div>
+  );
+}
+
+// Room Type Modal Component
+function RoomTypeModal({ isOpen, onClose, onSave, room }: any) {
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    maxOccupancy: '',
+    pricePerNight: '',
+    amenities: '',
+  });
+
+  useEffect(() => {
+    if (room) {
+      setFormData({
+        name: room.name || '',
+        description: room.description || '',
+        maxOccupancy: room.maxOccupancy?.toString() || '',
+        pricePerNight: room.basePrice?.toString() || '',
+        amenities: room.amenities?.join(', ') || '',
+      });
+    } else {
+      setFormData({
+        name: '',
+        description: '',
+        maxOccupancy: '',
+        pricePerNight: '',
+        amenities: '',
+      });
+    }
+  }, [room, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({
+      name: formData.name,
+      description: formData.description || undefined,
+      maxOccupancy: parseInt(formData.maxOccupancy),
+      pricePerNight: parseFloat(formData.pricePerNight),
+      amenities: formData.amenities ? formData.amenities.split(',').map((a: string) => a.trim()).filter(Boolean) : undefined,
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={room ? 'Edit Room Type' : 'Add Room Type'}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Room Name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          required
+        />
+        <Textarea
+          label="Description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          rows={3}
+        />
+        <Input
+          label="Max Occupancy"
+          type="number"
+          value={formData.maxOccupancy}
+          onChange={(e) => setFormData({ ...formData, maxOccupancy: e.target.value })}
+          required
+        />
+        <Input
+          label="Price Per Night (RWF)"
+          type="number"
+          value={formData.pricePerNight}
+          onChange={(e) => setFormData({ ...formData, pricePerNight: e.target.value })}
+          required
+        />
+        <Input
+          label="Amenities (comma-separated)"
+          value={formData.amenities}
+          onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
+          placeholder="WiFi, TV, AC, etc."
+        />
+        <div className="flex gap-2 justify-end">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            {room ? 'Update' : 'Create'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+// Table Modal Component
+function TableModal({ isOpen, onClose, onSave, table }: any) {
+  const [formData, setFormData] = useState({
+    tableNumber: '',
+    capacity: '',
+    location: '',
+    isAvailable: true,
+  });
+
+  useEffect(() => {
+    if (table) {
+      setFormData({
+        tableNumber: table.tableNumber || '',
+        capacity: table.capacity?.toString() || '',
+        location: table.location || '',
+        isAvailable: table.isAvailable ?? true,
+      });
+    } else {
+      setFormData({
+        tableNumber: '',
+        capacity: '',
+        location: '',
+        isAvailable: true,
+      });
+    }
+  }, [table, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({
+      tableNumber: formData.tableNumber,
+      capacity: parseInt(formData.capacity),
+      location: formData.location || undefined,
+      isAvailable: formData.isAvailable,
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={table ? 'Edit Table' : 'Add Table'}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Table Number"
+          value={formData.tableNumber}
+          onChange={(e) => setFormData({ ...formData, tableNumber: e.target.value })}
+          required
+        />
+        <Input
+          label="Capacity"
+          type="number"
+          value={formData.capacity}
+          onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+          required
+        />
+        <Input
+          label="Location"
+          value={formData.location}
+          onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+          placeholder="e.g., Main Dining, Patio, etc."
+        />
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="isAvailable"
+            checked={formData.isAvailable}
+            onChange={(e) => setFormData({ ...formData, isAvailable: e.target.checked })}
+            className="w-4 h-4"
+          />
+          <label htmlFor="isAvailable" className="text-sm text-gray-700">
+            Available for booking
+          </label>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            {table ? 'Update' : 'Create'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 

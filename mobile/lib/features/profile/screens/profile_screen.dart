@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
+import '../../../core/providers/theme_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -109,18 +110,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         centerTitle: false,
         automaticallyImplyLeading: false,
         actions: [
+          // Quick Theme Toggle
+          Consumer(
+            builder: (context, ref, child) {
+              final themeMode = ref.watch(themeProvider);
+              final themeNotifier = ref.read(themeProvider.notifier);
+              
+              return IconButton(
+                onPressed: () => themeNotifier.toggleTheme(),
+                icon: Icon(
+                  themeMode == ThemeMode.dark 
+                      ? Icons.light_mode 
+                      : Icons.dark_mode,
+                ),
+                tooltip: themeMode == ThemeMode.dark 
+                    ? 'Switch to Light Mode' 
+                    : 'Switch to Dark Mode',
+              );
+            },
+          ),
+          // Settings Button
           IconButton(
             onPressed: () {
-              // TODO: Navigate to settings
-              // context.go('/settings');
+              context.push('/settings');
             },
             icon: const Icon(Icons.settings_outlined),
-            style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
-            ),
+            tooltip: 'Settings',
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -241,6 +258,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildMenuSection(
               title: 'Support',
               items: [
+                _buildMenuItem(
+                  icon: Icons.settings_outlined,
+                  title: 'Settings',
+                  subtitle: 'Appearance and preferences',
+                  onTap: () {
+                    context.push('/profile/settings');
+                  },
+                ),
                 _buildMenuItem(
                   icon: Icons.help_outline,
                   title: 'Help Center',

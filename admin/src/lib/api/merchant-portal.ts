@@ -54,6 +54,37 @@ export interface MerchantListing {
   cityId?: string | null;
   createdAt: string;
   updatedAt: string;
+  images?: Array<{
+    id: string;
+    mediaId: string;
+    isPrimary: boolean;
+    sortOrder: number;
+    media: {
+      id: string;
+      url: string;
+      thumbnailUrl?: string | null;
+    };
+  }>;
+  roomTypes?: Array<{
+    id: string;
+    name: string;
+    description?: string | null;
+    maxOccupancy: number;
+    bedType?: string | null;
+    bedCount?: number | null;
+    roomSize?: number | null;
+    basePrice: number;
+    amenities?: string[];
+    isActive: boolean;
+  }>;
+  restaurantTables?: Array<{
+    id: string;
+    tableNumber: string;
+    capacity: number;
+    location?: string | null;
+    isAvailable: boolean;
+    isActive: boolean;
+  }>;
 }
 
 export interface MerchantBooking {
@@ -258,6 +289,78 @@ export const MerchantPortalAPI = {
   submitListing: async (businessId: string, listingId: string): Promise<MerchantListing> => {
     const response = await apiClient.post<MerchantListing>(`/merchants/businesses/${businessId}/listings/${listingId}/submit`);
     return response.data;
+  },
+
+  // ============ LISTING IMAGES ============
+  addListingImage: async (businessId: string, listingId: string, data: { mediaId: string; isPrimary?: boolean }): Promise<any> => {
+    const response = await apiClient.post(`/merchants/businesses/${businessId}/listings/${listingId}/images`, data);
+    return response.data;
+  },
+
+  removeListingImage: async (businessId: string, listingId: string, imageId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}/listings/${listingId}/images/${imageId}`);
+  },
+
+  // ============ ROOM TYPES (Hotels) ============
+  getRoomTypes: async (businessId: string, listingId: string): Promise<any[]> => {
+    const response = await apiClient.get<any[]>(`/merchants/businesses/${businessId}/listings/${listingId}/rooms`);
+    return response.data;
+  },
+
+  createRoomType: async (businessId: string, listingId: string, data: {
+    name: string;
+    description?: string;
+    maxOccupancy: number;
+    pricePerNight: number;
+    amenities?: string[];
+  }): Promise<any> => {
+    const response = await apiClient.post(`/merchants/businesses/${businessId}/listings/${listingId}/rooms`, data);
+    return response.data;
+  },
+
+  updateRoomType: async (businessId: string, roomTypeId: string, data: Partial<{
+    name: string;
+    description: string;
+    maxOccupancy: number;
+    pricePerNight: number;
+    amenities: string[];
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/merchants/businesses/${businessId}/rooms/${roomTypeId}`, data);
+    return response.data;
+  },
+
+  deleteRoomType: async (businessId: string, roomTypeId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}/rooms/${roomTypeId}`);
+  },
+
+  // ============ TABLES (Restaurants) ============
+  getTables: async (businessId: string, listingId: string): Promise<any[]> => {
+    const response = await apiClient.get<any[]>(`/merchants/businesses/${businessId}/listings/${listingId}/tables`);
+    return response.data;
+  },
+
+  createTable: async (businessId: string, listingId: string, data: {
+    tableNumber: string;
+    capacity: number;
+    location?: string;
+    isAvailable?: boolean;
+  }): Promise<any> => {
+    const response = await apiClient.post(`/merchants/businesses/${businessId}/listings/${listingId}/tables`, data);
+    return response.data;
+  },
+
+  updateTable: async (businessId: string, tableId: string, data: Partial<{
+    tableNumber: string;
+    capacity: number;
+    location: string;
+    isAvailable: boolean;
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/merchants/businesses/${businessId}/tables/${tableId}`, data);
+    return response.data;
+  },
+
+  deleteTable: async (businessId: string, tableId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}/tables/${tableId}`);
   },
 
   // ============ BOOKINGS ============
