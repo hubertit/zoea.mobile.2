@@ -2,22 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Light Mode Colors
+  // Primary Color (used in both light and dark)
   static const Color primaryColor = Color(0xFF181E29);
+  
+  // Light Mode Colors
   static const Color backgroundColor = Color(0xFFFFFFFF);
   static const Color primaryTextColor = Color(0xFF181E29);
   static const Color secondaryTextColor = Color(0xFF6C727F);
   static const Color dividerColor = Color(0xFFE9E9EC);
   static const Color successColor = Color(0xFF009E60);
   static const Color errorColor = Color(0xFFD9534F);
+  static const Color warningColor = Color(0xFFFFA500);
+  static const Color infoColor = Color(0xFF2196F3);
   
-  // Dark Mode Colors
-  static const Color darkBackgroundColor = Color(0xFF121212);
-  static const Color darkSurfaceColor = Color(0xFF1E1E1E);
-  static const Color darkPrimaryTextColor = Color(0xFFFFFFFF);
-  static const Color darkSecondaryTextColor = Color(0xFFB0B0B0);
-  static const Color darkDividerColor = Color(0xFF333333);
-  static const Color darkCardColor = Color(0xFF2A2A2A);
+  // Light Mode Grey Shades
+  static const Color lightGrey50 = Color(0xFFF9FAFB);
+  static const Color lightGrey100 = Color(0xFFF3F4F6);
+  static const Color lightGrey200 = Color(0xFFE5E7EB);
+  static const Color lightGrey300 = Color(0xFFD1D5DB);
+  static const Color lightGrey400 = Color(0xFF9CA3AF);
+  static const Color lightGrey500 = Color(0xFF6B7280);
+  
+  // Dark Mode Colors - Based on primary color (0xFF181E29)
+  // Using a sophisticated dark palette that complements the primary blue-gray
+  static const Color darkBackgroundColor = Color(0xFF0F1217); // Slightly lighter than pure black, with blue tint
+  static const Color darkSurfaceColor = Color(0xFF1A1D24); // Surface color with primary color influence
+  static const Color darkCardColor = Color(0xFF232730); // Card color - slightly lighter than surface
+  static const Color darkPrimaryTextColor = Color(0xFFF5F7FA); // Off-white for better readability
+  static const Color darkSecondaryTextColor = Color(0xFF9CA3AF); // Muted grey for secondary text
+  static const Color darkDividerColor = Color(0xFF2D3239); // Divider with primary color influence
+  static const Color darkBorderColor = Color(0xFF2D3239);
+  
+  // Dark Mode Grey Shades
+  static const Color darkGrey50 = Color(0xFF2D3239);
+  static const Color darkGrey100 = Color(0xFF3A3F47);
+  static const Color darkGrey200 = Color(0xFF4A4F57);
+  static const Color darkGrey300 = Color(0xFF5A5F67);
+  static const Color darkGrey400 = Color(0xFF6A6F77);
+  static const Color darkGrey500 = Color(0xFF8A8F97);
+  
+  // Dark Mode Accent Colors (lighter versions for dark mode)
+  static const Color darkSuccessColor = Color(0xFF00C973);
+  static const Color darkErrorColor = Color(0xFFE57373);
+  static const Color darkWarningColor = Color(0xFFFFB74D);
+  static const Color darkInfoColor = Color(0xFF64B5F6);
 
   // Typography
   static const String fontFamily = 'AirbnbCereal';
@@ -90,7 +118,10 @@ class AppTheme {
         surface: darkSurfaceColor,
         onSurface: darkPrimaryTextColor,
         secondary: darkSecondaryTextColor,
-        error: errorColor,
+        error: darkErrorColor,
+        onPrimary: darkPrimaryTextColor,
+        onSecondary: darkPrimaryTextColor,
+        onError: darkPrimaryTextColor,
       ),
       scaffoldBackgroundColor: darkBackgroundColor,
       textTheme: _buildDarkTextTheme(),
@@ -99,16 +130,31 @@ class AppTheme {
         foregroundColor: darkPrimaryTextColor,
         elevation: 0,
         centerTitle: true,
+        iconTheme: IconThemeData(color: darkPrimaryTextColor),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
+          foregroundColor: darkPrimaryTextColor,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primaryColor,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primaryColor,
+          side: const BorderSide(color: primaryColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       cardTheme: CardTheme(
@@ -136,7 +182,7 @@ class AppTheme {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: errorColor),
+          borderSide: const BorderSide(color: darkErrorColor),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
@@ -147,7 +193,97 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
+      dividerTheme: const DividerThemeData(
+        color: darkDividerColor,
+        thickness: 1,
+        space: 1,
+      ),
+      iconTheme: const IconThemeData(
+        color: darkPrimaryTextColor,
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: darkPrimaryTextColor,
+      ),
     );
+  }
+  
+  // Helper methods to get theme-aware colors
+  static Color getBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkBackgroundColor
+        : backgroundColor;
+  }
+  
+  static Color getSurfaceColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSurfaceColor
+        : backgroundColor;
+  }
+  
+  static Color getCardColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkCardColor
+        : backgroundColor;
+  }
+  
+  static Color getPrimaryTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkPrimaryTextColor
+        : primaryTextColor;
+  }
+  
+  static Color getSecondaryTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSecondaryTextColor
+        : secondaryTextColor;
+  }
+  
+  static Color getDividerColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkDividerColor
+        : dividerColor;
+  }
+  
+  static Color getBorderColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkBorderColor
+        : dividerColor;
+  }
+  
+  static Color getGrey50(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey50
+        : lightGrey50;
+  }
+  
+  static Color getGrey100(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey100
+        : lightGrey100;
+  }
+  
+  static Color getGrey200(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey200
+        : lightGrey200;
+  }
+  
+  static Color getGrey300(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey300
+        : lightGrey300;
+  }
+  
+  static Color getSuccessColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSuccessColor
+        : successColor;
+  }
+  
+  static Color getErrorColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkErrorColor
+        : errorColor;
   }
 
   // Spacing

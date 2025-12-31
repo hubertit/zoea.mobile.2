@@ -317,6 +317,12 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
     },
     // Merchant-specific menus
     {
+      icon: faBuilding,
+      label: 'Businesses',
+      href: '/dashboard/my-businesses',
+      roles: ['MERCHANT', 'merchant'],
+    },
+    {
       icon: faBox,
       label: 'My Content',
       roles: ['MERCHANT', 'merchant'],
