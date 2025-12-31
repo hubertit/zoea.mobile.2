@@ -8,6 +8,7 @@ import Icon, { faSearch, faPlus, faTimes, faClipboardList } from '@/app/componen
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const STATUSES: { value: BookingStatus | ''; label: string }[] = [
   { value: '', label: 'All Status' },
@@ -71,6 +72,7 @@ export default function BookingsPage() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | ''>('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<PaymentStatus | ''>('');
 
@@ -83,8 +85,8 @@ export default function BookingsPage() {
           limit: pageSize,
         };
 
-        if (search.trim()) {
-          params.search = search.trim();
+        if (debouncedSearch.trim()) {
+          params.search = debouncedSearch.trim();
         }
 
         if (statusFilter) {
@@ -107,7 +109,7 @@ export default function BookingsPage() {
     };
 
     fetchBookings();
-  }, [page, pageSize, search, statusFilter, paymentStatusFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, paymentStatusFilter]);
 
   const totalPages = Math.ceil(total / pageSize);
 

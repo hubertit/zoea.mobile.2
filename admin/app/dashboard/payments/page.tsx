@@ -8,6 +8,7 @@ import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const TRANSACTION_TYPES: { value: TransactionType | ''; label: string }[] = [
   { value: '', label: 'All Types' },
@@ -63,6 +64,7 @@ export default function PaymentsPage() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
   const [typeFilter, setTypeFilter] = useState<TransactionType | ''>('');
   const [statusFilter, setStatusFilter] = useState<TransactionStatus | PaymentStatus | ''>('');
 
@@ -77,8 +79,8 @@ export default function PaymentsPage() {
             limit: pageSize,
           };
 
-          if (search.trim()) {
-            params.search = search.trim();
+          if (debouncedSearch.trim()) {
+            params.search = debouncedSearch.trim();
           }
 
           if (typeFilter) {
@@ -102,7 +104,7 @@ export default function PaymentsPage() {
 
       fetchTransactions();
     }
-  }, [activeTab, page, pageSize, search, typeFilter, statusFilter]);
+  }, [activeTab, page, pageSize, debouncedSearch, typeFilter, statusFilter]);
 
   // Fetch payouts
   useEffect(() => {
@@ -115,8 +117,8 @@ export default function PaymentsPage() {
             limit: pageSize,
           };
 
-          if (search.trim()) {
-            params.search = search.trim();
+          if (debouncedSearch.trim()) {
+            params.search = debouncedSearch.trim();
           }
 
           if (statusFilter) {
@@ -136,7 +138,7 @@ export default function PaymentsPage() {
 
       fetchPayouts();
     }
-  }, [activeTab, page, pageSize, search, statusFilter]);
+  }, [activeTab, page, pageSize, debouncedSearch, statusFilter]);
 
   const totalPages = Math.ceil(total / pageSize);
 

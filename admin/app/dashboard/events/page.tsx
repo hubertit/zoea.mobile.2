@@ -8,6 +8,7 @@ import Icon, { faSearch, faPlus, faTimes, faCalendar } from '@/app/components/Ic
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const STATUSES: { value: EventStatus | ''; label: string }[] = [
   { value: '', label: 'All Status' },
@@ -45,6 +46,7 @@ export default function EventsPage() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<EventStatus | ''>('');
 
   useEffect(() => {
@@ -56,8 +58,8 @@ export default function EventsPage() {
           limit: pageSize,
         };
 
-        if (search.trim()) {
-          params.search = search.trim();
+        if (debouncedSearch.trim()) {
+          params.search = debouncedSearch.trim();
         }
 
         if (statusFilter) {
@@ -76,7 +78,7 @@ export default function EventsPage() {
     };
 
     fetchEvents();
-  }, [page, pageSize, search, statusFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter]);
 
   const totalPages = Math.ceil(total / pageSize);
 

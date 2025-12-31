@@ -8,6 +8,7 @@ import Icon, { faSearch, faPlus, faTimes, faUser } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const STATUSES = [
   { value: '', label: 'All Status' },
@@ -66,6 +67,7 @@ export default function UsersPage() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const [verificationFilter, setVerificationFilter] = useState<VerificationStatus | ''>('');
@@ -80,8 +82,8 @@ export default function UsersPage() {
           limit: pageSize,
         };
 
-        if (search.trim()) {
-          params.search = search.trim();
+        if (debouncedSearch.trim()) {
+          params.search = debouncedSearch.trim();
         }
 
         if (statusFilter) {
@@ -108,7 +110,7 @@ export default function UsersPage() {
     };
 
     fetchUsers();
-  }, [page, pageSize, search, statusFilter, roleFilter, verificationFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, roleFilter, verificationFilter]);
 
   const totalPages = Math.ceil(total / pageSize);
 

@@ -10,6 +10,7 @@ import PageSkeleton from '@/app/components/PageSkeleton';
 import Input from '@/app/components/Input';
 import Textarea from '@/app/components/Textarea';
 import Select from '@/app/components/Select';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const STATUSES: { value: ApprovalStatus | ''; label: string }[] = [
   { value: '', label: 'All Status' },
@@ -41,6 +42,7 @@ export default function NotificationsPage() {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
   const [statusFilter, setStatusFilter] = useState<ApprovalStatus | ''>('');
   const [broadcastModalOpen, setBroadcastModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -62,8 +64,8 @@ export default function NotificationsPage() {
           limit: pageSize,
         };
 
-        if (search.trim()) {
-          params.search = search.trim();
+        if (debouncedSearch.trim()) {
+          params.search = debouncedSearch.trim();
         }
 
         if (statusFilter) {
@@ -82,7 +84,7 @@ export default function NotificationsPage() {
     };
 
     fetchNotifications();
-  }, [page, pageSize, search, statusFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter]);
 
   const handleCreateBroadcast = async () => {
     if (!broadcastData.title.trim() || !broadcastData.body.trim()) {
