@@ -8,6 +8,7 @@ import Icon, { faSearch, faTimes, faStar } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
+import { useDebounce } from '@/src/hooks/useDebounce';
 
 const STATUSES: { value: ReviewStatus | ''; label: string }[] = [
   { value: '', label: 'All Status' },
@@ -38,6 +39,7 @@ export default function ReviewsPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ReviewStatus | ''>('');
+  const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -52,31 +54,14 @@ export default function ReviewsPage() {
           params.status = statusFilter;
         }
 
-        // Note: The reviews API doesn't have a search param, but we can filter client-side
+        if (debouncedSearch.trim()) {
+          params.search = debouncedSearch.trim();
+        }
+
+        // Admin endpoint returns all reviews including unapproved
         const response = await ReviewsAPI.listReviews(params);
         
-        // Client-side search filtering
-        let filteredData = response.data || [];
-        if (search.trim()) {
-          const searchLower = search.toLowerCase();
-          filteredData = filteredData.filter((review) => {
-            const userName = review.user?.fullName?.toLowerCase() || '';
-            const listingName = review.listing?.name?.toLowerCase() || '';
-            const eventName = review.event?.name?.toLowerCase() || '';
-            const tourName = review.tour?.name?.toLowerCase() || '';
-            const comment = review.comment?.toLowerCase() || review.content?.toLowerCase() || '';
-            const title = review.title?.toLowerCase() || '';
-            
-            return userName.includes(searchLower) ||
-                   listingName.includes(searchLower) ||
-                   eventName.includes(searchLower) ||
-                   tourName.includes(searchLower) ||
-                   comment.includes(searchLower) ||
-                   title.includes(searchLower);
-          });
-        }
-        
-        setReviews(filteredData);
+        setReviews(response.data || []);
         setTotal(response.meta?.total || 0);
       } catch (error: any) {
         console.error('Failed to fetch reviews:', error);
@@ -87,7 +72,7 @@ export default function ReviewsPage() {
     };
 
     fetchReviews();
-  }, [page, pageSize, statusFilter, search]);
+  }, [page, pageSize, statusFilter, debouncedSearch]);
 
   const totalPages = Math.ceil(total / pageSize);
 

@@ -54,9 +54,10 @@ export interface UpdateReviewStatusParams {
 export const ReviewsAPI = {
   /**
    * List reviews with filters and pagination
+   * Uses admin endpoint to get all reviews including unapproved
    */
   listReviews: async (params: ListReviewsParams = {}): Promise<ListReviewsResponse> => {
-    const response = await apiClient.get<ListReviewsResponse>('/reviews', { params });
+    const response = await apiClient.get<ListReviewsResponse>('/admin/reviews', { params });
     return response.data;
   },
 
