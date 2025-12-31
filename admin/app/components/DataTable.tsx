@@ -1,8 +1,9 @@
 'use client';
 
 import { ReactNode, useState, useMemo } from 'react';
-import Icon, { faChevronUp, faChevronDown } from './Icon';
+import Icon, { faChevronUp, faChevronDown, faEye, faEyeSlash } from './Icon';
 import DataTableSkeleton from './DataTableSkeleton';
+import Button from './Button';
 
 interface Column {
   key: string;
@@ -23,6 +24,7 @@ interface DataTableProps {
   showNumbering?: boolean;
   numberingStart?: number;
   enableClientSort?: boolean; // Enable client-side sorting if onSort is not provided
+  enableColumnVisibility?: boolean; // Enable column visibility toggle
 }
 
 export default function DataTable({
@@ -37,9 +39,14 @@ export default function DataTable({
   showNumbering = false,
   numberingStart = 1,
   enableClientSort = false,
+  enableColumnVisibility = false,
 }: DataTableProps) {
   const [internalSortKey, setInternalSortKey] = useState<string | undefined>();
   const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
+    new Set(columns.map(col => col.key))
+  );
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
 
   const sortKey = externalSortKey ?? internalSortKey;
   const sortDirection = externalSortDirection ?? internalSortDirection;
@@ -57,7 +64,9 @@ export default function DataTable({
 
   // Client-side sorting
   const sortedData = useMemo(() => {
-    if (!enableClientSort || !sortKey || !onSort) {
+    if (!enableClientSort || !sortKey || onSort) {
+      // If onSort is provided, use server-side sorting (data is already sorted)
+      // If client sort is disabled or no sort key, return data as-is
       if (!enableClientSort || !sortKey) return data;
       
       return [...data].sort((a, b) => {
@@ -113,18 +122,33 @@ export default function DataTable({
     return data;
   }, [data, sortKey, sortDirection, enableClientSort, onSort]);
 
+  const visibleColumnsList = columns.filter(col => visibleColumns.has(col.key));
+
   if (loading) {
     return (
       <DataTableSkeleton
         rows={5}
-        columns={columns.length + (showNumbering ? 1 : 0)}
+        columns={visibleColumnsList.length + (showNumbering ? 1 : 0)}
         showHeader
-        showActions={columns.some((col) => col.key === 'actions')}
+        showActions={visibleColumnsList.some((col) => col.key === 'actions')}
       />
     );
   }
 
   const displayData = sortedData;
+
+  const toggleColumnVisibility = (key: string) => {
+    const newVisible = new Set(visibleColumns);
+    if (newVisible.has(key)) {
+      // Don't allow hiding all columns
+      if (newVisible.size > 1) {
+        newVisible.delete(key);
+      }
+    } else {
+      newVisible.add(key);
+    }
+    setVisibleColumns(newVisible);
+  };
 
   if (displayData.length === 0) {
     return (
@@ -138,6 +162,42 @@ export default function DataTable({
 
   return (
     <div className="bg-white rounded-sm border border-gray-200 overflow-hidden">
+      {/* Column Visibility Toggle */}
+      {enableColumnVisibility && (
+        <div className="px-6 py-3 border-b border-gray-200 bg-gray-50 flex items-center justify-end">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowColumnMenu(!showColumnMenu)}
+              icon={showColumnMenu ? faEyeSlash : faEye}
+            >
+              Columns
+            </Button>
+            {showColumnMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-sm z-10">
+                <div className="p-2 space-y-1 max-h-64 overflow-y-auto">
+                  {columns.map((column) => (
+                    <label
+                      key={column.key}
+                      className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={visibleColumns.has(column.key)}
+                        onChange={() => toggleColumnVisibility(column.key)}
+                        disabled={visibleColumns.size === 1 && visibleColumns.has(column.key)}
+                        className="w-4 h-4 text-[#0e1a30] border-gray-300 rounded focus:ring-[#0e1a30]"
+                      />
+                      <span className="text-sm text-gray-700">{column.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
@@ -147,7 +207,7 @@ export default function DataTable({
                   #
                 </th>
               )}
-              {columns.map((column) => (
+              {visibleColumnsList.map((column) => (
                 <th
                   key={column.key}
                   className={`px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider ${
@@ -181,7 +241,7 @@ export default function DataTable({
                     {numberingStart + index}
                   </td>
                 )}
-                {columns.map((column) => (
+                {visibleColumnsList.map((column) => (
                   <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {column.render
                       ? column.render(row[column.key], row)

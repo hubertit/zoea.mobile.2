@@ -439,6 +439,7 @@ export default function UsersPage() {
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
         enableClientSort={true}
+        enableColumnVisibility={true}
       />
 
       {/* Pagination */}
