@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ListingsAPI, CategoriesAPI, MerchantsAPI, LocationsAPI, type Listing, type ListingStatus, type ListingType, type Category, type CreateListingParams, type Merchant, type Country, type City } from '@/src/lib/api';
-import Icon, { faSearch, faPlus, faTimes, faBox, faTags } from '@/app/components/Icon';
+import Icon, { faSearch, faPlus, faTimes, faBox, faTags, faChevronDown, faChevronUp } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Modal, Input, Select, Textarea, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
@@ -70,6 +70,12 @@ export default function ListingsPage() {
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [countryFilter, setCountryFilter] = useState<string>('');
+  const [cityFilter, setCityFilter] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [filterCities, setFilterCities] = useState<City[]>([]);
   const [formData, setFormData] = useState<Partial<CreateListingParams>>({
     merchantId: '',
     name: '',
@@ -96,18 +102,32 @@ export default function ListingsPage() {
     }
   }, [searchParams]);
 
-  // Fetch categories
+  // Fetch categories and countries
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const data = await CategoriesAPI.listCategories();
-        setCategories(data);
+        const [categoriesData, countriesData] = await Promise.all([
+          CategoriesAPI.listCategories(),
+          LocationsAPI.getCountries(),
+        ]);
+        setCategories(categoriesData);
+        setCountries(countriesData || []);
       } catch (error: any) {
-        console.error('Failed to fetch categories:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
-    fetchCategories();
+    fetchData();
   }, []);
+
+  // Fetch cities when country filter changes
+  useEffect(() => {
+    if (countryFilter) {
+      LocationsAPI.getCities(countryFilter).then(setFilterCities).catch(console.error);
+    } else {
+      setFilterCities([]);
+      setCityFilter('');
+    }
+  }, [countryFilter]);
 
   // Fetch merchants, countries, cities for create modal
   useEffect(() => {
@@ -175,7 +195,7 @@ export default function ListingsPage() {
     };
 
     fetchListings();
-  }, [page, pageSize, debouncedSearch, statusFilter, typeFilter, categoryFilter]);
+  }, [page, pageSize, debouncedSearch, statusFilter, typeFilter, categoryFilter, countryFilter, cityFilter, dateFrom, dateTo]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -388,7 +408,124 @@ export default function ListingsPage() {
               ))}
             </select>
           </div>
+
+          {/* Advanced Filters Toggle */}
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="w-full"
+              icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+            >
+              {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+            </Button>
+          </div>
         </div>
+
+        {/* Advanced Filters */}
+        {showAdvancedFilters && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-sm border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Country Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country
+                </label>
+                <select
+                  value={countryFilter}
+                  onChange={(e) => {
+                    setCountryFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                >
+                  <option value="">All Countries</option>
+                  {countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* City Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  City
+                </label>
+                <select
+                  value={cityFilter}
+                  onChange={(e) => {
+                    setCityFilter(e.target.value);
+                    setPage(1);
+                  }}
+                  disabled={!countryFilter}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                  <option value="">All Cities</option>
+                  {filterCities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Date From */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Created From
+                </label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+
+              {/* Date To */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Created To
+                </label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(countryFilter || cityFilter || dateFrom || dateTo) && (
+              <div className="mt-4 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setCountryFilter('');
+                    setCityFilter('');
+                    setDateFrom('');
+                    setDateTo('');
+                    setPage(1);
+                  }}
+                >
+                  Clear Advanced Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
         {categoryFilter && (
           <div className="mt-3 flex items-center gap-2">
             <span className="text-sm text-gray-600">Filtered by category:</span>
