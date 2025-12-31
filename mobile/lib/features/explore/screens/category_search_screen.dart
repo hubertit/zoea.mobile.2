@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -47,14 +48,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -79,14 +80,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           // Search Bar
           Container(
             padding: const EdgeInsets.all(16),
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             child: TextField(
               controller: _searchController,
               autofocus: true,
               decoration: InputDecoration(
                 hintText: _getSearchHint(),
                 hintStyle: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 prefixIcon: const Icon(Icons.search, size: 20),
                 suffixIcon: _searchQuery.isNotEmpty
@@ -98,7 +99,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.grey[50],
+                fillColor: context.grey50,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
@@ -125,7 +126,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           // Sub-category Filter
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             child: _buildSubCategoryChips(),
           ),
           
@@ -228,7 +229,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   label: Text(
                     subCategory['label']!,
                     style: AppTheme.bodySmall.copyWith(
-                      color: isSelected ? Colors.white : AppTheme.primaryTextColor,
+                      color: isSelected ? Colors.white : context.primaryTextColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -242,9 +243,9 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     }
                   },
                   selectedColor: AppTheme.primaryColor,
-                  backgroundColor: AppTheme.backgroundColor,
+                  backgroundColor: context.backgroundColor,
                   side: BorderSide(
-                    color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+                    color: isSelected ? AppTheme.primaryColor : context.dividerColor,
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
@@ -271,7 +272,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             child: Text(
               'Category not found',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           );
@@ -347,23 +348,23 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Failed to load listings',
                   style: AppTheme.headlineSmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   error.toString(),
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -395,14 +396,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             Text(
               'Failed to load category',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -477,11 +478,11 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.backgroundColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryTextColor.withOpacity(0.05),
+              color: context.primaryTextColor.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -543,17 +544,17 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.location_on,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           locationName,
                           style: AppTheme.bodyMedium.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ),
@@ -578,7 +579,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       Text(
                         '($reviews reviews)',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -653,7 +654,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -835,7 +836,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   void _showSortBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -917,7 +918,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
         // Handle filter selection
       },
       selectedColor: AppTheme.primaryColor,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       side: BorderSide(
         color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
       ),

@@ -265,11 +265,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode 
+                ? Colors.black.withOpacity(0.3)
+                : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -316,13 +318,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     children: [
                   Icon(
                     Icons.water_drop,
-                    color: Colors.grey[600],
+                    color: context.grey600,
                     size: 16,
               ),
               Text(
                         '10%',
                 style: AppTheme.bodySmall.copyWith(
-                          color: Colors.grey[600],
+                          color: context.grey600,
                           fontSize: 8,
                         ),
                       ),
@@ -350,11 +352,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode 
+                ? Colors.black.withOpacity(0.3)
+                : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -415,7 +419,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 19.2,
                 height: 19.2,
                 decoration: BoxDecoration(
-                  color: Colors.red[100],
+                  color: context.isDarkMode 
+                      ? Colors.red[900]!.withOpacity(0.3)
+                      : Colors.red[100],
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -437,8 +443,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: context.isDarkMode 
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,7 +499,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -497,7 +512,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -670,10 +685,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.grey[200]!,
+            color: context.grey200,
             width: 1,
           ),
         ),
@@ -687,12 +702,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 16,
                 height: 16,
                 colorFilter: ColorFilter.mode(
-                  AppTheme.primaryColor,
+                  context.primaryColorTheme,
                   BlendMode.srcIn,
                 ),
                 placeholderBuilder: (context) => Icon(
                   icon,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   size: 22,
                 ),
               )
@@ -704,14 +719,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 height: 44,
                 errorBuilder: (context, error, stackTrace) => Icon(
                   icon,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   size: 22,
                 ),
               )
             else
               Icon(
                 icon,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 22, // Match category card icon size
               ),
             // No spacing for Visit Rwanda and Irembo (they don't have text labels)
@@ -762,6 +777,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 'Categories',
                 style: AppTheme.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               TextButton(
@@ -771,7 +787,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 child: Text(
                   'View More',
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -821,6 +837,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   'Categories',
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 TextButton(
@@ -830,7 +847,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'View More',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -863,6 +880,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             'Categories',
             style: AppTheme.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -936,10 +954,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.grey[200]!,
+            color: context.grey200,
             width: 1,
           ),
         ),
@@ -948,7 +966,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             Icon(
               icon,
-              color: context.primaryTextColor,
+              color: context.primaryColorTheme,
               size: 22,
             ),
             const SizedBox(height: 6),
@@ -977,16 +995,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.grey[200]!,
+              color: context.grey200,
               width: 1,
             ),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.grey[200]!,
-                Colors.grey[100]!,
-                Colors.grey[200]!,
+                context.grey200,
+                context.grey100,
+                context.grey200,
               ],
               stops: [
                 0.0,
@@ -1003,7 +1021,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -1013,7 +1031,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 60,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
@@ -1034,10 +1052,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.grey[200]!,
+            color: context.grey200,
             width: 1,
           ),
         ),
@@ -1046,7 +1064,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             Icon(
               icon,
-              color: context.primaryTextColor,
+              color: context.primaryColorTheme,
               size: 24,
             ),
             const SizedBox(height: 8),
@@ -1079,6 +1097,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   'Happening',
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 TextButton(
@@ -1088,7 +1107,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'View More',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1222,7 +1241,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     height: 16,
                     width: 120,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: context.grey400,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -1231,7 +1250,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     height: 12,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: context.grey400,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -1240,7 +1259,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     height: 10,
                     width: 60,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: context.grey400,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -1300,7 +1319,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   fit: BoxFit.cover,
                   placeholderColor: Colors.grey[300],
                   errorWidget: Container(
-                    color: Colors.grey[300],
+                    color: context.grey300,
                     child: const Icon(
                       Icons.event,
                       color: Colors.grey,
@@ -1393,7 +1412,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey[300],
+                    color: context.grey300,
                     child: const Icon(
                       Icons.image,
                       color: Colors.grey,
@@ -1475,7 +1494,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50], // Match quick actions background
+      backgroundColor: context.grey50, // Match quick actions background
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -1488,7 +1507,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -1644,10 +1663,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.grey[200]!,
+            color: context.grey200,
             width: 1,
           ),
         ),
@@ -1656,7 +1675,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             Icon(
               icon,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               size: 22,
             ),
             const SizedBox(height: 6),
@@ -1700,7 +1719,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             Icon(
               icon,
-              color: AppTheme.primaryColor, // Match quick actions icon color
+              color: context.primaryColorTheme, // Match quick actions icon color
               size: 24,
             ),
             const SizedBox(height: 8),
@@ -1736,6 +1755,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   'Recommend',
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 TextButton(
@@ -1745,7 +1765,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'View More',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -2313,7 +2333,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     height: 16,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: context.grey400,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -2322,7 +2342,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     height: 12,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
+                      color: context.grey400,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -2346,6 +2366,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               'Special Offers',
               style: AppTheme.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             TextButton(
@@ -2355,7 +2376,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               child: Text(
                 'View All',
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w500,
                 ),
               ),

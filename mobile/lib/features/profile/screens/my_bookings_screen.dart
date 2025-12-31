@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/bookings_provider.dart';
 
 class MyBookingsScreen extends ConsumerStatefulWidget {
@@ -1158,8 +1159,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppTheme.backgroundColor,
+        decoration: BoxDecoration(
+          color: context.backgroundColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -1170,7 +1171,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: context.grey300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

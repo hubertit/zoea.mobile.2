@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/services/token_storage_service.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -70,16 +71,16 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -146,10 +147,10 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 return Container(
                   width: 80,
                   height: 80,
-                  color: Colors.grey[200],
+                    color: context.grey200,
                   child: Icon(
                     Icons.hotel,
-                    color: Colors.grey[400],
+                    color: context.grey400,
                   ),
                 );
               },
@@ -170,7 +171,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 Text(
                   'Kacyiru, Kigali',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -185,7 +186,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     Text(
                       '4.8 (1,247 reviews)',
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -242,7 +243,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -251,7 +252,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             Text(
               label,
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 4),
@@ -283,7 +284,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -305,7 +306,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     } : null,
                     icon: const Icon(Icons.remove),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.grey[100],
+                      backgroundColor: context.grey100,
                       shape: const CircleBorder(),
                     ),
                   ),
@@ -346,7 +347,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -368,7 +369,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     } : null,
                     icon: const Icon(Icons.remove),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.grey[100],
+                      backgroundColor: context.grey100,
                       shape: const CircleBorder(),
                     ),
                   ),
@@ -491,7 +492,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
           ),
           child: TextField(
@@ -500,7 +501,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             decoration: InputDecoration(
               hintText: 'Any special requests or preferences...',
               hintStyle: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               border: InputBorder.none,
             ),
@@ -651,7 +652,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                         Text(
                           '${roomType['maxGuests']} guests • ${roomType['amenities']}',
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ],
@@ -663,7 +664,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                       Text(
                         'Qty: $quantity',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -732,7 +733,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                   decoration: InputDecoration(
                     hintText: 'Enter coupon code',
                     hintStyle: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),

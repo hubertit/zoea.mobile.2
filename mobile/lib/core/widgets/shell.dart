@@ -34,16 +34,18 @@ class Shell extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: context.surfaceColor,
-        selectedItemColor: AppTheme.primaryColor,
+        selectedItemColor: context.primaryColorTheme,
         unselectedItemColor: context.secondaryTextColor,
         currentIndex: currentIndex,
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
+          color: context.primaryColorTheme,
         ),
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w400,
+          color: context.secondaryTextColor,
         ),
         items: const [
           BottomNavigationBarItem(

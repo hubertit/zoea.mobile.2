@@ -32,7 +32,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   bool _isLoading = false;
   bool _isSaving = false;
   bool _hasLoadedInitialData = false;
-  String? _profileImagePath;
 
   // Preferences state
   AgeRange? _selectedAgeRange;
@@ -137,7 +136,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
     return nameChanged || emailChanged || phoneChanged || 
            ageChanged || genderChanged || lengthOfStayChanged || 
-           interestsChanged || travelPartyChanged || _profileImagePath != null;
+           interestsChanged || travelPartyChanged;
   }
 
   /// Helper to compare lists
@@ -369,10 +368,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Profile Picture Section
-          _buildProfilePictureSection(),
-          const SizedBox(height: 24),
-          
           // Personal Information
           _buildSectionHeader('Personal Information'),
           const SizedBox(height: 16),
@@ -571,104 +566,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     );
   }
 
-  Widget _buildProfilePictureSection() {
-    final user = ref.watch(currentUserProvider);
-    final imageUrl = _profileImagePath != null 
-        ? null 
-        : user?.profileImage;
-    
-    return Center(
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppTheme.primaryColor,
-                    width: 3,
-                  ),
-                ),
-                child: ClipOval(
-                  child: _profileImagePath != null
-                      ? Image.asset(
-                          _profileImagePath!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(user),
-                        )
-                      : imageUrl != null
-                          ? Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(user),
-                            )
-                          : _buildPlaceholderImage(user),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppTheme.backgroundColor,
-                      width: 3,
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: _changeProfilePicture,
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    style: IconButton.styleFrom(
-                      padding: const EdgeInsets.all(8),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Tap to change photo',
-            style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.secondaryTextColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
       style: AppTheme.titleMedium.copyWith(
         fontWeight: FontWeight.w600,
         color: AppTheme.primaryTextColor,
-      ),
-    );
-  }
-
-  Widget _buildPlaceholderImage(User? user) {
-    return Container(
-      color: AppTheme.dividerColor,
-      child: Center(
-        child: Text(
-          user?.initials ?? 'U',
-          style: const TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.secondaryTextColor,
-          ),
-        ),
       ),
     );
   }
@@ -750,84 +653,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     );
   }
 
-  void _changeProfilePicture() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppTheme.backgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppTheme.dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Change Profile Picture',
-              style: AppTheme.titleMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      // TODO: Implement camera functionality
-                    },
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Camera'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      backgroundColor: AppTheme.backgroundColor,
-                      side: const BorderSide(color: AppTheme.primaryColor),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      // TODO: Implement gallery functionality
-                    },
-                    icon: const Icon(Icons.photo_library),
-                    label: const Text('Gallery'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      backgroundColor: AppTheme.backgroundColor,
-                      side: const BorderSide(color: AppTheme.primaryColor),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> _saveAll() async {
     // Validate basic info form
     final formState = _formKey.currentState;
@@ -879,10 +704,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           return;
         }
         await userService.updateEmail(_emailController.text.trim(), password: password);
-      }
-
-      if (_profileImagePath != null) {
-        await userService.updateProfileImage(_profileImagePath!);
       }
 
       // Save preferences in a single API call

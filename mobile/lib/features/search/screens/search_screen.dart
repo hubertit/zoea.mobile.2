@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/search_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 
@@ -86,14 +87,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.chevron_left,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
             size: 32,
           ),
           onPressed: () => context.pop(),
@@ -104,7 +105,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           decoration: InputDecoration(
             hintText: 'Search events, places, experiences...',
             hintStyle: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -129,9 +130,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         actions: [
           if (_currentQuery.isNotEmpty)
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.clear,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               onPressed: () {
                 _searchController.clear();
@@ -236,7 +237,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: Text(
                       'No recent searches',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   );
@@ -260,7 +261,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: Text(
                       'Sign in to see your search history',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   );
@@ -297,7 +298,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: Text(
                       'No popular searches available',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   );
@@ -350,14 +351,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Text(
             'No results found',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Try searching with different keywords',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],
@@ -397,7 +398,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Text(
             error.toString().replaceFirst('Exception: ', ''),
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -457,11 +458,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryTextColor.withOpacity(0.05),
+            color: context.primaryTextColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -491,7 +492,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     color: AppTheme.dividerColor,
                     child: Icon(
                       typeIcon,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 )
@@ -501,7 +502,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   color: AppTheme.dividerColor,
                   child: Icon(
                     typeIcon,
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
         ),
@@ -521,7 +522,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               Text(
                 location,
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -532,13 +533,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Icon(
                   typeIcon,
                   size: 12,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   typeLabel,
                   style: AppTheme.labelSmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 if (rating != null) ...[
@@ -633,7 +634,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ? Text(
                 timeAgo,
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               )
             : null,
@@ -695,7 +696,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),

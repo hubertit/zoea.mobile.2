@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class HelpCenterScreen extends ConsumerStatefulWidget {
   const HelpCenterScreen({super.key});
@@ -23,13 +24,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Help Center',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
@@ -596,7 +597,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -609,7 +610,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -621,6 +622,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               title,
               style: AppTheme.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -630,7 +632,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               child: SingleChildScrollView(
                 child: Text(
                   content,
-                  style: AppTheme.bodyMedium,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: context.primaryTextColor,
+                  ),
                 ),
               ),
             ),
@@ -667,7 +671,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -680,7 +684,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -692,6 +696,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               title,
               style: AppTheme.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -763,7 +768,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -776,7 +781,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -788,6 +793,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               title,
               style: AppTheme.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),

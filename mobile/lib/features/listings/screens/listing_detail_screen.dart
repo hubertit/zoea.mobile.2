@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -62,7 +63,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     final listingAsync = ref.watch(listingByIdProvider(widget.listingId));
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       body: listingAsync.when(
         data: (listing) => _buildContent(listing),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -73,9 +74,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
 
   Widget _buildErrorState(Object error) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, size: 32),
@@ -145,7 +146,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     final amenities = listing['amenities'] as List? ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       body: CustomScrollView(
       controller: _scrollController,
       slivers: [
@@ -153,11 +154,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         SliverAppBar(
           expandedHeight: 300,
           pinned: true,
-          backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
+          backgroundColor: _isScrolled ? context.backgroundColor : context.backgroundColor,
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
-              color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+              color: _isScrolled ? context.primaryTextColor : Colors.white,
               size: 32,
             ),
             onPressed: () {
@@ -178,12 +179,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         imageUrl: primaryImage,
                         fit: BoxFit.cover,
                         errorWidget: Container(
-                          color: Colors.grey[200],
+                          color: context.grey200,
                           child: const Icon(Icons.place, size: 100),
                         ),
                       )
                     : Container(
-                        color: Colors.grey[200],
+                        color: context.grey200,
                         child: const Icon(Icons.place, size: 100),
                       ),
                 // Gradient overlay
@@ -331,7 +332,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         // Content
         SliverToBoxAdapter(
           child: Container(
-            color: Colors.grey[50],
+            color: context.grey50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -394,17 +395,17 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on,
                             size: 18,
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               address,
                               style: AppTheme.bodyLarge.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                           ),
@@ -430,7 +431,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                             Text(
                               '($reviewCount reviews)',
                               style: AppTheme.bodyMedium.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                           ],
@@ -454,7 +455,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   child: TabBar(
                     controller: _tabController,
                     labelColor: AppTheme.primaryColor,
-                    unselectedLabelColor: AppTheme.secondaryTextColor,
+                    unselectedLabelColor: context.secondaryTextColor,
                     indicatorColor: AppTheme.primaryColor,
                     tabs: const [
                       Tab(text: 'Overview'),
@@ -569,7 +570,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 child: Text(
                   locationText,
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ),
@@ -631,10 +632,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.phone,
                       size: 20,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -651,10 +652,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.email,
                       size: 20,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -671,10 +672,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.language,
                       size: 20,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -759,14 +760,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               Text(
                 'No amenities listed',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Amenities information will be available soon',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -915,7 +916,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   Text(
                     description,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                       fontSize: 11,
                     ),
                     maxLines: 1,
@@ -952,23 +953,23 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.rate_review_outlined,
                     size: 64,
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No reviews yet',
                     style: AppTheme.headlineSmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Be the first to review this place!',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -1063,7 +1064,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1181,7 +1182,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         Text(
                           dateText,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ],
@@ -1213,16 +1214,16 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 12),
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.thumb_up_outlined,
                   size: 16,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '$helpfulCount helpful',
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ],
@@ -1353,7 +1354,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 label: const Text('Book Now'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.primaryColor,
-                  backgroundColor: AppTheme.backgroundColor,
+                  backgroundColor: context.backgroundColor,
                   side: const BorderSide(color: AppTheme.primaryColor),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -1392,7 +1393,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 label: const Text('Order Now'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF038f44), // Vuba Vuba brand color
-                  backgroundColor: AppTheme.backgroundColor,
+                  backgroundColor: context.backgroundColor,
                   side: const BorderSide(color: Color(0xFF038f44)), // Vuba Vuba brand color
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   shape: RoundedRectangleBorder(

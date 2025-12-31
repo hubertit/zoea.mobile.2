@@ -22,6 +22,7 @@ class AppTheme {
   static const Color lightGrey300 = Color(0xFFD1D5DB);
   static const Color lightGrey400 = Color(0xFF9CA3AF);
   static const Color lightGrey500 = Color(0xFF6B7280);
+  static const Color lightGrey600 = Color(0xFF4B5563);
   
   // Dark Mode Colors - Based on primary color (0xFF181E29)
   // Using a sophisticated dark palette that complements the primary blue-gray
@@ -40,12 +41,17 @@ class AppTheme {
   static const Color darkGrey300 = Color(0xFF5A5F67);
   static const Color darkGrey400 = Color(0xFF6A6F77);
   static const Color darkGrey500 = Color(0xFF8A8F97);
+  static const Color darkGrey600 = Color(0xFF9A9FA7);
   
   // Dark Mode Accent Colors (lighter versions for dark mode)
   static const Color darkSuccessColor = Color(0xFF00C973);
   static const Color darkErrorColor = Color(0xFFE57373);
   static const Color darkWarningColor = Color(0xFFFFB74D);
   static const Color darkInfoColor = Color(0xFF64B5F6);
+  
+  // Lighter version of primary color for dark mode visibility
+  // Uses a lighter grey for better contrast and visibility
+  static const Color lightPrimaryColor = Color(0xFFC5CBD3); // Lighter grey for better visibility in dark mode
 
   // Typography
   static const String fontFamily = 'AirbnbCereal';
@@ -315,6 +321,24 @@ class AppTheme {
         : lightGrey300;
   }
   
+  static Color getGrey400(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey400
+        : lightGrey400;
+  }
+  
+  static Color getGrey500(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey500
+        : lightGrey500;
+  }
+  
+  static Color getGrey600(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkGrey600
+        : lightGrey600;
+  }
+  
   static Color getSuccessColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? darkSuccessColor
@@ -325,6 +349,14 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark
         ? darkErrorColor
         : errorColor;
+  }
+  
+  // Get primary color that's visible in both light and dark modes
+  // In dark mode, returns a lighter version for better contrast
+  static Color getPrimaryColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? lightPrimaryColor
+        : primaryColor;
   }
 
   // Spacing

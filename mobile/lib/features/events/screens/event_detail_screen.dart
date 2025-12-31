@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/models/event.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -75,7 +76,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -83,11 +84,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
+            backgroundColor: _isScrolled ? context.backgroundColor : context.backgroundColor,
             leading: IconButton(
               icon: Icon(
                 Icons.chevron_left,
-                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+                color: _isScrolled ? context.primaryTextColor : Colors.white,
                 size: 32,
               ),
               onPressed: () => context.go('/events'),
@@ -101,7 +102,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     imageUrl: eventDetails.flyer,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Center(
                         child: CircularProgressIndicator(
                           color: AppTheme.primaryColor,
@@ -109,11 +110,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: AppTheme.dividerColor,
-                      child: const Icon(
+                      color: context.dividerColor,
+                      child: Icon(
                         Icons.event,
                         size: 64,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ),
@@ -383,7 +384,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     decoration: BoxDecoration(
                       color: AppTheme.primaryColor.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppTheme.dividerColor),
+                      border: Border.all(color: context.dividerColor),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -392,16 +393,19 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           icon: Icons.people,
                           label: 'Attending',
                           value: '${eventDetails.attending}',
+                          context: context,
                         ),
                         _buildInfoItem(
                           icon: Icons.group,
                           label: 'Capacity',
                           value: '${eventDetails.maxAttendance}',
+                          context: context,
                         ),
                         _buildInfoItem(
                           icon: Icons.event_available,
                           label: 'Status',
                           value: eventDetails.ongoing ? 'Ongoing' : 'Upcoming',
+                          context: context,
                         ),
                       ],
                     ),
@@ -432,6 +436,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     required IconData icon,
     required String label,
     required String value,
+    required BuildContext context,
   }) {
     return Column(
       children: [
@@ -441,11 +446,14 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           value,
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         Text(
           label,
-          style: AppTheme.bodySmall,
+          style: AppTheme.bodySmall.copyWith(
+            color: context.secondaryTextColor,
+          ),
         ),
       ],
     );
@@ -499,7 +507,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           child: Text(
                             'Sold Out',
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.errorColor,
+                              color: context.errorColor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -545,10 +553,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
         border: Border(
-          top: BorderSide(color: AppTheme.dividerColor),
+          top: BorderSide(color: context.dividerColor),
         ),
       ),
       child: SafeArea(
@@ -569,7 +577,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     ),
                     Text(
                       'per person',
-                      style: AppTheme.bodySmall,
+                      style: AppTheme.bodySmall.copyWith(
+                        color: context.secondaryTextColor,
+                      ),
                     ),
                   ],
                 ),
@@ -650,7 +660,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       barrierDismissible: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -681,6 +691,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       'Redirecting to Sinc',
                       style: AppTheme.titleSmall.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                     ),
                   ),
@@ -691,7 +702,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               Text(
                 'You are about to be redirected to our partner platform "Sinc" to purchase tickets for this event. Sinc is our trusted ticketing partner that handles secure event bookings and payments.',
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                   height: 1.3,
                 ),
               ),
@@ -728,7 +739,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                         child: Text(
                           "Don't show again",
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                             fontSize: 12,
                           ),
                         ),
@@ -750,7 +761,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               child: Text(
                 'Cancel',
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),

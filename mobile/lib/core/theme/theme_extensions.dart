@@ -36,11 +36,23 @@ extension ThemeColors on BuildContext {
   /// Get grey300 color based on current theme
   Color get grey300 => AppTheme.getGrey300(this);
   
+  /// Get grey400 color based on current theme
+  Color get grey400 => AppTheme.getGrey400(this);
+  
+  /// Get grey500 color based on current theme
+  Color get grey500 => AppTheme.getGrey500(this);
+  
+  /// Get grey600 color based on current theme
+  Color get grey600 => AppTheme.getGrey600(this);
+  
   /// Get success color based on current theme
   Color get successColor => AppTheme.getSuccessColor(this);
   
   /// Get error color based on current theme
   Color get errorColor => AppTheme.getErrorColor(this);
+  
+  /// Get primary color that's visible in both light and dark modes
+  Color get primaryColorTheme => AppTheme.getPrimaryColor(this);
   
   /// Check if current theme is dark
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;

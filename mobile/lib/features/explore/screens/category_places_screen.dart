@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -205,14 +206,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         }
 
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: context.grey50,
           appBar: AppBar(
-            backgroundColor: AppTheme.backgroundColor,
+            backgroundColor: context.backgroundColor,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.chevron_left, size: 32),
               onPressed: () => context.pop(),
-              color: AppTheme.primaryTextColor,
+              color: context.primaryTextColor,
             ),
             title: Text(
               _categoryName ?? widget.category,
@@ -272,7 +273,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               controller: _tabController,
               indicatorColor: AppTheme.primaryColor,
               labelColor: AppTheme.primaryColor,
-              unselectedLabelColor: AppTheme.secondaryTextColor,
+              unselectedLabelColor: context.secondaryTextColor,
               labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
               isScrollable: true,
               tabAlignment: TabAlignment.start,
@@ -343,14 +344,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               Text(
                 'Failed to load category',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString(),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -402,23 +403,23 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.explore,
                   size: 64,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No ${_categoryName?.toLowerCase() ?? widget.category} found',
                   style: AppTheme.headlineSmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Check back later for new listings',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ],
@@ -879,7 +880,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           Text(
                             '($reviewCount)',
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                         ],
@@ -889,17 +890,17 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.location_on,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           locationText,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -923,7 +924,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           child: Text(
                             amenityName,
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.primaryTextColor,
+                              color: context.primaryTextColor,
                               fontSize: 11,
                             ),
                           ),
@@ -956,7 +957,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -980,6 +981,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       'Filter ${_categoryName ?? widget.category}',
                       style: AppTheme.headlineSmall.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     IconButton(
@@ -1120,7 +1122,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   subtitle: Text(
                     'Show only featured listings',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                   value: tempIsFeatured == true,
@@ -1226,7 +1228,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),

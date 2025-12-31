@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -109,16 +110,16 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     });
     
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -167,9 +168,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -191,10 +192,10 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 return Container(
                   width: 80,
                   height: 80,
-                  color: Colors.grey[200],
+                    color: context.grey200,
                   child: Icon(
                     Icons.restaurant,
-                    color: Colors.grey[400],
+                    color: context.grey400,
                     size: 40,
                   ),
                 );
@@ -215,17 +216,17 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         widget.placeLocation,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ),
@@ -250,7 +251,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     Text(
                       widget.priceRange,
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -267,9 +268,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -313,7 +314,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -322,7 +323,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             Text(
               label,
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 4),
@@ -407,9 +408,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -465,9 +466,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -558,9 +559,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -607,9 +608,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -650,7 +651,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   decoration: InputDecoration(
                     hintText: 'Enter coupon code',
                     hintStyle: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -760,7 +761,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         border: Border(
           top: BorderSide(color: Colors.grey[200]!),
         ),
@@ -783,7 +784,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   Text(
                     'Total',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                   Text(
@@ -910,7 +911,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -923,7 +924,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -935,6 +936,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               'Confirm Booking',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -943,9 +945,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: context.grey50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[200]!),
+                border: Border.all(color: context.grey200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

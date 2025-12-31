@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/events_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/models/event_filter.dart';
@@ -93,9 +94,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -202,14 +203,14 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: Colors.grey[200],
+                color: context.grey200,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: Colors.grey[200],
+                color: context.grey200,
                 child: const Icon(Icons.event, size: 50),
               ),
             ),
@@ -427,7 +428,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: context.grey300,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: AnimatedBuilder(
@@ -440,9 +441,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.grey[300]!,
-                        Colors.grey[200]!,
-                        Colors.grey[300]!,
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
                       ],
                       stops: [
                         0.0,
@@ -466,7 +467,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   height: 24,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey[400],
+                    color: context.grey400,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -478,7 +479,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 16,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -487,7 +488,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 100,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -496,7 +497,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 16,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -505,7 +506,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 80,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -519,7 +520,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 16,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -528,7 +529,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 150,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -542,7 +543,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 24,
                       width: 24,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -551,7 +552,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 100,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -566,7 +567,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 80,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -574,7 +575,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 16,
                       width: 100,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: context.grey400,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -865,7 +866,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -887,15 +888,15 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               decoration: InputDecoration(
                 hintText: 'Search for events...',
                 hintStyle: AppTheme.bodyMedium.copyWith(
-                  color: Colors.grey[500],
+                  color: context.grey500,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide: BorderSide(color: context.grey300),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide: BorderSide(color: context.grey300),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -904,7 +905,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.grey[500],
+                  color: context.grey500,
                 ),
               ),
               onSubmitted: (query) {

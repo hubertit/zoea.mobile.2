@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/providers/theme_provider.dart';
@@ -99,13 +100,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildProfileContent() {
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
         title: Text(
           'Profile',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -305,11 +306,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -325,8 +326,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.primaryColor,
-                  AppTheme.primaryColor.withOpacity(0.8),
+                  context.primaryColorTheme,
+                  context.primaryColorTheme.withOpacity(0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -343,8 +344,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         return Center(
                           child: Text(
                             user.initials,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.primaryTextColor,
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
@@ -356,8 +357,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 : Center(
                     child: Text(
                       user?.initials ?? 'U',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.primaryTextColor,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -381,7 +382,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Text(
                   user?.email ?? '',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -389,13 +390,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: context.primaryColorTheme.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       'Verified Traveler',
                       style: AppTheme.labelSmall.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -411,8 +412,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
             icon: const Icon(Icons.edit_outlined),
             style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
+              backgroundColor: context.dividerColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
         ],
@@ -493,11 +494,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -507,7 +508,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         children: [
           Icon(
             icon,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 24,
           ),
           const SizedBox(height: 8),
@@ -515,20 +516,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             value,
             style: AppTheme.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             title,
             style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.primaryTextColor,
+              color: context.primaryTextColor,
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
             subtitle,
             style: AppTheme.labelSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],
@@ -547,17 +549,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           title,
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -588,12 +590,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
             ),
@@ -606,21 +608,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     title,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -633,13 +636,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Sign Out',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Text(
           'Are you sure you want to sign out?',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -647,7 +655,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -665,7 +673,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Text(
               'Sign Out',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -679,7 +687,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -692,7 +700,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -704,6 +712,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               'Select Currency',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -726,7 +735,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -739,7 +748,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -751,6 +760,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               'Select Country',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -773,7 +783,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -786,7 +796,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -798,6 +808,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               'Select Location',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -820,7 +831,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -833,7 +844,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -845,6 +856,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               'Select Language',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -867,10 +879,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : context.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          color: isSelected ? context.primaryColorTheme : context.grey200,
           width: isSelected ? 2 : 1,
         ),
       ),
@@ -879,18 +891,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           code,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           name,
           style: AppTheme.bodySmall.copyWith(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? const Icon(
+        trailing: isSelected ? Icon(
           Icons.check_circle,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 20,
         ) : null,
         onTap: () async {
@@ -908,9 +920,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Currency changed to $code',
-                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                 ),
               );
             }
@@ -920,9 +932,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Failed to update currency: ${e.toString().replaceFirst('Exception: ', '')}',
-                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
-                  backgroundColor: AppTheme.errorColor,
+                  backgroundColor: context.errorColor,
                 ),
               );
             }
@@ -936,10 +948,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : context.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          color: isSelected ? context.primaryColorTheme : context.grey200,
           width: isSelected ? 2 : 1,
         ),
       ),
@@ -952,12 +964,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           name,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
-        trailing: isSelected ? const Icon(
+        trailing: isSelected ? Icon(
           Icons.check_circle,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 20,
         ) : null,
         onTap: () {
@@ -969,9 +981,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             SnackBar(
               content: Text(
                 'Country changed to $name',
-                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
               ),
-              backgroundColor: AppTheme.primaryColor,
+              backgroundColor: context.primaryColorTheme,
             ),
           );
         },
@@ -983,34 +995,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : context.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          color: isSelected ? context.primaryColorTheme : context.grey200,
           width: isSelected ? 2 : 1,
         ),
       ),
       child: ListTile(
         leading: Icon(
           Icons.location_on,
-          color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+          color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
         ),
         title: Text(
           name,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           description,
           style: AppTheme.bodySmall.copyWith(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? const Icon(
+        trailing: isSelected ? Icon(
           Icons.check_circle,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 20,
         ) : null,
         onTap: () {
@@ -1022,9 +1034,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             SnackBar(
               content: Text(
                 'Location changed to $name',
-                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
               ),
-              backgroundColor: AppTheme.primaryColor,
+              backgroundColor: context.primaryColorTheme,
             ),
           );
         },
@@ -1036,10 +1048,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+        color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : context.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isSelected ? AppTheme.primaryColor : Colors.grey[200]!,
+          color: isSelected ? context.primaryColorTheme : context.grey200,
           width: isSelected ? 2 : 1,
         ),
       ),
@@ -1048,18 +1060,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           name,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           nativeName,
           style: AppTheme.bodySmall.copyWith(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+            color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
-        trailing: isSelected ? const Icon(
+        trailing: isSelected ? Icon(
           Icons.check_circle,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 20,
         ) : null,
         onTap: () async {
@@ -1078,9 +1090,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Language changed to $name',
-                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                 ),
               );
             }
@@ -1090,9 +1102,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Failed to update language: ${e.toString().replaceFirst('Exception: ', '')}',
-                    style: AppTheme.bodyMedium.copyWith(color: Colors.white),
+                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
-                  backgroundColor: AppTheme.errorColor,
+                  backgroundColor: context.errorColor,
                 ),
               );
             }
