@@ -466,8 +466,8 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
       ),
       child: InkWell(
         onTap: () {
-          widget.onDateSelected(event.event.startDate);
-          Navigator.pop(context);
+          Navigator.pop(context); // Close the day events bottom sheet
+          context.go('/event/${event.id}', extra: event);
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

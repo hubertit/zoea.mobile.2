@@ -23,6 +23,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   late AnimationController _shimmerController;
   late Animation<double> _shimmerAnimation;
   EventFilter _currentFilter = const EventFilter();
+  bool _hasAutoOpenedCalendar = false;
 
   @override
   void initState() {
@@ -77,6 +78,19 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   @override
   Widget build(BuildContext context) {
     final eventsState = ref.watch(eventsProvider);
+
+    // Auto-open calendar after 2 seconds if events are loaded and not already shown
+    if (!_hasAutoOpenedCalendar && 
+        eventsState.events.isNotEmpty && 
+        !eventsState.isLoading &&
+        mounted) {
+      _hasAutoOpenedCalendar = true;
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted && context.mounted) {
+          _showCalendarSheet(context);
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
