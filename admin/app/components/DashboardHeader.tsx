@@ -22,6 +22,7 @@ import Icon, {
 import { useAuthStore } from '@/src/store/auth';
 import { SearchAPI, type SearchResult } from '@/src/lib/api/search';
 import { useDebounce } from '@/src/hooks/useDebounce';
+import { useKeyboardShortcuts } from '@/src/hooks/useKeyboardShortcuts';
 
 interface DashboardHeaderProps {
   onMenuToggle?: () => void;
@@ -56,6 +57,17 @@ export default function DashboardHeader({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Keyboard shortcut: Cmd/Ctrl + K to focus search
+  useKeyboardShortcuts([
+    {
+      key: 'k',
+      ctrl: true,
+      action: () => {
+        searchInputRef.current?.focus();
+      },
+    },
+  ]);
 
   // TODO: Fetch notifications when API is ready
   useEffect(() => {

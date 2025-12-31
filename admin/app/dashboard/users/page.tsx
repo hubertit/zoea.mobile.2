@@ -9,6 +9,7 @@ import { DataTable, Pagination, Button, Modal, Input, Breadcrumbs } from '@/app/
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { validateForm, type ValidationErrors, commonRules } from '@/src/lib/validation';
+import { useKeyboardShortcuts } from '@/src/hooks/useKeyboardShortcuts';
 
 const STATUSES = [
   { value: '', label: 'All Status' },
@@ -87,6 +88,17 @@ export default function UsersPage() {
   });
   const [formErrors, setFormErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    {
+      key: 'n',
+      ctrl: true,
+      action: () => {
+        setShowCreateModal(true);
+      },
+    },
+  ]);
 
   // Fetch users
   useEffect(() => {
