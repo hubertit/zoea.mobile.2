@@ -33,9 +33,28 @@ export class ReviewsService {
         take: limit,
         include: {
           user: { select: { id: true, fullName: true, profileImageId: true } },
-          listing: { select: { id: true, name: true, type: true } },
-          event: { select: { id: true, name: true } },
-          tour: { select: { id: true, name: true } },
+          listing: { 
+            select: { 
+              id: true, 
+              name: true, 
+              type: true,
+              category: { select: { id: true, name: true, slug: true } },
+            } 
+          },
+          event: { 
+            select: { 
+              id: true, 
+              name: true,
+              eventContext: { select: { id: true, name: true, slug: true } },
+            } 
+          },
+          tour: { 
+            select: { 
+              id: true, 
+              name: true,
+              category: { select: { id: true, name: true, slug: true } },
+            } 
+          },
         },
         orderBy: { createdAt: 'desc' },
       }),
