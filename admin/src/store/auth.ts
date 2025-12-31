@@ -8,7 +8,7 @@ interface User {
   phoneNumber?: string;
   name?: string;
   fullName?: string;
-  roles?: Array<{ id: string; name: string; code: string }>;
+  roles?: Array<string | { id: string; name: string; code: string }>;
   profileImageId?: string;
 }
 

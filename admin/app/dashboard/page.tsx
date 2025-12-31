@@ -26,7 +26,10 @@ export default function DashboardPage() {
         // Check if it's a 403 error (access denied)
         if (error?.status === 403) {
           const hasAdminRole = user?.roles?.some(
-            (role: any) => role.code === 'admin' || role.code === 'super_admin'
+            (role: any) => {
+              const roleValue = typeof role === 'string' ? role : role.code;
+              return roleValue === 'admin' || roleValue === 'super_admin';
+            }
           );
           
           if (!hasAdminRole) {
@@ -46,8 +49,12 @@ export default function DashboardPage() {
   }, [user]);
 
   // Check if user has admin role
+  // Roles can be either strings (from backend) or objects with code property
   const hasAdminRole = user?.roles?.some(
-    (role: any) => role.code === 'admin' || role.code === 'super_admin'
+    (role: any) => {
+      const roleValue = typeof role === 'string' ? role : role.code;
+      return roleValue === 'admin' || roleValue === 'super_admin';
+    }
   );
 
   if (loading) {

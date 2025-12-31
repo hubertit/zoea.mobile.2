@@ -35,7 +35,10 @@ export default function RequireAuth({ children, roles }: RequireAuthProps) {
       // Check role-based access
       if (roles && roles.length > 0 && user) {
         const userRoles = user.roles || [];
-        const userRoleCodes = userRoles.map((r) => (r.code || r.name || '').toUpperCase());
+        const userRoleCodes = userRoles.map((r) => {
+          const roleValue = typeof r === 'string' ? r : (r.code || r.name || '');
+          return roleValue.toUpperCase();
+        });
         const hasRequiredRole = roles.some((role) =>
           userRoleCodes.includes(role.toUpperCase())
         );

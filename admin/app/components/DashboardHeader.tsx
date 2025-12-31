@@ -270,7 +270,11 @@ export default function DashboardHeader({
             <div className="hidden sm:block text-right">
               <p className="text-sm font-medium text-gray-900">{user?.name || user?.fullName || 'Admin'}</p>
               <p className="text-xs text-gray-600">
-                {user?.roles?.[0]?.code || user?.roles?.[0]?.name || 'Admin'}
+                {(() => {
+                  const firstRole = user?.roles?.[0];
+                  if (!firstRole) return 'Admin';
+                  return typeof firstRole === 'string' ? firstRole : (firstRole.code || firstRole.name || 'Admin');
+                })()}
               </p>
             </div>
             <button
