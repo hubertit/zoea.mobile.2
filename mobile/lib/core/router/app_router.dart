@@ -313,6 +313,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/profile/about',
         builder: (context, state) => const AboutScreen(),
       ),
+      GoRoute(
+        path: '/profile/settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
 
       // Specials Route
       GoRoute(
