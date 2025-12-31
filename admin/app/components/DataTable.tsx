@@ -105,13 +105,15 @@ export default function DataTable({
                 onClick={() => onRowClick && onRowClick(row)}
               >
                 {showNumbering && (
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
                     {numberingStart + index}
                   </td>
                 )}
                 {columns.map((column) => (
                   <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {column.render ? column.render(row[column.key], row) : row[column.key]}
+                    {column.render
+                      ? column.render(row[column.key], row)
+                      : row[column.key] || '-'}
                   </td>
                 ))}
               </tr>
