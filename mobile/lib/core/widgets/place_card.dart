@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import 'fade_in_image.dart' show FadeInNetworkImage;
 
 class PlaceCard extends StatelessWidget {
@@ -36,11 +37,13 @@ class PlaceCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: context.isDarkMode 
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -60,8 +63,12 @@ class PlaceCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   errorWidget: Container(
                     height: 200,
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.place, size: 50),
+                    color: context.grey200,
+                    child: Icon(
+                      Icons.place, 
+                      size: 50,
+                      color: context.secondaryTextColor,
+                    ),
                   ),
                 ),
                 // Favorite button
@@ -71,11 +78,13 @@ class PlaceCard extends StatelessWidget {
                     right: 12,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.7),
+                        color: context.isDarkMode
+                            ? Colors.black.withOpacity(0.5)
+                            : Colors.white.withOpacity(0.7),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withOpacity(0.1),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -134,17 +143,17 @@ class PlaceCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.location_on,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           location,
                           style: AppTheme.bodyMedium.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ),
@@ -169,7 +178,7 @@ class PlaceCard extends StatelessWidget {
                       Text(
                         '($reviews reviews)',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                       const Spacer(),

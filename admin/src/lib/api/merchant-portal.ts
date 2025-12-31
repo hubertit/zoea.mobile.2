@@ -349,5 +349,31 @@ export const MerchantPortalAPI = {
     const response = await apiClient.get(`/merchants/businesses/${businessId}/analytics/bookings`, { params });
     return response.data;
   },
+
+  // ============ PROMOTIONS ============
+  getPromotions: async (
+    businessId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      active?: boolean;
+    }
+  ): Promise<{ data: any[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get(`/merchants/businesses/${businessId}/promotions`, { params });
+    return response.data;
+  },
+
+  getAvailablePromotions: async (businessId: string): Promise<any[]> => {
+    const response = await apiClient.get<any[]>(`/merchants/businesses/${businessId}/promotions/available`);
+    return response.data;
+  },
+
+  joinPromotion: async (businessId: string, promotionId: string): Promise<void> => {
+    await apiClient.post(`/merchants/businesses/${businessId}/promotions/${promotionId}/join`);
+  },
+
+  leavePromotion: async (businessId: string, promotionId: string): Promise<void> => {
+    await apiClient.delete(`/merchants/businesses/${businessId}/promotions/${promotionId}/leave`);
+  },
 };
 

@@ -2,41 +2,39 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MerchantPortalAPI, type Business, type MerchantListing, type MerchantPortalListingStatus } from '@/src/lib/api';
+import { MerchantPortalAPI, type Business, type MerchantBooking, type MerchantPortalBookingStatus } from '@/src/lib/api';
 import { toast } from '@/app/components/Toaster';
 import { DataTable, Pagination, Button, Breadcrumbs, StatusBadge } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
-import Icon, { faSearch, faPlus, faBox, faEye, faEdit } from '@/app/components/Icon';
+import Icon, { faSearch, faClipboardList, faEye, faEdit } from '@/app/components/Icon';
 
-const STATUSES: { value: MerchantPortalListingStatus | ''; label: string }[] = [
+const STATUSES: { value: MerchantPortalBookingStatus | ''; label: string }[] = [
   { value: '', label: 'All Status' },
-  { value: 'draft', label: 'Draft' },
-  { value: 'pending_review', label: 'Pending Review' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'suspended', label: 'Suspended' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'checked_in', label: 'Checked In' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'cancelled', label: 'Cancelled' },
+  { value: 'no_show', label: 'No Show' },
+  { value: 'refunded', label: 'Refunded' },
 ];
 
-export default function MyListingsPage() {
+export default function MyBookingsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [selectedBusinessId, setSelectedBusinessId] = useState<string | null>(null);
-  const [listings, setListings] = useState<MerchantListing[]>([]);
+  const [bookings, setBookings] = useState<MerchantBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
-  const [statusFilter, setStatusFilter] = useState<MerchantPortalListingStatus | ''>('');
-
-  useEffect(() => {
-    if (searchParams.get('create') === 'true' && selectedBusinessId) {
-      router.push(`/dashboard/my-listings?businessId=${selectedBusinessId}&create=true`);
-    }
-  }, [selectedBusinessId, searchParams, router]);
+  const [statusFilter, setStatusFilter] = useState<MerchantPortalBookingStatus | ''>('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   // Fetch businesses
   useEffect(() => {
@@ -58,119 +56,107 @@ export default function MyListingsPage() {
     fetchBusinesses();
   }, []);
 
-  // Fetch listings
+  // Fetch bookings
   useEffect(() => {
     if (!selectedBusinessId) return;
 
-    const fetchListings = async () => {
+    const fetchBookings = async () => {
       setLoading(true);
       try {
-        const response = await MerchantPortalAPI.getListings(selectedBusinessId, {
+        const response = await MerchantPortalAPI.getBookings(selectedBusinessId, {
           page,
           limit: pageSize,
           status: statusFilter || undefined,
+          startDate: dateFrom || undefined,
+          endDate: dateTo || undefined,
         });
-        // Filter by search term client-side since API might not support it
-        let filteredListings = response.data || [];
+        // Filter by search term client-side
+        let filteredBookings = response.data || [];
         if (debouncedSearch) {
-          filteredListings = filteredListings.filter(l =>
-            l.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            l.description?.toLowerCase().includes(debouncedSearch.toLowerCase())
+          filteredBookings = filteredBookings.filter(b =>
+            b.bookingNumber.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            b.user?.fullName?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            b.listing?.name?.toLowerCase().includes(debouncedSearch.toLowerCase())
           );
         }
-        setListings(filteredListings);
+        setBookings(filteredBookings);
         setTotal(response.meta?.total || 0);
       } catch (error: any) {
-        console.error('Failed to fetch listings:', error);
-        toast.error(error?.response?.data?.message || error?.message || 'Failed to load listings');
+        console.error('Failed to fetch bookings:', error);
+        toast.error(error?.response?.data?.message || error?.message || 'Failed to load bookings');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchListings();
-  }, [page, pageSize, statusFilter, selectedBusinessId, debouncedSearch]);
+    fetchBookings();
+  }, [page, pageSize, statusFilter, selectedBusinessId, dateFrom, dateTo, debouncedSearch]);
 
   const totalPages = Math.ceil(total / pageSize);
 
   const columns = [
     {
-      key: 'name',
-      label: 'Name',
+      key: 'bookingNumber',
+      label: 'Booking #',
       sortable: true,
-      render: (value: string, row: MerchantListing) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-sm flex items-center justify-center flex-shrink-0">
-            <Icon icon={faBox} className="text-gray-600" size="sm" />
-          </div>
-          <div>
-            <div className="font-medium text-gray-900">{value}</div>
-            {row.type && (
-              <div className="text-xs text-gray-500 capitalize">{row.type.replace('_', ' ')}</div>
-            )}
+      render: (value: string, row: MerchantBooking) => (
+        <div>
+          <div className="font-medium text-gray-900">{value}</div>
+          <div className="text-xs text-gray-500">
+            {new Date(row.createdAt).toLocaleDateString()}
           </div>
         </div>
+      ),
+    },
+    {
+      key: 'user',
+      label: 'Customer',
+      render: (value: any, row: MerchantBooking) => (
+        <div>
+          <div className="font-medium text-gray-900">{row.user?.fullName || 'Guest'}</div>
+          {row.user?.email && (
+            <div className="text-xs text-gray-500">{row.user.email}</div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'listing',
+      label: 'Listing',
+      render: (value: any, row: MerchantBooking) => (
+        <span className="text-sm text-gray-700">{row.listing?.name || 'N/A'}</span>
       ),
     },
     {
       key: 'status',
       label: 'Status',
       sortable: true,
-      render: (value: MerchantPortalListingStatus) => (
-        <StatusBadge status={value === 'active' ? 'active' : value === 'pending_review' ? 'pending' : value === 'suspended' ? 'inactive' : 'pending'} />
+      render: (value: MerchantPortalBookingStatus) => (
+        <StatusBadge status={value === 'confirmed' || value === 'checked_in' || value === 'completed' ? 'active' : value === 'pending' ? 'pending' : 'inactive'} />
       ),
     },
     {
-      key: 'minPrice',
-      label: 'Price',
-      render: (value: number | null, row: MerchantListing) => {
-        if (value && row.maxPrice) {
-          return (
-            <span className="text-sm text-gray-700">
-              {value.toLocaleString()} - {row.maxPrice.toLocaleString()} {row.priceUnit?.replace('_', ' ') || ''}
-            </span>
-          );
-        }
-        if (value) {
-          return (
-            <span className="text-sm text-gray-700">
-              {value.toLocaleString()} {row.priceUnit?.replace('_', ' ') || ''}
-            </span>
-          );
-        }
-        return <span className="text-sm text-gray-500">-</span>;
-      },
-    },
-    {
-      key: 'createdAt',
-      label: 'Created',
+      key: 'totalAmount',
+      label: 'Amount',
       sortable: true,
-      render: (value: string) => (
-        <span className="text-sm text-gray-700">
-          {new Date(value).toLocaleDateString()}
+      render: (value: number, row: MerchantBooking) => (
+        <span className="font-medium text-gray-900">
+          {value.toLocaleString()} {row.currency}
         </span>
       ),
     },
     {
       key: 'actions',
       label: 'Actions',
-      render: (_: any, row: MerchantListing) => (
+      render: (_: any, row: MerchantBooking) => (
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
             icon={faEye}
-            onClick={() => router.push(`/dashboard/my-listings/${row.id}?businessId=${selectedBusinessId}`)}
+            onClick={() => router.push(`/dashboard/my-bookings/${row.id}?businessId=${selectedBusinessId}`)}
           >
             View
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={faEdit}
-            onClick={() => router.push(`/dashboard/my-listings/${row.id}?businessId=${selectedBusinessId}&edit=true`)}
-          >
-            Edit
           </Button>
         </div>
       ),
@@ -182,18 +168,11 @@ export default function MyListingsPage() {
       <div className="space-y-6">
         <Breadcrumbs items={[
           { label: 'Dashboard', href: '/dashboard/my-dashboard' },
-          { label: 'My Listings' }
+          { label: 'My Bookings' }
         ]} />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <p className="text-gray-600">No businesses found. Create a business first.</p>
-            <Button
-              variant="primary"
-              className="mt-4"
-              onClick={() => router.push('/dashboard/my-businesses?create=true')}
-            >
-              Create Business
-            </Button>
           </div>
         </div>
       </div>
@@ -208,7 +187,7 @@ export default function MyListingsPage() {
     <div className="space-y-6">
       <Breadcrumbs items={[
         { label: 'Dashboard', href: '/dashboard/my-dashboard' },
-        { label: 'My Listings' }
+        { label: 'My Bookings' }
       ]} />
 
       {/* Business Selector */}
@@ -233,22 +212,14 @@ export default function MyListingsPage() {
               ))}
             </select>
           </div>
-          <Button 
-            variant="primary" 
-            size="md" 
-            icon={faPlus} 
-            onClick={() => router.push(`/dashboard/my-listings/create?businessId=${selectedBusinessId}`)}
-          >
-            Create Listing
-          </Button>
         </div>
       </div>
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-sm p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
-          <div>
+          <div className="md:col-span-2">
             <div className="relative">
               <Icon
                 icon={faSearch}
@@ -257,7 +228,7 @@ export default function MyListingsPage() {
               />
               <input
                 type="text"
-                placeholder="Search listings..."
+                placeholder="Search bookings..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -273,7 +244,7 @@ export default function MyListingsPage() {
             <select
               value={statusFilter}
               onChange={(e) => {
-                setStatusFilter(e.target.value as MerchantPortalListingStatus | '');
+                setStatusFilter(e.target.value as MerchantPortalBookingStatus | '');
                 setPage(1);
               }}
               className="w-full px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
@@ -285,16 +256,40 @@ export default function MyListingsPage() {
               ))}
             </select>
           </div>
+
+          {/* Date Range */}
+          <div className="flex gap-2">
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => {
+                setDateFrom(e.target.value);
+                setPage(1);
+              }}
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+              placeholder="From"
+            />
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => {
+                setDateTo(e.target.value);
+                setPage(1);
+              }}
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+              placeholder="To"
+            />
+          </div>
         </div>
       </div>
 
       {/* Table */}
       <DataTable
         columns={columns}
-        data={listings}
+        data={bookings}
         loading={loading}
-        onRowClick={(row) => router.push(`/dashboard/my-listings/${row.id}?businessId=${selectedBusinessId}`)}
-        emptyMessage="No listings found. Create your first listing to get started."
+        onRowClick={(row) => router.push(`/dashboard/my-bookings/${row.id}?businessId=${selectedBusinessId}`)}
+        emptyMessage="No bookings found."
         showNumbering={true}
         numberingStart={(page - 1) * pageSize + 1}
         enableClientSort={true}
@@ -318,3 +313,4 @@ export default function MyListingsPage() {
     </div>
   );
 }
+

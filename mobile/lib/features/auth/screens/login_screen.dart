@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:country_picker/country_picker.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/utils/phone_validator.dart';
 import '../../../core/utils/phone_input_formatter.dart';
@@ -52,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       showPhoneCode: true,
       countryListTheme: CountryListThemeData(
         flagSize: 25,
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.surfaceColor,
         textStyle: Theme.of(context).textTheme.bodyLarge!,
         bottomSheetHeight: 500,
         borderRadius: const BorderRadius.only(
@@ -62,10 +63,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         inputDecoration: InputDecoration(
           labelText: 'Search',
           hintText: 'Start typing to search',
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Icon(Icons.search, color: context.primaryTextColor),
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: const Color(0xFF8C98A8).withOpacity(0.2),
+              color: context.borderColor,
             ),
           ),
         ),
@@ -133,7 +134,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -160,7 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Text(
                     'Sign in to continue',
                     style: AppTheme.bodyLarge.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -170,10 +171,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(AppTheme.spacing4),
                     decoration: BoxDecoration(
-                      color: AppTheme.backgroundColor,
+                      color: context.cardColor,
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
                       border: Border.all(
-                        color: AppTheme.dividerColor,
+                        color: context.borderColor,
                         width: 1,
                       ),
                     ),
@@ -193,7 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: _isPhoneLogin 
-                                    ? Colors.grey[300] 
+                                    ? context.grey300 
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                               ),
@@ -203,8 +204,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icon(
                                     Icons.phone_outlined,
                                     color: _isPhoneLogin 
-                                        ? Colors.grey[700] 
-                                        : AppTheme.secondaryTextColor,
+                                        ? context.primaryTextColor
+                                        : context.secondaryTextColor,
                                     size: 20,
                                   ),
                                   const SizedBox(width: AppTheme.spacing8),
@@ -212,8 +213,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     'Phone',
                                     style: AppTheme.bodyMedium.copyWith(
                                       color: _isPhoneLogin 
-                                          ? Colors.grey[700] 
-                                          : AppTheme.secondaryTextColor,
+                                          ? context.primaryTextColor
+                                          : context.secondaryTextColor,
                                       fontWeight: _isPhoneLogin 
                                           ? FontWeight.w600 
                                           : FontWeight.normal,
@@ -238,7 +239,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: !_isPhoneLogin 
-                                    ? Colors.grey[300] 
+                                    ? context.grey300 
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                               ),
@@ -248,8 +249,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icon(
                                     Icons.email_outlined,
                                     color: !_isPhoneLogin 
-                                        ? Colors.grey[700] 
-                                        : AppTheme.secondaryTextColor,
+                                        ? context.primaryTextColor
+                                        : context.secondaryTextColor,
                                     size: 20,
                                   ),
                                   const SizedBox(width: AppTheme.spacing8),
@@ -257,8 +258,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     'Email',
                                     style: AppTheme.bodyMedium.copyWith(
                                       color: !_isPhoneLogin 
-                                          ? Colors.grey[700] 
-                                          : AppTheme.secondaryTextColor,
+                                          ? context.primaryTextColor
+                                          : context.secondaryTextColor,
                                       fontWeight: !_isPhoneLogin 
                                           ? FontWeight.w600 
                                           : FontWeight.normal,
@@ -290,7 +291,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                          borderSide: const BorderSide(color: AppTheme.dividerColor),
+                          borderSide: BorderSide(color: context.borderColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
@@ -322,10 +323,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 horizontal: AppTheme.spacing12,
                               ),
                               decoration: BoxDecoration(
-                                color: AppTheme.backgroundColor,
+                                color: context.cardColor,
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                                 border: Border.all(
-                                  color: AppTheme.dividerColor,
+                                  color: context.borderColor,
                                   width: 1,
                                 ),
                               ),
@@ -344,9 +345,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     style: AppTheme.bodyLarge,
                                   ),
                                   const SizedBox(width: AppTheme.spacing4),
-                                  const Icon(
+                                  Icon(
                                     Icons.arrow_drop_down,
-                                    color: AppTheme.secondaryTextColor,
+                                    color: context.secondaryTextColor,
                                     size: 20,
                                   ),
                                 ],
@@ -367,7 +368,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 labelText: 'Phone Number',
                                 prefixIcon: const Icon(Icons.phone_outlined),
                                 hintText: '788606765',
-                                hintStyle: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                                hintStyle: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                                 ),
@@ -454,7 +455,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
+                      foregroundColor: context.isDarkMode 
+                          ? AppTheme.darkPrimaryTextColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacing16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
@@ -465,12 +468,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (_isLoading) ...[
-                          const SizedBox(
+                          SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                context.isDarkMode 
+                                    ? AppTheme.darkPrimaryTextColor
+                                    : Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -492,7 +499,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Text(
                         'Don\'t have an account?',
-                        style: AppTheme.bodyMedium,
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: context.secondaryTextColor,
+                        ),
                       ),
                       TextButton(
                         onPressed: () {

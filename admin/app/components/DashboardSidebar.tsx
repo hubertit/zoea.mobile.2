@@ -346,9 +346,21 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
       roles: ['MERCHANT', 'merchant'],
     },
     {
+      icon: faStar,
+      label: 'Reviews',
+      href: '/dashboard/my-reviews',
+      roles: ['MERCHANT', 'merchant'],
+    },
+    {
       icon: faChartLine,
       label: 'Analytics',
       href: '/dashboard/my-analytics',
+      roles: ['MERCHANT', 'merchant'],
+    },
+    {
+      icon: faTags,
+      label: 'Promotions',
+      href: '/dashboard/my-promotions',
       roles: ['MERCHANT', 'merchant'],
     },
     {

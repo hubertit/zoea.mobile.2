@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 
 class Shell extends StatelessWidget {
   final Widget child;
@@ -32,9 +33,9 @@ class Shell extends StatelessWidget {
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.surfaceColor,
         selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: AppTheme.secondaryTextColor,
+        unselectedItemColor: context.secondaryTextColor,
         currentIndex: currentIndex,
         selectedLabelStyle: const TextStyle(
           fontSize: 12,

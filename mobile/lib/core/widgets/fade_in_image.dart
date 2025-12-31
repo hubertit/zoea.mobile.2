@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui' as ui;
+import '../theme/theme_extensions.dart';
 
 /// A widget that displays a network image with a skeleton/placeholder that fades in
 /// and smoothly transitions to the actual image
@@ -28,7 +29,7 @@ class FadeInNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final placeholderColor = this.placeholderColor ?? Colors.grey[200]!;
+    final placeholderColor = this.placeholderColor ?? context.grey200;
     
     Widget imageWidget = CachedNetworkImage(
       imageUrl: imageUrl,
@@ -41,7 +42,7 @@ class FadeInNetworkImage extends StatelessWidget {
         height: height,
         color: placeholderColor,
       ),
-      errorWidget: (context, url, error) => errorWidget ?? _buildErrorWidget(),
+      errorWidget: (context, url, error) => errorWidget ?? _buildErrorWidget(context),
     );
 
     // Always clip to prevent overflow, even without borderRadius
@@ -70,14 +71,14 @@ class FadeInNetworkImage extends StatelessWidget {
     return imageWidget;
   }
 
-  Widget _buildErrorWidget() {
+  Widget _buildErrorWidget(BuildContext context) {
     return Container(
       width: width,
       height: height,
-      color: Colors.grey[200],
+      color: context.grey200,
       child: Icon(
         Icons.image_not_supported,
-        color: Colors.grey[400],
+        color: context.grey300,
         size: height != null && height! < 100 ? 30 : 50,
       ),
     );
@@ -146,11 +147,14 @@ class _SkeletonPlaceholderState extends State<_SkeletonPlaceholder>
           child: AnimatedBuilder(
             animation: _shimmerController,
             builder: (context, child) {
+              final highlightColor = Theme.of(context).brightness == Brightness.dark
+                  ? widget.color.withOpacity(0.3)
+                  : Colors.grey[100]!;
               return CustomPaint(
                 painter: _ShimmerPainter(
                   progress: _shimmerController.value,
                   baseColor: widget.color,
-                  highlightColor: Colors.grey[100]!,
+                  highlightColor: highlightColor,
                 ),
               );
             },

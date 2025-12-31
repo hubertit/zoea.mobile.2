@@ -61,13 +61,18 @@ class AppTheme {
         onSurface: primaryTextColor,
         secondary: secondaryTextColor,
         error: errorColor,
+        onPrimary: backgroundColor,
+        onSecondary: backgroundColor,
+        onError: backgroundColor,
       ),
+      scaffoldBackgroundColor: backgroundColor,
       textTheme: _buildTextTheme(),
       appBarTheme: const AppBarTheme(
         backgroundColor: backgroundColor,
         foregroundColor: primaryTextColor,
         elevation: 0,
         centerTitle: true,
+        iconTheme: IconThemeData(color: primaryTextColor),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -78,6 +83,20 @@ class AppTheme {
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primaryColor,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primaryColor,
+          side: const BorderSide(color: primaryColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       cardTheme: CardTheme(
@@ -103,7 +122,29 @@ class AppTheme {
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: errorColor),
+        ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: backgroundColor,
+        selectedItemColor: primaryColor,
+        unselectedItemColor: secondaryTextColor,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: dividerColor,
+        thickness: 1,
+        space: 1,
+      ),
+      iconTheme: const IconThemeData(
+        color: primaryTextColor,
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: primaryTextColor,
       ),
     );
   }
