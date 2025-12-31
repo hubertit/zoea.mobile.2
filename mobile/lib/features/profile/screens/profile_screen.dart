@@ -38,6 +38,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
   
+  @override
+  Widget build(BuildContext context) {
+    // Watch user provider to reload preferences when user data changes
+    final user = ref.watch(currentUserProvider);
+    
+    // Update preferences state when user data changes
+    if (user?.preferences != null) {
+      final newCurrency = user!.preferences!.currency ?? 'RWF';
+      final langCode = user.preferences!.language ?? 'en';
+      final newLanguage = _mapLanguageCodeToName(langCode);
+      
+      if (_selectedCurrency != newCurrency || _selectedLanguage != newLanguage) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _selectedCurrency = newCurrency;
+              _selectedLanguage = newLanguage;
+            });
+          }
+        });
+      }
+    }
+    
+    return _buildProfileContent();
+  }
+  
   String _mapLanguageCodeToName(String code) {
     switch (code.toLowerCase()) {
       case 'en':
@@ -68,9 +94,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         return 'en';
     }
   }
+  
+  Widget _buildProfileContent() {
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(

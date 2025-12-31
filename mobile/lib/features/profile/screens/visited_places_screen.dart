@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/content_views_provider.dart';
 
 class VisitedPlacesScreen extends ConsumerStatefulWidget {
   const VisitedPlacesScreen({super.key});
@@ -16,15 +17,27 @@ class VisitedPlacesScreen extends ConsumerStatefulWidget {
 class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  int _currentPage = 1;
+  final int _limit = 20;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) {
+      setState(() {
+        _currentPage = 1;
+      });
+    }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
@@ -35,7 +48,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Visited Places',
+          'Places Visited',
           style: AppTheme.titleLarge,
         ),
         backgroundColor: AppTheme.backgroundColor,
@@ -80,36 +93,113 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           tabs: const [
             Tab(text: 'All Places'),
             Tab(text: 'This Year'),
-            Tab(text: 'Favorites'),
+            Tab(text: 'Listings Only'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildPlacesList(),
-          _buildPlacesList(),
-          _buildPlacesList(),
+          _buildPlacesList(filter: 'all'),
+          _buildPlacesList(filter: 'year'),
+          _buildPlacesList(filter: 'listings'),
         ],
       ),
     );
   }
 
-  Widget _buildPlacesList() {
-    // Mock data for demonstration
-    final places = _getMockPlaces();
-    
-    if (places.isEmpty) {
-      return _buildEmptyState();
-    }
+  Widget _buildPlacesList({required String filter}) {
+    final params = ContentViewsParams(
+      page: _currentPage,
+      limit: _limit,
+      contentType: filter == 'listings' ? 'listing' : null,
+    );
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: places.length,
-      itemBuilder: (context, index) {
-        final place = places[index];
-        return _buildPlaceCard(place);
+    final contentViewsAsync = ref.watch(myContentViewsProvider(params));
+
+    return contentViewsAsync.when(
+      data: (data) {
+        final views = (data['data'] as List<dynamic>?) ?? [];
+
+        // Filter by year if needed
+        List<dynamic> filteredViews = views;
+        if (filter == 'year') {
+          final currentYear = DateTime.now().year;
+          filteredViews = views.where((view) {
+            final viewedAt = view['viewedAt'] as String?;
+            if (viewedAt == null) return false;
+            final date = DateTime.tryParse(viewedAt);
+            return date != null && date.year == currentYear;
+          }).toList();
+        }
+
+        // Only show listings (not events) for "Places Visited"
+        filteredViews = filteredViews.where((view) {
+          final contentType = view['contentType'] as String?;
+          return contentType == 'listing';
+        }).toList();
+
+        if (filteredViews.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(myContentViewsProvider(params));
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: filteredViews.length,
+            itemBuilder: (context, index) {
+              final view = filteredViews[index];
+              return _buildPlaceCard(view);
+            },
+          ),
+        );
       },
+      loading: () => Center(
+        child: CircularProgressIndicator(
+          color: AppTheme.primaryColor,
+        ),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 48,
+              color: AppTheme.errorColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load places',
+              style: AppTheme.titleMedium.copyWith(
+                color: AppTheme.errorColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: AppTheme.bodySmall.copyWith(
+                color: AppTheme.secondaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(myContentViewsProvider(params));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -169,9 +259,32 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
     );
   }
 
-  Widget _buildPlaceCard(Map<String, dynamic> place) {
-    final visitDate = place['visitDate'] as DateTime;
+  Widget _buildPlaceCard(Map<String, dynamic> view) {
+    final viewedAt = view['viewedAt'] as String?;
+    final visitDate = viewedAt != null ? DateTime.tryParse(viewedAt) : null;
     final dateFormat = DateFormat('MMM dd, yyyy');
+    
+    final content = view['content'] as Map<String, dynamic>?;
+    if (content == null) {
+      return const SizedBox.shrink();
+    }
+
+    final contentId = content['id'] as String?;
+    final contentName = content['name'] as String? ?? 'Unknown';
+    final contentImages = content['images'] as List<dynamic>? ?? [];
+    final contentLocation = _getContentLocation(content);
+    final rating = (content['rating'] as num?)?.toDouble() ?? 0.0;
+    final reviewCount = content['reviewCount'] as int? ?? 0;
+    final category = content['category'] as Map<String, dynamic>?;
+    final categoryName = category?['name'] as String? ?? 'Place';
+
+    // Get first image URL
+    String? imageUrl;
+    if (contentImages.isNotEmpty) {
+      final firstImage = contentImages[0] as Map<String, dynamic>?;
+      final media = firstImage?['media'] as Map<String, dynamic>?;
+      imageUrl = media?['url'] as String? ?? media?['thumbnailUrl'] as String?;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -194,30 +307,40 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Stack(
               children: [
-                CachedNetworkImage(
-                  imageUrl: place['image'] as String,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    height: 200,
-                    color: AppTheme.dividerColor,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
+                imageUrl != null
+                    ? CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          height: 200,
+                          color: AppTheme.dividerColor,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: AppTheme.primaryColor,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          height: 200,
+                          color: AppTheme.dividerColor,
+                          child: const Icon(
+                            Icons.place,
+                            size: 64,
+                            color: AppTheme.secondaryTextColor,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 200,
+                        color: AppTheme.dividerColor,
+                        child: const Icon(
+                          Icons.place,
+                          size: 64,
+                          color: AppTheme.secondaryTextColor,
+                        ),
                       ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 200,
-                    color: AppTheme.dividerColor,
-                    child: const Icon(
-                      Icons.place,
-                      size: 64,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                  ),
-                ),
                 // Visited Badge
                 Positioned(
                   top: 12,
@@ -238,7 +361,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Visited',
+                          'Viewed',
                           style: AppTheme.labelSmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -259,7 +382,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      place['category'] as String,
+                      categoryName,
                       style: AppTheme.labelSmall.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -278,7 +401,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
               children: [
                 // Place Name
                 Text(
-                  place['name'] as String,
+                  contentName,
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -297,7 +420,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        place['location'] as String,
+                        contentLocation,
                         style: AppTheme.bodyMedium.copyWith(
                           color: AppTheme.secondaryTextColor,
                         ),
@@ -309,57 +432,60 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 ),
                 const SizedBox(height: 8),
                 // Visit Date
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 16,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Visited on ${dateFormat.format(visitDate)}',
-                      style: AppTheme.bodyMedium.copyWith(
+                if (visitDate != null)
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 16,
                         color: AppTheme.secondaryTextColor,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Viewed on ${dateFormat.format(visitDate)}',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                if (visitDate != null) const SizedBox(height: 12),
                 // Rating
-                Row(
-                  children: [
-                    Icon(
-                      Icons.star,
-                      size: 16,
-                      color: Colors.amber[600],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      place['rating'].toString(),
-                      style: AppTheme.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
+                if (rating > 0)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star,
+                        size: 16,
+                        color: Colors.amber[600],
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '(${place['reviewCount']} reviews)',
-                      style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                      const SizedBox(width: 4),
+                      Text(
+                        rating.toStringAsFixed(1),
+                        style: AppTheme.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                      const SizedBox(width: 4),
+                      Text(
+                        '($reviewCount ${reviewCount == 1 ? 'review' : 'reviews'})',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                if (rating > 0) const SizedBox(height: 12),
                 // Action Buttons
                 Row(
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                          // TODO: Navigate to place details
-                          // context.go('/place/${place['id']}');
-                        },
+                        onPressed: contentId != null
+                            ? () {
+                                context.go('/listings/$contentId');
+                              }
+                            : null,
                         icon: const Icon(Icons.visibility, size: 16),
                         label: const Text('View Details'),
                         style: OutlinedButton.styleFrom(
@@ -402,59 +528,22 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
     );
   }
 
-  List<Map<String, dynamic>> _getMockPlaces() {
-    // Mock data for demonstration - using simple Map structure
-    return [
-      {
-        'id': '1',
-        'name': 'Volcanoes National Park',
-        'location': 'Musanze, Northern Province',
-        'category': 'National Park',
-        'visitDate': DateTime.now().subtract(const Duration(days: 45)),
-        'rating': 4.8,
-        'reviewCount': 1250,
-        'image': 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&h=300&fit=crop',
-      },
-      {
-        'id': '2',
-        'name': 'Kigali Genocide Memorial',
-        'location': 'Kigali, Rwanda',
-        'category': 'Museum',
-        'visitDate': DateTime.now().subtract(const Duration(days: 20)),
-        'rating': 4.9,
-        'reviewCount': 890,
-        'image': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-      },
-      {
-        'id': '3',
-        'name': 'Lake Kivu',
-        'location': 'Rubavu, Western Province',
-        'category': 'Lake',
-        'visitDate': DateTime.now().subtract(const Duration(days: 10)),
-        'rating': 4.6,
-        'reviewCount': 650,
-        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-      },
-      {
-        'id': '4',
-        'name': 'Nyungwe Forest National Park',
-        'location': 'Nyungwe, Southern Province',
-        'category': 'National Park',
-        'visitDate': DateTime.now().subtract(const Duration(days: 5)),
-        'rating': 4.7,
-        'reviewCount': 420,
-        'image': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
-      },
-      {
-        'id': '5',
-        'name': 'Inema Arts Center',
-        'location': 'Kigali, Rwanda',
-        'category': 'Art Gallery',
-        'visitDate': DateTime.now().subtract(const Duration(days: 3)),
-        'rating': 4.5,
-        'reviewCount': 180,
-        'image': 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
-      },
-    ];
+  String _getContentLocation(Map<String, dynamic> content) {
+    final location = content['location'] as Map<String, dynamic>?;
+    if (location == null) return 'Unknown location';
+    
+    final address = location['address'] as String?;
+    final city = location['city'] as Map<String, dynamic>?;
+    final cityName = city?['name'] as String?;
+    
+    if (cityName != null && address != null) {
+      return '$cityName, $address';
+    } else if (cityName != null) {
+      return cityName;
+    } else if (address != null) {
+      return address;
+    }
+    
+    return 'Unknown location';
   }
 }

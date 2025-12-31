@@ -313,8 +313,8 @@ class AnalyticsService {
   Future<String> _getOrCreateSessionId() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final sessionIdKey = 'analytics_session_id';
-      final sessionTimestampKey = 'analytics_session_timestamp';
+      const sessionIdKey = 'analytics_session_id';
+      const sessionTimestampKey = 'analytics_session_timestamp';
       
       // Check if we have a valid session (less than 30 minutes old)
       final existingSessionId = prefs.getString(sessionIdKey);
@@ -343,6 +343,55 @@ class AnalyticsService {
   String _generateRandomString(int length) {
     final random = DateTime.now().millisecondsSinceEpoch % 1000000;
     return random.toString().padLeft(length, '0');
+  }
+
+  /// Get my content views (places visited)
+  /// Returns paginated list of listings/events viewed by the user
+  Future<Map<String, dynamic>> getMyContentViews({
+    int? page,
+    int? limit,
+    String? contentType, // 'listing' or 'event'
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{};
+      if (page != null) queryParams['page'] = page;
+      if (limit != null) queryParams['limit'] = limit;
+      if (contentType != null) queryParams['contentType'] = contentType;
+
+      final dio = await _getDio();
+      final response = await dio.get(
+        '${AppConfig.analyticsEndpoint}/my-content-views',
+        queryParameters: queryParams.isEmpty ? null : queryParams,
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to fetch content views: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      String errorMessage = 'Failed to fetch content views.';
+      
+      if (e.response != null) {
+        final statusCode = e.response!.statusCode;
+        final message = e.response!.data?['message'] ?? e.response!.statusMessage;
+        
+        if (statusCode == 401) {
+          errorMessage = 'Unauthorized. Please login again.';
+        } else {
+          errorMessage = message ?? errorMessage;
+        }
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+                 e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Connection timeout. Please check your internet connection.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'No internet connection. Please check your network.';
+      }
+      
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('Error fetching content views: $e');
+    }
   }
 }
 

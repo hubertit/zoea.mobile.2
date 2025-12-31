@@ -31,6 +31,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
   bool _isLoading = false;
   bool _isSaving = false;
+  bool _hasLoadedInitialData = false;
   String? _profileImagePath;
 
   // Preferences state
@@ -55,33 +56,66 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       }
     });
     
-    // Listeners are not needed - we check dynamically when needed
-    
+    // Load user data initially
     _loadUserData();
   }
 
-  void _loadUserData() {
+  void _loadUserData({bool force = false}) {
+    // Prevent multiple simultaneous loads
+    if (_hasLoadedInitialData && !force) {
+      return;
+    }
+    
     final user = ref.read(currentUserProvider);
     if (user != null) {
-      setState(() {
+      // Only update if controllers are empty or if data has changed
+      if (_nameController.text.isEmpty || _nameController.text != user.fullName) {
         _nameController.text = user.fullName;
+      }
+      if (_emailController.text.isEmpty || _emailController.text != user.email) {
         _emailController.text = user.email;
+      }
+      if (_phoneController.text.isEmpty || _phoneController.text != (user.phoneNumber ?? '')) {
         _phoneController.text = user.phoneNumber ?? '';
+      }
+      
+      // Load preferences - only if not already loaded or forced
+      if (user.preferences != null) {
+        final prefs = user.preferences!;
+        final newInterests = List<String>.from(prefs.interests);
         
-        // Load preferences
-        if (user.preferences != null) {
-          final prefs = user.preferences!;
-          _selectedAgeRange = prefs.ageRange;
-          _selectedGender = prefs.gender;
-          _selectedLengthOfStay = prefs.lengthOfStay;
-          _selectedInterests = List<String>.from(prefs.interests);
-          _selectedTravelParty = prefs.travelParty;
+        // Only update state if values actually changed or this is first load
+        final needsUpdate = 
+            _selectedAgeRange != prefs.ageRange ||
+            _selectedGender != prefs.gender ||
+            _selectedLengthOfStay != prefs.lengthOfStay ||
+            !_listEquals(_selectedInterests, newInterests) ||
+            _selectedTravelParty != prefs.travelParty ||
+            !_hasLoadedInitialData;
+        
+        if (needsUpdate) {
+          setState(() {
+            _selectedAgeRange = prefs.ageRange;
+            _selectedGender = prefs.gender;
+            _selectedLengthOfStay = prefs.lengthOfStay;
+            
+            // Load interests - ensure they match the widget's expected format (IDs)
+            // The API returns interests as IDs (e.g., 'nature', 'food')
+            _selectedInterests = newInterests;
+            
+            _selectedTravelParty = prefs.travelParty;
+            
+            _hasLoadedInitialData = true;
+          });
+        } else {
+          _hasLoadedInitialData = true;
         }
-        
-        // Data loaded, ready for editing
-      });
+      } else {
+        _hasLoadedInitialData = true;
+      }
     }
   }
+  
 
   /// Check if there are unsaved changes
   bool _checkForUnsavedChanges() {
@@ -170,8 +204,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(currentUserProvider);
+    // Only watch for completion percentage, not the entire user object
+    // This prevents unnecessary rebuilds when user data changes
+    final user = ref.read(currentUserProvider);
     final completionPercentage = user?.preferences?.profileCompletionPercentage ?? 0;
+    
+    // Load user data once when it becomes available (only if not already loaded)
+    if (user != null && !_hasLoadedInitialData) {
+      // Use a one-time callback to avoid reloading on every rebuild
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_hasLoadedInitialData) {
+          _loadUserData();
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
@@ -784,7 +830,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
   Future<void> _saveAll() async {
     // Validate basic info form
-    if (!_formKey.currentState!.validate()) {
+    final formState = _formKey.currentState;
+    if (formState == null || !formState.validate()) {
       // Switch to basic info tab if validation fails
       _tabController.animateTo(0);
       return;
@@ -815,7 +862,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       }
 
       if (emailChanged) {
-        await userService.updateEmail(_emailController.text.trim());
+        // Show password dialog for email update
+        final password = await _showPasswordDialog();
+        if (password == null) {
+          // User cancelled password dialog
+          setState(() {
+            _isSaving = false;
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              AppTheme.errorSnackBar(
+                message: 'Password is required to update email address.',
+              ),
+            );
+          }
+          return;
+        }
+        await userService.updateEmail(_emailController.text.trim(), password: password);
       }
 
       if (_profileImagePath != null) {
@@ -877,9 +940,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         );
       }
 
-      // Refresh user data
+      // Refresh user data from API
+      final authService = ref.read(authServiceProvider);
+      await authService.getCurrentUser();
+      
+      // Also invalidate providers to ensure UI updates
       ref.invalidate(currentUserProvider);
       ref.invalidate(currentUserProfileProvider);
+      ref.invalidate(authProvider);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -888,8 +956,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           ),
         );
         
+        // Small delay to ensure data is refreshed before navigation
+        await Future.delayed(const Duration(milliseconds: 300));
+        
         // Navigate back to profile
-        context.go('/profile');
+        if (mounted) {
+          context.go('/profile');
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -909,5 +982,112 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         });
       }
     }
+  }
+
+  Future<String?> _showPasswordDialog() async {
+    final passwordController = TextEditingController();
+    bool obscurePassword = true;
+    bool isLoading = false;
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppTheme.backgroundColor,
+          title: Text(
+            'Enter Password',
+            style: AppTheme.titleLarge,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Please enter your current password to update your email address.',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                obscureText: obscurePassword,
+                enabled: !isLoading,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setDialogState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.dividerColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: isLoading ? null : () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: isLoading ? null : () async {
+                final password = passwordController.text.trim();
+                if (password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    AppTheme.errorSnackBar(
+                      message: 'Please enter your password',
+                    ),
+                  );
+                  return;
+                }
+                
+                setDialogState(() {
+                  isLoading = true;
+                });
+                
+                // Small delay to show loading state
+                await Future.delayed(const Duration(milliseconds: 100));
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop(password);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text('Confirm'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

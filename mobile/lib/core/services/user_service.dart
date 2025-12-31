@@ -106,11 +106,19 @@ class UserService {
   }
 
   /// Update email address
-  Future<void> updateEmail(String newEmail) async {
+  /// Requires current password for verification
+  Future<void> updateEmail(String newEmail, {String? password}) async {
     try {
+      if (password == null || password.isEmpty) {
+        throw Exception('Password is required to update email address for security reasons.');
+      }
+      
       final response = await (await _getDio()).put(
         '${AppConfig.usersEndpoint}/me/email',
-        data: {'email': newEmail.trim()},
+        data: {
+          'email': newEmail.trim(),
+          'password': password,
+        },
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {

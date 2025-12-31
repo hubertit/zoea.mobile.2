@@ -5,7 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/models/event.dart';
+import '../../../core/providers/favorites_provider.dart';
 import '../../user_data_collection/utils/prompt_helper.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 
@@ -39,10 +41,13 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   void _onScroll() {
-    final isScrolled = _scrollController.offset > 200; // Adjust threshold as needed
-    if (isScrolled != _isScrolled) {
+    if (_scrollController.offset > 200 && !_isScrolled) {
       setState(() {
-        _isScrolled = isScrolled;
+        _isScrolled = true;
+      });
+    } else if (_scrollController.offset <= 200 && _isScrolled) {
+      setState(() {
+        _isScrolled = false;
       });
     }
   }
@@ -78,90 +83,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             expandedHeight: 300,
             pinned: true,
             backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
-            leading: Container(
-              width: 36,
-              height: 36,
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: _isScrolled 
-                    ? Colors.grey[200] 
-                    : Colors.black.withOpacity(0.5),
-                shape: BoxShape.circle,
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white,
+                size: 32,
               ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.chevron_left,
-                  color: _isScrolled 
-                      ? AppTheme.primaryTextColor 
-                      : Colors.white,
-                  size: 20,
-                ),
-                padding: EdgeInsets.zero,
-                onPressed: () => context.go('/events'),
-              ),
+              onPressed: () => context.go('/events'),
             ),
-            actions: [
-              // Share button (shown when collapsed)
-              Container(
-                width: 36,
-                height: 36,
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: _isScrolled 
-                      ? Colors.grey[200] 
-                      : Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.share,
-                    color: _isScrolled 
-                        ? AppTheme.primaryTextColor 
-                        : Colors.white,
-                    size: 18,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () async {
-                    final eventName = eventDetails.name;
-                    final location = eventDetails.locationName.isNotEmpty 
-                        ? eventDetails.locationName 
-                        : '';
-                    final dateText = dateFormat.format(startDate);
-                    
-                    // Share Sinc link instead of Zoea link
-                    final sincUrl = 'https://www.sinc.events/${event.slug}';
-                    final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
-                    
-                    await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
-                  },
-                ),
-              ),
-              // Favorite button (shown when collapsed)
-              Container(
-                width: 36,
-                height: 36,
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: _isScrolled 
-                      ? Colors.grey[200] 
-                      : Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: _isScrolled 
-                        ? AppTheme.primaryTextColor 
-                        : Colors.white,
-                    size: 18,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    // TODO: Implement favorite functionality
-                  },
-                ),
-              ),
-            ],
+            actions: const [], // Buttons moved to flexibleSpace
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
@@ -200,91 +130,101 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       ),
                     ),
                   ),
-                  // Back button at top left (only show when not scrolled/expanded)
-                  if (!_isScrolled)
-                    Positioned(
-                      top: 50,
-                      left: 16,
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.chevron_left,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          padding: EdgeInsets.zero,
-                          onPressed: () => context.go('/events'),
-                        ),
-                      ),
-                    ),
-                  // Action buttons at top right (only show when not scrolled/expanded)
-                  if (!_isScrolled)
-                    Positioned(
-                      top: 50,
-                      right: 16,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Share button
-                          Container(
-                            width: 36,
-                            height: 36,
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.share,
-                                color: Colors.white,
-                                size: 18,
+                  // Action buttons at top right
+                  Positioned(
+                    top: 50,
+                    right: 16,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Favorite button
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final eventIdString = event.id.toString();
+                            final isFavoritedAsync = ref.watch(isEventFavoritedProvider(eventIdString));
+                            final isFavorited = isFavoritedAsync.value ?? false;
+
+                            return Container(
+                              width: 36,
+                              height: 36,
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                shape: BoxShape.circle,
                               ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                final eventName = eventDetails.name;
-                                final location = eventDetails.locationName.isNotEmpty 
-                                    ? eventDetails.locationName 
-                                    : '';
-                                final dateText = dateFormat.format(startDate);
-                                
-                                // Share Sinc link instead of Zoea link
-                                final sincUrl = 'https://www.sinc.events/${event.slug}';
-                                final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
-                                
-                                await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
-                              },
-                            ),
-                          ),
-                          // Favorite button
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                                size: 18,
+                              child: IconButton(
+                                icon: Icon(
+                                  isFavorited ? Icons.favorite : Icons.favorite_border,
+                                  color: isFavorited ? Colors.red : Colors.white,
+                                  size: 18,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () async {
+                                  try {
+                                    final favoritesService = ref.read(favoritesServiceProvider);
+                                    
+                                    // Use toggleFavorite for add/remove in one call
+                                    await favoritesService.toggleFavorite(eventId: eventIdString);
+                                    
+                                    // Invalidate to refresh
+                                    ref.invalidate(isEventFavoritedProvider(eventIdString));
+                                    ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 20)));
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        AppTheme.successSnackBar(
+                                          message: isFavorited 
+                                              ? AppConfig.favoriteRemovedMessage 
+                                              : AppConfig.favoriteAddedMessage,
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        AppTheme.errorSnackBar(
+                                          message: 'Failed to update favorite: ${e.toString().replaceFirst('Exception: ', '')}',
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
                               ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                // TODO: Implement favorite functionality
-                              },
-                            ),
+                            );
+                          },
+                        ),
+                        // Share button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
                           ),
-                        ],
-                      ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.share,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              final eventName = eventDetails.name;
+                              final location = eventDetails.locationName.isNotEmpty 
+                                  ? eventDetails.locationName 
+                                  : '';
+                              final dateText = dateFormat.format(startDate);
+                              
+                              // Share Sinc link instead of Zoea link
+                              final sincUrl = 'https://www.sinc.events/${event.slug}';
+                              final shareText = 'Check out "$eventName"${location.isNotEmpty ? ' in $location' : ''} on $dateText!';
+                              
+                              await SharePlus.instance.share(ShareParams(text: '$shareText\n$sincUrl'));
+                            },
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
                 ],
               ),
             ),
