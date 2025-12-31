@@ -37,9 +37,75 @@ async function bootstrap() {
     .setDescription('Zoea Platform API Documentation')
     .setVersion('1.0')
     .addBearerAuth()
+    .addTag('Health', 'Health check and system status endpoints')
+    .addTag('Auth', 'Authentication and authorization endpoints')
+    .addTag('Users', 'User profile and preferences management')
+    .addTag('Listings', 'Listings (hotels, restaurants, attractions) management')
+    .addTag('Events', 'Events discovery and management')
+    .addTag('Tours', 'Tours and tour schedules management')
+    .addTag('Bookings', 'Booking creation and management')
+    .addTag('Reviews', 'Reviews and ratings management')
+    .addTag('Favorites', 'Favorites and saved items management')
+    .addTag('Search', 'Search functionality and history')
+    .addTag('Categories', 'Categories, amenities, and tags management')
+    .addTag('Countries & Cities', 'Countries, cities, and location data')
+    .addTag('Media', 'Media upload and management')
+    .addTag('Merchants', 'Merchant business and listing management')
+    .addTag('Notifications', 'User notifications management')
+    .addTag('Zoea Card', 'Zoea Card digital wallet operations')
+    .addTag('Analytics', 'Analytics and tracking endpoints')
+    .addTag('Admin - Users', 'Admin user management endpoints')
+    .addTag('Admin - Bookings', 'Admin booking management endpoints')
+    .addTag('Admin - Listings', 'Admin listing management endpoints')
+    .addTag('Admin - Merchants', 'Admin merchant management endpoints')
+    .addTag('Admin - Events', 'Admin event management endpoints')
+    .addTag('Admin - Payments', 'Admin payment and transaction management')
+    .addTag('Admin - Notifications', 'Admin notification management endpoints')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      tagsSorter: (a, b) => {
+        // Custom tag order
+        const tagOrder = [
+          'Health',
+          'Auth',
+          'Users',
+          'Listings',
+          'Events',
+          'Tours',
+          'Bookings',
+          'Reviews',
+          'Favorites',
+          'Search',
+          'Categories',
+          'Countries & Cities',
+          'Media',
+          'Merchants',
+          'Notifications',
+          'Zoea Card',
+          'Analytics',
+          'Admin - Users',
+          'Admin - Bookings',
+          'Admin - Listings',
+          'Admin - Merchants',
+          'Admin - Events',
+          'Admin - Payments',
+          'Admin - Notifications',
+        ];
+        const indexA = tagOrder.indexOf(a);
+        const indexB = tagOrder.indexOf(b);
+        if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      },
+      operationsSorter: 'method', // Sort by HTTP method (GET, POST, PUT, DELETE, PATCH)
+      docExpansion: 'none', // Don't expand operations by default
+      filter: true, // Enable filter box
+      showRequestDuration: true, // Show request duration
+    },
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
