@@ -25,45 +25,145 @@ export class MerchantsController {
 
   // ============ BUSINESS PROFILE ============
   @Get('businesses')
-  @ApiOperation({ summary: 'Get all my businesses' })
+  @ApiOperation({ 
+    summary: 'Get all my businesses',
+    description: 'Retrieves all business profiles owned by the authenticated merchant user. A merchant can own multiple businesses. Returns business details including verification status, listings count, and statistics.'
+  })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Businesses retrieved successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          name: { type: 'string', example: 'Grand Hotel Kigali' },
+          registrationStatus: { type: 'string', enum: ['pending', 'verified', 'rejected'], example: 'verified' },
+          listingsCount: { type: 'number', example: 5 },
+          createdAt: { type: 'string', format: 'date-time' }
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   async getMyBusinesses(@Request() req) {
     return this.merchantsService.getMyBusinesses(req.user.id);
   }
 
   @Get('businesses/:businessId')
-  @ApiOperation({ summary: 'Get business details' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
+  @ApiOperation({ 
+    summary: 'Get business details',
+    description: 'Retrieves detailed information about a specific business including profile, verification status, settings, listings summary, and statistics. Only the business owner can access this endpoint.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Business details retrieved successfully',
+    schema: { type: 'object' }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async getBusiness(@Request() req, @Param('businessId') businessId: string) {
     return this.merchantsService.getBusiness(req.user.id, businessId);
   }
 
   @Post('businesses')
-  @ApiOperation({ summary: 'Create a new business' })
+  @ApiOperation({ 
+    summary: 'Create a new business',
+    description: 'Creates a new business profile for the authenticated merchant. The business will be in "pending" status until verified by an admin. Merchants can create multiple businesses (e.g., multiple hotel locations).'
+  })
+  @ApiBody({ type: CreateBusinessDto })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'Business created successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        name: { type: 'string', example: 'Grand Hotel Kigali' },
+        registrationStatus: { type: 'string', enum: ['pending', 'verified', 'rejected'], example: 'pending' },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   async createBusiness(@Request() req, @Body() data: CreateBusinessDto) {
     return this.merchantsService.createBusiness(req.user.id, data);
   }
 
   @Put('businesses/:businessId')
-  @ApiOperation({ summary: 'Update business details' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
+  @ApiOperation({ 
+    summary: 'Update business details',
+    description: 'Updates business profile information including name, description, contact details, and settings. Only the business owner can update their business. Some changes may require re-verification.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiBody({ type: UpdateBusinessDto })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Business updated successfully',
+    schema: { type: 'object' }
+  })
+  @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to update this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async updateBusiness(@Request() req, @Param('businessId') businessId: string, @Body() data: UpdateBusinessDto) {
     return this.merchantsService.updateBusiness(req.user.id, businessId, data);
   }
 
   @Delete('businesses/:businessId')
-  @ApiOperation({ summary: 'Delete a business' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
+  @ApiOperation({ 
+    summary: 'Delete a business',
+    description: 'Soft deletes a business profile. The business and all its listings will be hidden from public view. Only the business owner can delete their business. This action can be reversed by an admin.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Business deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Business deleted successfully' }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to delete this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async deleteBusiness(@Request() req, @Param('businessId') businessId: string) {
     return this.merchantsService.deleteBusiness(req.user.id, businessId);
   }
 
   // ============ LISTINGS ============
   @Get('businesses/:businessId/listings')
-  @ApiOperation({ summary: 'Get all listings for a business' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'status', required: false, enum: ['draft', 'pending_review', 'active', 'inactive', 'rejected'] })
+  @ApiOperation({ 
+    summary: 'Get all listings for a business',
+    description: 'Retrieves paginated list of listings owned by a specific business. Supports filtering by listing status. Useful for managing business listings and viewing their approval status.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
+  @ApiQuery({ name: 'status', required: false, enum: ['draft', 'pending_review', 'active', 'inactive', 'rejected'], description: 'Filter by listing status', example: 'active' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Listings retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: { type: 'array', items: { type: 'object' } },
+        total: { type: 'number', example: 10 },
+        page: { type: 'number', example: 1 },
+        limit: { type: 'number', example: 20 }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async getListings(
     @Request() req,
     @Param('businessId') businessId: string,
@@ -127,9 +227,28 @@ export class MerchantsController {
   }
 
   @Post('businesses/:businessId/listings/:listingId/submit')
-  @ApiOperation({ summary: 'Submit listing for review' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
-  @ApiParam({ name: 'listingId', description: 'Listing UUID' })
+  @ApiOperation({ 
+    summary: 'Submit listing for review',
+    description: 'Submits a draft listing for admin review. The listing status will change from "draft" to "pending_review". Once approved by an admin, the listing will become "active" and visible to users. Rejected listings can be resubmitted after making corrections.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'listingId', type: String, format: 'uuid', description: 'Listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Listing submitted for review successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Listing submitted for review' },
+        listing: { type: 'object', properties: { status: { type: 'string', example: 'pending_review' } } }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Bad request - Listing is not in draft status or missing required fields' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to submit this listing' })
+  @ApiResponse({ status: 404, description: 'Business or listing not found' })
   async submitListing(
     @Request() req,
     @Param('businessId') businessId: string,
@@ -270,14 +389,33 @@ export class MerchantsController {
 
   // ============ BOOKINGS ============
   @Get('businesses/:businessId/bookings')
-  @ApiOperation({ summary: 'Get all bookings for a business' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'status', required: false, enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'] })
-  @ApiQuery({ name: 'listingId', required: false, type: String })
-  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter from date (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter to date (YYYY-MM-DD)' })
+  @ApiOperation({ 
+    summary: 'Get all bookings for a business',
+    description: 'Retrieves paginated list of bookings for all listings owned by a business. Supports filtering by status, listing, and date range. Essential for managing reservations and tracking business bookings.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20, description: 'Items per page (default: 20)' })
+  @ApiQuery({ name: 'status', required: false, enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'], description: 'Filter by booking status', example: 'confirmed' })
+  @ApiQuery({ name: 'listingId', required: false, type: String, format: 'uuid', description: 'Filter by specific listing UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter bookings from this date (YYYY-MM-DD)', example: '2024-12-01' })
+  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter bookings until this date (YYYY-MM-DD)', example: '2024-12-31' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Bookings retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        data: { type: 'array', items: { type: 'object' } },
+        total: { type: 'number', example: 50 },
+        page: { type: 'number', example: 1 },
+        limit: { type: 'number', example: 20 }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async getBookings(
     @Request() req,
     @Param('businessId') businessId: string,
@@ -311,9 +449,29 @@ export class MerchantsController {
   }
 
   @Put('businesses/:businessId/bookings/:bookingId/status')
-  @ApiOperation({ summary: 'Update booking status (confirm, cancel, complete, no-show)' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
-  @ApiParam({ name: 'bookingId', description: 'Booking UUID' })
+  @ApiOperation({ 
+    summary: 'Update booking status (confirm, cancel, complete, no-show)',
+    description: 'Updates the status of a booking. Merchants can confirm pending bookings, mark bookings as completed or no-show, and cancel bookings. Status changes may trigger notifications to customers.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiParam({ name: 'bookingId', type: String, format: 'uuid', description: 'Booking UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiBody({ type: UpdateBookingStatusDto })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Booking status updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: 'Booking status updated successfully' },
+        booking: { type: 'object', properties: { status: { type: 'string', example: 'confirmed' } } }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Bad request - Invalid status transition or missing status' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to update this booking' })
+  @ApiResponse({ status: 404, description: 'Business or booking not found' })
   async updateBookingStatus(
     @Request() req,
     @Param('businessId') businessId: string,
@@ -362,18 +520,66 @@ export class MerchantsController {
 
   // ============ ANALYTICS ============
   @Get('businesses/:businessId/dashboard')
-  @ApiOperation({ summary: 'Get business dashboard overview' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
+  @ApiOperation({ 
+    summary: 'Get business dashboard overview',
+    description: 'Retrieves comprehensive dashboard data for a business including key metrics, recent bookings, revenue summary, listing statistics, and review summaries. Essential for merchant dashboard screens.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Dashboard data retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        totalBookings: { type: 'number', example: 150 },
+        totalRevenue: { type: 'number', example: 45000.00 },
+        activeListings: { type: 'number', example: 5 },
+        averageRating: { type: 'number', example: 4.5 },
+        recentBookings: { type: 'array', items: { type: 'object' } },
+        revenueByPeriod: { type: 'object' }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async getDashboard(@Request() req, @Param('businessId') businessId: string) {
     return this.merchantsService.getDashboard(req.user.id, businessId);
   }
 
   @Get('businesses/:businessId/analytics/revenue')
-  @ApiOperation({ summary: 'Get revenue analytics' })
-  @ApiParam({ name: 'businessId', description: 'Business UUID' })
-  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Start date (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'End date (YYYY-MM-DD)' })
-  @ApiQuery({ name: 'groupBy', required: false, enum: ['day', 'week', 'month', 'year'] })
+  @ApiOperation({ 
+    summary: 'Get revenue analytics',
+    description: 'Retrieves detailed revenue analytics for a business. Supports date range filtering and grouping by day, week, month, or year. Useful for revenue reports and financial analysis.'
+  })
+  @ApiParam({ name: 'businessId', type: String, format: 'uuid', description: 'Business UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Start date for analytics (YYYY-MM-DD)', example: '2024-12-01' })
+  @ApiQuery({ name: 'endDate', required: false, type: String, description: 'End date for analytics (YYYY-MM-DD)', example: '2024-12-31' })
+  @ApiQuery({ name: 'groupBy', required: false, enum: ['day', 'week', 'month', 'year'], description: 'Group revenue data by time period', example: 'month' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Revenue analytics retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        totalRevenue: { type: 'number', example: 45000.00 },
+        periodData: { 
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              period: { type: 'string', example: '2024-12' },
+              revenue: { type: 'number', example: 15000.00 },
+              bookingCount: { type: 'number', example: 50 }
+            }
+          }
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this business' })
+  @ApiResponse({ status: 404, description: 'Business not found' })
   async getRevenueAnalytics(
     @Request() req,
     @Param('businessId') businessId: string,
