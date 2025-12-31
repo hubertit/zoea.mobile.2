@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/models/event.dart';
@@ -512,11 +513,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             const SizedBox(width: 16),
             ElevatedButton(
               onPressed: ticket.disabled ? null : () {
-                // Open Sinc page in webview
-                final sincUrl = 'https://www.sinc.events/${event.slug}';
-                context.push(
-                  '/webview?url=${Uri.encodeComponent(sincUrl)}&title=${Uri.encodeComponent(eventName)}',
-                );
+                _openTicketWebview(context, event.slug, eventName);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
@@ -583,11 +580,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               flex: 2,
               child: ElevatedButton(
                 onPressed: () {
-                  // Open Sinc page in webview for both ticket selection and free events
-                  final sincUrl = 'https://www.sinc.events/${event.slug}';
-                  context.push(
-                    '/webview?url=${Uri.encodeComponent(sincUrl)}&title=${Uri.encodeComponent(eventDetails.name)}',
-                  );
+                  _openTicketWebview(context, event.slug, eventDetails.name);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
@@ -630,6 +623,174 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     } catch (e) {
       // Silently fail - analytics should never break the app
     }
+  }
+
+  Future<void> _openTicketWebview(BuildContext context, String eventSlug, String eventName) async {
+    // Check if user has selected "Don't show again"
+    final prefs = await SharedPreferences.getInstance();
+    final dontShowAgain = prefs.getBool('sinc_ticket_dialog_dont_show') ?? false;
+
+    if (dontShowAgain) {
+      // Open webview directly
+      _navigateToWebview(context, eventSlug, eventName);
+    } else {
+      // Show dialog first
+      final shouldProceed = await _showSincRedirectDialog(context);
+      if (shouldProceed == true && context.mounted) {
+        _navigateToWebview(context, eventSlug, eventName);
+      }
+    }
+  }
+
+  Future<bool?> _showSincRedirectDialog(BuildContext context) async {
+    bool dontShowAgain = false;
+
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppTheme.backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon and Title in one row
+              Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.info_outline,
+                      color: AppTheme.primaryColor,
+                      size: 18,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Redirecting to Sinc',
+                      style: AppTheme.titleSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Message
+              Text(
+                'You are about to be redirected to our partner platform "Sinc" to purchase tickets for this event. Sinc is our trusted ticketing partner that handles secure event bookings and payments.',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Don't show again checkbox
+              InkWell(
+                onTap: () {
+                  setDialogState(() {
+                    dontShowAgain = !dontShowAgain;
+                  });
+                },
+                borderRadius: BorderRadius.circular(6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: Checkbox(
+                          value: dontShowAgain,
+                          onChanged: (value) {
+                            setDialogState(() {
+                              dontShowAgain = value ?? false;
+                            });
+                          },
+                          activeColor: AppTheme.primaryColor,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          "Don't show again",
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.secondaryTextColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                // Save "Don't show again" preference
+                if (dontShowAgain) {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('sinc_ticket_dialog_dont_show', true);
+                }
+                Navigator.of(context).pop(true);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Continue',
+                style: AppTheme.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _navigateToWebview(BuildContext context, String eventSlug, String eventName) {
+    final sincUrl = 'https://www.sinc.events/$eventSlug';
+    context.push(
+      '/webview?url=${Uri.encodeComponent(sincUrl)}&title=${Uri.encodeComponent(eventName)}',
+    );
   }
 }
 
