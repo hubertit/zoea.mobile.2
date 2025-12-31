@@ -2,24 +2,135 @@
 
 import Card, { CardHeader, CardBody } from '../components/Card';
 import StatCard from '../components/StatCard';
-import Icon, { faUsers, faBox, faCalendar, faClipboardList, faExclamationTriangle } from '../components/Icon';
+import Icon, { faUsers, faBox, faCalendar, faClipboardList, faExclamationTriangle, faPlus, faChartLine, faDollarSign } from '../components/Icon';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import { useState, useEffect } from 'react';
 import { getDashboardStats, DashboardStats } from '@/src/lib/api/dashboard';
 import { toast } from '../components/Toaster';
 import { useAuthStore } from '@/src/store/auth';
+import { LineChart, AreaChart } from '../components';
+import { UsersAPI, BookingsAPI, PaymentsAPI } from '@/src/lib/api';
+import { useRouter } from 'next/navigation';
+import { Button } from '../components';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const { user } = useAuthStore();
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [userGrowth, setUserGrowth] = useState<{ date: string; count: number }[]>([]);
+  const [bookingTrends, setBookingTrends] = useState<{ date: string; count: number; revenue: number }[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+
+  // Helper to fetch all paginated data
+  const fetchAllPaginated = async (
+    fetchFn: (params: any) => Promise<any>,
+    params: any = {}
+  ): Promise<any[]> => {
+    const allData: any[] = [];
+    let page = 1;
+    const limit = 100;
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await fetchFn({ ...params, page, limit });
+      const data = response.data || [];
+      allData.push(...data);
+      
+      const total = response.meta?.total || 0;
+      hasMore = allData.length < total && data.length === limit;
+      page++;
+    }
+
+    return allData;
+  };
 
   useEffect(() => {
-    async function fetchStats() {
+    async function fetchDashboardData() {
       try {
         setLoading(true);
+        
+        // Fetch basic stats
         const data = await getDashboardStats();
         setStats(data);
+
+        // Calculate date range
+        const now = new Date();
+        const daysBack = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : 365;
+        const startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - daysBack);
+
+        // Fetch users for growth chart
+        try {
+          const allUsers = await fetchAllPaginated(UsersAPI.listUsers);
+          const usersByDate = allUsers
+            .filter((u: any) => new Date(u.createdAt) >= startDate)
+            .reduce((acc: any, user: any) => {
+              const date = new Date(user.createdAt).toISOString().split('T')[0];
+              acc[date] = (acc[date] || 0) + 1;
+              return acc;
+            }, {});
+
+          const userGrowthData = Object.entries(usersByDate)
+            .map(([date, count]) => ({ date, count: count as number }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+          setUserGrowth(userGrowthData);
+        } catch (error) {
+          console.error('Failed to fetch user growth:', error);
+        }
+
+        // Fetch bookings for trends chart
+        try {
+          const allBookings = await fetchAllPaginated(BookingsAPI.listBookings);
+          const bookingsByDate = allBookings
+            .filter((b: any) => new Date(b.createdAt || b.bookingDate) >= startDate)
+            .reduce((acc: any, booking: any) => {
+              const date = new Date(booking.createdAt || booking.bookingDate).toISOString().split('T')[0];
+              if (!acc[date]) {
+                acc[date] = { count: 0, revenue: 0 };
+              }
+              acc[date].count += 1;
+              acc[date].revenue += booking.totalAmount || 0;
+              return acc;
+            }, {});
+
+          const bookingTrendsData = Object.entries(bookingsByDate)
+            .map(([date, data]: [string, any]) => ({ date, count: data.count, revenue: data.revenue }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+          setBookingTrends(bookingTrendsData);
+        } catch (error) {
+          console.error('Failed to fetch booking trends:', error);
+        }
+
+        // Fetch recent activity (recent bookings, users, etc.)
+        try {
+          const [recentBookings, recentUsers] = await Promise.all([
+            BookingsAPI.listBookings({ limit: 5, page: 1 }),
+            UsersAPI.listUsers({ limit: 5, page: 1 }),
+          ]);
+
+          const activities = [
+            ...(recentBookings.data || []).map((b: any) => ({
+              type: 'booking',
+              message: `New booking #${b.bookingNumber} by ${b.user?.fullName || 'User'}`,
+              date: b.createdAt,
+              link: `/dashboard/bookings/${b.id}`,
+            })),
+            ...(recentUsers.data || []).map((u: any) => ({
+              type: 'user',
+              message: `New user registered: ${u.fullName || u.email || u.phoneNumber}`,
+              date: u.createdAt,
+              link: `/dashboard/users/${u.id}`,
+            })),
+          ]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .slice(0, 10);
+
+          setRecentActivity(activities);
+        } catch (error) {
+          console.error('Failed to fetch recent activity:', error);
+        }
       } catch (error: any) {
         console.error('Error fetching dashboard stats:', error);
         
@@ -45,8 +156,8 @@ export default function DashboardPage() {
       }
     }
 
-    fetchStats();
-  }, [user]);
+    fetchDashboardData();
+  }, [user, dateRange]);
 
   // Check if user has admin role
   // Roles can be either strings (from backend) or objects with code property
@@ -90,9 +201,26 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-600">Welcome to the Zoea Admin Portal</p>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-600">Welcome to the Zoea Admin Portal</p>
+        </div>
+        
+        {/* Date Range Filter */}
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-700">Date Range:</label>
+          <select
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value as '7d' | '30d' | '90d' | '1y')}
+            className="px-3 py-2 border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#0e1a30] focus:border-[#0e1a30] text-sm"
+          >
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="1y">Last year</option>
+          </select>
+        </div>
       </div>
 
       {/* Stat Cards */}
@@ -205,22 +333,137 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Placeholder Content */}
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-gray-900">User Growth</h2>
+          </CardHeader>
+          <CardBody>
+            {userGrowth.length > 0 ? (
+              <LineChart
+                title="New Users"
+                data={userGrowth.map((item) => ({
+                  x: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                  y: item.count,
+                }))}
+                height={300}
+                showLegend={false}
+              />
+            ) : (
+              <p className="text-sm text-gray-600 text-center py-8">No data available</p>
+            )}
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-gray-900">Booking Trends</h2>
+          </CardHeader>
+          <CardBody>
+            {bookingTrends.length > 0 ? (
+              <AreaChart
+                title="Bookings & Revenue"
+                data={bookingTrends.map((item) => ({
+                  x: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                  y: item.count,
+                }))}
+                height={300}
+                showLegend={false}
+              />
+            ) : (
+              <p className="text-sm text-gray-600 text-center py-8">No data available</p>
+            )}
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Recent Activity & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-sm text-gray-600">Activity feed will be displayed here</p>
+            {recentActivity.length > 0 ? (
+              <div className="space-y-3">
+                {recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 p-3 border border-gray-200 rounded-sm hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() => activity.link && router.push(activity.link)}
+                  >
+                    <div className="flex-shrink-0 w-2 h-2 bg-[#0e1a30] rounded-full mt-2"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900">{activity.message}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(activity.date).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-600 text-center py-8">No recent activity</p>
+            )}
           </CardBody>
         </Card>
+
         <Card>
           <CardHeader>
             <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-sm text-gray-600">Quick actions will be displayed here</p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/users')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faUsers} size="lg" />
+                <span className="text-sm">Manage Users</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/listings')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faBox} size="lg" />
+                <span className="text-sm">Manage Listings</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/events')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faCalendar} size="lg" />
+                <span className="text-sm">Manage Events</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/bookings')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faClipboardList} size="lg" />
+                <span className="text-sm">View Bookings</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/reports')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faChartLine} size="lg" />
+                <span className="text-sm">Generate Reports</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push('/dashboard/settings')}
+                className="flex flex-col items-center gap-2 h-auto py-4"
+              >
+                <Icon icon={faExclamationTriangle} size="lg" />
+                <span className="text-sm">Settings</span>
+              </Button>
+            </div>
           </CardBody>
         </Card>
       </div>
