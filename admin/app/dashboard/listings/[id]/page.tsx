@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, type Listing, type ListingStatus } from '@/src/lib/api';
+import { ListingsAPI, CategoriesAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
 import Icon, { 
   faArrowLeft, 
   faEdit, 
@@ -19,6 +19,8 @@ import { toast } from '@/app/components/Toaster';
 import { Button, Modal } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Select from '@/app/components/Select';
+import Input from '@/app/components/Input';
+import Textarea from '@/app/components/Textarea';
 import StatusBadge from '@/app/components/StatusBadge';
 
 const STATUSES: { value: ListingStatus; label: string }[] = [
@@ -27,6 +29,32 @@ const STATUSES: { value: ListingStatus; label: string }[] = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' },
   { value: 'suspended', label: 'Suspended' },
+];
+
+const TYPES: { value: ListingType; label: string }[] = [
+  { value: 'hotel', label: 'Hotel' },
+  { value: 'restaurant', label: 'Restaurant' },
+  { value: 'tour', label: 'Tour' },
+  { value: 'event', label: 'Event' },
+  { value: 'attraction', label: 'Attraction' },
+  { value: 'bar', label: 'Bar' },
+  { value: 'club', label: 'Club' },
+  { value: 'lounge', label: 'Lounge' },
+  { value: 'cafe', label: 'Cafe' },
+  { value: 'fast_food', label: 'Fast Food' },
+  { value: 'mall', label: 'Mall' },
+  { value: 'market', label: 'Market' },
+  { value: 'boutique', label: 'Boutique' },
+];
+
+const PRICE_UNITS: { value: PriceUnit; label: string }[] = [
+  { value: 'per_night', label: 'Per Night' },
+  { value: 'per_person', label: 'Per Person' },
+  { value: 'per_meal', label: 'Per Meal' },
+  { value: 'per_tour', label: 'Per Tour' },
+  { value: 'per_event', label: 'Per Event' },
+  { value: 'per_hour', label: 'Per Hour' },
+  { value: 'per_table', label: 'Per Table' },
 ];
 
 const getStatusBadgeColor = (status: ListingStatus) => {
@@ -53,12 +81,32 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
   const [formData, setFormData] = useState({
     status: 'draft' as ListingStatus,
     isFeatured: false,
     isVerified: false,
     isBlocked: false,
+  });
+
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    shortDescription: '',
+    description: '',
+    type: '' as ListingType | '',
+    categoryId: '',
+    address: '',
+    contactPhone: '',
+    contactEmail: '',
+    website: '',
+    minPrice: '',
+    maxPrice: '',
+    priceUnit: '' as PriceUnit | '',
+    status: 'draft' as ListingStatus,
+    isFeatured: false,
+    isVerified: false,
   });
 
   useEffect(() => {
@@ -78,6 +126,23 @@ export default function ListingDetailPage() {
           isVerified: listingData.isVerified || false,
           isBlocked: listingData.isBlocked || false,
         });
+        setEditFormData({
+          name: listingData.name || '',
+          shortDescription: listingData.shortDescription || '',
+          description: listingData.description || '',
+          type: listingData.type || '',
+          categoryId: listingData.categoryId || '',
+          address: listingData.address || '',
+          contactPhone: listingData.contactPhone || '',
+          contactEmail: listingData.contactEmail || '',
+          website: listingData.website || '',
+          minPrice: listingData.minPrice?.toString() || '',
+          maxPrice: listingData.maxPrice?.toString() || '',
+          priceUnit: listingData.priceUnit || '',
+          status: listingData.status || 'draft',
+          isFeatured: listingData.isFeatured || false,
+          isVerified: listingData.isVerified || false,
+        });
       } catch (error: any) {
         console.error('Failed to fetch listing:', error);
         toast.error(error?.message || 'Failed to load listing');
@@ -89,6 +154,19 @@ export default function ListingDetailPage() {
 
     fetchListing();
   }, [listingId, router]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await CategoriesAPI.listCategories();
+        // CategoriesAPI.listCategories returns Category[] directly
+        setCategories(Array.isArray(response) ? response : []);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSaveStatus = async () => {
     if (!listingId) return;
@@ -110,6 +188,42 @@ export default function ListingDetailPage() {
     } catch (error: any) {
       console.error('Failed to update listing status:', error);
       toast.error(error?.message || 'Failed to update listing status');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!listingId) return;
+
+    setSaving(true);
+    try {
+      await ListingsAPI.updateListing(listingId, {
+        name: editFormData.name,
+        shortDescription: editFormData.shortDescription || undefined,
+        description: editFormData.description || undefined,
+        type: editFormData.type || undefined,
+        categoryId: editFormData.categoryId || undefined,
+        address: editFormData.address || undefined,
+        contactPhone: editFormData.contactPhone || undefined,
+        contactEmail: editFormData.contactEmail || undefined,
+        website: editFormData.website || undefined,
+        minPrice: editFormData.minPrice ? parseFloat(editFormData.minPrice) : undefined,
+        maxPrice: editFormData.maxPrice ? parseFloat(editFormData.maxPrice) : undefined,
+        priceUnit: editFormData.priceUnit || undefined,
+        status: editFormData.status,
+        isFeatured: editFormData.isFeatured,
+        isVerified: editFormData.isVerified,
+      });
+      
+      // Refresh listing data
+      const updatedListing = await ListingsAPI.getListingById(listingId);
+      setListing(updatedListing);
+      setEditModalOpen(false);
+      toast.success('Listing updated successfully');
+    } catch (error: any) {
+      console.error('Failed to update listing:', error);
+      toast.error(error?.message || 'Failed to update listing');
     } finally {
       setSaving(false);
     }
@@ -150,11 +264,20 @@ export default function ListingDetailPage() {
         <div className="flex items-center gap-2">
           <Button
             onClick={() => {
-              setStatusModalOpen(true);
+              setEditModalOpen(true);
             }}
             variant="primary"
             size="sm"
             icon={faEdit}
+          >
+            Edit Listing
+          </Button>
+          <Button
+            onClick={() => {
+              setStatusModalOpen(true);
+            }}
+            variant="secondary"
+            size="sm"
           >
             Update Status
           </Button>
@@ -356,6 +479,196 @@ export default function ListingDetailPage() {
           </CardBody>
         </Card>
       )}
+
+      {/* Edit Listing Modal */}
+      <Modal
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          if (listing) {
+            setEditFormData({
+              name: listing.name || '',
+              shortDescription: listing.shortDescription || '',
+              description: listing.description || '',
+              type: listing.type || '',
+              categoryId: listing.categoryId || '',
+              address: listing.address || '',
+              contactPhone: listing.contactPhone || '',
+              contactEmail: listing.contactEmail || '',
+              website: listing.website || '',
+              minPrice: listing.minPrice?.toString() || '',
+              maxPrice: listing.maxPrice?.toString() || '',
+              priceUnit: listing.priceUnit || '',
+              status: listing.status || 'draft',
+              isFeatured: listing.isFeatured || false,
+              isVerified: listing.isVerified || false,
+            });
+          }
+        }}
+        title="Edit Listing"
+        size="lg"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <Input
+            label="Name"
+            value={editFormData.name}
+            onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+            required
+          />
+
+          <Textarea
+            label="Short Description"
+            value={editFormData.shortDescription}
+            onChange={(e) => setEditFormData({ ...editFormData, shortDescription: e.target.value })}
+            rows={2}
+          />
+
+          <Textarea
+            label="Description"
+            value={editFormData.description}
+            onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+            rows={4}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Select
+              label="Type"
+              value={editFormData.type}
+              onChange={(e) => setEditFormData({ ...editFormData, type: e.target.value as ListingType })}
+              options={[{ value: '', label: 'Select Type' }, ...TYPES.map((t) => ({ value: t.value, label: t.label }))]}
+            />
+
+            <Select
+              label="Category"
+              value={editFormData.categoryId}
+              onChange={(e) => setEditFormData({ ...editFormData, categoryId: e.target.value })}
+              options={[{ value: '', label: 'Select Category' }, ...categories.map((c) => ({ value: c.id, label: c.name }))]}
+            />
+          </div>
+
+          <Input
+            label="Address"
+            value={editFormData.address}
+            onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Contact Phone"
+              value={editFormData.contactPhone}
+              onChange={(e) => setEditFormData({ ...editFormData, contactPhone: e.target.value })}
+            />
+
+            <Input
+              label="Contact Email"
+              type="email"
+              value={editFormData.contactEmail}
+              onChange={(e) => setEditFormData({ ...editFormData, contactEmail: e.target.value })}
+            />
+          </div>
+
+          <Input
+            label="Website"
+            type="url"
+            value={editFormData.website}
+            onChange={(e) => setEditFormData({ ...editFormData, website: e.target.value })}
+          />
+
+          <div className="grid grid-cols-3 gap-4">
+            <Input
+              label="Min Price"
+              type="number"
+              value={editFormData.minPrice}
+              onChange={(e) => setEditFormData({ ...editFormData, minPrice: e.target.value })}
+            />
+
+            <Input
+              label="Max Price"
+              type="number"
+              value={editFormData.maxPrice}
+              onChange={(e) => setEditFormData({ ...editFormData, maxPrice: e.target.value })}
+            />
+
+            <Select
+              label="Price Unit"
+              value={editFormData.priceUnit}
+              onChange={(e) => setEditFormData({ ...editFormData, priceUnit: e.target.value as PriceUnit })}
+              options={[{ value: '', label: 'Select Unit' }, ...PRICE_UNITS.map((u) => ({ value: u.value, label: u.label }))]}
+            />
+          </div>
+
+          <Select
+            label="Status"
+            value={editFormData.status}
+            onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as ListingStatus })}
+            options={STATUSES.map((s) => ({ value: s.value, label: s.label }))}
+          />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Flags</label>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={editFormData.isFeatured}
+                  onChange={(e) => setEditFormData({ ...editFormData, isFeatured: e.target.checked })}
+                  className="w-4 h-4 text-[#0e1a30] border-gray-300 rounded focus:ring-[#0e1a30]"
+                />
+                <span className="text-sm text-gray-700">Featured</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={editFormData.isVerified}
+                  onChange={(e) => setEditFormData({ ...editFormData, isVerified: e.target.checked })}
+                  className="w-4 h-4 text-[#0e1a30] border-gray-300 rounded focus:ring-[#0e1a30]"
+                />
+                <span className="text-sm text-gray-700">Verified</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 justify-end pt-4 border-t border-gray-200">
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => {
+                setEditModalOpen(false);
+                if (listing) {
+                  setEditFormData({
+                    name: listing.name || '',
+                    shortDescription: listing.shortDescription || '',
+                    description: listing.description || '',
+                    type: listing.type || '',
+                    categoryId: listing.categoryId || '',
+                    address: listing.address || '',
+                    contactPhone: listing.contactPhone || '',
+                    contactEmail: listing.contactEmail || '',
+                    website: listing.website || '',
+                    minPrice: listing.minPrice?.toString() || '',
+                    maxPrice: listing.maxPrice?.toString() || '',
+                    priceUnit: listing.priceUnit || '',
+                    status: listing.status || 'draft',
+                    isFeatured: listing.isFeatured || false,
+                    isVerified: listing.isVerified || false,
+                  });
+                }
+              }}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleSaveEdit}
+              loading={saving}
+            >
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Status Update Modal */}
       <Modal

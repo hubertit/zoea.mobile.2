@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { MerchantsAPI, type Merchant, type ApprovalStatus } from '@/src/lib/api';
+import { MerchantsAPI, type Merchant, type ApprovalStatus, type ListingType } from '@/src/lib/api';
 import Icon, { 
   faArrowLeft, 
   faEdit, 
@@ -19,6 +19,7 @@ import { toast } from '@/app/components/Toaster';
 import { Button, Modal } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Select from '@/app/components/Select';
+import Input from '@/app/components/Input';
 import Textarea from '@/app/components/Textarea';
 
 const STATUSES: { value: ApprovalStatus; label: string }[] = [
@@ -26,6 +27,22 @@ const STATUSES: { value: ApprovalStatus; label: string }[] = [
   { value: 'approved', label: 'Approved' },
   { value: 'rejected', label: 'Rejected' },
   { value: 'revision_requested', label: 'Revision Requested' },
+];
+
+const BUSINESS_TYPES: { value: ListingType; label: string }[] = [
+  { value: 'hotel', label: 'Hotel' },
+  { value: 'restaurant', label: 'Restaurant' },
+  { value: 'tour', label: 'Tour' },
+  { value: 'event', label: 'Event' },
+  { value: 'attraction', label: 'Attraction' },
+  { value: 'bar', label: 'Bar' },
+  { value: 'club', label: 'Club' },
+  { value: 'lounge', label: 'Lounge' },
+  { value: 'cafe', label: 'Cafe' },
+  { value: 'fast_food', label: 'Fast Food' },
+  { value: 'mall', label: 'Mall' },
+  { value: 'market', label: 'Market' },
+  { value: 'boutique', label: 'Boutique' },
 ];
 
 const getStatusBadgeColor = (status: ApprovalStatus) => {
@@ -51,12 +68,25 @@ export default function MerchantDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     registrationStatus: 'pending' as ApprovalStatus,
     isVerified: false,
     rejectionReason: '',
     revisionNotes: '',
+  });
+
+  const [editFormData, setEditFormData] = useState({
+    businessName: '',
+    businessType: '' as ListingType | '',
+    businessRegistrationNumber: '',
+    taxId: '',
+    description: '',
+    businessEmail: '',
+    businessPhone: '',
+    website: '',
+    address: '',
   });
 
   useEffect(() => {
@@ -75,6 +105,17 @@ export default function MerchantDetailPage() {
           isVerified: merchantData.isVerified || false,
           rejectionReason: '',
           revisionNotes: '',
+        });
+        setEditFormData({
+          businessName: merchantData.businessName || '',
+          businessType: merchantData.businessType || '',
+          businessRegistrationNumber: merchantData.businessRegistrationNumber || '',
+          taxId: merchantData.taxId || '',
+          description: merchantData.description || '',
+          businessEmail: merchantData.businessEmail || '',
+          businessPhone: merchantData.businessPhone || '',
+          website: merchantData.website || '',
+          address: merchantData.address || '',
         });
       } catch (error: any) {
         console.error('Failed to fetch merchant:', error);
@@ -108,6 +149,36 @@ export default function MerchantDetailPage() {
     } catch (error: any) {
       console.error('Failed to update merchant status:', error);
       toast.error(error?.message || 'Failed to update merchant status');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!merchantId) return;
+
+    setSaving(true);
+    try {
+      await MerchantsAPI.updateMerchant(merchantId, {
+        businessName: editFormData.businessName,
+        businessType: editFormData.businessType || undefined,
+        businessRegistrationNumber: editFormData.businessRegistrationNumber || undefined,
+        taxId: editFormData.taxId || undefined,
+        description: editFormData.description || undefined,
+        businessEmail: editFormData.businessEmail || undefined,
+        businessPhone: editFormData.businessPhone || undefined,
+        website: editFormData.website || undefined,
+        address: editFormData.address || undefined,
+      });
+      
+      // Refresh merchant data
+      const updatedMerchant = await MerchantsAPI.getMerchantById(merchantId);
+      setMerchant(updatedMerchant);
+      setEditModalOpen(false);
+      toast.success('Merchant updated successfully');
+    } catch (error: any) {
+      console.error('Failed to update merchant:', error);
+      toast.error(error?.message || 'Failed to update merchant');
     } finally {
       setSaving(false);
     }
@@ -148,11 +219,20 @@ export default function MerchantDetailPage() {
         <div className="flex items-center gap-2">
           <Button
             onClick={() => {
-              setStatusModalOpen(true);
+              setEditModalOpen(true);
             }}
             variant="primary"
             size="sm"
             icon={faEdit}
+          >
+            Edit Merchant
+          </Button>
+          <Button
+            onClick={() => {
+              setStatusModalOpen(true);
+            }}
+            variant="secondary"
+            size="sm"
           >
             Update Status
           </Button>
@@ -327,6 +407,128 @@ export default function MerchantDetailPage() {
           </CardBody>
         </Card>
       )}
+
+      {/* Edit Merchant Modal */}
+      <Modal
+        isOpen={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          if (merchant) {
+            setEditFormData({
+              businessName: merchant.businessName || '',
+              businessType: merchant.businessType || '',
+              businessRegistrationNumber: merchant.businessRegistrationNumber || '',
+              taxId: merchant.taxId || '',
+              description: merchant.description || '',
+              businessEmail: merchant.businessEmail || '',
+              businessPhone: merchant.businessPhone || '',
+              website: merchant.website || '',
+              address: merchant.address || '',
+            });
+          }
+        }}
+        title="Edit Merchant"
+        size="lg"
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <Input
+            label="Business Name"
+            value={editFormData.businessName}
+            onChange={(e) => setEditFormData({ ...editFormData, businessName: e.target.value })}
+            required
+          />
+
+          <Select
+            label="Business Type"
+            value={editFormData.businessType}
+            onChange={(e) => setEditFormData({ ...editFormData, businessType: e.target.value as ListingType })}
+            options={[{ value: '', label: 'Select Type' }, ...BUSINESS_TYPES.map((t) => ({ value: t.value, label: t.label }))]}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Registration Number"
+              value={editFormData.businessRegistrationNumber}
+              onChange={(e) => setEditFormData({ ...editFormData, businessRegistrationNumber: e.target.value })}
+            />
+
+            <Input
+              label="Tax ID"
+              value={editFormData.taxId}
+              onChange={(e) => setEditFormData({ ...editFormData, taxId: e.target.value })}
+            />
+          </div>
+
+          <Textarea
+            label="Description"
+            value={editFormData.description}
+            onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+            rows={4}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Business Email"
+              type="email"
+              value={editFormData.businessEmail}
+              onChange={(e) => setEditFormData({ ...editFormData, businessEmail: e.target.value })}
+            />
+
+            <Input
+              label="Business Phone"
+              value={editFormData.businessPhone}
+              onChange={(e) => setEditFormData({ ...editFormData, businessPhone: e.target.value })}
+            />
+          </div>
+
+          <Input
+            label="Website"
+            type="url"
+            value={editFormData.website}
+            onChange={(e) => setEditFormData({ ...editFormData, website: e.target.value })}
+          />
+
+          <Input
+            label="Address"
+            value={editFormData.address}
+            onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+          />
+
+          <div className="flex items-center gap-2 justify-end pt-4 border-t border-gray-200">
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => {
+                setEditModalOpen(false);
+                if (merchant) {
+                  setEditFormData({
+                    businessName: merchant.businessName || '',
+                    businessType: merchant.businessType || '',
+                    businessRegistrationNumber: merchant.businessRegistrationNumber || '',
+                    taxId: merchant.taxId || '',
+                    description: merchant.description || '',
+                    businessEmail: merchant.businessEmail || '',
+                    businessPhone: merchant.businessPhone || '',
+                    website: merchant.website || '',
+                    address: merchant.address || '',
+                  });
+                }
+              }}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleSaveEdit}
+              loading={saving}
+            >
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Status Update Modal */}
       <Modal
