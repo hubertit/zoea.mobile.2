@@ -21,6 +21,7 @@ import Icon, {
   faStar,
   faGlobe,
   faMapMarkerAlt,
+  faPrint,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { Button, Modal, Breadcrumbs } from '@/app/components';
@@ -190,12 +191,18 @@ export default function UserDetailPage() {
     typeof role === 'string' ? role : (role as any).code || role
   ).filter(Boolean) as UserRole[];
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-6">
-      <Breadcrumbs items={[
-        { label: 'Users', href: '/dashboard/users' },
-        { label: user?.fullName || 'User Details' }
-      ]} />
+      <div className="no-print">
+        <Breadcrumbs items={[
+          { label: 'Users', href: '/dashboard/users' },
+          { label: user?.fullName || 'User Details' }
+        ]} />
+      </div>
       
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -214,6 +221,15 @@ export default function UserDetailPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button
+            onClick={() => window.print()}
+            variant="outline"
+            size="sm"
+            icon={faPrint}
+            className="no-print"
+          >
+            Print
+          </Button>
+          <Button
             onClick={() => {
               setSelectedRoles([...currentRoleValues]);
               setRoleModalOpen(true);
@@ -221,6 +237,7 @@ export default function UserDetailPage() {
             variant="secondary"
             size="sm"
             icon={faShieldAlt}
+            className="no-print"
           >
             Manage Roles
           </Button>
@@ -232,6 +249,7 @@ export default function UserDetailPage() {
             variant="primary"
             size="sm"
             icon={faEdit}
+            className="no-print"
           >
             Update Status
           </Button>

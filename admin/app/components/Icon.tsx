@@ -110,4 +110,5 @@ export {
   faRedoAlt,
   faWifi,
   faServer,
+  faPrint,
 } from '@fortawesome/free-solid-svg-icons';
