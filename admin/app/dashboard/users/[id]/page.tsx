@@ -12,6 +12,15 @@ import Icon, {
   faPhone,
   faCheck,
   faTimes,
+  faHeart,
+  faSearch,
+  faEye,
+  faCalendar,
+  faClock,
+  faDollarSign,
+  faStar,
+  faGlobe,
+  faMapMarkerAlt,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { Button, Modal } from '@/app/components';
@@ -279,18 +288,31 @@ export default function UserDetailPage() {
               <StatusBadge status={user.verificationStatus || 'unverified'} />
             </div>
 
-            {/* Created At */}
+            {/* Created At with Time */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Created At
+                <Icon icon={faCalendar} className="inline mr-1 text-gray-400" size="sm" />
+                Date Joined
               </label>
-              <p className="text-sm text-gray-900">
-                {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                }) : 'N/A'}
-              </p>
+              <div>
+                <p className="text-sm text-gray-900">
+                  {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }) : 'N/A'}
+                </p>
+                {user.createdAt && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    <Icon icon={faClock} className="inline mr-1" size="xs" />
+                    {new Date(user.createdAt).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    })}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Country/City */}
@@ -308,6 +330,407 @@ export default function UserDetailPage() {
           </div>
         </CardBody>
       </Card>
+
+      {/* Activity Summary */}
+      {user.user_activity_summary && (
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-gray-900">Activity Summary</h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Total Views</label>
+                <p className="text-lg font-semibold text-gray-900">{user.user_activity_summary.totalViews?.toLocaleString() || '0'}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Total Bookings</label>
+                <p className="text-lg font-semibold text-gray-900">{user.user_activity_summary.totalBookings?.toLocaleString() || '0'}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Total Spent</label>
+                <p className="text-lg font-semibold text-gray-900">
+                  {user.user_activity_summary.totalSpent ? `RWF ${Number(user.user_activity_summary.totalSpent).toLocaleString()}` : 'RWF 0'}
+                </p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Total Reviews</label>
+                <p className="text-lg font-semibold text-gray-900">{user.user_activity_summary.totalReviews?.toLocaleString() || '0'}</p>
+              </div>
+              {user.user_activity_summary.lastActiveAt && (
+                <div className="md:col-span-2">
+                  <label className="block text-xs text-gray-500 mb-1">Last Active</label>
+                  <p className="text-sm text-gray-900">
+                    {new Date(user.user_activity_summary.lastActiveAt).toLocaleString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
+              )}
+              {user.user_activity_summary.favoriteCategories && user.user_activity_summary.favoriteCategories.length > 0 && (
+                <div className="md:col-span-2">
+                  <label className="block text-xs text-gray-500 mb-1">Favorite Categories</label>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {user.user_activity_summary.favoriteCategories.map((cat, idx) => (
+                      <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Statistics */}
+      {user._count && (
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-gray-900">Statistics</h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Bookings</label>
+                <p className="text-lg font-semibold text-gray-900">{user._count.bookings || 0}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Reviews</label>
+                <p className="text-lg font-semibold text-gray-900">{user._count.reviews || 0}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Favorites</label>
+                <p className="text-lg font-semibold text-gray-900">{user._count.favorites || 0}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Searches</label>
+                <p className="text-lg font-semibold text-gray-900">{user._count.searchHistory || 0}</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Viewed</label>
+                <p className="text-lg font-semibold text-gray-900">{user._count.recentlyViewed || 0}</p>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Preferences */}
+      {(user.preferredCurrency || user.preferredLanguage || user.timezone || user.user_content_preferences) && (
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-gray-900">Preferences</h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {user.preferredCurrency && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Icon icon={faDollarSign} className="inline mr-1 text-gray-400" size="sm" />
+                    Preferred Currency
+                  </label>
+                  <p className="text-sm text-gray-900">{user.preferredCurrency}</p>
+                </div>
+              )}
+              {user.preferredLanguage && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Icon icon={faGlobe} className="inline mr-1 text-gray-400" size="sm" />
+                    Preferred Language
+                  </label>
+                  <p className="text-sm text-gray-900">{user.preferredLanguage}</p>
+                </div>
+              )}
+              {user.timezone && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Icon icon={faClock} className="inline mr-1 text-gray-400" size="sm" />
+                    Timezone
+                  </label>
+                  <p className="text-sm text-gray-900">{user.timezone}</p>
+                </div>
+              )}
+              {user.maxDistance && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Icon icon={faMapMarkerAlt} className="inline mr-1 text-gray-400" size="sm" />
+                    Max Distance (km)
+                  </label>
+                  <p className="text-sm text-gray-900">{user.maxDistance}</p>
+                </div>
+              )}
+              {user.user_content_preferences && (
+                <>
+                  {user.user_content_preferences.showEvents !== null && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Show Events</label>
+                      <p className="text-sm text-gray-900">{user.user_content_preferences.showEvents ? 'Yes' : 'No'}</p>
+                    </div>
+                  )}
+                  {user.user_content_preferences.showListings !== null && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Show Listings</label>
+                      <p className="text-sm text-gray-900">{user.user_content_preferences.showListings ? 'Yes' : 'No'}</p>
+                    </div>
+                  )}
+                  {user.user_content_preferences.showTours !== null && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Show Tours</label>
+                      <p className="text-sm text-gray-900">{user.user_content_preferences.showTours ? 'Yes' : 'No'}</p>
+                    </div>
+                  )}
+                  {user.user_content_preferences.preferredPriceRange && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Price Range</label>
+                      <p className="text-sm text-gray-900">{user.user_content_preferences.preferredPriceRange}</p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Favorites */}
+      {user.favorites && user.favorites.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                <Icon icon={faHeart} className="inline mr-2 text-red-500" size="sm" />
+                Favorites ({user.favorites.length})
+              </h2>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-2">
+              {user.favorites.map((fav) => (
+                <div key={fav.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
+                  <div className="flex-1">
+                    {fav.listing && (
+                      <Link href={`/dashboard/listings/${fav.listing.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                        {fav.listing.name} ({fav.listing.type?.replace(/_/g, ' ')})
+                      </Link>
+                    )}
+                    {fav.event && (
+                      <Link href={`/dashboard/events/${fav.event.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                        {fav.event.name}
+                      </Link>
+                    )}
+                    {fav.tour && (
+                      <span className="text-sm font-medium text-gray-900">{fav.tour.name}</span>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(fav.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Search History */}
+      {user.searchHistory && user.searchHistory.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                <Icon icon={faSearch} className="inline mr-2 text-gray-400" size="sm" />
+                Search History ({user.searchHistory.length})
+              </h2>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-2">
+              {user.searchHistory.map((search) => (
+                <div key={search.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{search.query}</p>
+                    <div className="flex items-center gap-4 mt-1">
+                      {search.resultCount !== null && (
+                        <span className="text-xs text-gray-500">{search.resultCount} results</span>
+                      )}
+                      <span className="text-xs text-gray-500">
+                        {new Date(search.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Recently Viewed */}
+      {user.recentlyViewed && user.recentlyViewed.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                <Icon icon={faEye} className="inline mr-2 text-gray-400" size="sm" />
+                Recently Viewed ({user.recentlyViewed.length})
+              </h2>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-2">
+              {user.recentlyViewed.map((viewed) => (
+                <div key={viewed.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-sm">
+                  <div className="flex-1">
+                    {viewed.listing && (
+                      <Link href={`/dashboard/listings/${viewed.listing.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                        {viewed.listing.name} ({viewed.listing.type?.replace(/_/g, ' ')})
+                      </Link>
+                    )}
+                    {viewed.event && (
+                      <Link href={`/dashboard/events/${viewed.event.id}`} className="text-sm font-medium text-[#0e1a30] hover:underline">
+                        {viewed.event.name}
+                      </Link>
+                    )}
+                    {viewed.tour && (
+                      <span className="text-sm font-medium text-gray-900">{viewed.tour.name}</span>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(viewed.viewedAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Recent Bookings */}
+      {user.bookings && user.bookings.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Recent Bookings ({user.bookings.length})
+              </h2>
+              <Link href={`/dashboard/bookings?userId=${user.id}`}>
+                <Button variant="ghost" size="sm">View All</Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-2">
+              {user.bookings.map((booking) => (
+                <Link key={booking.id} href={`/dashboard/bookings/${booking.id}`}>
+                  <div className="flex items-center justify-between p-3 border border-gray-200 rounded-sm hover:bg-gray-50 cursor-pointer">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">#{booking.bookingNumber}</p>
+                      <div className="flex items-center gap-4 mt-1">
+                        {booking.listing && (
+                          <span className="text-xs text-gray-500">{booking.listing.name}</span>
+                        )}
+                        {booking.event && (
+                          <span className="text-xs text-gray-500">{booking.event.name}</span>
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {booking.currency || 'RWF'} {booking.totalAmount?.toLocaleString() || '0'}
+                        </span>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          booking.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          booking.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {booking.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Recent Reviews */}
+      {user.reviews && user.reviews.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                <Icon icon={faStar} className="inline mr-2 text-yellow-500" size="sm" />
+                Recent Reviews ({user.reviews.length})
+              </h2>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-3">
+              {user.reviews.map((review) => (
+                <div key={review.id} className="p-3 border border-gray-200 rounded-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Icon
+                              key={i}
+                              icon={faStar}
+                              className={i < (review.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
+                              size="xs"
+                            />
+                          ))}
+                        </div>
+                        {review.listing && (
+                          <Link href={`/dashboard/listings/${review.listing.id}`} className="text-xs text-[#0e1a30] hover:underline">
+                            {review.listing.name}
+                          </Link>
+                        )}
+                        {review.event && (
+                          <Link href={`/dashboard/events/${review.event.id}`} className="text-xs text-[#0e1a30] hover:underline">
+                            {review.event.name}
+                          </Link>
+                        )}
+                      </div>
+                      {review.comment && (
+                        <p className="text-sm text-gray-700 mt-1">{review.comment}</p>
+                      )}
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(review.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      )}
 
       {/* Roles */}
       <Card>
@@ -475,4 +898,3 @@ export default function UserDetailPage() {
     </div>
   );
 }
-

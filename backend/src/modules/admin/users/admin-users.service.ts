@@ -103,8 +103,72 @@ export class AdminUsersService {
             _count: { select: { listings: true, bookings: true } },
           },
         },
-        bookings: { take: 5, select: { id: true, status: true, createdAt: true } },
-        reviews: { take: 5, select: { id: true, rating: true, createdAt: true } },
+        bookings: { 
+          take: 10, 
+          orderBy: { createdAt: 'desc' },
+          select: { 
+            id: true, 
+            bookingNumber: true,
+            status: true, 
+            totalAmount: true,
+            currency: true,
+            createdAt: true,
+            listing: { select: { id: true, name: true } },
+            event: { select: { id: true, name: true } },
+          } 
+        },
+        reviews: { 
+          take: 10, 
+          orderBy: { createdAt: 'desc' },
+          select: { 
+            id: true, 
+            rating: true, 
+            comment: true,
+            createdAt: true,
+            listing: { select: { id: true, name: true } },
+            event: { select: { id: true, name: true } },
+          } 
+        },
+        favorites: {
+          take: 20,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            listing: { select: { id: true, name: true, type: true } },
+            event: { select: { id: true, name: true } },
+            tour: { select: { id: true, name: true } },
+          },
+        },
+        searchHistory: {
+          take: 20,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            query: true,
+            filters: true,
+            resultCount: true,
+            createdAt: true,
+          },
+        },
+        recentlyViewed: {
+          take: 20,
+          orderBy: { viewedAt: 'desc' },
+          include: {
+            listing: { select: { id: true, name: true, type: true } },
+            event: { select: { id: true, name: true } },
+            tour: { select: { id: true, name: true } },
+          },
+        },
+        user_activity_summary: true,
+        user_content_preferences: true,
+        _count: {
+          select: {
+            bookings: true,
+            reviews: true,
+            favorites: true,
+            searchHistory: true,
+            recentlyViewed: true,
+          },
+        },
       },
     });
 

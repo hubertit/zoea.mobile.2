@@ -13,8 +13,103 @@ export interface User {
   isActive: boolean;
   isBlocked: boolean;
   createdAt: string;
+  updatedAt?: string;
   country?: { id: string; name: string; code: string } | null;
   city?: { id: string; name: string } | null;
+  // User preferences
+  preferredCurrency?: string | null;
+  preferredLanguage?: string | null;
+  timezone?: string | null;
+  maxDistance?: number | null;
+  notificationPreferences?: Record<string, any> | null;
+  marketingConsent?: boolean | null;
+  // User data collection fields
+  countryOfOrigin?: string | null;
+  userType?: string | null;
+  visitPurpose?: string | null;
+  ageRange?: string | null;
+  lengthOfStay?: string | null;
+  travelParty?: string | null;
+  // Related data
+  merchantProfiles?: Array<{
+    id: string;
+    businessName: string;
+    registrationStatus: string;
+    createdAt: string;
+    _count: { listings: number; bookings: number };
+  }>;
+  bookings?: Array<{
+    id: string;
+    bookingNumber: string;
+    status: string;
+    totalAmount: number;
+    currency: string;
+    createdAt: string;
+    listing?: { id: string; name: string } | null;
+    event?: { id: string; name: string } | null;
+  }>;
+  reviews?: Array<{
+    id: string;
+    rating: number;
+    comment: string | null;
+    createdAt: string;
+    listing?: { id: string; name: string } | null;
+    event?: { id: string; name: string } | null;
+  }>;
+  favorites?: Array<{
+    id: string;
+    createdAt: string;
+    listing?: { id: string; name: string; type: string } | null;
+    event?: { id: string; name: string } | null;
+    tour?: { id: string; name: string } | null;
+  }>;
+  searchHistory?: Array<{
+    id: string;
+    query: string;
+    filters: any;
+    resultCount: number | null;
+    createdAt: string;
+  }>;
+  recentlyViewed?: Array<{
+    id: string;
+    viewedAt: string;
+    listing?: { id: string; name: string; type: string } | null;
+    event?: { id: string; name: string } | null;
+    tour?: { id: string; name: string } | null;
+  }>;
+  user_activity_summary?: {
+    totalViews: number | null;
+    totalBookings: number | null;
+    totalSpent: number | null;
+    totalReviews: number | null;
+    favoriteCategories: string[];
+    favoriteLocations: string[];
+    lastActiveAt: string | null;
+    firstBookingAt: string | null;
+    lastBookingAt: string | null;
+  } | null;
+  user_content_preferences?: {
+    selectedCountries: string[];
+    selectedCities: string[];
+    showCurrentLocation: boolean | null;
+    showSelectedOnly: boolean | null;
+    showEvents: boolean | null;
+    showListings: boolean | null;
+    showTours: boolean | null;
+    showPromotions: boolean | null;
+    preferredCategories: string[];
+    hiddenCategories: string[];
+    minPrice: number | null;
+    maxPrice: number | null;
+    preferredPriceRange: string | null;
+  } | null;
+  _count?: {
+    bookings: number;
+    reviews: number;
+    favorites: number;
+    searchHistory: number;
+    recentlyViewed: number;
+  };
 }
 
 export interface ListUsersParams {
