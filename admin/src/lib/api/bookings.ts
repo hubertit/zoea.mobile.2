@@ -33,6 +33,7 @@ export interface Booking {
   updatedAt: string;
   user?: { id: string; fullName: string; email: string } | null;
   listing?: { id: string; name: string } | null;
+  event?: { id: string; name: string } | null;
   merchant?: { id: string; businessName: string } | null;
 }
 

@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react';
 import DashboardSidebar from '../components/DashboardSidebar';
 import DashboardHeader from '../components/DashboardHeader';
-// TODO: Import RequireAuth when implemented
-// import { RequireAuth } from '../components';
+import RequireAuth from '../components/RequireAuth';
 
 export default function DashboardLayout({
   children,
@@ -27,8 +26,7 @@ export default function DashboardLayout({
   }, []);
 
   return (
-    // TODO: Wrap with RequireAuth when implemented
-    // <RequireAuth>
+    <RequireAuth>
       <div className="flex h-screen bg-gray-100 overflow-hidden">
         <DashboardSidebar
           isOpen={sidebarOpen}
@@ -46,7 +44,7 @@ export default function DashboardLayout({
           </main>
         </div>
       </div>
-    // </RequireAuth>
+    </RequireAuth>
   );
 }
 
