@@ -47,7 +47,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         bottom: TabBar(
@@ -160,7 +160,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -189,7 +189,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     placeholder: (context, url) => Container(
                       width: 60,
                       height: 60,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -197,7 +197,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     errorWidget: (context, url, error) => Container(
                       width: 60,
                       height: 60,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Icon(Icons.image_not_supported),
                     ),
                   ),
@@ -296,12 +296,12 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                               placeholder: (context, url) => Container(
                                 width: 80,
                                 height: 80,
-                                color: AppTheme.dividerColor,
+                                color: context.dividerColor,
                               ),
                               errorWidget: (context, url, error) => Container(
                                 width: 80,
                                 height: 80,
-                                color: AppTheme.dividerColor,
+                                color: context.dividerColor,
                                 child: const Icon(Icons.image_not_supported),
                               ),
                             ),
