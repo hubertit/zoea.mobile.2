@@ -2533,7 +2533,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 child: FadeInNetworkImage(
                   imageUrl: special['image'],
                   fit: BoxFit.cover,
-                  placeholderColor: AppTheme.dividerColor,
+                  placeholderColor: context.dividerColor,
                   errorWidget: Container(
                     color: context.dividerColor,
                     child: const Icon(Icons.image_not_supported),

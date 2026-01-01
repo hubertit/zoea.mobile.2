@@ -1217,10 +1217,10 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onSelected(value),
-      selectedColor: context.primaryColorTheme.withOpacity(0.2),
-      checkmarkColor: context.primaryColorTheme,
+      selectedColor: ctx.primaryColorTheme.withOpacity(0.2),
+      checkmarkColor: ctx.primaryColorTheme,
       labelStyle: AppTheme.bodySmall.copyWith(
-        color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
+        color: isSelected ? ctx.primaryColorTheme : ctx.primaryTextColor,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );

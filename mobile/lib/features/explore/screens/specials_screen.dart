@@ -131,13 +131,13 @@ class SpecialsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppTheme.successColor.withOpacity(0.1),
+                          color: context.successColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           special['discount'],
                           style: AppTheme.labelSmall.copyWith(
-                            color: AppTheme.successColor,
+                            color: context.successColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
