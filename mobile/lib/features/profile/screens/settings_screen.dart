@@ -34,7 +34,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           decoration: BoxDecoration(
             color: isSelected 
-                ? AppTheme.primaryColor 
+                ? context.primaryColorTheme 
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
           ),
