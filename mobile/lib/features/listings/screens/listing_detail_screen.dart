@@ -353,6 +353,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                                     name,
                                     style: AppTheme.headlineMedium.copyWith(
                                       fontWeight: FontWeight.w600,
+                                      color: context.primaryTextColor,
                                     ),
                                   ),
                                 ),
@@ -646,7 +647,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     Expanded(
                       child: Text(
                         contactPhone,
-                        style: AppTheme.bodyMedium,
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: context.primaryTextColor,
+                        ),
                       ),
                     ),
                   ],
