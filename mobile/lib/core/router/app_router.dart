@@ -32,6 +32,12 @@ import '../../core/models/event.dart';
 import '../../features/listings/screens/listing_detail_screen.dart';
 import '../../features/listings/screens/listings_screen.dart';
 import '../../features/listings/screens/webview_screen.dart';
+import '../../features/shop/screens/products_screen.dart';
+import '../../features/shop/screens/product_detail_screen.dart';
+import '../../features/shop/screens/services_screen.dart';
+import '../../features/shop/screens/service_detail_screen.dart';
+import '../../features/shop/screens/menus_screen.dart';
+import '../../features/shop/screens/cart_screen.dart';
 import '../../features/booking/screens/booking_screen.dart';
 import '../../features/booking/screens/booking_confirmation_screen.dart';
 import '../../features/zoea_card/screens/zoea_card_screen.dart';
@@ -363,6 +369,59 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/shopping',
         builder: (context, state) => const ShoppingScreen(),
+      ),
+
+      // Shop Routes
+      GoRoute(
+        path: '/products',
+        builder: (context, state) {
+          final listingId = state.uri.queryParameters['listingId'];
+          final category = state.uri.queryParameters['category'];
+          final search = state.uri.queryParameters['search'];
+          return ProductsScreen(
+            listingId: listingId,
+            category: category,
+            search: search,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/product/:id',
+        builder: (context, state) {
+          final productId = state.pathParameters['id']!;
+          return ProductDetailScreen(productId: productId);
+        },
+      ),
+      GoRoute(
+        path: '/services',
+        builder: (context, state) {
+          final listingId = state.uri.queryParameters['listingId'];
+          final category = state.uri.queryParameters['category'];
+          final search = state.uri.queryParameters['search'];
+          return ServicesScreen(
+            listingId: listingId,
+            category: category,
+            search: search,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/service/:id',
+        builder: (context, state) {
+          final serviceId = state.pathParameters['id']!;
+          return ServiceDetailScreen(serviceId: serviceId);
+        },
+      ),
+      GoRoute(
+        path: '/menus/:listingId',
+        builder: (context, state) {
+          final listingId = state.pathParameters['listingId']!;
+          return MenusScreen(listingId: listingId);
+        },
+      ),
+      GoRoute(
+        path: '/cart',
+        builder: (context, state) => const CartScreen(),
       ),
       GoRoute(
         path: '/accommodation/:accommodationId',

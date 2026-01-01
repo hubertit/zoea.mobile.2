@@ -10,8 +10,19 @@ import '../../../core/config/app_config.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
 import '../../../core/providers/reviews_provider.dart';
+import '../../../core/providers/products_provider.dart' show productsByListingProvider, ProductsParams;
+import '../../../core/providers/services_provider.dart' show servicesProvider, ServicesParams;
+import '../../../core/providers/menus_provider.dart' show menusByListingProvider;
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
+
+/// Helper class to hold shop tabs data
+class _ShopTabsData {
+  final List<Tab> tabs;
+  final List<Widget> children;
+
+  _ShopTabsData({required this.tabs, required this.children});
+}
 
 class ListingDetailScreen extends ConsumerStatefulWidget {
   final String listingId;
@@ -30,13 +41,23 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
   late TabController _tabController;
   late ScrollController _scrollController;
   bool _isScrolled = false;
+  int _previousTabCount = 4;
 
   @override
   void initState() {
     super.initState();
+    // Initial tab count (will be updated when listing data loads)
     _tabController = TabController(length: 4, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+  }
+
+  void _updateTabController(int tabCount) {
+    if (_previousTabCount != tabCount) {
+      _previousTabCount = tabCount;
+      _tabController.dispose();
+      _tabController = TabController(length: tabCount, vsync: this);
+    }
   }
 
   void _onScroll() {
@@ -144,6 +165,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     final contactPhone = listing['contactPhone'];
     final operatingHours = listing['operatingHours'] as Map<String, dynamic>?;
     final amenities = listing['amenities'] as List? ?? [];
+    final isShopEnabled = listing['isShopEnabled'] == true;
 
     return Scaffold(
       backgroundColor: context.grey50,
@@ -451,35 +473,55 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     ],
                   ),
                 ),
-                // Tabs
-                Container(
-                  color: context.cardColor,
-                  child: TabBar(
-                    controller: _tabController,
-                    labelColor: context.primaryColorTheme,
-                    unselectedLabelColor: context.secondaryTextColor,
-                    indicatorColor: context.primaryColorTheme,
-                    tabs: const [
-                      Tab(text: 'Overview'),
-                      Tab(text: 'Amenities'),
-                      Tab(text: 'Reviews'),
-                      Tab(text: 'Photos'),
-                    ],
-                  ),
+                // Tabs - dynamically built based on available shop content
+                Builder(
+                  builder: (context) {
+                    final shopTabs = _buildShopTabs(context, isShopEnabled);
+                    final allTabs = [
+                      const Tab(text: 'Overview'),
+                      ...shopTabs.tabs,
+                      const Tab(text: 'Reviews'),
+                      const Tab(text: 'Photos'),
+                      const Tab(text: 'Amenities'),
+                    ];
+                    
+                    // Update tab controller with correct count
+                    _updateTabController(allTabs.length);
+                    
+                    return Container(
+                      color: context.cardColor,
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: context.primaryColorTheme,
+                        unselectedLabelColor: context.secondaryTextColor,
+                        indicatorColor: context.primaryColorTheme,
+                        isScrollable: allTabs.length > 4, // Make scrollable if we have many tabs
+                        tabs: allTabs,
+                      ),
+                    );
+                  },
                 ),
-                // Tab Content
-                Container(
-                  height: 400,
-                  color: context.backgroundColor,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
+                // Tab Content - dynamically built based on available shop content
+                Builder(
+                  builder: (context) {
+                    final shopTabs = _buildShopTabs(context, isShopEnabled);
+                    final allChildren = [
                       _buildOverviewTab(listing, description, operatingHours),
-                      _buildAmenitiesTab(amenities),
+                      ...shopTabs.children,
                       _buildReviewsTab(listing['id'] ?? widget.listingId),
                       _buildPhotosTab(images),
-                    ],
-                  ),
+                      _buildAmenitiesTab(amenities),
+                    ];
+                    
+                    return Container(
+                      height: 400,
+                      color: context.backgroundColor,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: allChildren,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -1283,6 +1325,423 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     );
   }
 
+  Widget _buildProductsTab(String listingId) {
+    return Column(
+      children: [
+        Expanded(
+          child: ref.watch(productsByListingProvider(ProductsParams(
+            listingId: listingId,
+            status: 'active',
+            limit: 20,
+          ))).when(
+            data: (data) {
+              final products = (data['data'] as List? ?? [])
+                  .map((p) => p as Map<String, dynamic>)
+                  .toList();
+              
+              if (products.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 48,
+                        color: context.secondaryTextColor,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No products available',
+                        style: AppTheme.bodyLarge.copyWith(
+                          color: context.secondaryTextColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: () {
+                          context.push('/products?listingId=$listingId');
+                        },
+                        child: const Text('View All Products'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: context.grey100,
+                      child: Icon(
+                        Icons.shopping_bag,
+                        color: context.secondaryTextColor,
+                      ),
+                    ),
+                    title: Text(
+                      product['name'] as String? ?? 'Unknown',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${AppConfig.currencySymbol} ${((product['basePrice'] ?? product['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
+                      style: AppTheme.bodySmall.copyWith(
+                        color: context.primaryColorTheme,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: context.secondaryTextColor,
+                    ),
+                    onTap: () {
+                      context.push('/product/${product['id']}');
+                    },
+                  );
+                },
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: context.errorColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load products',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: context.errorColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      ref.invalidate(productsByListingProvider(ProductsParams(
+                        listingId: listingId,
+                        status: 'active',
+                        limit: 20,
+                      )));
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () {
+                context.push('/products?listingId=$listingId');
+              },
+              child: const Text('View All Products'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildServicesTab(String listingId) {
+    return Column(
+      children: [
+        Expanded(
+          child: ref.watch(servicesProvider(ServicesParams(
+            listingId: listingId,
+            status: 'active',
+            limit: 20,
+          ))).when(
+            data: (data) {
+              final services = (data['data'] as List? ?? [])
+                  .map((s) => s as Map<String, dynamic>)
+                  .toList();
+              
+              if (services.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.room_service_outlined,
+                        size: 48,
+                        color: context.secondaryTextColor,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No services available',
+                        style: AppTheme.bodyLarge.copyWith(
+                          color: context.secondaryTextColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: () {
+                          context.push('/services?listingId=$listingId');
+                        },
+                        child: const Text('View All Services'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: services.length,
+                itemBuilder: (context, index) {
+                  final service = services[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: context.grey100,
+                      child: Icon(
+                        Icons.room_service,
+                        color: context.secondaryTextColor,
+                      ),
+                    ),
+                    title: Text(
+                      service['name'] as String? ?? 'Unknown',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${AppConfig.currencySymbol} ${((service['basePrice'] ?? service['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
+                      style: AppTheme.bodySmall.copyWith(
+                        color: context.primaryColorTheme,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: context.secondaryTextColor,
+                    ),
+                    onTap: () {
+                      context.push('/service/${service['id']}');
+                    },
+                  );
+                },
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: context.errorColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load services',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: context.errorColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      ref.invalidate(servicesProvider(ServicesParams(
+                        listingId: listingId,
+                        status: 'active',
+                        limit: 20,
+                      )));
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () {
+                context.push('/services?listingId=$listingId');
+              },
+              child: const Text('View All Services'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuTab(String listingId) {
+    return ref.watch(menusByListingProvider(listingId)).when(
+      data: (menus) {
+        if (menus.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.restaurant_menu_outlined,
+                  size: 48,
+                  color: context.secondaryTextColor,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No menu available',
+                  style: AppTheme.bodyLarge.copyWith(
+                    color: context.secondaryTextColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    context.push('/menus/$listingId');
+                  },
+                  child: const Text('View Menu'),
+                ),
+              ],
+            ),
+          );
+        }
+        
+        // If only one menu, show it inline, otherwise show menu selector
+        if (menus.length == 1) {
+          final menu = menus.first;
+          final items = menu.items ?? [];
+          
+          if (items.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.restaurant_menu_outlined,
+                    size: 48,
+                    color: context.secondaryTextColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Menu is empty',
+                    style: AppTheme.bodyLarge.copyWith(
+                      color: context.secondaryTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: context.grey100,
+                  child: Icon(
+                    Icons.restaurant,
+                    color: context.secondaryTextColor,
+                  ),
+                ),
+                title: Text(
+                  item.name,
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
+                  ),
+                ),
+                subtitle: Text(
+                  '${AppConfig.currencySymbol} ${item.price.toStringAsFixed(0)}',
+                  style: AppTheme.bodySmall.copyWith(
+                    color: context.primaryColorTheme,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: context.secondaryTextColor,
+                ),
+                onTap: () {
+                  // Navigate to full menu screen
+                  context.push('/menus/$listingId');
+                },
+              );
+            },
+          );
+        }
+        
+        // Multiple menus - show menu selector
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.restaurant_menu,
+                size: 48,
+                color: context.secondaryTextColor,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '${menus.length} menus available',
+                style: AppTheme.bodyLarge.copyWith(
+                  color: context.primaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  context.push('/menus/$listingId');
+                },
+                child: const Text('View Menus'),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 48,
+              color: context.errorColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load menu',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.errorColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () {
+                ref.invalidate(menusByListingProvider(listingId));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildPhotosTab(List images) {
     if (images.isEmpty) {
       return Center(
@@ -1336,6 +1795,72 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         );
       },
     );
+  }
+
+  /// Build shop tabs dynamically based on what's available
+  _ShopTabsData _buildShopTabs(BuildContext context, bool isShopEnabled) {
+    if (!isShopEnabled) {
+      return _ShopTabsData(tabs: [], children: []);
+    }
+
+    final tabs = <Tab>[];
+    final children = <Widget>[];
+
+    // Check if products exist
+    final productsAsync = ref.watch(productsByListingProvider(ProductsParams(
+      listingId: widget.listingId,
+      status: 'active',
+      limit: 1,
+    )));
+    
+    final hasProducts = productsAsync.maybeWhen(
+      data: (data) {
+        final products = (data['data'] as List? ?? []);
+        return products.isNotEmpty;
+      },
+      orElse: () => false,
+    );
+
+    // Check if services exist
+    final servicesAsync = ref.watch(servicesProvider(ServicesParams(
+      listingId: widget.listingId,
+      status: 'active',
+      limit: 1,
+    )));
+    
+    final hasServices = servicesAsync.maybeWhen(
+      data: (data) {
+        final services = (data['data'] as List? ?? []);
+        return services.isNotEmpty;
+      },
+      orElse: () => false,
+    );
+
+    // Check if menus exist
+    final menusAsync = ref.watch(menusByListingProvider(widget.listingId));
+    
+    final hasMenus = menusAsync.maybeWhen(
+      data: (menus) => menus.isNotEmpty,
+      orElse: () => false,
+    );
+
+    // Add tabs and children in priority order: Products, Services, Menu
+    if (hasProducts) {
+      tabs.add(const Tab(text: 'Products'));
+      children.add(_buildProductsTab(widget.listingId));
+    }
+
+    if (hasServices) {
+      tabs.add(const Tab(text: 'Services'));
+      children.add(_buildServicesTab(widget.listingId));
+    }
+
+    if (hasMenus) {
+      tabs.add(const Tab(text: 'Menu'));
+      children.add(_buildMenuTab(widget.listingId));
+    }
+
+    return _ShopTabsData(tabs: tabs, children: children);
   }
 
   Widget _buildBottomBar(Map<String, dynamic> listing, String? contactPhone) {
@@ -1448,12 +1973,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               icon: const Icon(Icons.phone, size: 18),
               label: const Text('Contact'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: context.primaryTextColor,
                 backgroundColor: context.primaryColorTheme,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                elevation: 0,
               ),
             ),
           ),

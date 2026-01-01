@@ -20,6 +20,11 @@ import { MediaModule } from './modules/media/media.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { HealthModule } from './modules/health/health.module';
+import { ProductsModule } from './modules/products/products.module';
+import { ServicesModule } from './modules/services/services.module';
+import { MenusModule } from './modules/menus/menus.module';
+import { CartModule } from './modules/cart/cart.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -51,6 +56,11 @@ import { HealthModule } from './modules/health/health.module';
     AdminModule,
     AnalyticsModule,
     HealthModule,
+    ProductsModule,
+    ServicesModule,
+    MenusModule,
+    CartModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}

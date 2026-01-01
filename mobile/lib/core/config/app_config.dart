@@ -25,6 +25,11 @@ class AppConfig {
   static const String favoritesEndpoint = '/favorites';
   static const String uploadEndpoint = '/upload';
   static const String analyticsEndpoint = '/analytics';
+  static const String productsEndpoint = '/products';
+  static const String servicesEndpoint = '/services';
+  static const String menusEndpoint = '/menus';
+  static const String cartEndpoint = '/cart';
+  static const String ordersEndpoint = '/orders';
 
   // Cache Keys
   static const String authTokenKey = 'auth_token';

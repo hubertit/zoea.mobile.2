@@ -54,6 +54,11 @@ async function bootstrap() {
     .addTag('Notifications', 'User notifications management')
     .addTag('Zoea Card', 'Zoea Card digital wallet operations')
     .addTag('Analytics', 'Analytics and tracking endpoints')
+    .addTag('Products', 'Product catalog and inventory management for marketplace/shop')
+    .addTag('Services', 'Service offerings and booking management')
+    .addTag('Menus', 'Restaurant menu and menu item management')
+    .addTag('Cart', 'Shopping cart management for products, services, and menu items')
+    .addTag('Orders', 'E-commerce order creation, tracking, and fulfillment')
     .addTag('Admin - Users', 'Admin user management endpoints')
     .addTag('Admin - Bookings', 'Admin booking management endpoints')
     .addTag('Admin - Listings', 'Admin listing management endpoints')
@@ -85,6 +90,11 @@ async function bootstrap() {
           'Notifications',
           'Zoea Card',
           'Analytics',
+          'Products',
+          'Services',
+          'Menus',
+          'Cart',
+          'Orders',
           'Admin - Users',
           'Admin - Bookings',
           'Admin - Listings',
