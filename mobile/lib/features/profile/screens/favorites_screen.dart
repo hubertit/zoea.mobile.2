@@ -316,7 +316,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   decoration: BoxDecoration(
                     color: isEvent 
                         ? context.primaryColorTheme.withOpacity(0.1)
-                        : AppTheme.successColor.withOpacity(0.1),
+                        : context.successColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -921,7 +921,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   child: Text(
                     'Place',
                     style: AppTheme.labelSmall.copyWith(
-                      color: AppTheme.successColor,
+                      color: context.successColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

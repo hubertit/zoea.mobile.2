@@ -142,9 +142,9 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppTheme.backgroundColor,
+                color: context.backgroundColor,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.successColor.withOpacity(0.3)),
+                border: Border.all(color: context.successColor.withOpacity(0.3)),
               ),
               child: Text(
                 'Booking #${widget.bookingNumber}',
@@ -164,7 +164,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
@@ -213,7 +213,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
@@ -254,7 +254,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
@@ -301,7 +301,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
@@ -410,7 +410,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         border: Border(
           top: BorderSide(color: Colors.grey[200]!),
         ),
