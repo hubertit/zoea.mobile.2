@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting travel party
@@ -79,11 +80,11 @@ class TravelPartySelector extends StatelessWidget {
         padding: const EdgeInsets.all(AppTheme.spacing16),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primaryColor.withOpacity(0.1)
-              : AppTheme.backgroundColor,
+              ? context.primaryColorTheme.withOpacity(0.1)
+              : context.backgroundColor,
           borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            color: isSelected ? context.primaryColorTheme : context.dividerColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -99,8 +100,8 @@ class TravelPartySelector extends StatelessWidget {
               label,
               style: AppTheme.bodyMedium.copyWith(
                 color: isSelected
-                    ? AppTheme.primaryColor
-                    : AppTheme.primaryTextColor,
+                    ? context.primaryColorTheme
+                    : context.primaryTextColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
               textAlign: TextAlign.center,
@@ -111,7 +112,7 @@ class TravelPartySelector extends StatelessWidget {
               Icon(
                 Icons.check_circle,
                 size: 16,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
               ),
           ],
         ),

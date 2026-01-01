@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting length of stay
@@ -29,27 +30,27 @@ class LengthOfStaySelector extends StatelessWidget {
             Icons.calendar_today,
             size: 18,
             color: isSelected
-                ? AppTheme.primaryColor
-                : AppTheme.secondaryTextColor,
+                ? context.primaryColorTheme
+                : context.secondaryTextColor,
           ),
           label: Text(
             length.displayName,
             style: AppTheme.bodyMedium.copyWith(
               color: isSelected
-                  ? AppTheme.primaryColor
-                  : AppTheme.primaryTextColor,
+                  ? context.primaryColorTheme
+                  : context.primaryTextColor,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
           selected: isSelected,
           onSelected: (_) => onLengthSelected(length),
-          selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-          checkmarkColor: AppTheme.primaryColor,
-          backgroundColor: AppTheme.backgroundColor,
+          selectedColor: context.primaryColorTheme.withOpacity(0.2),
+          checkmarkColor: context.primaryColorTheme,
+          backgroundColor: context.backgroundColor,
           side: BorderSide(
             color: isSelected
-                ? AppTheme.primaryColor
-                : AppTheme.dividerColor,
+                ? context.primaryColorTheme
+                : context.dividerColor,
             width: isSelected ? 2 : 1,
           ),
           padding: const EdgeInsets.symmetric(

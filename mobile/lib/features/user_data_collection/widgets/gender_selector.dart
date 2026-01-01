@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting gender
@@ -22,6 +23,7 @@ class GenderSelector extends StatelessWidget {
           children: [
             Expanded(
               child: _buildGenderCard(
+                context: context,
                 gender: Gender.male,
                 icon: Icons.person,
                 label: 'Male',
@@ -30,6 +32,7 @@ class GenderSelector extends StatelessWidget {
             const SizedBox(width: AppTheme.spacing12),
             Expanded(
               child: _buildGenderCard(
+                context: context,
                 gender: Gender.female,
                 icon: Icons.person_outline,
                 label: 'Female',
@@ -42,6 +45,7 @@ class GenderSelector extends StatelessWidget {
           children: [
             Expanded(
               child: _buildGenderCard(
+                context: context,
                 gender: Gender.other,
                 icon: Icons.person_outline_rounded,
                 label: 'Other',
@@ -50,6 +54,7 @@ class GenderSelector extends StatelessWidget {
             const SizedBox(width: AppTheme.spacing12),
             Expanded(
               child: _buildGenderCard(
+                context: context,
                 gender: Gender.preferNotToSay,
                 icon: Icons.block,
                 label: 'Prefer not to say',
@@ -62,6 +67,7 @@ class GenderSelector extends StatelessWidget {
   }
 
   Widget _buildGenderCard({
+    required BuildContext context,
     required Gender gender,
     required IconData icon,
     required String label,
@@ -74,11 +80,11 @@ class GenderSelector extends StatelessWidget {
         padding: const EdgeInsets.all(AppTheme.spacing16),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primaryColor.withOpacity(0.1)
-              : AppTheme.backgroundColor,
+              ? context.primaryColorTheme.withOpacity(0.1)
+              : context.backgroundColor,
           borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            color: isSelected ? context.primaryColorTheme : context.dividerColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -89,16 +95,16 @@ class GenderSelector extends StatelessWidget {
               icon,
               size: 32,
               color: isSelected
-                  ? AppTheme.primaryColor
-                  : AppTheme.secondaryTextColor,
+                  ? context.primaryColorTheme
+                  : context.secondaryTextColor,
             ),
             const SizedBox(height: AppTheme.spacing8),
             Text(
               label,
               style: AppTheme.bodyMedium.copyWith(
                 color: isSelected
-                    ? AppTheme.primaryColor
-                    : AppTheme.primaryTextColor,
+                    ? context.primaryColorTheme
+                    : context.primaryTextColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
               textAlign: TextAlign.center,
@@ -109,7 +115,7 @@ class GenderSelector extends StatelessWidget {
               Icon(
                 Icons.check_circle,
                 size: 16,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
               ),
           ],
         ),

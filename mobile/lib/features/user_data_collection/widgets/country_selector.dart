@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 /// Widget for selecting country of origin
 /// Uses standard country_picker package for consistency with app design patterns
@@ -48,31 +49,35 @@ class CountrySelector extends StatelessWidget {
           : [],
       countryListTheme: CountryListThemeData(
         flagSize: 25,
-        backgroundColor: AppTheme.backgroundColor,
-        textStyle: AppTheme.bodyLarge,
-        searchTextStyle: AppTheme.bodyMedium,
+        backgroundColor: context.backgroundColor,
+        textStyle: AppTheme.bodyLarge.copyWith(
+          color: context.primaryTextColor,
+        ),
+        searchTextStyle: AppTheme.bodyMedium.copyWith(
+          color: context.primaryTextColor,
+        ),
         inputDecoration: InputDecoration(
           labelText: 'Search country',
           hintText: 'Start typing to search',
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Icon(Icons.search, color: context.secondaryTextColor),
           filled: true,
-          fillColor: AppTheme.backgroundColor,
+          fillColor: context.backgroundColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
             borderSide: BorderSide(
-              color: AppTheme.dividerColor,
+              color: context.dividerColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
             borderSide: BorderSide(
-              color: AppTheme.dividerColor,
+              color: context.dividerColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
             borderSide: BorderSide(
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               width: 2,
             ),
           ),
@@ -99,7 +104,7 @@ class CountrySelector extends StatelessWidget {
         if (autoDetectedCountry != null && selectedCountry == null)
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacing12),
-            child: _buildAutoDetectedCard(),
+            child: _buildAutoDetectedCard(context),
           ),
         // Country selection button
         InkWell(
@@ -108,12 +113,12 @@ class CountrySelector extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppTheme.spacing16),
             decoration: BoxDecoration(
-              color: AppTheme.backgroundColor,
+              color: context.backgroundColor,
               borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
               border: Border.all(
                 color: selectedCountry != null
-                    ? AppTheme.primaryColor
-                    : AppTheme.dividerColor,
+                    ? context.primaryColorTheme
+                    : context.dividerColor,
                 width: selectedCountry != null ? 2 : 1,
               ),
             ),
@@ -138,8 +143,8 @@ class CountrySelector extends StatelessWidget {
                                 : 'Select your country',
                         style: AppTheme.bodyLarge.copyWith(
                           color: selectedCountry != null
-                              ? AppTheme.primaryTextColor
-                              : AppTheme.secondaryTextColor,
+                              ? context.primaryTextColor
+                              : context.secondaryTextColor,
                           fontWeight: selectedCountry != null
                               ? FontWeight.w600
                               : FontWeight.normal,
@@ -151,7 +156,7 @@ class CountrySelector extends StatelessWidget {
                           child: Text(
                             'Tap to change',
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                         ),
@@ -159,9 +164,9 @@ class CountrySelector extends StatelessWidget {
                   ),
                 ),
                 // Chevron icon
-                const Icon(
+                Icon(
                   Icons.chevron_right,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ],
             ),
@@ -171,24 +176,24 @@ class CountrySelector extends StatelessWidget {
     );
   }
 
-  Widget _buildAutoDetectedCard() {
+  Widget _buildAutoDetectedCard(BuildContext context) {
     if (autoDetectedCountry == null) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacing12),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
+        color: context.primaryColorTheme.withOpacity(0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
         border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.3),
+          color: context.primaryColorTheme.withOpacity(0.3),
           width: 1,
         ),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.location_on,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 20,
           ),
           const SizedBox(width: AppTheme.spacing8),
@@ -196,7 +201,7 @@ class CountrySelector extends StatelessWidget {
             child: Text(
               'We detected ${_getCountryName(autoDetectedCountry)} ${_getCountryFlag(autoDetectedCountry)}',
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),

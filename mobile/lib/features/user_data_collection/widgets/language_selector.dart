@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 /// Widget for selecting language
 /// Auto-detects language and allows user to change
@@ -59,7 +60,7 @@ class LanguageSelector extends StatelessWidget {
         if (autoDetectedLanguage != null && selectedLanguage == null)
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacing12),
-            child: _buildAutoDetectedCard(),
+            child: _buildAutoDetectedCard(context),
           ),
         Wrap(
           spacing: AppTheme.spacing8,
@@ -77,8 +78,8 @@ class LanguageSelector extends StatelessWidget {
                     _getLanguageName(code),
                     style: AppTheme.bodyMedium.copyWith(
                       color: isSelected
-                          ? AppTheme.primaryColor
-                          : AppTheme.primaryTextColor,
+                          ? context.primaryColorTheme
+                          : context.primaryTextColor,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
@@ -87,8 +88,8 @@ class LanguageSelector extends StatelessWidget {
                       _getLanguageNative(code),
                       style: AppTheme.bodySmall.copyWith(
                         color: isSelected
-                            ? AppTheme.primaryColor.withOpacity(0.8)
-                            : AppTheme.secondaryTextColor,
+                            ? context.primaryColorTheme.withOpacity(0.8)
+                            : context.secondaryTextColor,
                         fontSize: 11,
                       ),
                     ),
@@ -96,17 +97,17 @@ class LanguageSelector extends StatelessWidget {
               ),
               selected: isSelected,
               onSelected: (_) => onLanguageSelected(code),
-              selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-              checkmarkColor: AppTheme.primaryColor,
+              selectedColor: context.primaryColorTheme.withOpacity(0.2),
+              checkmarkColor: context.primaryColorTheme,
               backgroundColor: isAutoDetected && !isSelected
-                  ? AppTheme.primaryColor.withOpacity(0.1)
-                  : AppTheme.backgroundColor,
+                  ? context.primaryColorTheme.withOpacity(0.1)
+                  : context.backgroundColor,
               side: BorderSide(
                 color: isSelected
-                    ? AppTheme.primaryColor
+                    ? context.primaryColorTheme
                     : isAutoDetected
-                        ? AppTheme.primaryColor.withOpacity(0.3)
-                        : AppTheme.dividerColor,
+                        ? context.primaryColorTheme.withOpacity(0.3)
+                        : context.dividerColor,
                 width: isSelected ? 2 : 1,
               ),
               padding: const EdgeInsets.symmetric(
@@ -120,16 +121,16 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildAutoDetectedCard() {
+  Widget _buildAutoDetectedCard(BuildContext context) {
     if (autoDetectedLanguage == null) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacing12),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
+        color: context.primaryColorTheme.withOpacity(0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
         border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.3),
+          color: context.primaryColorTheme.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -137,7 +138,7 @@ class LanguageSelector extends StatelessWidget {
         children: [
           Icon(
             Icons.translate,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 20,
           ),
           const SizedBox(width: AppTheme.spacing8),
@@ -145,7 +146,7 @@ class LanguageSelector extends StatelessWidget {
             child: Text(
               'We detected ${_getLanguageName(autoDetectedLanguage!)}',
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),

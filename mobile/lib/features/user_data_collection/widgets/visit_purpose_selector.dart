@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting visit purpose (Leisure, Business, MICE)
@@ -19,22 +20,25 @@ class VisitPurposeSelector extends StatelessWidget {
     return Column(
       children: [
         _buildPurposeCard(
+          context: context,
           purpose: VisitPurpose.leisure,
           icon: Icons.beach_access,
           title: 'Leisure',
           subtitle: 'Exploring and enjoying Rwanda',
-          color: AppTheme.successColor,
+          color: context.successColor,
         ),
         const SizedBox(height: AppTheme.spacing16),
         _buildPurposeCard(
+          context: context,
           purpose: VisitPurpose.business,
           icon: Icons.business_center,
           title: 'Business',
           subtitle: 'Work and professional travel',
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
         ),
         const SizedBox(height: AppTheme.spacing16),
         _buildPurposeCard(
+          context: context,
           purpose: VisitPurpose.mice,
           icon: Icons.event,
           title: 'MICE',
@@ -46,6 +50,7 @@ class VisitPurposeSelector extends StatelessWidget {
   }
 
   Widget _buildPurposeCard({
+    required BuildContext context,
     required VisitPurpose purpose,
     required IconData icon,
     required String title,
@@ -62,10 +67,10 @@ class VisitPurposeSelector extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? color.withOpacity(0.1)
-              : AppTheme.backgroundColor,
+              : context.backgroundColor,
           borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
           border: Border.all(
-            color: isSelected ? color : AppTheme.dividerColor,
+            color: isSelected ? color : context.dividerColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -91,7 +96,7 @@ class VisitPurposeSelector extends StatelessWidget {
                   Text(
                     title,
                     style: AppTheme.headlineMedium.copyWith(
-                      color: isSelected ? color : AppTheme.primaryTextColor,
+                      color: isSelected ? color : context.primaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -99,7 +104,7 @@ class VisitPurposeSelector extends StatelessWidget {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],

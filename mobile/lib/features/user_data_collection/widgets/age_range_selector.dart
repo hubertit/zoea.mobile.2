@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting age range
@@ -33,20 +34,20 @@ class AgeRangeSelector extends StatelessWidget {
                 range.displayName,
                 style: AppTheme.bodyMedium.copyWith(
                   color: isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.primaryTextColor,
+                      ? context.primaryColorTheme
+                      : context.primaryTextColor,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
               selected: isSelected,
               onSelected: (_) => onRangeSelected(range),
-              selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-              checkmarkColor: AppTheme.primaryColor,
-              backgroundColor: AppTheme.backgroundColor,
+              selectedColor: context.primaryColorTheme.withOpacity(0.2),
+              checkmarkColor: context.primaryColorTheme,
+              backgroundColor: context.backgroundColor,
               side: BorderSide(
                 color: isSelected
-                    ? AppTheme.primaryColor
-                    : AppTheme.dividerColor,
+                    ? context.primaryColorTheme
+                    : context.dividerColor,
                 width: isSelected ? 2 : 1,
               ),
               padding: const EdgeInsets.symmetric(
