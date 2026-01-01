@@ -316,7 +316,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
+                          color: context.primaryColorTheme.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(

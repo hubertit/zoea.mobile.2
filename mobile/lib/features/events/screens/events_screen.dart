@@ -104,7 +104,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           alignment: Alignment.centerLeft,
           child: Text(
             'Events',
-            style: AppTheme.titleLarge,
+            style: AppTheme.titleLarge.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
         ),
         actions: [
@@ -129,9 +131,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         ],
                 bottom: TabBar(
                   controller: _tabController,
-                  indicatorColor: AppTheme.primaryColor,
-                  labelColor: AppTheme.primaryColor,
-                  unselectedLabelColor: AppTheme.secondaryTextColor,
+                  indicatorColor: context.primaryColorTheme,
+                  labelColor: context.primaryColorTheme,
+                  unselectedLabelColor: context.secondaryTextColor,
                   labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
@@ -180,11 +182,11 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryTextColor.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -237,13 +239,13 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        color: context.primaryColorTheme.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         event['category'],
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -253,17 +255,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         event['location'],
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ),
@@ -272,16 +274,16 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       event['date'],
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                     const Spacer(),
@@ -323,20 +325,24 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Error loading events',
-              style: AppTheme.headlineSmall,
+              style: AppTheme.headlineSmall.copyWith(
+                color: context.primaryTextColor,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               eventsState.error!,
-              style: AppTheme.bodyMedium,
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.secondaryTextColor,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -367,20 +373,24 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.event_available,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'No events found',
-              style: AppTheme.headlineSmall,
+              style: AppTheme.headlineSmall.copyWith(
+                color: context.primaryTextColor,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Check back later for new events',
-              style: AppTheme.bodyMedium,
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.secondaryTextColor,
+              ),
             ),
           ],
         ),
@@ -619,20 +629,20 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
-                child: const Center(
+                color: context.dividerColor,
+                child: Center(
                   child: CircularProgressIndicator(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                   ),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
-                child: const Icon(
+                color: context.dividerColor,
+                child: Icon(
                   Icons.event,
                   size: 64,
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
@@ -646,7 +656,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 // Event Name
                 Text(
                   eventDetails.name,
-                  style: AppTheme.titleLarge,
+                  style: AppTheme.titleLarge.copyWith(
+                    color: context.primaryTextColor,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -654,26 +666,30 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 // Date and Time
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       dateFormat.format(startDate),
-                      style: AppTheme.bodyMedium,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: context.primaryTextColor,
+                      ),
                     ),
                     const SizedBox(width: 16),
-                    const Icon(
+                    Icon(
                       Icons.access_time,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       '${timeFormat.format(startDate)} - ${timeFormat.format(endDate)}',
-                      style: AppTheme.bodyMedium,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: context.primaryTextColor,
+                      ),
                     ),
                   ],
                 ),
@@ -681,16 +697,18 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 // Location
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         eventDetails.locationName,
-                        style: AppTheme.bodyMedium,
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: context.primaryTextColor,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -709,16 +727,18 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                     Expanded(
                       child: Text(
                         event.owner.name,
-                        style: AppTheme.bodySmall,
+                        style: AppTheme.bodySmall.copyWith(
+                          color: context.primaryTextColor,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (event.owner.isVerified)
-                      const Icon(
+                      Icon(
                         Icons.verified,
                         size: 16,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                   ],
                 ),
@@ -730,15 +750,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                     // Attendance
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.people,
                           size: 16,
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           '${eventDetails.attending}/${eventDetails.maxAttendance}',
-                          style: AppTheme.bodySmall,
+                          style: AppTheme.bodySmall.copyWith(
+                            color: context.primaryTextColor,
+                          ),
                         ),
                       ],
                     ),
@@ -747,7 +769,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       Text(
                         'From ${_formatPrice(eventDetails.tickets.first.price)} ${eventDetails.tickets.first.currency}',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -853,7 +875,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -878,6 +900,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               'Search Events',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -900,7 +923,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                  borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 prefixIcon: Icon(
@@ -925,12 +948,12 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: AppTheme.primaryColor),
+                      side: BorderSide(color: context.primaryColorTheme),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -947,13 +970,13 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
                       'Search',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.white,
+                        color: context.primaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

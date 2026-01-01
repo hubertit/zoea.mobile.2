@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 /// A polished in-app webview screen similar to Instagram's browser experience
 class WebViewScreen extends StatefulWidget {
@@ -189,12 +190,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: AppTheme.primaryTextColor),
+          icon: Icon(Icons.close, color: context.primaryTextColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
@@ -202,10 +203,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
           children: [
             Text(
               _currentTitle ?? widget.title ?? 'Loading...',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryTextColor,
+                color: context.primaryTextColor,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -215,8 +216,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 height: 2,
                 child: LinearProgressIndicator(
                   value: _loadingProgress / 100,
-                  backgroundColor: AppTheme.dividerColor,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                  backgroundColor: context.dividerColor,
+                  valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
                   minHeight: 2,
                 ),
               ),
@@ -227,24 +228,24 @@ class _WebViewScreenState extends State<WebViewScreen> {
           // Navigation buttons
           if (_canGoBack)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppTheme.primaryTextColor),
+              icon: Icon(Icons.arrow_back, color: context.primaryTextColor),
               onPressed: _goBack,
               tooltip: 'Go back',
             ),
           if (_canGoForward)
             IconButton(
-              icon: const Icon(Icons.arrow_forward, color: AppTheme.primaryTextColor),
+              icon: Icon(Icons.arrow_forward, color: context.primaryTextColor),
               onPressed: _goForward,
               tooltip: 'Go forward',
             ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppTheme.primaryTextColor),
+            icon: Icon(Icons.refresh, color: context.primaryTextColor),
             onPressed: _reload,
             tooltip: 'Reload',
           ),
           // Open in external browser option
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: AppTheme.primaryTextColor),
+            icon: Icon(Icons.more_vert, color: context.primaryTextColor),
             onSelected: (value) async {
               if (value == 'open_external') {
                 // Get current URL and open in external browser
@@ -296,19 +297,19 @@ class _WebViewScreenState extends State<WebViewScreen> {
           // Loading indicator overlay
           if (_isLoading && !_hasError)
             Container(
-              color: AppTheme.backgroundColor,
-              child: const Center(
+              color: context.backgroundColor,
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       'Loading...',
                       style: TextStyle(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                         fontSize: 14,
                       ),
                     ),
@@ -320,7 +321,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           // Error state
           if (_hasError)
             Container(
-              color: AppTheme.backgroundColor,
+              color: context.backgroundColor,
               padding: const EdgeInsets.all(24),
               child: Center(
                 child: Column(
@@ -329,15 +330,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     Icon(
                       Icons.error_outline,
                       size: 64,
-                      color: AppTheme.errorColor.withOpacity(0.6),
+                      color: context.errorColor.withOpacity(0.6),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
+                    Text(
                       'Failed to load page',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryTextColor,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -347,9 +348,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                         child: Text(
                           _errorMessage!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ),
@@ -359,8 +360,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,

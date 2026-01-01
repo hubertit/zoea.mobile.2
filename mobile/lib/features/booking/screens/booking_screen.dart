@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/listings_provider.dart';
 
 /// BookingScreen - Routes to appropriate booking screen based on listing type
@@ -92,26 +93,30 @@ class BookingScreen extends ConsumerWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Booking is not available for this listing type'),
-                backgroundColor: AppTheme.errorColor,
+                backgroundColor: context.errorColor,
               ),
             );
           });
         }
         
         // Show loading while redirecting
-        return const Scaffold(
-          backgroundColor: AppTheme.backgroundColor,
+        return Scaffold(
+          backgroundColor: context.backgroundColor,
           body: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: context.primaryColorTheme,
+            ),
           ),
         );
       },
-      loading: () => const Scaffold(
-        backgroundColor: AppTheme.backgroundColor,
+      loading: () => Scaffold(
+        backgroundColor: context.backgroundColor,
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: context.primaryColorTheme,
+          ),
         ),
       ),
       error: (error, stack) {
@@ -120,14 +125,16 @@ class BookingScreen extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Failed to load listing: ${error.toString()}'),
-              backgroundColor: AppTheme.errorColor,
+              backgroundColor: context.errorColor,
             ),
           );
         });
-        return const Scaffold(
-          backgroundColor: AppTheme.backgroundColor,
+        return Scaffold(
+          backgroundColor: context.backgroundColor,
           body: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: context.primaryColorTheme,
+            ),
           ),
         );
       },

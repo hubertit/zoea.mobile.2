@@ -110,35 +110,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        actions: [
-          // Quick Theme Toggle
-          Consumer(
-            builder: (context, ref, child) {
-              final themeMode = ref.watch(themeProvider);
-              final themeNotifier = ref.read(themeProvider.notifier);
-              
-              return IconButton(
-                onPressed: () => themeNotifier.toggleTheme(),
-                icon: Icon(
-                  themeMode == ThemeMode.dark 
-                      ? Icons.light_mode 
-                      : Icons.dark_mode,
-                ),
-                tooltip: themeMode == ThemeMode.dark 
-                    ? 'Switch to Light Mode' 
-                    : 'Switch to Dark Mode',
-              );
-            },
-          ),
-          // Settings Button
-          IconButton(
-            onPressed: () {
-              context.push('/settings');
-            },
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: 'Settings',
-          ),
-          const SizedBox(width: 8),
+        actions: const [
+          SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -226,6 +199,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 24),
             
             _buildMenuSection(
+              title: 'Appearance',
+              items: [
+                _buildThemeSwitcher(),
+              ],
+            ),
+            const SizedBox(height: 24),
+            
+            _buildMenuSection(
               title: 'Travel & Activities',
               items: [
                 _buildMenuItem(
@@ -259,14 +240,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildMenuSection(
               title: 'Support',
               items: [
-                _buildMenuItem(
-                  icon: Icons.settings_outlined,
-                  title: 'Settings',
-                  subtitle: 'Appearance and preferences',
-                  onTap: () {
-                    context.push('/profile/settings');
-                  },
-                ),
                 _buildMenuItem(
                   icon: Icons.help_outline,
                   title: 'Help Center',
@@ -627,6 +600,154 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               size: 20,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeSwitcher() {
+    final themeMode = ref.watch(themeProvider);
+    final themeNotifier = ref.read(themeProvider.notifier);
+    
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: context.primaryColorTheme.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.palette_outlined,
+                  color: context.primaryColorTheme,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Theme',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: context.primaryTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      themeMode == ThemeMode.dark 
+                          ? 'Dark Mode' 
+                          : themeMode == ThemeMode.light 
+                              ? 'Light Mode' 
+                              : 'System Default',
+                      style: AppTheme.bodySmall.copyWith(
+                        color: context.secondaryTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Theme Mode Segmented Control
+          Container(
+            decoration: BoxDecoration(
+              color: context.grey100,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: context.borderColor,
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                _buildThemeOption(
+                  themeMode: ThemeMode.light,
+                  currentMode: themeMode,
+                  icon: Icons.light_mode,
+                  label: 'Light',
+                  onTap: () => themeNotifier.setTheme(ThemeMode.light),
+                ),
+                _buildThemeOption(
+                  themeMode: ThemeMode.dark,
+                  currentMode: themeMode,
+                  icon: Icons.dark_mode,
+                  label: 'Dark',
+                  onTap: () => themeNotifier.setTheme(ThemeMode.dark),
+                ),
+                _buildThemeOption(
+                  themeMode: ThemeMode.system,
+                  currentMode: themeMode,
+                  icon: Icons.brightness_auto,
+                  label: 'System',
+                  onTap: () => themeNotifier.setTheme(ThemeMode.system),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption({
+    required ThemeMode themeMode,
+    required ThemeMode currentMode,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    final isSelected = currentMode == themeMode;
+    
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 8,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? context.primaryColorTheme 
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                color: isSelected 
+                    ? context.isDarkMode 
+                        ? context.primaryTextColor
+                        : Colors.white
+                    : context.secondaryTextColor,
+                size: 24,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: AppTheme.bodySmall.copyWith(
+                  color: isSelected 
+                      ? context.isDarkMode 
+                          ? context.primaryTextColor
+                          : Colors.white
+                      : context.secondaryTextColor,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

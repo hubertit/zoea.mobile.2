@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/bookings_provider.dart';
 
 class BookingConfirmationScreen extends ConsumerWidget {
@@ -20,24 +21,29 @@ class BookingConfirmationScreen extends ConsumerWidget {
     final bookingAsync = ref.watch(bookingByIdProvider(bookingId));
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        title: const Text('Booking Confirmation'),
-        backgroundColor: AppTheme.backgroundColor,
+        title: Text(
+          'Booking Confirmation',
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
+        ),
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32),
+          icon: Icon(Icons.chevron_left, size: 32, color: context.primaryTextColor),
           onPressed: () => context.pop(),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
       ),
       body: bookingAsync.when(
         data: (booking) => _buildBookingDetails(context, booking),
-        loading: () => const Center(
+        loading: () => Center(
           child: CircularProgressIndicator(
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ),
         ),
         error: (error, stack) => _buildErrorState(context, ref, error),
@@ -77,11 +83,12 @@ class BookingConfirmationScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Success Header
-          _buildSuccessHeader(),
+          _buildSuccessHeader(context),
           const SizedBox(height: 32),
           
           // Booking Info Card
           _buildBookingInfoCard(
+            context: context,
             bookingNumber: bookingNumber,
             status: status,
             bookingType: bookingType,
@@ -90,6 +97,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           
           // Listing Card
           _buildListingCard(
+            context: context,
             name: listingName,
             location: location,
             imageUrl: imageUrl,
@@ -97,11 +105,12 @@ class BookingConfirmationScreen extends ConsumerWidget {
           const SizedBox(height: 20),
           
           // Booking Details Card
-          _buildBookingDetailsCard(booking, bookingType),
+          _buildBookingDetailsCard(context, booking, bookingType),
           const SizedBox(height: 20),
           
           // Price Summary Card
           _buildPriceSummaryCard(
+            context: context,
             booking: booking,
             totalAmount: totalAmount,
             currency: currency,
@@ -116,7 +125,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSuccessHeader() {
+  Widget _buildSuccessHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -135,10 +144,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
                 color: AppTheme.successColor,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle,
                 size: 48,
-                color: Colors.white,
+                color: Colors.white, // White on success color background is intentional
               ),
             ),
           const SizedBox(height: 16),
@@ -146,14 +155,14 @@ class BookingConfirmationScreen extends ConsumerWidget {
             'Booking Confirmed!',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppTheme.successColor,
+              color: AppTheme.successColor, // Success color is intentional
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Your booking has been confirmed successfully',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -163,6 +172,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   }
 
   Widget _buildBookingInfoCard({
+    required BuildContext context,
     required String bookingNumber,
     required String status,
     required String bookingType,
@@ -170,9 +180,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,17 +191,19 @@ class BookingConfirmationScreen extends ConsumerWidget {
             'Booking Information',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Booking Number', bookingNumber),
+          _buildInfoRow(context, 'Booking Number', bookingNumber),
           const SizedBox(height: 12),
-          _buildInfoRow('Type', bookingType.toUpperCase()),
+          _buildInfoRow(context, 'Type', bookingType.toUpperCase()),
           const SizedBox(height: 12),
           _buildInfoRow(
+            context,
             'Status',
             status.toUpperCase(),
-            valueColor: _getStatusColor(status),
+            valueColor: _getStatusColor(context, status),
           ),
         ],
       ),
@@ -199,6 +211,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   }
 
   Widget _buildListingCard({
+    required BuildContext context,
     required String name,
     required String location,
     String? imageUrl,
@@ -206,9 +219,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
       ),
       child: Row(
         children: [
@@ -223,20 +236,20 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     errorWidget: (context, url, error) => Container(
                       width: 80,
                       height: 80,
-                      color: Colors.grey[200],
-                    child: const Icon(
-                      Icons.image,
-                      color: Colors.grey,
-                    ),
+                      color: context.grey200,
+                      child: Icon(
+                        Icons.image,
+                        color: context.secondaryTextColor,
+                      ),
                     ),
                   )
                 : Container(
                     width: 80,
                     height: 80,
-                    color: Colors.grey[200],
+                    color: context.grey200,
                     child: Icon(
                       Icons.business,
-                      color: Colors.grey[400],
+                      color: context.grey400,
                     ),
                   ),
           ),
@@ -249,22 +262,23 @@ class BookingConfirmationScreen extends ConsumerWidget {
                   name,
                   style: AppTheme.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         location,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -280,13 +294,13 @@ class BookingConfirmationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBookingDetailsCard(Map<String, dynamic> booking, String bookingType) {
+  Widget _buildBookingDetailsCard(BuildContext context, Map<String, dynamic> booking, String bookingType) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,42 +309,49 @@ class BookingConfirmationScreen extends ConsumerWidget {
             'Booking Details',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
           if (bookingType == 'hotel') ...[
             if (booking['checkInDate'] != null)
               _buildInfoRow(
+                context,
                 'Check-in',
                 _formatDate(booking['checkInDate'] as String),
               ),
             if (booking['checkInDate'] != null) const SizedBox(height: 12),
             if (booking['checkOutDate'] != null)
               _buildInfoRow(
+                context,
                 'Check-out',
                 _formatDate(booking['checkOutDate'] as String),
               ),
             if (booking['checkOutDate'] != null) const SizedBox(height: 12),
             if (booking['guestCount'] != null)
               _buildInfoRow(
+                context,
                 'Guests',
                 '${booking['guestCount']}',
               ),
           ] else if (bookingType == 'restaurant') ...[
             if (booking['bookingDate'] != null)
               _buildInfoRow(
+                context,
                 'Date',
                 _formatDate(booking['bookingDate'] as String),
               ),
             if (booking['bookingDate'] != null) const SizedBox(height: 12),
             if (booking['bookingTime'] != null)
               _buildInfoRow(
+                context,
                 'Time',
                 _formatTime(booking['bookingTime'] as String),
               ),
             if (booking['bookingTime'] != null) const SizedBox(height: 12),
             if (booking['partySize'] != null)
               _buildInfoRow(
+                context,
                 'Party Size',
                 '${booking['partySize']}',
               ),
@@ -339,6 +360,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               (booking['specialRequests'] as String).isNotEmpty) ...[
             const SizedBox(height: 12),
             _buildInfoRow(
+              context,
               'Special Requests',
               booking['specialRequests'] as String,
             ),
@@ -349,6 +371,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   }
 
   Widget _buildPriceSummaryCard({
+    required BuildContext context,
     required Map<String, dynamic> booking,
     required double totalAmount,
     required String currency,
@@ -360,9 +383,9 @@ class BookingConfirmationScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,23 +394,25 @@ class BookingConfirmationScreen extends ConsumerWidget {
             'Price Summary',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
           if (subtotal != null) ...[
-            _buildPriceRow('Subtotal', subtotal, currency),
+            _buildPriceRow(context, 'Subtotal', subtotal, currency),
             const SizedBox(height: 8),
           ],
           if (taxAmount != null) ...[
-            _buildPriceRow('Taxes & Fees', taxAmount, currency),
+            _buildPriceRow(context, 'Taxes & Fees', taxAmount, currency),
             const SizedBox(height: 8),
           ],
           if (discountAmount != null && discountAmount > 0) ...[
-            _buildPriceRow('Discount', -discountAmount, currency, isDiscount: true),
+            _buildPriceRow(context, 'Discount', -discountAmount, currency, isDiscount: true),
             const SizedBox(height: 8),
           ],
           const Divider(height: 24),
           _buildPriceRow(
+            context,
             'Total',
             totalAmount,
             currency,
@@ -406,8 +431,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
           child: ElevatedButton(
             onPressed: () => context.go('/profile/my-bookings'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primaryColorTheme,
+              foregroundColor: context.primaryTextColor,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -417,7 +442,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               'View My Bookings',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: context.primaryTextColor,
               ),
             ),
           ),
@@ -429,7 +454,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             onPressed: () => context.go('/explore'),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: AppTheme.primaryColor),
+              side: BorderSide(color: context.primaryColorTheme),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -438,7 +463,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               'Continue Exploring',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
               ),
             ),
           ),
@@ -454,23 +479,24 @@ class BookingConfirmationScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load booking',
               style: AppTheme.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceAll('Exception: ', ''),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -480,8 +506,8 @@ class BookingConfirmationScreen extends ConsumerWidget {
                 ref.invalidate(bookingByIdProvider(bookingId));
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: context.primaryTextColor,
               ),
               child: const Text('Retry'),
             ),
@@ -491,7 +517,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
+  Widget _buildInfoRow(BuildContext context, String label, String value, {Color? valueColor}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -500,7 +526,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           child: Text(
             '$label:',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ),
@@ -509,7 +535,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             value,
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
-              color: valueColor,
+              color: valueColor ?? context.primaryTextColor,
             ),
           ),
         ),
@@ -518,6 +544,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   }
 
   Widget _buildPriceRow(
+    BuildContext context,
     String label,
     double amount,
     String currency, {
@@ -532,7 +559,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           label,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: isTotal ? FontWeight.w600 : FontWeight.normal,
-            color: isDiscount ? AppTheme.successColor : AppTheme.primaryTextColor,
+            color: isDiscount ? AppTheme.successColor : context.primaryTextColor, // Success color is intentional
           ),
         ),
         Text(
@@ -540,10 +567,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: isTotal ? FontWeight.w600 : FontWeight.w500,
             color: isDiscount
-                ? AppTheme.successColor
+                ? AppTheme.successColor // Success color is intentional
                 : isTotal
-                    ? AppTheme.primaryColor
-                    : AppTheme.primaryTextColor,
+                    ? context.primaryColorTheme
+                    : context.primaryTextColor,
           ),
         ),
       ],
@@ -595,18 +622,18 @@ class BookingConfirmationScreen extends ConsumerWidget {
     return '$currency $formatted';
   }
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'confirmed':
-        return AppTheme.successColor;
+        return AppTheme.successColor; // Success color is intentional
       case 'pending':
-        return Colors.orange;
+        return Colors.orange; // Orange for pending is intentional
       case 'cancelled':
-        return AppTheme.errorColor;
+        return context.errorColor;
       case 'completed':
-        return AppTheme.primaryColor;
+        return context.primaryColorTheme;
       default:
-        return AppTheme.secondaryTextColor;
+        return context.secondaryTextColor;
     }
   }
 }

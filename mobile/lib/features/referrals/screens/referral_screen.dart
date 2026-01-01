@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class ReferralScreen extends ConsumerStatefulWidget {
   const ReferralScreen({super.key});
@@ -14,22 +15,23 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: true,
         title: Text(
           'Refer & Earn',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32),
+          icon: Icon(Icons.chevron_left, size: 32, color: context.primaryTextColor),
           onPressed: () => Navigator.of(context).pop(),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
       ),
@@ -68,29 +70,30 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryColor.withOpacity(0.1),
-            AppTheme.primaryColor.withOpacity(0.05),
+            context.primaryColorTheme.withOpacity(0.1),
+            context.primaryColorTheme.withOpacity(0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.2),
+          color: context.primaryColorTheme.withOpacity(0.2),
         ),
       ),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.card_giftcard,
             size: 48,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ),
           const SizedBox(height: 16),
           Text(
             'Invite Friends & Earn Rewards',
             style: AppTheme.headlineMedium.copyWith(
               fontWeight: FontWeight.w700,
+              color: context.primaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -98,7 +101,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           Text(
             'Share your referral code and earn rewards for every friend who joins Zoea',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -115,15 +118,16 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           'Your Referral Code',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: context.grey50,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: context.grey200),
           ),
           child: Row(
             children: [
@@ -136,13 +140,14 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                       style: AppTheme.headlineMedium.copyWith(
                         fontWeight: FontWeight.w700,
                         letterSpacing: 2,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Share this code with your friends',
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -152,16 +157,22 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                 onPressed: () {
                   // TODO: Copy to clipboard
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Referral code copied to clipboard'),
-                      duration: Duration(seconds: 2),
+                    SnackBar(
+                      content: Text(
+                        'Referral code copied to clipboard',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: context.primaryTextColor,
+                        ),
+                      ),
+                      backgroundColor: context.cardColor,
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
-                icon: const Icon(Icons.copy),
+                icon: Icon(Icons.copy, color: context.primaryTextColor),
                 style: IconButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.white,
+                  backgroundColor: context.primaryColorTheme,
+                  foregroundColor: context.primaryTextColor,
                 ),
               ),
             ],
@@ -178,11 +189,16 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
               
               await SharePlus.instance.share(ShareParams(text: '$shareText\n$shareUrl'));
             },
-            icon: const Icon(Icons.share),
-            label: const Text('Share Referral Code'),
+            icon: Icon(Icons.share, color: context.primaryTextColor),
+            label: Text(
+              'Share Referral Code',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primaryColorTheme,
+              foregroundColor: context.primaryTextColor,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
@@ -199,6 +215,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           'How it Works',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -235,9 +252,9 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200),
       ),
       child: Row(
         children: [
@@ -245,14 +262,14 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
               child: Text(
                 step,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.primaryTextColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
@@ -262,7 +279,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           const SizedBox(width: 16),
           Icon(
             icon,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 24,
           ),
           const SizedBox(width: 16),
@@ -274,13 +291,14 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                   title,
                   style: AppTheme.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ],
@@ -299,6 +317,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           'Rewards',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -310,7 +329,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                 amount: '500',
                 currency: 'RWF',
                 description: 'When friend joins',
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
               ),
             ),
             const SizedBox(width: 12),
@@ -320,7 +339,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                 amount: '300',
                 currency: 'RWF',
                 description: 'Welcome bonus',
-                color: Colors.green,
+                color: context.successColor,
               ),
             ),
           ],
@@ -383,15 +402,16 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           'Your Referrals',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: context.grey200),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -404,7 +424,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.grey[300],
+                color: context.grey300,
               ),
               _buildStatItem(
                 label: 'Earned Rewards',
@@ -414,7 +434,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.grey[300],
+                color: context.grey300,
               ),
               _buildStatItem(
                 label: 'Pending',
@@ -437,7 +457,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
       children: [
         Icon(
           icon,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 24,
         ),
         const SizedBox(height: 8),
@@ -445,13 +465,14 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           value,
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w700,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: AppTheme.bodySmall.copyWith(
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
           textAlign: TextAlign.center,
         ),

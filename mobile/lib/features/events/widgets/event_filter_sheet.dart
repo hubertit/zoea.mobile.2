@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/event_filter.dart';
 import 'package:intl/intl.dart';
 
@@ -43,9 +44,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -55,7 +56,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: AppTheme.dividerColor,
+              color: context.dividerColor,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -67,7 +68,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
               children: [
                 Text(
                   'Filter Events',
-                  style: AppTheme.titleLarge,
+                  style: AppTheme.titleLarge.copyWith(
+                    color: context.primaryTextColor,
+                  ),
                 ),
                 Row(
                   children: [
@@ -129,7 +132,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Search',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         TextField(
@@ -158,7 +163,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Category',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         Wrap(
@@ -199,7 +206,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Date Range',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -253,7 +262,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: context.dividerColor),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -266,7 +275,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
                     ? DateFormat('MMM dd, yyyy').format(date)
                     : label,
                 style: TextStyle(
-                  color: date != null ? AppTheme.primaryTextColor : AppTheme.secondaryTextColor,
+                  color: date != null ? context.primaryTextColor : context.secondaryTextColor,
                 ),
               ),
             ),
@@ -287,7 +296,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Price Range',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         Wrap(
@@ -319,7 +330,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Location',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         TextField(
@@ -348,7 +361,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Options',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 12),
         Row(
@@ -395,9 +410,9 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
+          color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : Colors.transparent,
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            color: isSelected ? context.primaryColorTheme : context.dividerColor,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -407,13 +422,13 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
             Icon(
               icon,
               size: 20,
-              color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+              color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+                color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),

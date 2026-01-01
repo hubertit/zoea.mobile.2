@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -30,7 +31,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         ],
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -39,7 +40,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               size: 64,
               color: context.primaryColorTheme,
             ),
-            SizedBox(height: AppTheme.spacing16),
+            const SizedBox(height: AppTheme.spacing16),
             Text(
               'Map View',
               style: TextStyle(
@@ -48,7 +49,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 color: context.primaryTextColor,
               ),
             ),
-            SizedBox(height: AppTheme.spacing8),
+            const SizedBox(height: AppTheme.spacing8),
             Text(
               'Interactive map with listings will be implemented here',
               style: TextStyle(

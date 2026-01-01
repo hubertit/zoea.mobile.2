@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -172,22 +173,23 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         }
 
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: context.grey50,
           appBar: AppBar(
-            backgroundColor: AppTheme.backgroundColor,
+            backgroundColor: context.backgroundColor,
             elevation: 0,
             centerTitle: false,
             leading: IconButton(
               onPressed: () => context.go('/explore'),
-              icon: const Icon(Icons.chevron_left, size: 32),
+              icon: Icon(Icons.chevron_left, size: 32, color: context.primaryTextColor),
               style: IconButton.styleFrom(
-                foregroundColor: AppTheme.primaryTextColor,
+                foregroundColor: context.primaryTextColor,
               ),
             ),
             title: Text(
               _diningCategoryName ?? 'Dining',
               style: AppTheme.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             actions: [
@@ -208,8 +210,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryColor,
+                        decoration: BoxDecoration(
+                          color: context.primaryColorTheme,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -229,8 +231,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryColor,
+                        decoration: BoxDecoration(
+                          color: context.primaryColorTheme,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -240,9 +242,9 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             ],
             bottom: _tabController == null ? null : TabBar(
               controller: _tabController,
-              indicatorColor: AppTheme.primaryColor,
-              labelColor: AppTheme.primaryColor,
-              unselectedLabelColor: AppTheme.secondaryTextColor,
+              indicatorColor: context.primaryColorTheme,
+              labelColor: context.primaryColorTheme,
+              unselectedLabelColor: context.secondaryTextColor,
               labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
               isScrollable: true,
               tabAlignment: TabAlignment.start,
@@ -265,15 +267,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         );
       },
       loading: () => Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: context.grey50,
         appBar: AppBar(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           elevation: 0,
           leading: IconButton(
             onPressed: () => context.go('/explore'),
             icon: const Icon(Icons.chevron_left, size: 32),
             style: IconButton.styleFrom(
-              foregroundColor: AppTheme.primaryTextColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
           title: Text(
@@ -286,15 +288,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, stack) => Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: context.grey50,
         appBar: AppBar(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           elevation: 0,
           leading: IconButton(
             onPressed: () => context.go('/explore'),
             icon: const Icon(Icons.chevron_left, size: 32),
             style: IconButton.styleFrom(
-              foregroundColor: AppTheme.primaryTextColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
           title: Text(
@@ -308,23 +310,23 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               const SizedBox(height: 16),
               Text(
                 'Failed to load dining category',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString(),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -445,23 +447,23 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load listings',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -608,20 +610,20 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           Icon(
             Icons.restaurant,
             size: 80,
-            color: AppTheme.secondaryTextColor.withOpacity(0.5),
+            color: context.secondaryTextColor.withOpacity(0.5),
           ),
           const SizedBox(height: 16),
           Text(
             'No dining options found',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check back later for new dining options',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -641,7 +643,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             return Container(
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: AppTheme.backgroundColor,
+                color: context.backgroundColor,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -659,15 +661,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                     height: 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: context.grey200,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.grey[200]!,
-                          Colors.grey[100]!,
-                          Colors.grey[200]!,
+                          context.grey200,
+                          context.grey100,
+                          context.grey200,
                         ],
                         stops: [
                           0.0,
@@ -687,15 +689,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           height: 20,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Colors.grey[300]!,
-                                Colors.grey[200]!,
-                                Colors.grey[300]!,
+                                context.grey300,
+                                context.grey200,
+                                context.grey300,
                               ],
                               stops: [
                                 0.0,
@@ -710,7 +712,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           height: 16,
                           width: 150,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -742,7 +744,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
     
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -841,15 +843,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           hintText: '0',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: AppTheme.primaryColor),
+                            borderSide: BorderSide(color: context.primaryColorTheme),
                           ),
                           prefixText: 'RWF ',
                         ),
@@ -871,15 +873,15 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           hintText: 'No limit',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: AppTheme.primaryColor),
+                            borderSide: BorderSide(color: context.primaryColorTheme),
                           ),
                           prefixText: 'RWF ',
                         ),
@@ -906,7 +908,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                   subtitle: Text(
                     'Show only featured listings',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                   value: tempIsFeatured == true,
@@ -915,7 +917,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                       tempIsFeatured = (value == true) ? true : null;
                     });
                   },
-                  activeColor: AppTheme.primaryColor,
+                  activeColor: context.primaryColorTheme,
                   contentPadding: EdgeInsets.zero,
                 ),
                 
@@ -936,8 +938,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           });
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Clear All'),
@@ -973,8 +975,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.primaryColorTheme,
+                          foregroundColor: context.primaryTextColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Filters'),
@@ -996,10 +998,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onSelected(value),
-      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-      checkmarkColor: AppTheme.primaryColor,
+      selectedColor: context.primaryColorTheme.withOpacity(0.2),
+      checkmarkColor: context.primaryColorTheme,
       labelStyle: AppTheme.bodySmall.copyWith(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+        color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );
@@ -1011,7 +1013,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
     
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -1104,8 +1106,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           });
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Clear'),
@@ -1136,8 +1138,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.primaryColorTheme,
+                          foregroundColor: context.primaryTextColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Sort'),
@@ -1160,10 +1162,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         label,
         style: AppTheme.bodyMedium,
       ),
-      trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      trailing: isSelected ? Icon(Icons.check, color: context.primaryColorTheme) : null,
       onTap: () => onSelected(value),
       selected: isSelected,
-      selectedTileColor: AppTheme.primaryColor.withOpacity(0.1),
+      selectedTileColor: context.primaryColorTheme.withOpacity(0.1),
     );
   }
 }

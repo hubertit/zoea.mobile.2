@@ -87,23 +87,23 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load listing',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -225,7 +225,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                             child: IconButton(
                               icon: Icon(
                                 isFavorited ? Icons.favorite : Icons.favorite_border,
-                                color: isFavorited ? Colors.red : Colors.white,
+                                color: isFavorited ? context.errorColor : Colors.white, // White on dark overlay is intentional
                                 size: 18,
                               ),
                               padding: EdgeInsets.zero,
@@ -272,9 +272,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.rate_review,
-                            color: Colors.white,
+                            color: Colors.white, // White on dark overlay is intentional
                             size: 18,
                           ),
                           padding: EdgeInsets.zero,
@@ -295,9 +295,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.share,
-                                color: Colors.white,
+                                color: Colors.white, // White on dark overlay is intentional
                                 size: 18,
                               ),
                               padding: EdgeInsets.zero,
@@ -338,7 +338,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               children: [
                 // Listing Info
                 Container(
-                  color: AppTheme.backgroundColor,
+                  color: context.cardColor,
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +364,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
+                                      color: context.primaryColorTheme.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
@@ -373,13 +373,13 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                                         Icon(
                                           Icons.verified,
                                           size: 14,
-                                          color: Colors.blue[700],
+                                          color: context.primaryColorTheme,
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
                                           'Verified',
                                           style: AppTheme.bodySmall.copyWith(
-                                            color: Colors.blue[700],
+                                            color: context.primaryColorTheme,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -425,6 +425,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                               rating.toStringAsFixed(1),
                               style: AppTheme.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: context.primaryTextColor,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -440,7 +441,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                             Text(
                               '$currency ${minPrice.toString()}${maxPrice != null ? ' - ${maxPrice.toString()}' : ''}',
                               style: AppTheme.bodyLarge.copyWith(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -451,12 +452,12 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 ),
                 // Tabs
                 Container(
-                  color: AppTheme.backgroundColor,
+                  color: context.cardColor,
                   child: TabBar(
                     controller: _tabController,
-                    labelColor: AppTheme.primaryColor,
+                    labelColor: context.primaryColorTheme,
                     unselectedLabelColor: context.secondaryTextColor,
-                    indicatorColor: AppTheme.primaryColor,
+                    indicatorColor: context.primaryColorTheme,
                     tabs: const [
                       Tab(text: 'Overview'),
                       Tab(text: 'Amenities'),
@@ -468,7 +469,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 // Tab Content
                 Container(
                   height: 400,
-                  color: AppTheme.backgroundColor,
+                  color: context.backgroundColor,
                   child: TabBarView(
                     controller: _tabController,
                     children: [
@@ -543,7 +544,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               displayDescription,
               style: AppTheme.bodyMedium.copyWith(
                 height: 1.6,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 24),
@@ -554,16 +555,17 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             'Location',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
+              Icon(
                 Icons.location_on,
                 size: 20,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -582,6 +584,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               'Opening Hours',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 12),
@@ -598,10 +601,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   children: [
                     SizedBox(
                       width: 100,
-                      child: Text(
+                      child:                       Text(
                         day[0].toUpperCase() + day.substring(1),
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
+                          color: context.primaryTextColor,
                         ),
                       ),
                     ),
@@ -609,8 +613,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       isClosed ? 'Closed' : '$open - $close',
                       style: AppTheme.bodyMedium.copyWith(
                         color: isClosed
-                            ? AppTheme.errorColor
-                            : AppTheme.secondaryTextColor,
+                            ? context.errorColor
+                            : context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -624,6 +628,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               'Contact Information',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 12),
@@ -697,7 +702,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         child: Text(
                           website,
                           style: AppTheme.bodyMedium.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -751,10 +756,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.hotel_outlined,
                 size: 64,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               const SizedBox(height: 16),
               Text(
@@ -817,6 +822,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       category[0].toUpperCase() + category.substring(1),
                       style: AppTheme.headlineSmall.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -884,10 +890,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         vertical: 12,
       ),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
+        color: context.primaryColorTheme.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.2),
+          color: context.primaryColorTheme.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -897,7 +903,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           Icon(
             getIconForName(iconName),
             size: 20,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ),
           const SizedBox(width: 8),
           Flexible(
@@ -908,7 +914,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 Text(
                   name,
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -980,8 +986,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     icon: const Icon(Icons.edit),
                     label: const Text('Write Review'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.primaryColorTheme,
+                      foregroundColor: context.primaryTextColor,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,
@@ -1030,11 +1036,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 onPressed: () {
                   _showReviewBottomSheet();
                 },
-                backgroundColor: AppTheme.primaryColor,
-                icon: const Icon(Icons.edit, color: Colors.white),
-                label: const Text(
+                backgroundColor: context.primaryColorTheme,
+                icon: Icon(Icons.edit, color: context.primaryTextColor),
+                label: Text(
                   'Write Review',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: context.primaryTextColor),
                 ),
               ),
             ),
@@ -1048,16 +1054,16 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
               const SizedBox(height: 16),
               Text(
                 'Failed to load reviews',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.errorColor,
+                  color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
@@ -1130,10 +1136,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.grey[200]!,
+          color: context.grey200,
           width: 1,
         ),
       ),
@@ -1153,6 +1159,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         userName.isNotEmpty ? userName[0].toUpperCase() : 'A',
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: context.primaryTextColor,
                         ),
                       )
                     : null,
@@ -1166,6 +1173,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       userName,
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -1198,6 +1206,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               title,
               style: AppTheme.titleSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
           ],
@@ -1207,6 +1216,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               content,
               style: AppTheme.bodyMedium.copyWith(
                 height: 1.4,
+                color: context.primaryTextColor,
               ),
             ),
           ],
@@ -1252,8 +1262,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         errorWidget: Container(
                           width: 80,
                           height: 80,
-                          color: AppTheme.dividerColor,
-                          child: const Icon(Icons.image_not_supported),
+                          color: context.dividerColor,
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: context.secondaryTextColor,
+                          ),
                         ),
                       ),
                     ),
@@ -1269,14 +1282,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
 
   Widget _buildPhotosTab(List images) {
     if (images.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Text(
             'No photos available',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: context.secondaryTextColor,
             ),
           ),
         ),
@@ -1303,13 +1316,19 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   fit: BoxFit.cover,
                   borderRadius: BorderRadius.circular(12),
                   errorWidget: Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.image),
+                    color: context.grey200,
+                    child: Icon(
+                      Icons.image,
+                      color: context.secondaryTextColor,
+                    ),
                   ),
                 )
               : Container(
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.image),
+                  color: context.grey200,
+                  child: Icon(
+                    Icons.image,
+                    color: context.secondaryTextColor,
+                  ),
                 ),
         );
       },
@@ -1338,7 +1357,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     final showBookingButtons = acceptsBookings && (listingType == 'restaurant' || listingType == 'hotel' || isDiningCategory);
     
     return Container(
-      color: AppTheme.backgroundColor,
+      color: context.backgroundColor,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
@@ -1353,9 +1372,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 icon: const Icon(Icons.calendar_today, size: 18),
                 label: const Text('Book Now'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.primaryColor,
+                  foregroundColor: context.primaryColorTheme,
                   backgroundColor: context.backgroundColor,
-                  side: const BorderSide(color: AppTheme.primaryColor),
+                  side: BorderSide(color: context.primaryColorTheme),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -1392,9 +1411,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 icon: const Icon(Icons.shopping_cart, size: 18),
                 label: const Text('Order Now'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF038f44), // Vuba Vuba brand color
+                  foregroundColor: const Color(0xFF038f44), // Vuba Vuba brand color (intentional)
                   backgroundColor: context.backgroundColor,
-                  side: const BorderSide(color: Color(0xFF038f44)), // Vuba Vuba brand color
+                  side: const BorderSide(color: Color(0xFF038f44)), // Vuba Vuba brand color (intentional)
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -1426,8 +1445,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               icon: const Icon(Icons.phone, size: 18),
               label: const Text('Contact'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: context.primaryTextColor,
+                backgroundColor: context.primaryColorTheme,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -1481,9 +1500,9 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -1501,7 +1520,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: context.grey300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -1513,6 +1532,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'Write a Review',
             style: AppTheme.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 20),
@@ -1522,6 +1542,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'How was your experience?',
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -1539,8 +1560,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
                   child: Icon(
                     index < _selectedRating ? Icons.star : Icons.star_border,
                     color: index < _selectedRating 
-                        ? Colors.amber 
-                        : Colors.grey[400],
+                        ? Colors.amber // Amber for stars is intentional
+                        : context.grey400,
                     size: 32,
                   ),
                 ),
@@ -1554,6 +1575,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'Tell us about your experience',
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -1561,23 +1583,28 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           TextField(
             controller: _reviewController,
             maxLines: 4,
+            style: AppTheme.bodyMedium.copyWith(
+              color: context.primaryTextColor,
+            ),
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
               hintStyle: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
+              filled: true,
+              fillColor: context.cardColor,
               contentPadding: const EdgeInsets.all(16),
             ),
           ),
@@ -1589,8 +1616,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _submitReview,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: context.primaryTextColor,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -1598,19 +1625,19 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
                 elevation: 0,
               ),
               child: _isSubmitting
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                       ),
                     )
                   : Text(
                       'Submit Review',
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: context.primaryTextColor,
                       ),
                     ),
             ),
@@ -1624,9 +1651,9 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
     if (_reviewController.text.trim().isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+            SnackBar(
             content: Text('Please write a review before submitting'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: context.errorColor,
           ),
         );
       }
@@ -1637,9 +1664,9 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
     if (widget.listingId == null && widget.eventId == null && widget.tourId == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+            SnackBar(
             content: Text('Unable to submit review. Missing listing, event, or tour information.'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: context.errorColor,
           ),
         );
       }
@@ -1684,9 +1711,9 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+            SnackBar(
           content: Text('Thank you for your review!'),
-          backgroundColor: AppTheme.successColor,
+          backgroundColor: context.successColor,
         ),
       );
 

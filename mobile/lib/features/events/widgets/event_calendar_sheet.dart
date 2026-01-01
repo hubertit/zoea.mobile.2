@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/event.dart';
 import 'package:intl/intl.dart';
 
@@ -71,9 +72,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
     
     return Container(
       height: contentHeight,
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -84,7 +85,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: AppTheme.dividerColor,
+              color: context.dividerColor,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -93,7 +94,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Text(
               'Event Calendar',
-              style: AppTheme.titleLarge,
+              style: AppTheme.titleLarge.copyWith(
+                color: context.primaryTextColor,
+              ),
             ),
           ),
           // Calendar
@@ -112,44 +115,44 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
-                weekendTextStyle: const TextStyle(
-                  color: AppTheme.primaryTextColor,
+                weekendTextStyle: TextStyle(
+                  color: context.primaryTextColor,
                 ),
-                defaultTextStyle: const TextStyle(
-                  color: AppTheme.primaryTextColor,
+                defaultTextStyle: TextStyle(
+                  color: context.primaryTextColor,
                 ),
-                selectedDecoration: const BoxDecoration(
-                  color: AppTheme.primaryColor,
+                selectedDecoration: BoxDecoration(
+                  color: context.primaryColorTheme,
                   shape: BoxShape.circle,
                 ),
-                selectedTextStyle: const TextStyle(
-                  color: Colors.white,
+                selectedTextStyle: TextStyle(
+                  color: context.isDarkMode ? context.primaryTextColor : Colors.white, // White on selected circle is intentional
                   fontWeight: FontWeight.w600,
                 ),
                 todayDecoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.2),
+                  color: context.primaryColorTheme.withOpacity(0.2),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     width: 2,
                   ),
                 ),
-                todayTextStyle: const TextStyle(
-                  color: AppTheme.primaryColor,
+                todayTextStyle: TextStyle(
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
                 markersMaxCount: 5,
-                markerDecoration: const BoxDecoration(
-                  color: Colors.deepOrange,
+                markerDecoration: BoxDecoration(
+                  color: context.primaryColorTheme,
                   shape: BoxShape.circle,
                 ),
                 markerMargin: const EdgeInsets.symmetric(horizontal: 1),
                 markerSize: 6,
-                holidayTextStyle: const TextStyle(
-                  color: AppTheme.primaryColor,
+                holidayTextStyle: TextStyle(
+                  color: context.primaryColorTheme,
                 ),
                 holidayDecoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: context.primaryColorTheme.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -176,30 +179,30 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 formatButtonVisible: false,
                 titleCentered: true,
                 titleTextStyle: AppTheme.titleLarge.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
                 leftChevronIcon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color: context.primaryColorTheme.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.chevron_left,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     size: 20,
                   ),
                 ),
                 rightChevronIcon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color: context.primaryColorTheme.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.chevron_right,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     size: 20,
                   ),
                 ),
@@ -208,15 +211,15 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
                 weekdayStyle: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                   fontWeight: FontWeight.w500,
                 ),
                 weekendStyle: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.05),
+                  color: context.primaryColorTheme.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -246,9 +249,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.05),
-                border: const Border(
-                  top: BorderSide(color: AppTheme.dividerColor),
+                color: context.primaryColorTheme.withOpacity(0.05),
+                border: Border(
+                  top: BorderSide(color: context.dividerColor),
                 ),
               ),
               child: Column(
@@ -256,7 +259,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 children: [
                   Text(
                     'Events on ${DateFormat('MMM dd, yyyy').format(_selectedDay!)}',
-                    style: AppTheme.titleSmall,
+                    style: AppTheme.titleSmall.copyWith(
+                      color: context.primaryTextColor,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   SizedBox(
@@ -290,12 +295,12 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: context.dividerColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
               blurRadius: 2,
               offset: const Offset(0, 1),
             ),
@@ -314,21 +319,21 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
                   width: 70,
-                  color: AppTheme.dividerColor,
-                  child: const Center(
+                  color: context.dividerColor,
+                  child: Center(
                     child: CircularProgressIndicator(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       strokeWidth: 1.5,
                     ),
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
                   width: 70,
-                  color: AppTheme.dividerColor,
-                  child: const Icon(
+                  color: context.dividerColor,
+                  child: Icon(
                     Icons.event,
                     size: 16,
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ),
@@ -348,6 +353,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                         style: AppTheme.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 9,
+                          color: context.primaryTextColor,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -356,17 +362,17 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                     const SizedBox(height: 3),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on,
                           size: 8,
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         const SizedBox(width: 2),
                         Expanded(
                           child: Text(
                             event.event.locationName,
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                               fontSize: 7,
                             ),
                             maxLines: 1,
@@ -378,16 +384,16 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.access_time,
                           size: 8,
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         const SizedBox(width: 2),
                         Text(
                           DateFormat('HH:mm').format(event.event.startDate),
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                             fontSize: 7,
                           ),
                         ),
@@ -410,9 +416,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.6,
-        decoration: const BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: context.backgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
           children: [
@@ -421,7 +427,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
               height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -432,7 +438,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 children: [
                   Text(
                     'Events on ${DateFormat('MMM dd, yyyy').format(day)}',
-                    style: AppTheme.titleLarge,
+                    style: AppTheme.titleLarge.copyWith(
+                      color: context.primaryTextColor,
+                    ),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
@@ -479,7 +487,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 width: 60,
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: context.primaryColorTheme.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -488,13 +496,13 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                       DateFormat('HH:mm').format(event.event.startDate),
                       style: AppTheme.bodySmall.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                     ),
                     Text(
                       DateFormat('HH:mm').format(event.event.endDate),
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                     ),
                   ],
@@ -508,24 +516,26 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   children: [
                     Text(
                       event.event.name,
-                      style: AppTheme.titleSmall,
+                      style: AppTheme.titleSmall.copyWith(
+                        color: context.primaryTextColor,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on,
                           size: 14,
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             event.event.locationName,
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -538,7 +548,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                       Text(
                         'From ${_formatPrice(event.event.tickets.first.price)} ${event.event.tickets.first.currency}',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -546,9 +556,9 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ],
           ),

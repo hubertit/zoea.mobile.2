@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class TransactionHistoryScreen extends ConsumerStatefulWidget {
   const TransactionHistoryScreen({super.key});
@@ -24,7 +25,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.history,
               size: 64,
               color: context.primaryColorTheme,
@@ -35,7 +36,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: AppTheme.spacing8),
-            const Text(
+            Text(
               'View your payment and transaction history',
               style: TextStyle(
                 color: context.secondaryTextColor,

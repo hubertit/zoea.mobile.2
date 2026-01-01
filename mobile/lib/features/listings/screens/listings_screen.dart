@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/listings_provider.dart';
 
 class ListingsScreen extends ConsumerStatefulWidget {
@@ -38,10 +39,15 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        title: Text(widget.type != null ? widget.type!.toUpperCase() : 'Listings'),
-        backgroundColor: AppTheme.backgroundColor,
+        title: Text(
+          widget.type != null ? widget.type!.toUpperCase() : 'Listings',
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
+        ),
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         actions: [
           IconButton(
@@ -69,23 +75,23 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.list,
                     size: 64,
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No listings found',
                     style: AppTheme.headlineSmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Try adjusting your filters',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
@@ -143,23 +149,23 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
               const SizedBox(height: 16),
               Text(
                 'Failed to load listings',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.errorColor,
+                  color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -216,11 +222,11 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -241,23 +247,31 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                       placeholder: (context, url) => Container(
                         width: 120,
                         height: 120,
-                        color: AppTheme.dividerColor,
-                        child: const Center(
-                          child: CircularProgressIndicator(),
+                        color: context.dividerColor,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: context.primaryColorTheme,
+                          ),
                         ),
                       ),
                       errorWidget: (context, url, error) => Container(
                         width: 120,
                         height: 120,
-                        color: AppTheme.dividerColor,
-                        child: const Icon(Icons.image_not_supported),
+                        color: context.dividerColor,
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: context.secondaryTextColor,
+                        ),
                       ),
                     )
                   : Container(
                       width: 120,
                       height: 120,
-                      color: AppTheme.dividerColor,
-                      child: const Icon(Icons.image_not_supported),
+                      color: context.dividerColor,
+                      child: Icon(
+                        Icons.image_not_supported,
+                        color: context.secondaryTextColor,
+                      ),
                     ),
             ),
             
@@ -273,6 +287,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                       name,
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -283,17 +298,17 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                     if (address.isNotEmpty)
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on,
                             size: 12,
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               address,
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -312,16 +327,17 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                         if (rating > 0)
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.star,
                                 size: 14,
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 rating.toStringAsFixed(1),
                                 style: AppTheme.bodySmall.copyWith(
                                   fontWeight: FontWeight.w500,
+                                  color: context.primaryTextColor,
                                 ),
                               ),
                               if (reviewCount > 0) ...[
@@ -329,7 +345,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                                 Text(
                                   '($reviewCount)',
                                   style: AppTheme.bodySmall.copyWith(
-                                    color: AppTheme.secondaryTextColor,
+                                    color: context.secondaryTextColor,
                                   ),
                                 ),
                               ],
@@ -341,7 +357,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                           Text(
                             '$currency ${minPrice.toString()}',
                             style: AppTheme.bodyMedium.copyWith(
-                              color: AppTheme.primaryColor,
+                              color: context.primaryColorTheme,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

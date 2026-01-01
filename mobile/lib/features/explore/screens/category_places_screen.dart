@@ -338,7 +338,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
                 color: context.secondaryTextColor,
@@ -499,7 +499,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
               color: context.secondaryTextColor,
@@ -1384,10 +1384,10 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           color: context.primaryTextColor,
         ),
       ),
-      trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      trailing: isSelected ? Icon(Icons.check, color: context.primaryColorTheme) : null,
       onTap: () => onSelected(value),
       selected: isSelected,
-      selectedTileColor: AppTheme.primaryColor.withOpacity(0.1),
+      selectedTileColor: context.primaryColorTheme.withOpacity(0.1),
     );
   }
 

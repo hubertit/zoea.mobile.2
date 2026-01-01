@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/favorites_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
@@ -113,9 +114,9 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         title: Column(
@@ -125,13 +126,13 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               'Where to stay',
               style: AppTheme.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryTextColor,
+                color: context.primaryTextColor,
               ),
             ),
             Text(
               'Find your perfect accommodation',
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ],
@@ -177,9 +178,9 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: context.grey300),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -190,9 +191,9 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         ),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.location_on,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               size: 20,
             ),
             const SizedBox(width: 12),
@@ -200,7 +201,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               child: Text(
                 _selectedLocation,
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.primaryTextColor,
+                  color: context.primaryTextColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -208,12 +209,12 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             Container(
               height: 20,
               width: 1,
-              color: Colors.grey[300],
+              color: context.grey300,
             ),
             const SizedBox(width: 12),
-            const Icon(
+            Icon(
               Icons.calendar_today,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 18,
             ),
             const SizedBox(width: 8),
@@ -221,32 +222,32 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               child: Text(
                 _getDateRangeText(),
                 style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
             Container(
               height: 20,
               width: 1,
-              color: Colors.grey[300],
+              color: context.grey300,
             ),
             const SizedBox(width: 12),
-            const Icon(
+            Icon(
               Icons.person,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 18,
             ),
             const SizedBox(width: 8),
             Text(
               '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(
+            Icon(
               Icons.arrow_drop_down,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -258,16 +259,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
 
   Widget _buildTabBar() {
     return Container(
-      color: AppTheme.backgroundColor,
+            color: context.cardColor,
       child: TabBar(
         controller: _tabController,
         isScrollable: true,
         tabAlignment: TabAlignment.start,
         labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-        indicatorColor: AppTheme.primaryColor,
+        indicatorColor: context.primaryColorTheme,
         indicatorWeight: 2,
-        labelColor: AppTheme.primaryColor,
-        unselectedLabelColor: AppTheme.secondaryTextColor,
+        labelColor: context.primaryColorTheme,
+        unselectedLabelColor: context.secondaryTextColor,
         labelStyle: AppTheme.bodyMedium.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -345,23 +346,23 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
               const SizedBox(height: 16),
               Text(
                 'Failed to load accommodations',
                 style: AppTheme.headlineSmall.copyWith(
-                  color: AppTheme.errorColor,
+                  color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -444,9 +445,9 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: context.grey300),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
@@ -457,11 +458,11 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.grey[200]!,
-                Colors.grey[100]!,
-                Colors.grey[200]!,
-              ],
+                      colors: [
+                        context.grey200,
+                        context.grey100,
+                        context.grey200,
+                      ],
               stops: [
                 0.0,
                 _shimmerAnimation.value,
@@ -475,7 +476,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -484,7 +485,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 child: Container(
                   height: 16,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: context.grey300,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -492,14 +493,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               Container(
                 height: 20,
                 width: 1,
-                color: Colors.grey[300],
+                color: context.grey300,
               ),
               const SizedBox(width: 12),
               Container(
                 width: 18,
                 height: 18,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -508,7 +509,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 child: Container(
                   height: 16,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: context.grey300,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -516,14 +517,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               Container(
                 height: 20,
                 width: 1,
-                color: Colors.grey[300],
+                color: context.grey300,
               ),
               const SizedBox(width: 12),
               Container(
                 width: 18,
                 height: 18,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -532,7 +533,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 width: 60,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -541,7 +542,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -559,7 +560,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -579,15 +580,15 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     height: 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: context.grey200,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.grey[200]!,
-                          Colors.grey[100]!,
-                          Colors.grey[200]!,
+                          context.grey200,
+                          context.grey100,
+                          context.grey200,
                         ],
                         stops: [
                           0.0,
@@ -618,7 +619,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       width: 80,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.grey300,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -631,7 +632,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       width: 70,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.grey300,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -650,16 +651,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                           child: Container(
                             height: 20,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -674,7 +675,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                           width: 50,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -685,16 +686,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       height: 16,
                       width: 150,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.grey300,
                         borderRadius: BorderRadius.circular(4),
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Colors.grey[300]!,
-                            Colors.grey[200]!,
-                            Colors.grey[300]!,
-                          ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                           stops: [
                             0.0,
                             _shimmerAnimation.value,
@@ -710,7 +711,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -719,16 +720,16 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                           child: Container(
                             height: 14,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -863,7 +864,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -890,10 +891,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             height: 200,
-                            color: Colors.grey[200],
+                            color: context.grey200,
                             child: Icon(
                               Icons.image_not_supported,
-                              color: Colors.grey[400],
+                              color: context.grey400,
                               size: 48,
                             ),
                           );
@@ -901,10 +902,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       )
                     : Container(
                         height: 200,
-                        color: Colors.grey[200],
+                        color: context.grey200,
                         child: Icon(
                           Icons.hotel,
-                          color: Colors.grey[400],
+                          color: context.grey400,
                           size: 48,
                         ),
                       ),
@@ -980,7 +981,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -1071,6 +1072,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                         name,
                         style: AppTheme.headlineSmall.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: context.primaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1088,13 +1090,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                           displayRating > 0 ? displayRating.toStringAsFixed(1) : 'N/A',
                           style: AppTheme.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: context.primaryTextColor,
                           ),
                         ),
                         if (reviewCount > 0)
                           Text(
                             ' ($reviewCount)',
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                       ],
@@ -1105,7 +1108,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 Text(
                   location,
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1113,17 +1116,17 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 if (amenityNames.isNotEmpty)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.wifi,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           amenityNames.take(3).join(', '),
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1145,23 +1148,23 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.hotel,
             size: 64,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
           const SizedBox(height: 16),
           Text(
             'No ${category.toLowerCase()} found',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Try adjusting your search or filters',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],
@@ -1172,7 +1175,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1203,7 +1206,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     child: Text(
                       'Clear All',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1226,7 +1229,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
+                        border: Border.all(color: context.grey300),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -1240,7 +1243,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
+                        border: Border.all(color: context.grey300),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -1271,7 +1274,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       margin: const EdgeInsets.only(right: 8),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
+                        border: Border.all(color: context.grey300),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -1320,10 +1323,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   onSelected: (selected) {
                     // Handle amenity selection
                   },
-                  backgroundColor: AppTheme.backgroundColor,
-                  selectedColor: AppTheme.primaryColor.withOpacity(0.1),
-                  checkmarkColor: AppTheme.primaryColor,
-                  side: BorderSide(color: Colors.grey[300]!),
+                  backgroundColor: context.cardColor,
+                  selectedColor: context.primaryColorTheme.withOpacity(0.1),
+                  checkmarkColor: context.primaryColorTheme,
+                  side: BorderSide(color: context.grey300),
                 )).toList(),
               ),
               const SizedBox(height: 20),
@@ -1350,10 +1353,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   onSelected: (selected) {
                     // Handle property type selection
                   },
-                  backgroundColor: AppTheme.backgroundColor,
-                  selectedColor: AppTheme.primaryColor.withOpacity(0.1),
-                  checkmarkColor: AppTheme.primaryColor,
-                  side: BorderSide(color: Colors.grey[300]!),
+                  backgroundColor: context.cardColor,
+                  selectedColor: context.primaryColorTheme.withOpacity(0.1),
+                  checkmarkColor: context.primaryColorTheme,
+                  side: BorderSide(color: context.grey300),
                 )).toList(),
               ),
               const SizedBox(height: 20),
@@ -1382,10 +1385,10 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       onSelected: (selected) {
                         // Handle distance selection
                       },
-                      backgroundColor: AppTheme.backgroundColor,
-                      selectedColor: AppTheme.primaryColor.withOpacity(0.1),
-                      checkmarkColor: AppTheme.primaryColor,
-                      side: BorderSide(color: Colors.grey[300]!),
+                      backgroundColor: context.backgroundColor,
+                      selectedColor: context.primaryColorTheme.withOpacity(0.1),
+                      checkmarkColor: context.primaryColorTheme,
+                      side: BorderSide(color: context.grey300),
                     ),
                   ),
                 )).toList(),
@@ -1401,7 +1404,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     // Apply filters logic here
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
+                    backgroundColor: context.primaryColorTheme,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -1435,7 +1438,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   void _showSearchOptions() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1489,7 +1492,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   // Apply search filters
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1521,14 +1524,14 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           children: [
             Icon(
               icon,
-              color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
               size: 20,
             ),
             const SizedBox(width: 12),
@@ -1545,15 +1548,15 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -1566,7 +1569,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     Navigator.pop(context);
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1587,7 +1590,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               ListTile(
                 title: Text(location),
                 trailing: location == _selectedLocation 
-                  ? const Icon(Icons.check, color: AppTheme.primaryColor)
+                  ? Icon(Icons.check, color: context.primaryColorTheme)
                   : null,
                 onTap: () {
                   setState(() {
@@ -1622,7 +1625,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   void _showDateRangePicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1669,7 +1672,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1716,15 +1719,15 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: context.grey300),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today,
                         size: 16,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -1733,8 +1736,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                             : 'Select date',
                         style: AppTheme.bodyMedium.copyWith(
                           color: date != null 
-                              ? AppTheme.primaryTextColor 
-                              : AppTheme.secondaryTextColor,
+                              ? context.primaryTextColor 
+                              : context.secondaryTextColor,
                           fontSize: 11,
                         ),
                       ),
@@ -1750,15 +1753,15 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: context.grey300),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.access_time,
                         size: 16,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -1767,8 +1770,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                             : 'Select time',
                         style: AppTheme.bodyMedium.copyWith(
                           color: time != null 
-                              ? AppTheme.primaryTextColor 
-                              : AppTheme.secondaryTextColor,
+                              ? context.primaryTextColor 
+                              : context.secondaryTextColor,
                           fontSize: 11,
                         ),
                       ),
@@ -1833,7 +1836,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     Navigator.pop(context);
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1869,7 +1872,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       } : null,
                       icon: const Icon(Icons.remove),
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
+                        backgroundColor: context.grey100,
                         shape: const CircleBorder(),
                       ),
                     ),
@@ -1889,8 +1892,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       } : null,
                       icon: const Icon(Icons.add),
                       style: IconButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         shape: const CircleBorder(),
                       ),
                     ),
@@ -1906,7 +1909,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1929,7 +1932,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
   void _showSortBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1955,7 +1958,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   ),
                 ),
                 trailing: sortOption == 'Recommended' 
-                  ? const Icon(Icons.check, color: AppTheme.primaryColor)
+                  ? Icon(Icons.check, color: context.primaryColorTheme)
                   : null,
                 onTap: () {
                   Navigator.pop(context);

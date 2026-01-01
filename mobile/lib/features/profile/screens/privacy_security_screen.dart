@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 
@@ -25,21 +26,23 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
   Widget build(BuildContext context) {
     final analyticsConsentAsync = ref.watch(analyticsConsentProvider);
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Privacy & Security',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
-          icon: const Icon(Icons.chevron_left, size: 32),
+          icon: Icon(Icons.chevron_left, size: 32, color: context.primaryTextColor),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
       ),
@@ -102,12 +105,12 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                               ? 'Analytics enabled' 
                               : 'Analytics disabled',
                           style: AppTheme.bodyMedium.copyWith(
-                            color: Colors.white,
+                            color: context.primaryTextColor,
                           ),
                         ),
                         backgroundColor: value 
-                            ? AppTheme.successColor 
-                            : AppTheme.secondaryTextColor,
+                            ? context.successColor 
+                            : context.secondaryTextColor,
                         behavior: SnackBarBehavior.floating,
                         duration: const Duration(seconds: 2),
                       ),
@@ -276,7 +279,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
       title,
       style: AppTheme.titleMedium.copyWith(
         fontWeight: FontWeight.w600,
-        color: AppTheme.primaryTextColor,
+        color: context.primaryTextColor,
       ),
     );
   }
@@ -291,11 +294,11 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -305,12 +308,12 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: context.primaryColorTheme.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             icon,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 20,
           ),
         ),
@@ -318,18 +321,19 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
           title,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
+            color: context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: AppTheme.bodySmall.copyWith(
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
         ),
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: AppTheme.primaryColor,
+          activeColor: context.primaryColorTheme,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
@@ -346,11 +350,11 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -361,13 +365,13 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isDestructive 
-                ? Colors.red.withOpacity(0.1)
-                : AppTheme.primaryColor.withOpacity(0.1),
+                ? context.errorColor.withOpacity(0.1)
+                : context.primaryColorTheme.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             icon,
-            color: isDestructive ? Colors.red : AppTheme.primaryColor,
+            color: isDestructive ? context.errorColor : context.primaryColorTheme,
             size: 20,
           ),
         ),
@@ -375,18 +379,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
           title,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
-            color: isDestructive ? Colors.red : AppTheme.primaryTextColor,
+            color: isDestructive ? context.errorColor : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: AppTheme.bodySmall.copyWith(
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.chevron_right,
-          color: AppTheme.secondaryTextColor,
+          color: context.secondaryTextColor,
         ),
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -407,7 +411,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.cardColor,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Container(
           padding: EdgeInsets.only(
@@ -415,6 +419,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             right: 24,
             top: 24,
             bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          decoration: BoxDecoration(
+            color: context.cardColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Form(
             key: formKey,
@@ -428,7 +436,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: context.grey300,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -440,6 +448,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   'Change Password',
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -463,7 +472,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                       },
                     ),
                     filled: true,
-                    fillColor: AppTheme.dividerColor,
+                    fillColor: context.dividerColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -497,7 +506,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                       },
                     ),
                     filled: true,
-                    fillColor: AppTheme.dividerColor,
+                    fillColor: context.dividerColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -534,7 +543,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                       },
                     ),
                     filled: true,
-                    fillColor: AppTheme.dividerColor,
+                    fillColor: context.dividerColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -565,12 +574,12 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: const BorderSide(color: AppTheme.secondaryTextColor),
+                          side: BorderSide(color: context.secondaryTextColor),
                         ),
                         child: Text(
                           'Cancel',
                           style: AppTheme.bodyMedium.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -599,10 +608,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                                     content: Text(
                                       'Password changed successfully!',
                                       style: AppTheme.bodyMedium.copyWith(
-                                        color: Colors.white,
+                                        color: context.primaryTextColor,
                                       ),
                                     ),
-                                    backgroundColor: AppTheme.successColor,
+                                    backgroundColor: context.successColor,
                                     behavior: SnackBarBehavior.floating,
                                   ),
                                 );
@@ -617,10 +626,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                                           ? errorMessage 
                                           : 'Failed to change password. Please try again.',
                                       style: AppTheme.bodyMedium.copyWith(
-                                        color: Colors.white,
+                                        color: context.primaryTextColor,
                                       ),
                                     ),
-                                    backgroundColor: AppTheme.errorColor,
+                                    backgroundColor: context.errorColor,
                                     behavior: SnackBarBehavior.floating,
                                   ),
                                 );
@@ -638,22 +647,22 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
+                          backgroundColor: context.primaryColorTheme,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: isLoading
-                            ? const SizedBox(
+                            ? SizedBox(
                                 height: 20,
                                 width: 20,
                                 child: CircularProgressIndicator(
-                                  color: Colors.white,
+                                  color: context.primaryTextColor,
                                   strokeWidth: 2,
                                 ),
                               )
                             : Text(
                                 'Change Password',
                                 style: AppTheme.bodyMedium.copyWith(
-                                  color: Colors.white,
+                                  color: context.primaryTextColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -673,9 +682,13 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.cardColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,7 +699,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -698,6 +711,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
               'Email Verification',
               style: AppTheme.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -706,15 +720,15 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue[50],
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue[200]!),
+                border: Border.all(color: context.primaryColorTheme.withOpacity(0.3)),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.email_outlined,
-                    color: Colors.blue[600],
+                    color: context.primaryColorTheme,
                     size: 20,
                   ),
                   const SizedBox(width: 12),
@@ -722,7 +736,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     child: Text(
                       'A verification email will be sent to your registered email address.',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.blue[800],
+                        color: context.primaryTextColor,
                       ),
                     ),
                   ),
@@ -739,12 +753,12 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: AppTheme.secondaryTextColor),
+                      side: BorderSide(color: context.secondaryTextColor),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -761,22 +775,22 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                           content: Text(
                             'Verification email sent!',
                             style: AppTheme.bodyMedium.copyWith(
-                              color: Colors.white,
+                              color: context.primaryTextColor,
                             ),
                           ),
-                          backgroundColor: AppTheme.successColor,
+                          backgroundColor: context.successColor,
                           behavior: SnackBarBehavior.floating,
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
                       'Send Email',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.white,
+                        color: context.primaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -797,13 +811,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Phone Verification',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Text(
           'Add and verify your phone number for enhanced security.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -811,7 +830,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -824,10 +843,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   content: Text(
                     'Phone verification feature coming soon!',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: Colors.white,
+                      color: context.primaryTextColor,
                     ),
                   ),
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -835,7 +854,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Continue',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -849,13 +868,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Download My Data',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Text(
           'We will prepare your data and send it to your email address within 24 hours.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -863,7 +887,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -876,10 +900,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   content: Text(
                     'Data download request submitted!',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: Colors.white,
+                      color: context.primaryTextColor,
                     ),
                   ),
-                  backgroundColor: AppTheme.successColor,
+                  backgroundColor: context.successColor,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -887,7 +911,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Request Data',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -901,15 +925,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Delete Account',
           style: AppTheme.titleMedium.copyWith(
-            color: Colors.red,
+            color: context.errorColor,
           ),
         ),
         content: Text(
           'This action cannot be undone. All your data will be permanently deleted.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -917,7 +944,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -929,7 +956,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Delete',
               style: AppTheme.bodyMedium.copyWith(
-                color: Colors.red,
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -943,9 +970,13 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.cardColor,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,7 +987,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: context.grey300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -968,6 +999,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
               'What Data We Collect',
               style: AppTheme.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -1006,7 +1038,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -1014,7 +1046,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                 children: [
                   Icon(
                     Icons.privacy_tip_outlined,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     size: 20,
                   ),
                   const SizedBox(width: 12),
@@ -1022,7 +1054,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                     child: Text(
                       'All data is anonymized and used only to improve your experience. You can disable analytics or clear your data anytime.',
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ),
@@ -1037,13 +1069,13 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
                   'Got it',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: Colors.white,
+                    color: context.primaryTextColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1065,7 +1097,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.dividerColor,
+        color: context.dividerColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -1073,7 +1105,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
         children: [
           Icon(
             icon,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             size: 20,
           ),
           const SizedBox(width: 12),
@@ -1085,20 +1117,21 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   title,
                   style: AppTheme.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Purpose: $purpose',
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -1114,13 +1147,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Clear Analytics Data',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Text(
           'This will delete all stored analytics data from your device. This action cannot be undone.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -1128,7 +1166,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -1145,10 +1183,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                       content: Text(
                         'Analytics data cleared successfully',
                         style: AppTheme.bodyMedium.copyWith(
-                          color: Colors.white,
+                          color: context.primaryTextColor,
                         ),
                       ),
-                      backgroundColor: AppTheme.successColor,
+                      backgroundColor: context.successColor,
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
@@ -1166,7 +1204,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Clear Data',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -1180,15 +1218,18 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Final Confirmation',
           style: AppTheme.titleMedium.copyWith(
-            color: Colors.red,
+            color: context.errorColor,
           ),
         ),
         content: Text(
           'Are you absolutely sure? This will permanently delete your account and all associated data.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -1196,7 +1237,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -1209,10 +1250,10 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
                   content: Text(
                     'Account deletion feature coming soon!',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: Colors.white,
+                      color: context.primaryTextColor,
                     ),
                   ),
-                  backgroundColor: Colors.red,
+                  backgroundColor: context.errorColor,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -1220,7 +1261,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             child: Text(
               'Delete Forever',
               style: AppTheme.bodyMedium.copyWith(
-                color: Colors.red,
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),

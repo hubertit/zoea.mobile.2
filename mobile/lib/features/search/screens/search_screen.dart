@@ -208,6 +208,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   'Recent Searches',
                   style: AppTheme.headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 searchHistoryAsync.when(
@@ -218,7 +219,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       child: Text(
                         'Clear',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                         ),
                       ),
                     );
@@ -272,7 +273,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   child: Text(
                     'Failed to load recent searches',
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.errorColor,
+                      color: context.errorColor,
                     ),
                   ),
                 );
@@ -286,6 +287,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               'Popular Searches',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 16),
@@ -320,7 +322,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 child: Text(
                   'Failed to load popular searches',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.errorColor,
+                    color: context.errorColor,
                   ),
                 ),
               ),
@@ -342,10 +344,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.search_off,
             size: 64,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
           const SizedBox(height: 16),
           Text(
@@ -382,16 +384,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline,
             size: 64,
-            color: AppTheme.errorColor,
+            color: context.errorColor,
           ),
           const SizedBox(height: 16),
           Text(
             'Search failed',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -481,15 +483,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   placeholder: (context, url) => Container(
                     width: 50,
                     height: 50,
-                    color: AppTheme.dividerColor,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
+                    color: context.dividerColor,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: context.primaryColorTheme,
+                      ),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
                     width: 50,
                     height: 50,
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: Icon(
                       typeIcon,
                       color: context.secondaryTextColor,
@@ -499,7 +503,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               : Container(
                   width: 50,
                   height: 50,
-                  color: AppTheme.dividerColor,
+                  color: context.dividerColor,
                   child: Icon(
                     typeIcon,
                     color: context.secondaryTextColor,
@@ -510,6 +514,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           name,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -544,16 +549,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 if (rating != null) ...[
                   const SizedBox(width: 8),
-                  const Icon(
+                  Icon(
                     Icons.star,
                     size: 12,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                   ),
                   const SizedBox(width: 2),
                   Text(
                     rating.toStringAsFixed(1),
                     style: AppTheme.labelSmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -621,14 +626,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: const Icon(
+        leading: Icon(
           Icons.history,
-          color: AppTheme.secondaryTextColor,
+          color: context.secondaryTextColor,
           size: 20,
         ),
         title: Text(
           query,
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         trailing: timeAgo != null
             ? Text(
@@ -655,14 +662,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: const Icon(
+        leading: Icon(
           Icons.trending_up,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
           size: 20,
         ),
         title: Text(
           search,
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         onTap: () {
           _searchController.text = search;
@@ -708,7 +717,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: Text(
               'Clear',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -733,10 +742,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           content: Text(
             'Search history cleared',
             style: AppTheme.bodyMedium.copyWith(
-              color: Colors.white,
+              color: context.primaryTextColor,
             ),
           ),
-          backgroundColor: AppTheme.successColor,
+          backgroundColor: context.cardColor,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -748,10 +757,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           content: Text(
             'Failed to clear search history: ${e.toString().replaceFirst('Exception: ', '')}',
             style: AppTheme.bodyMedium.copyWith(
-              color: Colors.white,
+              color: context.primaryTextColor,
             ),
           ),
-          backgroundColor: AppTheme.errorColor,
+          backgroundColor: context.errorColor,
           behavior: SnackBarBehavior.floating,
         ),
       );

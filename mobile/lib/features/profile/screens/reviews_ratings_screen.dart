@@ -357,7 +357,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Place'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
+                          foregroundColor: context.primaryColorTheme,
                           backgroundColor: context.backgroundColor,
                           side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -442,7 +442,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             OutlinedButton(
               onPressed: onAction,
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryColor,
+                foregroundColor: context.primaryColorTheme,
                 backgroundColor: context.backgroundColor,
                 side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

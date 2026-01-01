@@ -252,3 +252,4 @@ model Category {
 The key insight is that **Tours** is a separate entity type (like Listings), while **Attractions**, **Experiences**, and **Hiking** are categories that can organize both Listings and Tours.
 
 
+

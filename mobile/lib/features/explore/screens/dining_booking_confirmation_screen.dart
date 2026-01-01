@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
   final String? bookingId;
@@ -428,7 +429,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
               child: OutlinedButton(
                 onPressed: () => context.go('/explore'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.primaryColor,
+                  foregroundColor: context.primaryColorTheme,
                   side: BorderSide(color: context.primaryColorTheme),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),

@@ -42,21 +42,23 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'My Bookings',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
-          icon: const Icon(Icons.chevron_left, size: 32),
+          icon: Icon(Icons.chevron_left, size: 32, color: context.primaryTextColor),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -64,26 +66,28 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             onPressed: () {
               _showSearchBottomSheet();
             },
-            icon: const Icon(Icons.search_outlined),
+            icon: Icon(Icons.search_outlined, color: context.primaryTextColor),
             style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
+              backgroundColor: context.dividerColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
           const SizedBox(width: 16),
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
-          labelStyle: const TextStyle(
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
+          labelStyle: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
+            color: context.primaryColorTheme,
           ),
-          unselectedLabelStyle: const TextStyle(
+          unselectedLabelStyle: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w400,
+            color: context.secondaryTextColor,
           ),
           tabAlignment: TabAlignment.start,
           isScrollable: true,
@@ -167,32 +171,32 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           ),
         );
       },
-      loading: () => const Center(
+      loading: () => Center(
         child: CircularProgressIndicator(
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
         ),
       ),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load bookings',
               style: AppTheme.titleMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -210,8 +214,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: context.primaryTextColor,
               ),
               child: const Text('Retry'),
             ),
@@ -254,14 +258,14 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: 48,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -269,13 +273,14 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             title,
             style: AppTheme.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             subtitle,
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -284,8 +289,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             ElevatedButton(
               onPressed: () => context.go('/explore'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: context.primaryTextColor,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -295,7 +300,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 'Explore Now',
                 style: AppTheme.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: context.primaryTextColor,
                 ),
               ),
             ),
@@ -430,11 +435,11 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -457,31 +462,31 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
                       height: 200,
-                      color: AppTheme.dividerColor,
-                      child: const Center(
+                      color: context.dividerColor,
+                      child: Center(
                         child: CircularProgressIndicator(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                         ),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
                       height: 200,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: Icon(
                         _getBookingTypeIcon(bookingType),
                         size: 64,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   )
                 else
                   Container(
                     height: 200,
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: Icon(
                       _getBookingTypeIcon(bookingType),
                       size: 64,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 // Status Badge
@@ -497,7 +502,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     child: Text(
                       status.toUpperCase(),
                       style: AppTheme.labelSmall.copyWith(
-                        color: Colors.white,
+                        color: Colors.white, // White on colored status badge is intentional
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -516,7 +521,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     child: Text(
                       '#${bookingNumber ?? bookingId.substring(0, 8)}',
                       style: AppTheme.labelSmall.copyWith(
-                        color: Colors.white,
+                        color: Colors.white, // White on dark overlay is intentional
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -536,6 +541,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                   name,
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -544,31 +550,31 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 // Date and Time
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     if (eventDate != null)
                       Text(
                         dateFormat.format(eventDate),
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     if (bookingTime != null) ...[
                       const SizedBox(width: 16),
-                      const Icon(
+                      Icon(
                         Icons.access_time,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         bookingTime,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -578,17 +584,17 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 // Location
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         location,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -601,16 +607,16 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 if (bookingDate != null)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.shopping_cart,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Booked on ${dateFormat.format(bookingDate)}',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -624,13 +630,13 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                       '${totalAmount.toStringAsFixed(0)} $currency',
                       style: AppTheme.titleMedium.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                     ),
                     Text(
                       '$guestCount guest${guestCount > 1 ? 's' : ''}',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -673,9 +679,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               icon: const Icon(Icons.repeat, size: 16),
               label: const Text('Book Again'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryColor,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: AppTheme.primaryColor),
+                foregroundColor: context.primaryColorTheme,
+                backgroundColor: context.cardColor,
+                side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -698,9 +704,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               icon: const Icon(Icons.visibility, size: 16),
               label: const Text('View Details'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryColor,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: AppTheme.primaryColor),
+                foregroundColor: context.primaryColorTheme,
+                backgroundColor: context.cardColor,
+                side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -717,9 +723,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               icon: const Icon(Icons.cancel, size: 16),
               label: const Text('Cancel'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.red,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: Colors.red),
+                foregroundColor: context.errorColor,
+                backgroundColor: context.cardColor,
+                side: BorderSide(color: context.errorColor),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -740,9 +746,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               icon: const Icon(Icons.visibility, size: 16),
               label: const Text('View Details'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryColor,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: AppTheme.primaryColor),
+                foregroundColor: context.primaryColorTheme,
+                backgroundColor: context.cardColor,
+                side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -758,19 +764,19 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'confirmed':
-        return AppTheme.successColor;
+        return AppTheme.successColor; // Success color is intentional
       case 'pending':
-        return Colors.orange;
+        return Colors.orange; // Orange for pending is intentional
       case 'upcoming':
-        return AppTheme.primaryColor;
+        return context.primaryColorTheme;
       case 'completed':
-        return Colors.blue;
+        return Colors.blue; // Blue for completed is intentional
       case 'cancelled':
-        return Colors.red;
+        return context.errorColor;
       case 'checked_in':
-        return Colors.green;
+        return Colors.green; // Green for checked in is intentional
       default:
-        return AppTheme.secondaryTextColor;
+        return context.secondaryTextColor;
     }
   }
 
@@ -889,23 +895,51 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Booking Details',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Booking ID: ${bookingNumber ?? bookingId}'),
+            Text(
+              'Booking ID: ${bookingNumber ?? bookingId}',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Name: $name'),
+            Text(
+              'Name: $name',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Guests: $guestCount'),
+            Text(
+              'Guests: $guestCount',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Price: ${totalAmount.toStringAsFixed(0)} $currency'),
+            Text(
+              'Price: ${totalAmount.toStringAsFixed(0)} $currency',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Status: ${status.toUpperCase()}'),
+            Text(
+              'Status: ${status.toUpperCase()}',
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -914,7 +948,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             child: Text(
               'Close',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -942,15 +976,18 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: context.cardColor,
         title: Text(
           'Cancel Booking',
           style: AppTheme.titleMedium.copyWith(
-            color: Colors.red,
+            color: context.errorColor,
           ),
         ),
         content: Text(
           'Are you sure you want to cancel your booking for "$name"? This action cannot be undone.',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         actions: [
           TextButton(
@@ -958,7 +995,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             child: Text(
               'Keep Booking',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -970,7 +1007,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             child: Text(
               'Cancel Booking',
               style: AppTheme.bodyMedium.copyWith(
-                color: Colors.red,
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -995,7 +1032,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               color: Colors.white,
             ),
           ),
-          backgroundColor: AppTheme.successColor,
+          backgroundColor: AppTheme.successColor, // Success color is intentional
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -1042,7 +1079,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               color: Colors.white,
             ),
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: context.errorColor,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -1061,13 +1098,18 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
+          backgroundColor: context.cardColor,
           title: Text(
             'Book Again',
-            style: AppTheme.titleMedium,
+            style: AppTheme.titleMedium.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
           content: Text(
             'Would you like to book "$name" again?',
-            style: AppTheme.bodyMedium,
+            style: AppTheme.bodyMedium.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
           actions: [
             TextButton(
@@ -1075,7 +1117,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               child: Text(
                 'Cancel',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
@@ -1094,7 +1136,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               child: Text(
                 'Book Now',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1124,7 +1166,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               child: Text(
                 'Cancel',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
@@ -1139,7 +1181,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               child: Text(
                 'Book Now',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1184,20 +1226,24 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                     'Search Bookings',
                     style: AppTheme.titleMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _searchController,
                     autofocus: true,
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: context.primaryTextColor,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Search by name, location, or booking number...',
                       hintStyle: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.search,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
@@ -1205,26 +1251,26 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                                 _searchController.clear();
                                 setState(() {});
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.clear,
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             )
                           : null,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
+                        borderSide: BorderSide(color: context.grey300),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
+                        borderSide: BorderSide(color: context.grey300),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppTheme.primaryColor),
+                        borderSide: BorderSide(color: context.primaryColorTheme),
                       ),
                       filled: true,
-                      fillColor: AppTheme.backgroundColor,
+                      fillColor: context.backgroundColor,
                     ),
                     onChanged: (value) {
                       setState(() {});
@@ -1241,8 +1287,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                             Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppTheme.secondaryTextColor,
-                            side: BorderSide(color: Colors.grey[300]!),
+                            foregroundColor: context.secondaryTextColor,
+                            side: BorderSide(color: context.grey300),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -1258,8 +1304,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.primaryColor,
-                            foregroundColor: Colors.white,
+                            backgroundColor: context.primaryColorTheme,
+                            foregroundColor: context.primaryTextColor,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
