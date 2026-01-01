@@ -126,6 +126,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           'Book Table',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
       ),
@@ -211,6 +212,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   widget.placeName,
                   style: AppTheme.headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -245,6 +247,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                       widget.placeRating.toString(),
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -286,6 +289,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             'Reservation Details',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -333,6 +337,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   : 'Select date',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
+                color: context.primaryTextColor,
               ),
             ),
           ],
@@ -426,6 +431,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             'Number of Guests',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -484,6 +490,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             'Guest Information',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -577,6 +584,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             'Special Requests',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -791,6 +799,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     'RWF ${_calculateTotalPrice().toStringAsFixed(0)}',
                     style: AppTheme.headlineSmall.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                   ),
                 ],
