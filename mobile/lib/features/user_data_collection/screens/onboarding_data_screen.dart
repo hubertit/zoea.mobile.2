@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/services/data_inference_service.dart';
@@ -67,7 +68,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -111,8 +112,8 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
               height: 4,
               decoration: BoxDecoration(
                 color: index <= _currentStep
-                    ? AppTheme.primaryColor
-                    : AppTheme.dividerColor,
+                    ? context.primaryColorTheme
+                    : context.dividerColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -132,7 +133,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Icon(
             Icons.public,
             size: 64,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ).animate().scale(
             duration: 400.ms,
             curve: Curves.easeOutBack,
@@ -148,7 +149,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'Help us personalize your experience',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
           const SizedBox(height: AppTheme.spacing32),
@@ -180,7 +181,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Icon(
             Icons.home,
             size: 64,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ).animate().scale(
             duration: 400.ms,
             curve: Curves.easeOutBack,
@@ -196,7 +197,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'This helps us show you relevant content',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
           const SizedBox(height: AppTheme.spacing32),
@@ -244,11 +245,11 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
         padding: const EdgeInsets.all(AppTheme.spacing24),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primaryColor.withOpacity(0.1)
-              : AppTheme.backgroundColor,
+              ? context.primaryColorTheme.withOpacity(0.1)
+              : context.backgroundColor,
           borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+            color: isSelected ? context.primaryColorTheme : context.dividerColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -257,12 +258,12 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
             Container(
               padding: const EdgeInsets.all(AppTheme.spacing12),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
               ),
               child: Icon(
                 icon,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 32,
               ),
             ),
@@ -275,8 +276,8 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                     title,
                     style: AppTheme.headlineMedium.copyWith(
                       color: isSelected
-                          ? AppTheme.primaryColor
-                          : AppTheme.primaryTextColor,
+                          ? context.primaryColorTheme
+                          : context.primaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -284,7 +285,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
@@ -293,7 +294,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
             if (isSelected)
               Icon(
                 Icons.check_circle,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 24,
               ),
           ],
@@ -312,7 +313,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Icon(
             Icons.explore,
             size: 64,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ).animate().scale(
             duration: 400.ms,
             curve: Curves.easeOutBack,
@@ -328,7 +329,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'Select your primary purpose',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
           const SizedBox(height: AppTheme.spacing32),
@@ -359,7 +360,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Icon(
             Icons.translate,
             size: 64,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ).animate().scale(
             duration: 400.ms,
             curve: Curves.easeOutBack,
@@ -375,7 +376,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'You can change this anytime in settings',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
           const SizedBox(height: AppTheme.spacing32),
@@ -407,7 +408,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Icon(
             Icons.privacy_tip,
             size: 64,
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ).animate().scale(
             duration: 400.ms,
             curve: Curves.easeOutBack,
@@ -423,17 +424,17 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'Allow analytics to help us personalize your experience',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
           const SizedBox(height: AppTheme.spacing32),
           Container(
             padding: const EdgeInsets.all(AppTheme.spacing20),
             decoration: BoxDecoration(
-              color: AppTheme.backgroundColor,
+              color: context.backgroundColor,
               borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
               border: Border.all(
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 width: 1,
               ),
             ),
@@ -446,7 +447,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                       _analyticsConsent = value ?? false;
                     });
                   },
-                  activeColor: AppTheme.primaryColor,
+                  activeColor: context.primaryColorTheme,
                 ),
                 Expanded(
                   child: Text(
@@ -461,7 +462,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           Text(
             'You can change this anytime in settings',
             style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],
@@ -482,8 +483,8 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : (canContinue ? _handleContinue : null),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: AppTheme.backgroundColor,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: context.primaryTextColor,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.spacing24,
                   vertical: AppTheme.spacing16,
@@ -494,18 +495,18 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                 elevation: 0,
               ),
               child: _isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                       ),
                     )
                   : Text(
                       _currentStep == 4 ? 'Complete' : 'Continue',
                       style: AppTheme.labelLarge.copyWith(
-                        color: AppTheme.backgroundColor,
+                        color: context.backgroundColor,
                       ),
                     ),
             ),
@@ -516,7 +517,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
               child: Text(
                 'Back',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
