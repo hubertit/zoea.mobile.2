@@ -59,6 +59,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           'Booking Confirmation',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
       ),
@@ -182,6 +183,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             'Reservation Details',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -231,6 +233,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             'Restaurant Information',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -272,6 +275,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             'Guest Information',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -319,12 +323,15 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             'Special Requests',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             widget.specialRequests,
-            style: AppTheme.bodyMedium,
+            style: AppTheme.bodyMedium.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
         ],
       ),
@@ -399,6 +406,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             value,
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
         ),
@@ -437,6 +445,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                   'Browse More',
                   style: AppTheme.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
               ),
