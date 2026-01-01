@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class NightlifeScreen extends ConsumerStatefulWidget {
@@ -32,19 +33,20 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, size: 32),
           onPressed: () => context.pop(),
-          color: AppTheme.primaryTextColor,
+          color: context.primaryTextColor,
         ),
         title: Text(
           'Nightlife',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -63,9 +65,9 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
@@ -98,23 +100,23 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.nightlife,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'No nightlife venues found',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Check back later for new venues',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ],
@@ -156,7 +158,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -249,8 +251,8 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      side: const BorderSide(color: AppTheme.primaryColor),
+                      foregroundColor: context.primaryColorTheme,
+                      side: BorderSide(color: context.primaryColorTheme),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Clear All'),
@@ -261,8 +263,8 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.primaryColorTheme,
+                      foregroundColor: context.primaryTextColor,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply Filters'),
@@ -280,7 +282,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
   void _showSortBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -320,8 +322,8 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryColor,
-                      side: const BorderSide(color: AppTheme.primaryColor),
+                      foregroundColor: context.primaryColorTheme,
+                      side: BorderSide(color: context.primaryColorTheme),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Cancel'),
@@ -332,8 +334,8 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.primaryColorTheme,
+                      foregroundColor: context.primaryTextColor,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply'),
@@ -353,7 +355,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
       label: Text(
         label,
         style: AppTheme.bodySmall.copyWith(
-          color: isSelected ? Colors.white : AppTheme.primaryTextColor,
+          color: isSelected ? Theme.of(context).colorScheme.onPrimary : context.primaryTextColor,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -361,10 +363,10 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
       onSelected: (selected) {
         // Handle filter selection
       },
-      selectedColor: AppTheme.primaryColor,
-      backgroundColor: AppTheme.backgroundColor,
+      selectedColor: context.primaryColorTheme,
+      backgroundColor: context.backgroundColor,
       side: BorderSide(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+        color: isSelected ? context.primaryColorTheme : context.dividerColor,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
@@ -381,10 +383,10 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
+            color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+              color: isSelected ? context.primaryColorTheme : context.dividerColor,
             ),
           ),
           child: Row(
@@ -392,23 +394,23 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               Icon(
                 icon,
                 size: 20,
-                color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+                color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   label,
                   style: AppTheme.bodyMedium.copyWith(
-                    color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+                    color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ),
               if (isSelected)
-                const Icon(
+                Icon(
                   Icons.check,
                   size: 20,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                 ),
             ],
           ),
