@@ -164,7 +164,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         ),
         content: Text(
           'You have unsaved changes. Are you sure you want to leave?',
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
@@ -184,7 +186,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             child: Text(
               'Discard',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
                 fontWeight: FontWeight.w600,
               ),
             ),

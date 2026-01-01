@@ -62,6 +62,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           'Search ${_getCategoryTitle()}',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         actions: [
