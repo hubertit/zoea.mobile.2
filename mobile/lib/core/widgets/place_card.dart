@@ -118,6 +118,7 @@ class PlaceCard extends StatelessWidget {
                           name,
                           style: AppTheme.headlineSmall.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: context.primaryTextColor,
                           ),
                         ),
                       ),
@@ -172,6 +173,7 @@ class PlaceCard extends StatelessWidget {
                         rating.toString(),
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
+                          color: context.primaryTextColor,
                         ),
                       ),
                       const SizedBox(width: 8),
