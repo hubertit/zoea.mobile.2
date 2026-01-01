@@ -136,6 +136,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
             'No Events Attended',
             style: AppTheme.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -264,6 +265,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                   event['name'] as String,
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
