@@ -334,6 +334,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   item['name'],
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -469,6 +470,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   event['name'],
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -604,6 +606,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   place['name'],
                   style: AppTheme.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1114,6 +1117,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               title,
               style: AppTheme.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
