@@ -1186,7 +1186,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             child: Text(
               'Remove',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
