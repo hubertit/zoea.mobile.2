@@ -239,8 +239,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryColor,
+                        decoration: BoxDecoration(
+                          color: context.primaryColorTheme,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -260,8 +260,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryColor,
+                        decoration: BoxDecoration(
+                          color: context.primaryColorTheme,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -271,8 +271,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ],
             bottom: _isAccommodation || _tabController == null ? null : TabBar(
               controller: _tabController,
-              indicatorColor: AppTheme.primaryColor,
-              labelColor: AppTheme.primaryColor,
+              indicatorColor: context.primaryColorTheme,
+              labelColor: context.primaryColorTheme,
               unselectedLabelColor: context.secondaryTextColor,
               labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
               isScrollable: true,
@@ -296,14 +296,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         );
       },
       loading: () => Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: context.grey50,
         appBar: AppBar(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.chevron_left, size: 32),
             onPressed: () => context.pop(),
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
           ),
           title: Text(
             widget.category,
@@ -315,14 +315,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, stack) => Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: context.grey50,
         appBar: AppBar(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.chevron_left, size: 32),
             onPressed: () => context.pop(),
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
           ),
           title: Text(
             widget.category,
@@ -740,25 +740,25 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
                             height: 200,
-                            color: Colors.grey[200],
+                            color: context.grey200,
                             child: const Center(child: CircularProgressIndicator()),
                           ),
                           errorWidget: (context, url, error) => Container(
                             height: 200,
-                            color: Colors.grey[200],
+                            color: context.grey200,
                             child: Icon(
                               Icons.image_not_supported,
-                              color: Colors.grey[400],
+                              color: context.grey400,
                               size: 48,
                             ),
                           ),
                         )
                       : Container(
                           height: 200,
-                          color: Colors.grey[200],
+                          color: context.grey200,
                           child: Icon(
                             Icons.image_not_supported,
-                            color: Colors.grey[400],
+                            color: context.grey400,
                             size: 48,
                           ),
                         ),
@@ -830,7 +830,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -918,7 +918,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
+                            color: context.grey100,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -1057,15 +1057,15 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           hintText: '0',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: AppTheme.primaryColor),
+                            borderSide: BorderSide(color: context.primaryColorTheme),
                           ),
                           prefixText: 'RWF ',
                         ),
@@ -1087,15 +1087,15 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           hintText: 'No limit',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: context.grey300),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: AppTheme.primaryColor),
+                            borderSide: BorderSide(color: context.primaryColorTheme),
                           ),
                           prefixText: 'RWF ',
                         ),
@@ -1152,8 +1152,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           });
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Clear All'),
@@ -1190,8 +1190,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.primaryColorTheme,
+                          foregroundColor: context.primaryTextColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Filters'),
@@ -1321,8 +1321,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           });
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Clear'),
@@ -1354,8 +1354,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
+                          backgroundColor: context.primaryColorTheme,
+                          foregroundColor: context.primaryTextColor,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Sort'),
@@ -1406,7 +1406,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -1426,15 +1426,15 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                     height: 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: context.grey200,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.grey[200]!,
-                          Colors.grey[100]!,
-                          Colors.grey[200]!,
+                          context.grey200,
+                          context.grey100,
+                          context.grey200,
                         ],
                         stops: [
                           0.0,
@@ -1452,7 +1452,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.7),
+                        color: context.isDarkMode ? Colors.white.withOpacity(0.2) : Colors.white.withOpacity(0.7),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -1471,16 +1471,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           child: Container(
                             height: 20,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -1495,7 +1495,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 60,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -1508,7 +1508,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1517,16 +1517,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           child: Container(
                             height: 16,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -1545,7 +1545,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1554,7 +1554,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 40,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1563,7 +1563,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 80,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1572,7 +1572,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 60,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1595,7 +1595,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -1615,15 +1615,15 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                     height: 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: context.grey200,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.grey[200]!,
-                          Colors.grey[100]!,
-                          Colors.grey[200]!,
+                          context.grey200,
+                          context.grey100,
+                          context.grey200,
                         ],
                         stops: [
                           0.0,
@@ -1654,7 +1654,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       width: 70,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.grey300,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -1673,16 +1673,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           child: Container(
                             height: 20,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -1697,7 +1697,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 50,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1710,7 +1710,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -1719,16 +1719,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           child: Container(
                             height: 16,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: context.grey300,
                               borderRadius: BorderRadius.circular(4),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.grey[300]!,
-                                  Colors.grey[200]!,
-                                  Colors.grey[300]!,
-                                ],
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
                                 stops: [
                                   0.0,
                                   _shimmerAnimation.value,
@@ -1750,7 +1750,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           width: 60 + (index * 20),
                           height: 24,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.grey300,
                             borderRadius: BorderRadius.circular(8),
                           ),
                         );
