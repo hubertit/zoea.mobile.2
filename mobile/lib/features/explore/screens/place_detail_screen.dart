@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/reviews_provider.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -77,7 +78,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     final place = _getMockPlaceData(widget.placeId);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -85,11 +86,11 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            backgroundColor: _isScrolled ? Colors.white : AppTheme.backgroundColor,
+            backgroundColor: _isScrolled ? context.backgroundColor : context.backgroundColor,
             leading: IconButton(
               icon: Icon(
                 Icons.chevron_left, 
-                color: _isScrolled ? AppTheme.primaryTextColor : Colors.white, 
+                color: _isScrolled ? context.primaryTextColor : Colors.white, // White on dark overlay is intentional 
                 size: 32
               ),
               onPressed: () {
@@ -109,14 +110,20 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                     imageUrl: place['image'],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
-                      color: Colors.grey[200],
-                      child: const Center(
-                        child: CircularProgressIndicator(),
+                      color: context.grey200,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: context.primaryColorTheme,
+                        ),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.place, size: 100),
+                      color: context.grey200,
+                      child: Icon(
+                        Icons.place,
+                        size: 100,
+                        color: context.secondaryTextColor,
+                      ),
                     ),
                   ),
                   // Gradient overlay
@@ -152,7 +159,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           child: IconButton(
                             icon: Icon(
                               _isFavorite ? Icons.favorite : Icons.favorite_border,
-                              color: _isFavorite ? Colors.red : Colors.white,
+                              color: _isFavorite ? context.errorColor : Colors.white, // White on dark overlay is intentional
                               size: 18,
                             ),
                             padding: EdgeInsets.zero,
@@ -221,13 +228,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           // Content
           SliverToBoxAdapter(
             child: Container(
-              color: Colors.grey[50],
+              color: context.grey50,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Place Info
                   Container(
-                    color: AppTheme.backgroundColor,
+                    color: context.cardColor,
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +257,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
+                                      color: context.primaryColorTheme.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
@@ -259,13 +266,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                         Icon(
                                           Icons.verified,
                                           size: 14,
-                                          color: Colors.blue[700],
+                                          color: context.primaryColorTheme,
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
                                           'Verified',
                                           style: AppTheme.bodySmall.copyWith(
-                                            color: Colors.blue[700],
+                                            color: context.primaryColorTheme,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -281,13 +288,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryColor.withOpacity(0.1),
+                                color: context.primaryColorTheme.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Text(
                                 place['category'],
                                 style: AppTheme.bodyMedium.copyWith(
-                                  color: AppTheme.primaryColor,
+                                  color: context.primaryColorTheme,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -297,17 +304,17 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.location_on,
                               size: 18,
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 place['location'],
                                 style: AppTheme.bodyLarge.copyWith(
-                                  color: AppTheme.secondaryTextColor,
+                                  color: context.secondaryTextColor,
                                 ),
                               ),
                             ),
@@ -332,14 +339,14 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             Text(
                               '(${place['reviewCount']} reviews)',
                               style: AppTheme.bodyMedium.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                             const Spacer(),
                             Text(
                               place['priceRange'],
                               style: AppTheme.bodyLarge.copyWith(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -350,12 +357,12 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   ),
                   // Tabs
                   Container(
-                    color: AppTheme.backgroundColor,
+                    color: context.cardColor,
                     child: TabBar(
                       controller: _tabController,
-                      labelColor: AppTheme.primaryColor,
-                      unselectedLabelColor: AppTheme.secondaryTextColor,
-                      indicatorColor: AppTheme.primaryColor,
+                      labelColor: context.primaryColorTheme,
+                      unselectedLabelColor: context.secondaryTextColor,
+                      indicatorColor: context.primaryColorTheme,
                       tabs: const [
                         Tab(text: 'Overview'),
                         Tab(text: 'Menu'),
@@ -367,7 +374,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   // Tab Content
                   Container(
                     height: 400,
-                    color: AppTheme.backgroundColor,
+                    color: context.cardColor,
                     child: TabBarView(
                       controller: _tabController,
                       children: [
@@ -385,7 +392,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         ],
       ),
       bottomNavigationBar: Container(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
@@ -406,9 +413,9 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   icon: const Icon(Icons.calendar_today, size: 18),
                   label: const Text('Reserve Table'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.primaryColor,
-                    backgroundColor: AppTheme.backgroundColor,
-                    side: const BorderSide(color: AppTheme.primaryColor),
+                    foregroundColor: context.primaryColorTheme,
+                    backgroundColor: context.backgroundColor,
+                    side: BorderSide(color: context.primaryColorTheme),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -426,8 +433,8 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                 icon: const Icon(Icons.phone, size: 18),
                 label: const Text('Contact'),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor: context.primaryColorTheme,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -478,13 +485,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: context.primaryColorTheme.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   feature,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -516,7 +523,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   Text(
                     hours['time'],
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
@@ -569,7 +576,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.backgroundColor,
+                    color: context.cardColor,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Colors.grey[200]!,
@@ -618,7 +625,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             Text(
                               item['description'],
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                                 height: 1.3,
                               ),
                               maxLines: 2,
@@ -674,7 +681,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                       Text(
                         item['price'],
                         style: AppTheme.bodyLarge.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -701,7 +708,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Colors.grey[200]!,
@@ -741,7 +748,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             Text(
                               review['date'],
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                           ],
@@ -1690,8 +1697,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.only(
@@ -1773,7 +1780,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
               hintStyle: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -1785,7 +1792,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
               contentPadding: const EdgeInsets.all(16),
             ),
@@ -1798,8 +1805,8 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _submitReview,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
