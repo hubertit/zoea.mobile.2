@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/providers/auth_provider.dart';
@@ -57,10 +58,10 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     final completionPercentage = user?.preferences?.profileCompletionPercentage ?? 0;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: const Text('Complete Profile'),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, size: 32),
@@ -166,8 +167,8 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     child: ElevatedButton(
                       onPressed: _isSaving ? null : _handleSave,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: AppTheme.backgroundColor,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.spacing16,
                         ),
@@ -178,19 +179,19 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                         elevation: 0,
                       ),
                       child: _isSaving
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                    AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                               ),
                             )
                           : Text(
                               'Save Changes',
                               style: AppTheme.labelLarge.copyWith(
-                                color: AppTheme.backgroundColor,
+                                color: context.backgroundColor,
                               ),
                             ),
                     ),
@@ -201,14 +202,14 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   Container(
                     padding: const EdgeInsets.all(AppTheme.spacing16),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: context.primaryColorTheme.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.privacy_tip_outlined,
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           size: 20,
                         ),
                         const SizedBox(width: AppTheme.spacing12),
@@ -216,7 +217,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                           child: Text(
                             'Your data is used only to personalize your experience. You can update or remove it anytime.',
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                         ),
@@ -230,55 +231,57 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   }
 
   Widget _buildProgressSection(int percentage) {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacing20),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
-        border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.2),
-          width: 1,
+    return Builder(
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(AppTheme.spacing20),
+        decoration: BoxDecoration(
+          color: context.primaryColorTheme.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
+          border: Border.all(
+            color: context.primaryColorTheme.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Profile Completion',
-                style: AppTheme.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Profile Completion',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              Text(
-                '$percentage%',
-                style: AppTheme.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryColor,
+                Text(
+                  '$percentage%',
+                  style: AppTheme.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryColorTheme,
+                  ),
                 ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacing12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+              child: LinearProgressIndicator(
+                value: percentage / 100,
+                minHeight: 8,
+                backgroundColor: context.dividerColor,
+                valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
               ),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacing12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-            child: LinearProgressIndicator(
-              value: percentage / 100,
-              minHeight: 8,
-              backgroundColor: AppTheme.dividerColor,
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
             ),
-          ),
-          const SizedBox(height: AppTheme.spacing8),
-          Text(
-            'Complete your profile to get better recommendations',
-            style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+            const SizedBox(height: AppTheme.spacing8),
+            Text(
+              'Complete your profile to get better recommendations',
+              style: AppTheme.bodySmall.copyWith(
+                color: context.secondaryTextColor,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -320,7 +323,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
