@@ -96,7 +96,7 @@ class PlaceCard extends StatelessWidget {
                           padding: const EdgeInsets.all(6),
                           child: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : AppTheme.primaryColor,
+                            color: isFavorite ? Colors.red : context.primaryColorTheme,
                             size: 20,
                           ),
                         ),
@@ -127,13 +127,13 @@ class PlaceCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
+                          color: context.primaryColorTheme.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           category,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -185,7 +185,7 @@ class PlaceCard extends StatelessWidget {
                       Text(
                         priceRange,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
