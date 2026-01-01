@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -225,7 +226,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -260,7 +261,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   style: AppTheme.titleLarge.copyWith(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                   ),
                 ),
               ),
@@ -272,7 +273,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 child: Text(
                   'Discover Rwanda Like Never Before',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ),
@@ -281,12 +282,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               // Loading indicator
               FadeTransition(
                 opacity: _fadeAnimation,
-                child: const SizedBox(
+                child: SizedBox(
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
                   ),
                 ),
               ),
