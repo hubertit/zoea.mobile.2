@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../widgets/age_range_selector.dart';
@@ -89,9 +90,9 @@ class _ProgressivePromptScreenState
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.vertical(
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppTheme.borderRadius16),
         ),
       ),
@@ -112,7 +113,7 @@ class _ProgressivePromptScreenState
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppTheme.dividerColor,
+                  color: context.dividerColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -124,7 +125,7 @@ class _ProgressivePromptScreenState
               _title,
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryTextColor,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: AppTheme.spacing8),
@@ -133,7 +134,7 @@ class _ProgressivePromptScreenState
             Text(
               _question,
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: AppTheme.spacing24),
@@ -151,7 +152,7 @@ class _ProgressivePromptScreenState
                     child: Text(
                       'Maybe later',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ),
@@ -162,8 +163,8 @@ class _ProgressivePromptScreenState
                   child: ElevatedButton(
                     onPressed: _isLoading || !_canSave ? null : _handleSave,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: AppTheme.backgroundColor,
+                      backgroundColor: context.primaryColorTheme,
+                      foregroundColor: context.primaryTextColor,
                       padding: const EdgeInsets.symmetric(
                         vertical: AppTheme.spacing16,
                       ),
@@ -174,19 +175,19 @@ class _ProgressivePromptScreenState
                       elevation: 0,
                     ),
                     child: _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                                  AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                             ),
                           )
                         : Text(
                             'Save',
                             style: AppTheme.labelLarge.copyWith(
-                              color: AppTheme.backgroundColor,
+                              color: context.backgroundColor,
                             ),
                           ),
                   ),
