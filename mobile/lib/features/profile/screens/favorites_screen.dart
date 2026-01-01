@@ -322,7 +322,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   child: Text(
                     isEvent ? 'Event' : 'Place',
                     style: AppTheme.labelSmall.copyWith(
-                      color: isEvent ? context.primaryColorTheme : AppTheme.successColor,
+                      color: isEvent ? context.primaryColorTheme : context.successColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -791,7 +791,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       dateText,
-                      style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                      style: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
                     ),
                   ],
                 ),
@@ -915,7 +915,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.successColor.withOpacity(0.1),
+                    color: context.successColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -945,7 +945,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       category,
-                      style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                      style: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
                     ),
                   ],
                 ),
@@ -1094,7 +1094,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
