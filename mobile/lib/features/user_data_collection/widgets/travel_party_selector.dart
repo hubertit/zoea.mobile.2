@@ -23,6 +23,7 @@ class TravelPartySelector extends StatelessWidget {
           children: [
             Expanded(
               child: _buildPartyCard(
+                context: context,
                 party: TravelParty.solo,
                 icon: Icons.person,
                 label: 'Solo',
@@ -32,6 +33,7 @@ class TravelPartySelector extends StatelessWidget {
             const SizedBox(width: AppTheme.spacing12),
             Expanded(
               child: _buildPartyCard(
+                context: context,
                 party: TravelParty.couple,
                 icon: Icons.favorite,
                 label: 'Couple',
@@ -45,6 +47,7 @@ class TravelPartySelector extends StatelessWidget {
           children: [
             Expanded(
               child: _buildPartyCard(
+                context: context,
                 party: TravelParty.family,
                 icon: Icons.family_restroom,
                 label: 'Family',
@@ -54,6 +57,7 @@ class TravelPartySelector extends StatelessWidget {
             const SizedBox(width: AppTheme.spacing12),
             Expanded(
               child: _buildPartyCard(
+                context: context,
                 party: TravelParty.group,
                 icon: Icons.groups,
                 label: 'Group',
@@ -67,6 +71,7 @@ class TravelPartySelector extends StatelessWidget {
   }
 
   Widget _buildPartyCard({
+    required BuildContext context,
     required TravelParty party,
     required IconData icon,
     required String label,
