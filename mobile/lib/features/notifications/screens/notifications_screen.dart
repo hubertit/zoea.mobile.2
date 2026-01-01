@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/notifications_provider.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
@@ -27,14 +28,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.dividerColor,
+      backgroundColor: context.dividerColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.chevron_left,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
             size: 32,
           ),
           onPressed: () => context.pop(),
@@ -60,7 +61,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 : Text(
                     'Mark all read',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -99,9 +100,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             ),
           );
         },
-        loading: () => const Center(
+        loading: () => Center(
           child: CircularProgressIndicator(
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
           ),
         ),
         error: (error, stack) => _buildErrorState(error),
@@ -158,17 +159,17 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.backgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: !isRead
               ? Border.all(
-                  color: AppTheme.primaryColor.withOpacity(0.2),
+                  color: context.primaryColorTheme.withOpacity(0.2),
                   width: 1,
                 )
               : null,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryTextColor.withOpacity(0.05),
+              color: context.primaryTextColor.withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -183,15 +184,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               height: 40,
               decoration: BoxDecoration(
                 color: isRead
-                    ? AppTheme.dividerColor
-                    : AppTheme.primaryColor.withOpacity(0.1),
+                    ? context.dividerColor
+                    : context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 icon,
                 color: isRead
-                    ? AppTheme.secondaryTextColor
-                    : AppTheme.primaryColor,
+                    ? context.secondaryTextColor
+                    : context.primaryColorTheme,
                 size: 20,
               ),
             ),
@@ -214,7 +215,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                               fontWeight: isRead
                                   ? FontWeight.w500
                                   : FontWeight.w600,
-                              color: AppTheme.primaryTextColor,
+                              color: context.primaryTextColor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -223,7 +224,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         Text(
                           timeText,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       ],
@@ -234,7 +235,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     Text(
                       body,
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -253,7 +254,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         child: Text(
                           actionText,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -276,14 +277,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.notifications_none,
               size: 48,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -297,7 +298,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           Text(
             'You don\'t have any notifications yet',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -313,10 +314,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
@@ -329,7 +330,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             Text(
               error.toString().replaceAll('Exception: ', ''),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -346,8 +347,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: const Text('Retry'),
             ),
@@ -380,7 +381,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           content: Text(
             'Failed to mark notification as read: ${e.toString().replaceAll('Exception: ', '')}',
           ),
-          backgroundColor: AppTheme.errorColor,
+          backgroundColor: context.errorColor,
         ),
       );
     }
@@ -409,9 +410,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       ref.invalidate(unreadCountProvider);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+          SnackBar(
           content: Text('All notifications marked as read'),
-          backgroundColor: AppTheme.successColor,
+          backgroundColor: context.successColor,
         ),
       );
     } catch (e) {
@@ -421,7 +422,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           content: Text(
             'Failed to mark all as read: ${e.toString().replaceAll('Exception: ', '')}',
           ),
-          backgroundColor: AppTheme.errorColor,
+          backgroundColor: context.errorColor,
         ),
       );
     } finally {
@@ -499,7 +500,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Opening: $actionUrl'),
-          backgroundColor: AppTheme.primaryColor,
+          backgroundColor: context.primaryColorTheme,
         ),
       );
     }
