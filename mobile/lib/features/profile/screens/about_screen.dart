@@ -20,7 +20,9 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       appBar: AppBar(
         title: Text(
           'About',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -100,6 +102,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             style: AppTheme.titleLarge.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 32,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -142,6 +145,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           'App Information',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -215,6 +219,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               title,
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
+                color: context.primaryTextColor,
               ),
             ),
           ),
@@ -245,6 +250,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           'Features',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -353,6 +359,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           'Our Team',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -458,6 +465,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           'Legal',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -560,6 +568,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           'Connect With Us',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
