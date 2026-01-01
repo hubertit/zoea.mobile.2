@@ -146,10 +146,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Logo and Title
-                  const Icon(
+                  Icon(
                     Icons.explore,
                     size: 80,
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                   ),
                   const SizedBox(height: AppTheme.spacing24),
                   Text(
@@ -295,7 +295,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                          borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                          borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                         ),
                       ),
                       validator: (value) {
@@ -374,11 +374,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                                  borderSide: const BorderSide(color: AppTheme.dividerColor),
+                                  borderSide: BorderSide(color: context.dividerColor),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                                  borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                                  borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                                 ),
                               ),
                               validator: PhoneValidator.validateInternationalPhone,
@@ -416,11 +416,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                        borderSide: const BorderSide(color: AppTheme.dividerColor),
+                        borderSide: BorderSide(color: context.dividerColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                        borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                       ),
                     ),
                     validator: (value) {
@@ -444,7 +444,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Text(
                         'Forgot Password?',
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                         ),
                       ),
                     ),
@@ -454,10 +454,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: context.isDarkMode 
-                          ? AppTheme.darkPrimaryTextColor
-                          : Colors.white,
+                      backgroundColor: context.primaryColorTheme,
+                      foregroundColor: context.primaryTextColor,
                       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacing16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
@@ -474,9 +472,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: CircularProgressIndicator(
                               strokeWidth: 2.5,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                context.isDarkMode 
-                                    ? AppTheme.darkPrimaryTextColor
-                                    : Colors.white,
+                                context.primaryTextColor,
                               ),
                             ),
                           ),
