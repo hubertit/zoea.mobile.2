@@ -112,7 +112,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             focusedBorder: InputBorder.none,
             contentPadding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
           ),
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
           onChanged: (value) {
             setState(() {
               _currentQuery = value;
