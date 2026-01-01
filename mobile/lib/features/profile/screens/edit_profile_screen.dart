@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
@@ -153,7 +154,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     return await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         title: Text(
           'Unsaved Changes',
           style: AppTheme.titleMedium.copyWith(
@@ -173,7 +174,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -219,13 +220,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Edit Profile',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -243,7 +244,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           },
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -252,7 +253,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             child: Text(
               'Save',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -268,9 +269,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           // TabBar (below completion badge)
           TabBar(
             controller: _tabController,
-            labelColor: AppTheme.primaryColor,
-            unselectedLabelColor: AppTheme.secondaryTextColor,
-            indicatorColor: AppTheme.primaryColor,
+            labelColor: context.primaryColorTheme,
+            unselectedLabelColor: context.secondaryTextColor,
+            indicatorColor: context.primaryColorTheme,
             indicatorSize: TabBarIndicatorSize.tab,
             labelStyle: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w600,
@@ -305,7 +306,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     } else if (percentage >= 50) {
       badgeColor = Colors.orange;
     } else {
-      badgeColor = AppTheme.secondaryTextColor;
+      badgeColor = context.secondaryTextColor;
     }
 
     return Container(
@@ -343,7 +344,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             width: 100,
             height: 8,
             decoration: BoxDecoration(
-              color: AppTheme.dividerColor,
+              color: context.dividerColor,
               borderRadius: BorderRadius.circular(4),
             ),
             child: FractionallySizedBox(
@@ -539,7 +540,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
@@ -571,7 +572,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       title,
       style: AppTheme.titleMedium.copyWith(
         fontWeight: FontWeight.w600,
-        color: AppTheme.primaryTextColor,
+        color: context.primaryTextColor,
       ),
     );
   }
@@ -592,7 +593,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           label,
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 8),
@@ -605,15 +606,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             prefixIcon: Icon(
               icon,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               size: 20,
             ),
             filled: true,
-            fillColor: AppTheme.dividerColor,
+            fillColor: context.dividerColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -624,8 +625,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppTheme.primaryColor,
+              borderSide: BorderSide(
+                color: context.primaryColorTheme,
                 width: 2,
               ),
             ),
@@ -815,7 +816,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       barrierDismissible: false,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: AppTheme.backgroundColor,
+          backgroundColor: context.backgroundColor,
           title: Text(
             'Enter Password',
             style: AppTheme.titleLarge,
@@ -826,7 +827,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               Text(
                 'Please enter your current password to update your email address.',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -849,7 +850,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                     },
                   ),
                   filled: true,
-                  fillColor: AppTheme.dividerColor,
+                  fillColor: context.dividerColor,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -864,7 +865,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               child: Text(
                 'Cancel',
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.secondaryTextColor,
+                  color: context.secondaryTextColor,
                 ),
               ),
             ),
@@ -892,8 +893,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: isLoading
                   ? const SizedBox(
