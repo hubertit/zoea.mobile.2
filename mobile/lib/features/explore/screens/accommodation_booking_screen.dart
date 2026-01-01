@@ -124,7 +124,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -319,7 +319,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     } : null,
                     icon: const Icon(Icons.add),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       foregroundColor: Colors.white,
                       shape: const CircleBorder(),
                     ),
@@ -382,7 +382,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     } : null,
                     icon: const Icon(Icons.add),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       foregroundColor: Colors.white,
                       shape: const CircleBorder(),
                     ),
@@ -415,7 +415,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey[200]!),
           ),
@@ -466,7 +466,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     'RWF ${total.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                     style: AppTheme.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                     ),
                   ),
                 ],
@@ -516,7 +516,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -535,8 +535,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: (_checkInDate != null && _checkOutDate != null && !_isLoading)
-                ? AppTheme.primaryColor
-                : Colors.grey[300],
+                ? context.primaryColorTheme
+                : context.grey300,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -591,9 +591,9 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+        border: Border.all(color: context.primaryColorTheme.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -607,9 +607,9 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.hotel,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -617,7 +617,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 'Selected Rooms',
                 style: AppTheme.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                 ),
               ),
             ],
@@ -672,7 +672,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                         'RWF ${totalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                         ),
                       ),
                     ],
@@ -690,7 +690,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
@@ -706,9 +706,9 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.local_offer,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -745,7 +745,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor),
+                      borderSide: BorderSide(color: context.primaryColorTheme),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -759,8 +759,8 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 onPressed: _couponCode.isNotEmpty ? _applyCoupon : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _couponCode.isNotEmpty 
-                      ? AppTheme.primaryColor 
-                      : Colors.grey[300],
+                      ? context.primaryColorTheme 
+                      : context.grey300,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
