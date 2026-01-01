@@ -341,7 +341,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               const Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               const SizedBox(height: 16),
               Text(
@@ -502,20 +502,20 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             const Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load listings',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -717,7 +717,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.backgroundColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -1135,7 +1135,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                       tempIsFeatured = (value == true) ? true : null;
                     });
                   },
-                  activeColor: AppTheme.primaryColor,
+                  activeColor: context.primaryColorTheme,
                   contentPadding: EdgeInsets.zero,
                 ),
                 
