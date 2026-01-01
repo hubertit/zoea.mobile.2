@@ -271,6 +271,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         unselectedLabelColor: context.secondaryTextColor,
         labelStyle: AppTheme.bodyMedium.copyWith(
           fontWeight: FontWeight.w600,
+          color: context.primaryTextColor,
         ),
         unselectedLabelStyle: AppTheme.bodyMedium,
         tabs: _tabs.map((tab) => Tab(text: tab)).toList(),
@@ -1196,6 +1197,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     'Filters',
                     style: AppTheme.headlineSmall.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   TextButton(
@@ -1220,6 +1222,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                 'Price Range (RWF)',
                 style: AppTheme.bodyLarge.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -1452,6 +1455,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               'Search Options',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -1543,6 +1547,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                     title,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   Text(
