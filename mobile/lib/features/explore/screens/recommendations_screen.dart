@@ -261,6 +261,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                 'Filter Recommendations',
                 style: AppTheme.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 20),
@@ -270,6 +271,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                 'Minimum Rating',
                 style: AppTheme.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -290,6 +292,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                 'Features',
                 style: AppTheme.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -364,6 +367,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                 'Sort Recommendations',
                 style: AppTheme.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 20),
@@ -401,7 +405,9 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     return ListTile(
       title: Text(
         label,
-        style: AppTheme.bodyMedium,
+        style: AppTheme.bodyMedium.copyWith(
+          color: context.primaryTextColor,
+        ),
       ),
       trailing: isSelected ? Icon(Icons.check, color: context.primaryColorTheme) : null,
       onTap: () {
