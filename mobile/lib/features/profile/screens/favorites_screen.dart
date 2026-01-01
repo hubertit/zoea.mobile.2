@@ -57,6 +57,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           indicatorColor: context.primaryColorTheme,
           labelStyle: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
+            color: context.primaryTextColor,
           ),
           unselectedLabelStyle: AppTheme.bodyMedium,
           tabs: const [
