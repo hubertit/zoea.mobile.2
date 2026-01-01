@@ -16,7 +16,7 @@ class SpecialsScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(
             Icons.chevron_left,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
             size: 32,
           ),
           onPressed: () => context.pop(),
@@ -74,7 +74,7 @@ class SpecialsScreen extends StatelessWidget {
                     child: Text(
                       special['badge'],
                       style: AppTheme.labelSmall.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -120,7 +120,7 @@ class SpecialsScreen extends StatelessWidget {
                           Text(
                             special['discountedPrice'],
                             style: AppTheme.titleMedium.copyWith(
-                              color: AppTheme.primaryColor,
+                              color: context.primaryColorTheme,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -169,13 +169,13 @@ class SpecialsScreen extends StatelessWidget {
                   imageUrl: special['image'],
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: const Icon(Icons.image_not_supported),
                   ),
                 ),
