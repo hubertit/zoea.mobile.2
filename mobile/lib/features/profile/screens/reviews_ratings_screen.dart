@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class ReviewsRatingsScreen extends ConsumerStatefulWidget {
   const ReviewsRatingsScreen({super.key});
@@ -31,13 +32,13 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Reviews & Ratings',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
@@ -49,9 +50,9 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
-          indicatorColor: AppTheme.primaryColor,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
           labelStyle: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
           ),
@@ -218,7 +219,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       Text(
                         review['placeLocation'],
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -237,16 +238,16 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.star,
                         size: 16,
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                       const SizedBox(width: 2),
                       Text(
                         review['rating'].toString(),
                         style: AppTheme.labelSmall.copyWith(
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -311,16 +312,16 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                 // Review Meta
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.access_time,
                       size: 14,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       review['date'],
                       style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                     const Spacer(),
@@ -328,13 +329,13 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       const Icon(
                         Icons.thumb_up_outlined,
                         size: 14,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '${review['helpfulCount']} helpful',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -354,8 +355,8 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                         label: const Text('View Place'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -373,8 +374,8 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                         label: const Text('Edit Review'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          backgroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -414,7 +415,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               child: Icon(
                 icon,
                 size: 48,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
               ),
             ),
             const SizedBox(height: 24),
@@ -429,7 +430,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             Text(
               subtitle,
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -438,8 +439,8 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               onPressed: onAction,
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryColor,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: AppTheme.primaryColor),
+                backgroundColor: context.backgroundColor,
+                side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -471,7 +472,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             child: Text(
               'Cancel',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -482,14 +483,14 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Edit review feature coming soon'),
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                 ),
               );
             },
             child: Text(
               'Edit',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),

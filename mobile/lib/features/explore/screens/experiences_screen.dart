@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class ExperiencesScreen extends ConsumerStatefulWidget {
@@ -36,7 +37,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
@@ -50,6 +51,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           'Experiences',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -68,9 +70,9 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
@@ -187,10 +189,10 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                       child: Image.network(
                         operator['logo'],
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => const Icon(
+                        errorBuilder: (context, error, stackTrace) => Icon(
                           Icons.business,
                           size: 30,
-                          color: AppTheme.primaryColor,
+                          color: context.primaryColorTheme,
                         ),
                       ),
                     ),
@@ -210,16 +212,16 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.location_on,
                               size: 16,
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               operator['location'],
                               style: AppTheme.bodyMedium.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                           ],
@@ -243,7 +245,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                             Text(
                               '(${operator['reviews']} reviews)',
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                           ],
@@ -319,7 +321,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                         child: Text(
                           service,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -337,13 +339,13 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                             Text(
                               'Starting from',
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                             Text(
                               operator['priceRange'],
                               style: AppTheme.bodyLarge.copyWith(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -357,7 +359,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                             Text(
                               'Contact',
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.secondaryTextColor,
+                                color: context.secondaryTextColor,
                               ),
                             ),
                             Text(
@@ -394,14 +396,14 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           Text(
             'No $category found',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check back later for new experiences',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -583,7 +585,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -637,7 +639,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
   void _showSortBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

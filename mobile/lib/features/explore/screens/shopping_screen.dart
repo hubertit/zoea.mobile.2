@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
@@ -50,6 +51,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
           'Shopping',
           style: AppTheme.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -69,9 +71,9 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
           isScrollable: true,
           tabAlignment: TabAlignment.start,
           labelPadding: const EdgeInsets.symmetric(horizontal: 20),
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
-          indicatorColor: AppTheme.primaryColor,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
           labelStyle: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -140,23 +142,23 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.shopping_bag_outlined,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'No $category found',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Try adjusting your filters or check back later',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
