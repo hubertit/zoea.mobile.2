@@ -475,16 +475,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: context.primaryColorTheme.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    color: context.primaryColorTheme.withOpacity(0.3),
                     width: 1,
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.bolt,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   size: 20,
                 ),
               ),
@@ -524,6 +524,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               'Quick Actions',
                 style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -550,7 +551,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             color: Colors.white,
                           ),
                         ),
-                        backgroundColor: AppTheme.primaryColor,
+                        backgroundColor: context.primaryColorTheme,
                       ),
                     );
                   },
@@ -606,7 +607,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                                   color: Colors.white,
                                 ),
                               ),
-                              backgroundColor: AppTheme.primaryColor,
+                              backgroundColor: context.primaryColorTheme,
                             ),
                           );
                         },
@@ -624,7 +625,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                                   color: Colors.white,
                                 ),
                               ),
-                              backgroundColor: AppTheme.primaryColor,
+                              backgroundColor: context.primaryColorTheme,
                             ),
                           );
                         },
@@ -1133,16 +1134,16 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
-                        color: AppTheme.errorColor,
+                        color: context.errorColor,
                         size: 32,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Failed to load events',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.errorColor,
+                          color: context.errorColor,
                         ),
                       ),
                     ],
@@ -1196,7 +1197,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.grey[300],
+        color: context.grey300,
       ),
       child: Stack(
         children: [
@@ -1212,9 +1213,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.grey[300]!,
-                        Colors.grey[200]!,
-                        Colors.grey[300]!,
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
                       ],
                       stops: [
                         0.0,
@@ -1317,7 +1318,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 child: FadeInNetworkImage(
                   imageUrl: eventDetails.flyer,
                   fit: BoxFit.cover,
-                  placeholderColor: Colors.grey[300],
+                  placeholderColor: context.grey300,
                   errorWidget: Container(
                     color: context.grey300,
                     child: const Icon(
@@ -1519,6 +1520,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               'All Categories',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -1612,7 +1614,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           Text(
                             'Failed to load categories',
                             style: AppTheme.bodyMedium.copyWith(
-                              color: AppTheme.errorColor,
+                              color: context.errorColor,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -1806,7 +1808,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'Failed to load recommendations',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.errorColor,
+                      color: context.errorColor,
                     ),
                   ),
                 ),
@@ -1882,14 +1884,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                             errorWidget: Container(
                               height: 100,
-                              color: Colors.grey[200],
-                              child: const Icon(Icons.image, color: Colors.grey),
+                              color: context.grey200,
+                              child: Icon(Icons.image, color: context.secondaryTextColor),
                             ),
                           )
                         : Container(
                             height: 100,
-                            color: Colors.grey[200],
-                            child: const Icon(Icons.image, color: Colors.grey),
+                            color: context.grey200,
+                            child: Icon(Icons.image, color: context.secondaryTextColor),
                           ),
                   ),
                   // Category badge
@@ -1899,7 +1901,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -1959,6 +1961,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     name,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1981,7 +1984,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         child: Text(
                           category,
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
                           maxLines: 1,
@@ -2058,7 +2061,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.grey[300],
+        color: context.grey300,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2067,7 +2070,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             height: 100,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              color: Colors.grey[300],
+              color: context.grey300,
             ),
           ),
           Padding(
@@ -2079,7 +2082,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   height: 16,
                   width: 120,
                   decoration: BoxDecoration(
-                    color: Colors.grey[400],
+                    color: context.grey400,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -2088,7 +2091,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   height: 12,
                   width: 80,
                   decoration: BoxDecoration(
-                    color: Colors.grey[400],
+                    color: context.grey400,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -2116,6 +2119,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   'Near Me',
                   style: AppTheme.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 TextButton(
@@ -2125,7 +2129,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'View Map',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -2171,7 +2175,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   child: Text(
                     'Failed to load listings',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.errorColor,
+                      color: context.errorColor,
                     ),
                   ),
                 ),
@@ -2231,14 +2235,14 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       errorWidget: Container(
                         height: 80,
                         width: 80,
-                        color: AppTheme.dividerColor,
+                        color: context.dividerColor,
                         child: const Icon(Icons.image_not_supported),
                       ),
                     )
                   : Container(
                       height: 80,
                       width: 80,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Icon(Icons.image_not_supported),
                     ),
             ),
@@ -2255,6 +2259,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       name,
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: context.primaryTextColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -2284,13 +2289,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: context.primaryColorTheme.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             category,
                             style: AppTheme.labelSmall.copyWith(
-                              color: AppTheme.primaryColor,
+                              color: context.primaryColorTheme,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 1,
@@ -2313,7 +2318,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: context.grey300,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -2321,7 +2326,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           Container(
             height: 80,
             width: 80,
-            color: Colors.grey[400],
+            color: context.grey400,
           ),
           Expanded(
             child: Padding(
@@ -2427,13 +2432,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: context.primaryColorTheme.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       special['badge'],
                       style: AppTheme.labelSmall.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -2445,6 +2450,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     special['title'],
                     style: AppTheme.headlineSmall.copyWith(
                       fontWeight: FontWeight.w700,
+                      color: context.primaryTextColor,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -2479,7 +2485,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           Text(
                             special['discountedPrice'],
                             style: AppTheme.titleMedium.copyWith(
-                              color: AppTheme.primaryColor,
+                              color: context.primaryColorTheme,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -2489,13 +2495,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppTheme.successColor.withOpacity(0.1),
+                          color: AppTheme.successColor.withOpacity(0.1), // Success color is intentional
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           special['discount'],
                           style: AppTheme.labelSmall.copyWith(
-                            color: AppTheme.successColor,
+                            color: AppTheme.successColor, // Success color is intentional
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -2529,7 +2535,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   fit: BoxFit.cover,
                   placeholderColor: AppTheme.dividerColor,
                   errorWidget: Container(
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: const Icon(Icons.image_not_supported),
                   ),
                 ),
