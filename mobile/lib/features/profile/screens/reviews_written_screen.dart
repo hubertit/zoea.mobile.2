@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/reviews_provider.dart';
 
 class ReviewsWrittenScreen extends ConsumerStatefulWidget {
@@ -57,13 +58,13 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Reviews Written',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -71,7 +72,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -85,7 +86,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                   decoration: InputDecoration(
                     hintText: 'Search reviews...',
                     hintStyle: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -113,8 +114,8 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
               },
               icon: const Icon(Icons.search_outlined),
               style: IconButton.styleFrom(
-                backgroundColor: AppTheme.dividerColor,
-                foregroundColor: AppTheme.primaryTextColor,
+                backgroundColor: context.dividerColor,
+                foregroundColor: context.primaryTextColor,
               ),
             ),
           if (_isSearchActive)
@@ -128,8 +129,8 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
               },
               icon: const Icon(Icons.close),
               style: IconButton.styleFrom(
-                backgroundColor: AppTheme.dividerColor,
-                foregroundColor: AppTheme.primaryTextColor,
+                backgroundColor: context.dividerColor,
+                foregroundColor: context.primaryTextColor,
               ),
             )
           else
@@ -137,9 +138,9 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -235,7 +236,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
       },
       loading: () => Center(
         child: CircularProgressIndicator(
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
         ),
       ),
       error: (error, stack) => Center(
@@ -245,20 +246,20 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
             Icon(
               Icons.error_outline,
               size: 48,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load reviews',
               style: AppTheme.titleMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -268,7 +269,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 ref.invalidate(myReviewsProvider(params));
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
+                backgroundColor: context.primaryColorTheme,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Retry'),
@@ -286,14 +287,14 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.rate_review,
               size: 48,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -307,7 +308,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           Text(
             'Share your experiences by writing\nreviews for places you\'ve visited',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -315,7 +316,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           ElevatedButton(
             onPressed: () => context.go('/explore'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
+              backgroundColor: context.primaryColorTheme,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
@@ -376,7 +377,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -392,8 +393,8 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           // Place Header
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Row(
@@ -410,10 +411,10 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                           placeholder: (context, url) => Container(
                             width: 60,
                             height: 60,
-                            color: AppTheme.backgroundColor,
-                            child: const Center(
+                            color: context.backgroundColor,
+                            child: Center(
                               child: CircularProgressIndicator(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 strokeWidth: 2,
                               ),
                             ),
@@ -421,20 +422,20 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                           errorWidget: (context, url, error) => Container(
                             width: 60,
                             height: 60,
-                            color: AppTheme.backgroundColor,
-                            child: const Icon(
+                            color: context.backgroundColor,
+                            child: Icon(
                               Icons.place,
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                         )
                       : Container(
                           width: 60,
                           height: 60,
-                          color: AppTheme.backgroundColor,
-                          child: const Icon(
+                          color: context.backgroundColor,
+                          child: Icon(
                             Icons.place,
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                 ),
@@ -456,7 +457,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                       Text(
                         contentSubtitle,
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -468,7 +469,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -512,16 +513,16 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 if (reviewDate != null)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Reviewed on ${dateFormat.format(reviewDate)}',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -531,16 +532,16 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 if (helpfulCount > 0)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.thumb_up,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         '$helpfulCount ${helpfulCount == 1 ? 'person' : 'people'} found this helpful',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -558,17 +559,17 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                                 } else if (contentType == 'event') {
                                   // TODO: Navigate to event detail when route is available
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Event detail page coming soon'),
-                                      backgroundColor: AppTheme.primaryColor,
+                                    SnackBar(
+                                      content: const Text('Event detail page coming soon'),
+                                      backgroundColor: context.primaryColorTheme,
                                     ),
                                   );
                                 } else {
                                   // TODO: Navigate to tour detail when route is available
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Tour detail page coming soon'),
-                                      backgroundColor: AppTheme.primaryColor,
+                                    SnackBar(
+                                      content: const Text('Tour detail page coming soon'),
+                                      backgroundColor: context.primaryColorTheme,
                                     ),
                                   );
                                 }
@@ -582,9 +583,9 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           minimumSize: const Size(0, 36),
                           shape: RoundedRectangleBorder(
@@ -609,8 +610,8 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          backgroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           minimumSize: const Size(0, 36),
                           shape: RoundedRectangleBorder(
@@ -752,8 +753,8 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.backgroundColor,
+      decoration: BoxDecoration(
+        color: context.backgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.only(
@@ -835,7 +836,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
               hintStyle: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -847,7 +848,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
               contentPadding: const EdgeInsets.all(16),
             ),
@@ -860,7 +861,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _updateReview,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
+                backgroundColor: context.primaryColorTheme,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -895,9 +896,9 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
     if (_reviewController.text.trim().isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please write a review before updating'),
-            backgroundColor: AppTheme.errorColor,
+          SnackBar(
+            content: const Text('Please write a review before updating'),
+            backgroundColor: context.errorColor,
           ),
         );
       }
@@ -929,9 +930,9 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Review updated successfully!'),
-          backgroundColor: AppTheme.successColor,
+        SnackBar(
+          content: const Text('Review updated successfully!'),
+          backgroundColor: context.successColor,
         ),
       );
 
@@ -950,7 +951,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
           content: Text(
             e.toString().replaceAll('Exception: ', ''),
           ),
-          backgroundColor: AppTheme.errorColor,
+          backgroundColor: context.errorColor,
           duration: const Duration(seconds: 4),
         ),
       );
