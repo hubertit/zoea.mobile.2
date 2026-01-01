@@ -35,13 +35,13 @@ class SpecialsScreen extends StatelessWidget {
         itemCount: _getAllSpecials().length,
         itemBuilder: (context, index) {
           final special = _getAllSpecials()[index];
-          return _buildSpecialCard(special);
+          return _buildSpecialCard(context, special);
         },
       ),
     );
   }
 
-  Widget _buildSpecialCard(Map<String, dynamic> special) {
+  Widget _buildSpecialCard(BuildContext context, Map<String, dynamic> special) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -169,13 +169,13 @@ class SpecialsScreen extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: special['image'],
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
+                  placeholder: (_, __) => Container(
                     color: context.dividerColor,
                     child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   ),
-                  errorWidget: (context, url, error) => Container(
+                  errorWidget: (_, __, ___) => Container(
                     color: context.dividerColor,
                     child: const Icon(Icons.image_not_supported),
                   ),

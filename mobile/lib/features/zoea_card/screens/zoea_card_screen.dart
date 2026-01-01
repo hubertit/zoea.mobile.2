@@ -31,7 +31,7 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.credit_card,
               size: 64,
               color: context.primaryColorTheme,
@@ -42,7 +42,7 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: AppTheme.spacing8),
-            const Text(
+            Text(
               'Your digital wallet for seamless payments',
               style: TextStyle(
                 color: context.secondaryTextColor,
