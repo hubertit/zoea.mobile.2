@@ -351,7 +351,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           'Available Times',
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -372,27 +372,27 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: isSelected 
-                      ? AppTheme.primaryColor 
+                      ? context.primaryColorTheme 
                       : isAvailable 
-                          ? Colors.grey[100] 
-                          : Colors.grey[50],
+                          ? context.grey100 
+                          : context.grey50,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected 
-                        ? AppTheme.primaryColor 
+                        ? context.primaryColorTheme 
                         : isAvailable 
-                            ? Colors.grey[300]! 
-                            : Colors.grey[200]!,
+                            ? context.grey300 
+                            : context.grey200,
                   ),
                 ),
                 child: Text(
                   slot['time'] as String,
                   style: AppTheme.bodySmall.copyWith(
                     color: isSelected 
-                        ? Colors.white 
+                        ? Theme.of(context).colorScheme.onPrimary 
                         : isAvailable 
-                            ? AppTheme.primaryTextColor 
-                            : Colors.grey[400],
+                            ? context.primaryTextColor 
+                            : context.grey400,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
@@ -435,8 +435,8 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 onPressed: _guestCount > 1 ? () => setState(() => _guestCount--) : null,
                 icon: const Icon(Icons.remove),
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
-                  foregroundColor: _guestCount > 1 ? AppTheme.primaryTextColor : Colors.grey[400],
+                  backgroundColor: context.grey100,
+                  foregroundColor: _guestCount > 1 ? context.primaryTextColor : context.grey400,
                 ),
               ),
               const SizedBox(width: 16),
@@ -451,8 +451,8 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 onPressed: _guestCount < 20 ? () => setState(() => _guestCount++) : null,
                 icon: const Icon(Icons.add),
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
-                  foregroundColor: _guestCount < 20 ? AppTheme.primaryTextColor : Colors.grey[400],
+                  backgroundColor: context.grey100,
+                  foregroundColor: _guestCount < 20 ? context.primaryTextColor : context.grey400,
                 ),
               ),
             ],
@@ -495,15 +495,15 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               hintText: 'John Doe',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
             ),
           ),
@@ -516,15 +516,15 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               hintText: '+250 788 123 456',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
             ),
           ),
@@ -538,15 +538,15 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               hintText: 'your.email@example.com',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
             ),
           ),
@@ -587,15 +587,15 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               hintText: 'Any special dietary requirements, seating preferences, etc.',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppTheme.primaryColor),
+                borderSide: BorderSide(color: context.primaryColorTheme),
               ),
             ),
           ),
@@ -624,9 +624,9 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.local_offer,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -655,15 +655,15 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderSide: BorderSide(color: context.grey300),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderSide: BorderSide(color: context.grey300),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor),
+                      borderSide: BorderSide(color: context.primaryColorTheme),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -677,8 +677,8 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 onPressed: _couponCode.isNotEmpty ? _applyCoupon : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _couponCode.isNotEmpty 
-                      ? AppTheme.primaryColor 
-                      : Colors.grey[300],
+                      ? context.primaryColorTheme 
+                      : context.grey300,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -802,7 +802,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               child: ElevatedButton(
                 onPressed: canBook ? _confirmBooking : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: canBook ? AppTheme.primaryColor : Colors.grey[300],
+                  backgroundColor: canBook ? context.primaryColorTheme : context.grey300,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -982,12 +982,12 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     onPressed: () => Navigator.of(context).pop(),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: AppTheme.primaryColor),
+                      side: BorderSide(color: context.primaryColorTheme),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1084,7 +1084,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: _isLoading
