@@ -159,6 +159,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           'Unsaved Changes',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         content: Text(
@@ -224,7 +225,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       appBar: AppBar(
         title: Text(
           'Edit Profile',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -534,6 +537,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                     title,
                     style: AppTheme.titleMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacing4),
@@ -819,7 +823,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           backgroundColor: context.backgroundColor,
           title: Text(
             'Enter Password',
-            style: AppTheme.titleLarge,
+            style: AppTheme.titleLarge.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,

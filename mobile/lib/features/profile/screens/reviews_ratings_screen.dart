@@ -36,7 +36,9 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
       appBar: AppBar(
         title: Text(
           'Reviews & Ratings',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -211,6 +213,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                         review['placeName'],
                         style: AppTheme.titleMedium.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: context.primaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -423,6 +426,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               title,
               style: AppTheme.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -460,7 +464,9 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
       builder: (context) => AlertDialog(
         title: Text(
           'Edit Review',
-          style: AppTheme.titleMedium,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         content: Text(
           'Edit your review for "${review['placeName']}"?',

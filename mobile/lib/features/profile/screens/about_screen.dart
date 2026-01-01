@@ -698,7 +698,12 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             color: context.primaryTextColor,
           ),
         ),
-        content: Text(content, style: AppTheme.bodyMedium),
+        content: Text(
+          content,
+          style: AppTheme.bodyMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

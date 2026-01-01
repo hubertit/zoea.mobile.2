@@ -219,6 +219,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               _categoryName ?? widget.category,
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             actions: [
@@ -309,6 +310,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             widget.category,
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
         ),
@@ -328,6 +330,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             widget.category,
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
         ),
@@ -1117,6 +1120,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                     'Featured Only',
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   subtitle: Text(
@@ -1376,7 +1380,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     return ListTile(
       title: Text(
         label,
-        style: AppTheme.bodyMedium,
+        style: AppTheme.bodyMedium.copyWith(
+          color: context.primaryTextColor,
+        ),
       ),
       trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
       onTap: () => onSelected(value),

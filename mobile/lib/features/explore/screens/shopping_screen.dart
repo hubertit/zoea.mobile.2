@@ -185,6 +185,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
               'Filter by',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),
@@ -197,6 +198,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
               'Sort by',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 20),

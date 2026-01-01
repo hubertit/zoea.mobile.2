@@ -207,6 +207,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                           operator['name'],
                           style: AppTheme.headlineSmall.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: context.primaryTextColor,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -599,6 +600,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
               'Filter by',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 16),
@@ -653,6 +655,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
               'Sort by',
               style: AppTheme.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 16),
