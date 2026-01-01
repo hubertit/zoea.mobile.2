@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -38,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -64,6 +65,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildPage(OnboardingPage page) {
+    // Use theme-aware colors for icons
+    final iconColor = page.color == AppTheme.primaryColor 
+        ? context.primaryColorTheme 
+        : (page.color == AppTheme.successColor 
+            ? context.successColor 
+            : context.primaryColorTheme);
+    
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -72,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Icon(
             page.icon,
             size: 120,
-            color: page.color,
+            color: iconColor,
           ).animate().scale(
             duration: 600.ms,
             curve: Curves.easeOutBack,
@@ -90,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             page.subtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(
@@ -117,8 +125,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 8,
                 decoration: BoxDecoration(
                   color: _currentPage == index
-                      ? AppTheme.primaryColor
-                      : AppTheme.dividerColor,
+                      ? context.primaryColorTheme
+                      : context.dividerColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ).animate().scale(
@@ -153,10 +161,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => context.go('/login'),
-            child: const Text(
+            child: Text(
               'Already have an account? Sign In',
               style: TextStyle(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ).animate().fadeIn(
