@@ -284,7 +284,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
                             : Icons.favorite_border,
                         color: _favoriteExperiences.contains(operator['id'])
                             ? Colors.red
-                            : AppTheme.primaryColor,
+                            : context.primaryColorTheme,
                         size: 20,
                       ),
                     ),

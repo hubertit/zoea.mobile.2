@@ -245,7 +245,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       height: 1,
-      color: AppTheme.dividerColor,
+      color: context.dividerColor,
     );
   }
 
@@ -372,12 +372,12 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.successColor.withOpacity(0.1),
+                color: context.successColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: AppTheme.successColor,
+                color: context.successColor,
                 size: 20,
               ),
             ),

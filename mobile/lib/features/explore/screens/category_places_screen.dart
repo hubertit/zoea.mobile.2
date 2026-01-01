@@ -1007,7 +1007,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _buildRatingChip(
+                    _buildRatingChip(context,
                       '4.0+ Stars',
                       4.0,
                       tempMinRating,
@@ -1017,7 +1017,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                         });
                       },
                     ),
-                    _buildRatingChip(
+                    _buildRatingChip(context,
                       '4.5+ Stars',
                       4.5,
                       tempMinRating,
@@ -1027,7 +1027,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                         });
                       },
                     ),
-                    _buildRatingChip(
+                    _buildRatingChip(context,
                       '5.0 Stars',
                       5.0,
                       tempMinRating,
@@ -1211,16 +1211,16 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     );
   }
   
-  Widget _buildRatingChip(String label, double value, double? selectedValue, Function(double) onSelected) {
+  Widget _buildRatingChip(context,BuildContext context, String label, double value, double? selectedValue, Function(double) onSelected) {
     final isSelected = selectedValue == value;
     return FilterChip(
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onSelected(value),
-      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-      checkmarkColor: AppTheme.primaryColor,
+      selectedColor: context.primaryColorTheme.withOpacity(0.2),
+      checkmarkColor: context.primaryColorTheme,
       labelStyle: AppTheme.bodySmall.copyWith(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+        color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );

@@ -116,7 +116,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       ),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.check_circle,
             size: 64,
             color: context.successColor,

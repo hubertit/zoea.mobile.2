@@ -386,7 +386,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
           Text(
             description,
             style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],

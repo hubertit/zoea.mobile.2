@@ -2495,13 +2495,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppTheme.successColor.withOpacity(0.1), // Success color is intentional
+                          color: context.successColor.withOpacity(0.1), // Success color is intentional
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           special['discount'],
                           style: AppTheme.labelSmall.copyWith(
-                            color: AppTheme.successColor, // Success color is intentional
+                            color: context.successColor, // Success color is intentional
                             fontWeight: FontWeight.w600,
                           ),
                         ),
