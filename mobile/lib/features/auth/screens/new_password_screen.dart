@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
@@ -84,14 +85,14 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.chevron_left,
-            color: AppTheme.primaryTextColor,
+            color: context.primaryTextColor,
             size: 32,
           ),
           onPressed: () => context.pop(),
@@ -112,10 +113,10 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 const SizedBox(height: AppTheme.spacing32),
                 
                 // Icon
-                const Icon(
+                Icon(
                   Icons.lock_outline,
                   size: 80,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing24),
@@ -133,7 +134,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 Text(
                   'Enter your new password. Make sure it\'s strong and secure.',
                   style: AppTheme.bodyLarge.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -165,11 +166,11 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -211,11 +212,11 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -235,8 +236,8 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleResetPassword,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: context.primaryColorTheme,
+                    foregroundColor: context.primaryTextColor,
                     padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.spacing16,
                     ),
@@ -246,19 +247,19 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                     elevation: _isLoading ? 0 : 2,
                   ),
                   child: _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                           ),
                         )
                       : Text(
                           'Reset Password',
                           style: AppTheme.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: context.primaryTextColor,
                           ),
                         ),
                 ),
