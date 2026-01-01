@@ -44,14 +44,14 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -132,7 +132,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           Text(
             'Your table has been reserved successfully',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -383,14 +383,14 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         Icon(
           icon,
           size: 20,
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
         ),
         const SizedBox(width: 12),
         Text(
           '$label: ',
           style: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
         ),
         Expanded(
@@ -429,7 +429,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                 onPressed: () => context.go('/explore'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.primaryColor,
-                  side: const BorderSide(color: AppTheme.primaryColor),
+                  side: BorderSide(color: context.primaryColorTheme),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
@@ -445,7 +445,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _viewMyBookings,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: _isLoading
