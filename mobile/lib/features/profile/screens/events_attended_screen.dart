@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class EventsAttendedScreen extends ConsumerStatefulWidget {
   const EventsAttendedScreen({super.key});
@@ -32,13 +33,13 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Events Attended',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -46,7 +47,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -56,17 +57,17 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
             },
             icon: const Icon(Icons.search_outlined),
             style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
+              backgroundColor: context.dividerColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
           const SizedBox(width: 16),
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -120,14 +121,14 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.event_available,
               size: 48,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -141,7 +142,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           Text(
             'Start exploring events to build your\nattendance history',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -149,8 +150,8 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           ElevatedButton(
             onPressed: () => context.go('/events'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primaryColorTheme,
+              foregroundColor: context.primaryTextColor,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -160,7 +161,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
               'Explore Events',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: context.primaryTextColor,
               ),
             ),
           ),
@@ -177,11 +178,11 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -202,20 +203,20 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     height: 200,
-                    color: AppTheme.dividerColor,
-                    child: const Center(
+                    color: context.dividerColor,
+                    child: Center(
                       child: CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
+                        color: context.primaryColorTheme,
                       ),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
                     height: 200,
-                    color: AppTheme.dividerColor,
-                    child: const Icon(
+                    color: context.dividerColor,
+                    child: Icon(
                       Icons.event,
                       size: 64,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ),
@@ -232,16 +233,16 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.check_circle,
                           size: 16,
-                          color: Colors.white,
+                          color: context.primaryTextColor,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           'Attended',
                           style: AppTheme.labelSmall.copyWith(
-                            color: Colors.white,
+                            color: context.primaryTextColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -271,29 +272,29 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                 // Date and Time
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       dateFormat.format(startDate),
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Icon(
+                    Icon(
                       Icons.access_time,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       timeFormat.format(startDate),
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                   ],
@@ -302,17 +303,17 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                 // Location
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         event['locationName'] as String,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -333,9 +334,9 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         icon: const Icon(Icons.visibility, size: 16),
                         label: const Text('View Details'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -352,9 +353,9 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         icon: const Icon(Icons.favorite_border, size: 16),
                         label: const Text('Favorite'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
