@@ -14,10 +14,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: const Text('Map'),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         actions: [
           IconButton(
@@ -37,7 +37,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             Icon(
               Icons.map,
               size: 64,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
             ),
             SizedBox(height: AppTheme.spacing16),
             Text(
@@ -45,14 +45,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primaryTextColor,
+                color: context.primaryTextColor,
               ),
             ),
             SizedBox(height: AppTheme.spacing8),
             Text(
               'Interactive map with listings will be implemented here',
               style: TextStyle(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
