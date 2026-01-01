@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/content_views_provider.dart';
 
 class VisitedPlacesScreen extends ConsumerStatefulWidget {
@@ -45,13 +46,13 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Places Visited',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -59,7 +60,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -69,17 +70,17 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             },
             icon: const Icon(Icons.search_outlined),
             style: IconButton.styleFrom(
-              backgroundColor: AppTheme.dividerColor,
-              foregroundColor: AppTheme.primaryTextColor,
+              backgroundColor: context.dividerColor,
+              foregroundColor: context.primaryTextColor,
             ),
           ),
           const SizedBox(width: 16),
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -159,7 +160,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
       },
       loading: () => Center(
         child: CircularProgressIndicator(
-          color: AppTheme.primaryColor,
+          color: context.primaryColorTheme,
         ),
       ),
       error: (error, stack) => Center(
@@ -169,20 +170,20 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             Icon(
               Icons.error_outline,
               size: 48,
-              color: AppTheme.errorColor,
+              color: context.errorColor,
             ),
             const SizedBox(height: 16),
             Text(
               'Failed to load places',
               style: AppTheme.titleMedium.copyWith(
-                color: AppTheme.errorColor,
+                color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -192,8 +193,8 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 ref.invalidate(myContentViewsProvider(params));
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: context.primaryColorTheme,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: const Text('Retry'),
             ),
@@ -210,14 +211,14 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.dividerColor,
+            decoration: BoxDecoration(
+              color: context.dividerColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.place,
               size: 48,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -231,7 +232,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           Text(
             'Start exploring Rwanda to build your\nvisited places collection',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -239,8 +240,8 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           ElevatedButton(
             onPressed: () => context.go('/explore'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primaryColorTheme,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -250,7 +251,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
               'Explore Places',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),
@@ -289,7 +290,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -315,30 +316,30 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           height: 200,
-                          color: AppTheme.dividerColor,
-                          child: const Center(
+                          color: context.dividerColor,
+                          child: Center(
                             child: CircularProgressIndicator(
-                              color: AppTheme.primaryColor,
+                              color: context.primaryColorTheme,
                             ),
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
                           height: 200,
-                          color: AppTheme.dividerColor,
-                          child: const Icon(
+                          color: context.dividerColor,
+                          child: Icon(
                             Icons.place,
                             size: 64,
-                            color: AppTheme.secondaryTextColor,
+                            color: context.secondaryTextColor,
                           ),
                         ),
                       )
                     : Container(
                         height: 200,
-                        color: AppTheme.dividerColor,
-                        child: const Icon(
+                        color: context.dividerColor,
+                        child: Icon(
                           Icons.place,
                           size: 64,
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                 // Visited Badge
@@ -378,13 +379,13 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       categoryName,
                       style: AppTheme.labelSmall.copyWith(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -412,17 +413,17 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 // Location
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 16,
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         contentLocation,
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -435,16 +436,16 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 if (visitDate != null)
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today,
                         size: 16,
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Viewed on ${dateFormat.format(visitDate)}',
                         style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -470,7 +471,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                       Text(
                         '($reviewCount ${reviewCount == 1 ? 'review' : 'reviews'})',
                         style: AppTheme.bodySmall.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                         ),
                       ),
                     ],
@@ -489,9 +490,9 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         icon: const Icon(Icons.visibility, size: 16),
                         label: const Text('View Details'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -508,9 +509,9 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         icon: const Icon(Icons.favorite_border, size: 16),
                         label: const Text('Favorite'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.primaryColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor: context.primaryColorTheme,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

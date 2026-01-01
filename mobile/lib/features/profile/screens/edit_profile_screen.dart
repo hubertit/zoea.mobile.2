@@ -318,7 +318,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         color: badgeColor.withOpacity(0.1),
         border: Border(
           bottom: BorderSide(
-            color: AppTheme.dividerColor,
+            color: context.dividerColor,
             width: 1,
           ),
         ),
