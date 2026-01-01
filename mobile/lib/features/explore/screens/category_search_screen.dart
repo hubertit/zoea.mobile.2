@@ -46,7 +46,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -114,8 +114,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppTheme.primaryColor,
+                  borderSide: BorderSide(
+                    color: context.primaryColorTheme,
                     width: 1,
                   ),
                 ),
@@ -229,7 +229,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                   label: Text(
                     subCategory['label']!,
                     style: AppTheme.bodySmall.copyWith(
-                      color: isSelected ? Colors.white : context.primaryTextColor,
+                      color: isSelected ? context.primaryTextColor : context.primaryTextColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -242,10 +242,10 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       });
                     }
                   },
-                  selectedColor: AppTheme.primaryColor,
+                  selectedColor: context.primaryColorTheme,
                   backgroundColor: context.backgroundColor,
                   side: BorderSide(
-                    color: isSelected ? AppTheme.primaryColor : context.dividerColor,
+                    color: isSelected ? context.primaryColorTheme : context.dividerColor,
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
@@ -387,10 +387,10 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
@@ -501,7 +501,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   height: 200,
-                  color: Colors.grey[200],
+                  color: context.grey200,
                   child: const Icon(Icons.business, size: 50),
                 ),
               ),
@@ -528,13 +528,13 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryColor.withOpacity(0.1),
+                          color: context.primaryColorTheme.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           'Tour Operator',
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.primaryColor,
+                            color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -609,10 +609,10 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.search_off,
             size: 64,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
           const SizedBox(height: 16),
           Text(
@@ -620,7 +620,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ? 'Search for ${_getCategoryTitle().toLowerCase()}'
                 : 'No results found',
             style: AppTheme.headlineSmall.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -629,7 +629,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 ? _getSearchSuggestions()
                 : 'Try different keywords or categories',
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -672,6 +672,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 'Filter ${_getCategoryTitle()}',
                 style: AppTheme.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 20),
@@ -681,6 +682,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 'Price Range',
                 style: AppTheme.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -697,6 +699,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 'Minimum Rating',
                 style: AppTheme.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -717,6 +720,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 'Features',
                 style: AppTheme.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: context.primaryTextColor,
                 ),
               ),
               const SizedBox(height: 12),
@@ -735,8 +739,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryColor,
-                        side: const BorderSide(color: AppTheme.primaryColor),
+                        foregroundColor: context.primaryColorTheme,
+                        side: BorderSide(color: context.primaryColorTheme),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Clear All'),
@@ -747,8 +751,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Apply Filters'),
@@ -876,8 +880,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryColor,
-                        side: const BorderSide(color: AppTheme.primaryColor),
+                        foregroundColor: context.primaryColorTheme,
+                        side: BorderSide(color: context.primaryColorTheme),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Cancel'),
@@ -888,8 +892,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Apply'),
@@ -909,7 +913,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       label: Text(
         label,
         style: AppTheme.bodySmall.copyWith(
-          color: isSelected ? Colors.white : AppTheme.primaryTextColor,
+          color: isSelected ? context.primaryTextColor : context.primaryTextColor,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -917,10 +921,10 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
       onSelected: (selected) {
         // Handle filter selection
       },
-      selectedColor: AppTheme.primaryColor,
+      selectedColor: context.primaryColorTheme,
       backgroundColor: context.backgroundColor,
       side: BorderSide(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+        color: isSelected ? context.primaryColorTheme : context.dividerColor,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
@@ -937,10 +941,10 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
+            color: isSelected ? context.primaryColorTheme.withOpacity(0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+              color: isSelected ? context.primaryColorTheme : context.dividerColor,
             ),
           ),
           child: Row(
@@ -948,23 +952,23 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               Icon(
                 icon,
                 size: 20,
-                color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
+                color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   label,
                   style: AppTheme.bodyMedium.copyWith(
-                    color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+                    color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ),
               if (isSelected)
-                const Icon(
+                Icon(
                   Icons.check,
                   size: 20,
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                 ),
             ],
           ),
