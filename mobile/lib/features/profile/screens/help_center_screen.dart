@@ -37,7 +37,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
       ),
@@ -78,11 +78,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.isDarkMode ? context.dividerColor.withOpacity(0.3) : context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -116,7 +116,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: AppTheme.backgroundColor,
+          fillColor: context.dividerColor,
         ),
         onChanged: (value) {
           setState(() {});
@@ -138,11 +138,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.isDarkMode ? context.dividerColor.withOpacity(0.3) : context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -200,12 +200,12 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
             ),
@@ -287,16 +287,16 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppTheme.primaryColor.withOpacity(0.1),
+          color: context.primaryColorTheme.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppTheme.primaryColor.withOpacity(0.3),
+            color: context.primaryColorTheme.withOpacity(0.3),
           ),
         ),
         child: Text(
           label,
           style: AppTheme.bodySmall.copyWith(
-            color: AppTheme.primaryColor,
+            color: context.primaryColorTheme,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -317,11 +317,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.isDarkMode ? context.dividerColor.withOpacity(0.3) : context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -426,11 +426,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.isDarkMode ? context.dividerColor.withOpacity(0.3) : context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -489,12 +489,12 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.help_outline,
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 size: 20,
               ),
             ),
@@ -510,13 +510,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 '$count',
                 style: AppTheme.labelSmall.copyWith(
-                  color: AppTheme.primaryColor,
+                  color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -547,11 +547,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.isDarkMode ? context.dividerColor.withOpacity(0.3) : context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -646,13 +646,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
                   'Close',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: Colors.white,
+                    color: context.primaryTextColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -704,7 +704,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             // Content
             Text(
               content,
-              style: AppTheme.bodyMedium,
+              style: AppTheme.bodyMedium.copyWith(
+                color: context.primaryTextColor,
+              ),
             ),
             const SizedBox(height: 24),
             
@@ -716,12 +718,12 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: AppTheme.secondaryTextColor),
+                      side: BorderSide(color: context.secondaryTextColor),
                     ),
                     child: Text(
                       'Close',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -734,20 +736,25 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       Navigator.pop(context);
                       // TODO: Implement contact action
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('$title feature coming soon'),
-                          backgroundColor: AppTheme.primaryColor,
+                      SnackBar(
+                        content: Text(
+                          '$title feature coming soon',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: context.primaryTextColor,
+                          ),
                         ),
+                        backgroundColor: context.primaryColorTheme,
+                      ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
+                      backgroundColor: context.primaryColorTheme,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
                       'Contact',
                       style: AppTheme.bodyMedium.copyWith(
-                        color: Colors.white,
+                        color: context.primaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -808,9 +815,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: context.surfaceColor,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[200]!),
+                      border: Border.all(color: context.dividerColor),
                     ),
                     child: ExpansionTile(
                       title: Text(
@@ -825,7 +832,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                           child: Text(
                             faq['answer']!,
                             style: AppTheme.bodyMedium.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                             ),
                           ),
                         ),
@@ -843,13 +850,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
                   'Close',
                   style: AppTheme.bodyMedium.copyWith(
-                    color: Colors.white,
+                    color: context.primaryTextColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
