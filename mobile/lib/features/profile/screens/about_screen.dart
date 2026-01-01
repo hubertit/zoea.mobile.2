@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 
 class AboutScreen extends ConsumerStatefulWidget {
   const AboutScreen({super.key});
@@ -15,20 +16,20 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'About',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
       ),
@@ -75,20 +76,20 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryColor.withOpacity(0.3),
+                  color: context.primaryColorTheme.withOpacity(0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.explore,
               size: 50,
-              color: Colors.white,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -107,7 +108,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           Text(
             'Discover Rwanda\'s Beauty',
             style: AppTheme.bodyLarge.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -117,13 +118,13 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: context.primaryColorTheme.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               'Version 1.0.0',
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -146,11 +147,11 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -220,7 +221,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           Text(
             value,
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
         ],
@@ -232,7 +233,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       height: 1,
-      color: AppTheme.dividerColor,
+      color: context.dividerColor,
     );
   }
 
@@ -249,11 +250,11 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -309,7 +310,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: context.primaryColorTheme.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -333,7 +334,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 Text(
                   subtitle,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ],
@@ -357,11 +358,11 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -406,7 +407,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: context.primaryColorTheme.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
@@ -430,7 +431,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 Text(
                   role,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.primaryColor,
+                    color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -438,7 +439,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 Text(
                   description,
                   style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 ),
               ],
@@ -462,11 +463,11 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -534,15 +535,15 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -564,11 +565,11 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
+            color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: context.dividerColor.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -636,15 +637,15 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -657,11 +658,18 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title, style: AppTheme.titleMedium),
+        title: Text(
+          title,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
+        ),
         content: SingleChildScrollView(
           child: Text(
             content,
-            style: AppTheme.bodyMedium,
+            style: AppTheme.bodyMedium.copyWith(
+              color: context.primaryTextColor,
+            ),
           ),
         ),
         actions: [
@@ -670,7 +678,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             child: Text(
               'Close',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -684,7 +692,12 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title, style: AppTheme.titleMedium),
+        title: Text(
+          title,
+          style: AppTheme.titleMedium.copyWith(
+            color: context.primaryTextColor,
+          ),
+        ),
         content: Text(content, style: AppTheme.bodyMedium),
         actions: [
           TextButton(
@@ -692,7 +705,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             child: Text(
               'Close',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ),
@@ -703,14 +716,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('$title feature coming soon'),
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: context.primaryColorTheme,
                 ),
               );
             },
             child: Text(
               'Contact',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.primaryColor,
+                color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
             ),
