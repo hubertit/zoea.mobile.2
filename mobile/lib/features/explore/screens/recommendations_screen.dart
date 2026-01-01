@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class RecommendationsScreen extends StatefulWidget {
@@ -30,19 +31,20 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, size: 32),
           onPressed: () => context.pop(),
-          color: AppTheme.primaryTextColor,
+          color: context.primaryTextColor,
         ),
         title: Text(
           'Recommendations',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -61,9 +63,9 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
           labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
@@ -102,23 +104,23 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.explore,
               size: 64,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
             const SizedBox(height: 16),
             Text(
               'No recommendations found',
               style: AppTheme.headlineSmall.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Check back later for new recommendations',
               style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
             ),
           ],
@@ -241,7 +243,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -313,8 +315,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryColor,
-                        side: const BorderSide(color: AppTheme.primaryColor),
+                        foregroundColor: context.primaryColorTheme,
+                        side: BorderSide(color: context.primaryColorTheme),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Clear All'),
@@ -325,8 +327,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Apply Filters'),
@@ -344,7 +346,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
   void _showSortBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -387,10 +389,10 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
       onSelected: (selected) {
         // Handle filter selection
       },
-      selectedColor: AppTheme.primaryColor.withOpacity(0.2),
-      checkmarkColor: AppTheme.primaryColor,
+      selectedColor: context.primaryColorTheme.withOpacity(0.2),
+      checkmarkColor: context.primaryColorTheme,
       labelStyle: AppTheme.bodySmall.copyWith(
-        color: isSelected ? AppTheme.primaryColor : AppTheme.primaryTextColor,
+        color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
       ),
     );
   }
@@ -401,7 +403,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         label,
         style: AppTheme.bodyMedium,
       ),
-      trailing: isSelected ? const Icon(Icons.check, color: AppTheme.primaryColor) : null,
+      trailing: isSelected ? Icon(Icons.check, color: context.primaryColorTheme) : null,
       onTap: () {
         Navigator.pop(context);
         // Handle sort selection
