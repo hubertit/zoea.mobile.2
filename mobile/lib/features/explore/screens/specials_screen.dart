@@ -45,7 +45,7 @@ class SpecialsScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -69,7 +69,7 @@ class SpecialsScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: context.primaryColorTheme.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -97,7 +97,7 @@ class SpecialsScreen extends StatelessWidget {
                   Text(
                     special['description'],
                     style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -113,7 +113,7 @@ class SpecialsScreen extends StatelessWidget {
                           Text(
                             special['originalPrice'],
                             style: AppTheme.bodySmall.copyWith(
-                              color: AppTheme.secondaryTextColor,
+                              color: context.secondaryTextColor,
                               decoration: TextDecoration.lineThrough,
                             ),
                           ),
