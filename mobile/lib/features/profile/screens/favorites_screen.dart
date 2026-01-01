@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/favorites_provider.dart';
 
@@ -33,27 +34,27 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Favorites',
           style: AppTheme.titleLarge,
         ),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.go('/profile'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.secondaryTextColor,
-          indicatorColor: AppTheme.primaryColor,
+          labelColor: context.primaryColorTheme,
+          unselectedLabelColor: context.secondaryTextColor,
+          indicatorColor: context.primaryColorTheme,
           labelStyle: AppTheme.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
           ),
@@ -121,7 +122,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -183,7 +184,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -245,7 +246,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -267,11 +268,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -290,14 +291,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Icon(Icons.image_not_supported),
               ),
             ),
@@ -314,14 +315,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isEvent 
-                        ? AppTheme.primaryColor.withOpacity(0.1)
+                        ? context.primaryColorTheme.withOpacity(0.1)
                         : AppTheme.successColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     isEvent ? 'Event' : 'Place',
                     style: AppTheme.labelSmall.copyWith(
-                      color: isEvent ? AppTheme.primaryColor : AppTheme.successColor,
+                      color: isEvent ? context.primaryColorTheme : AppTheme.successColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -378,9 +379,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Details'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -397,9 +398,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('Remove'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.errorColor,
+                          side: BorderSide(color: context.errorColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -421,11 +422,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -444,14 +445,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Icon(Icons.image_not_supported),
               ),
             ),
@@ -513,9 +514,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Event'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -532,9 +533,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('Remove'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.errorColor,
+                          side: BorderSide(color: context.errorColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -556,11 +557,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -579,14 +580,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Icon(Icons.image_not_supported),
               ),
             ),
@@ -648,9 +649,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Place'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -667,9 +668,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('Remove'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.errorColor,
+                          side: BorderSide(color: context.errorColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -720,11 +721,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -742,12 +743,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Center(child: CircularProgressIndicator()),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
-                color: AppTheme.dividerColor,
+                color: context.dividerColor,
                 child: const Icon(Icons.event, size: 50),
               ),
             ),
@@ -760,13 +761,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color: context.primaryColorTheme.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     'Event',
                     style: AppTheme.labelSmall.copyWith(
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -781,12 +782,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 4),
                 Text(
                   location,
-                  style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+                  style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.event, size: 16, color: AppTheme.secondaryTextColor),
+                    Icon(Icons.event, size: 16, color: context.secondaryTextColor),
                     const SizedBox(width: 4),
                     Text(
                       dateText,
@@ -808,9 +809,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Event'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -827,9 +828,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('Remove'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.errorColor,
+                          side: BorderSide(color: context.errorColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -868,11 +869,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
+        color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: context.dividerColor.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -891,18 +892,18 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
                       height: 200,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Center(child: CircularProgressIndicator()),
                     ),
                     errorWidget: (context, url, error) => Container(
                       height: 200,
-                      color: AppTheme.dividerColor,
+                      color: context.dividerColor,
                       child: const Icon(Icons.place, size: 50),
                     ),
                   )
                 : Container(
                     height: 200,
-                    color: AppTheme.dividerColor,
+                    color: context.dividerColor,
                     child: const Icon(Icons.place, size: 50),
                   ),
           ),
@@ -935,12 +936,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 4),
                 Text(
                   address,
-                  style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+                  style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.place, size: 16, color: AppTheme.secondaryTextColor),
+                    Icon(Icons.place, size: 16, color: context.secondaryTextColor),
                     const SizedBox(width: 4),
                     Text(
                       category,
@@ -962,9 +963,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.visibility_outlined, size: 18),
                         label: const Text('View Place'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppTheme.primaryColor,
-                          backgroundColor: AppTheme.backgroundColor,
-                          side: const BorderSide(color: AppTheme.primaryColor),
+                          foregroundColor: context.primaryColorTheme,
+                          backgroundColor: context.backgroundColor,
+                          side: BorderSide(color: context.primaryColorTheme),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -981,9 +982,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         icon: const Icon(Icons.favorite, size: 18),
                         label: const Text('Remove'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: context.primaryTextColor,
+                          backgroundColor: context.errorColor,
+                          side: BorderSide(color: context.errorColor),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -1030,7 +1031,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
             ),
           ),
           TextButton(
@@ -1122,9 +1123,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             OutlinedButton(
               onPressed: onAction,
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryColor,
-                backgroundColor: AppTheme.backgroundColor,
-                side: const BorderSide(color: AppTheme.primaryColor),
+                foregroundColor: context.primaryColorTheme,
+                backgroundColor: context.backgroundColor,
+                side: BorderSide(color: context.primaryColorTheme),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -1165,9 +1166,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               Navigator.pop(context);
               // TODO: Remove from favorites
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Removed from favorites'),
-                  backgroundColor: AppTheme.successColor,
+                  backgroundColor: context.successColor,
                 ),
               );
             },
