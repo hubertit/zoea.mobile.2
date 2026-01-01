@@ -44,7 +44,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           onPressed: () => context.go('/explore'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -158,11 +158,11 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: context.backgroundColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryTextColor.withOpacity(0.05),
+              color: context.primaryTextColor.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -391,7 +391,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           Icon(
             Icons.explore,
             size: 80,
-            color: AppTheme.secondaryTextColor.withOpacity(0.5),
+            color: context.secondaryTextColor.withOpacity(0.5),
           ),
           const SizedBox(height: 16),
           Text(
@@ -627,7 +627,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           });
           Navigator.pop(context);
         },
-        activeColor: AppTheme.primaryColor,
+        activeColor: context.primaryColorTheme,
       ),
       onTap: () {
         setState(() {
@@ -682,7 +682,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
           });
           Navigator.pop(context);
         },
-        activeColor: AppTheme.primaryColor,
+        activeColor: context.primaryColorTheme,
       ),
       onTap: () {
         setState(() {
