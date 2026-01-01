@@ -248,6 +248,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                     place['name'],
                                     style: AppTheme.headlineMedium.copyWith(
                                       fontWeight: FontWeight.w600,
+                                      color: context.primaryTextColor,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -333,6 +334,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                               place['rating'].toString(),
                               style: AppTheme.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: context.primaryTextColor,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -458,6 +460,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             'About',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -465,6 +468,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             place['description'],
             style: AppTheme.bodyMedium.copyWith(
               height: 1.6,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 24),
@@ -472,6 +476,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             'Features',
             style: AppTheme.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -517,6 +522,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                       hours['day'],
                       style: AppTheme.bodyMedium.copyWith(
                         fontWeight: FontWeight.w500,
+                        color: context.primaryTextColor,
                       ),
                     ),
                   ),
@@ -619,6 +625,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                               item['name'],
                               style: AppTheme.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: context.primaryTextColor,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -733,6 +740,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           review['name'],
                           style: AppTheme.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: context.primaryTextColor,
                           ),
                         ),
                         Row(
@@ -763,6 +771,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                 review['comment'],
                 style: AppTheme.bodyMedium.copyWith(
                   height: 1.4,
+                  color: context.primaryTextColor,
                 ),
               ),
             ],
@@ -1729,6 +1738,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'Write a Review',
             style: AppTheme.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 20),
@@ -1738,6 +1748,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'How was your experience?',
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -1770,6 +1781,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             'Tell us about your experience',
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
           const SizedBox(height: 12),
