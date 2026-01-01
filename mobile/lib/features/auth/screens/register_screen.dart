@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -86,9 +87,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, size: 32),
@@ -117,7 +118,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Text(
                       'Join the Zoea Africa community',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(
@@ -142,11 +143,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -178,11 +179,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -227,11 +228,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -277,11 +278,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.dividerColor),
+                      borderSide: BorderSide(color: context.dividerColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
-                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: BorderSide(color: context.primaryColorTheme, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -312,26 +313,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           _agreeToTerms = value ?? false;
                         });
                       },
-                      activeColor: AppTheme.primaryColor,
+                      activeColor: context.primaryColorTheme,
                     ),
                     Expanded(
                       child: RichText(
                         text: TextSpan(
                           style: Theme.of(context).textTheme.bodySmall,
-                          children: const [
-                            TextSpan(text: 'I agree to the '),
+                          children: [
+                            const TextSpan(text: 'I agree to the '),
                             TextSpan(
                               text: 'Terms and Conditions',
                               style: TextStyle(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            TextSpan(text: ' and '),
+                            const TextSpan(text: ' and '),
                             TextSpan(
                               text: 'Privacy Policy',
                               style: TextStyle(
-                                color: AppTheme.primaryColor,
+                                color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -353,12 +354,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _handleRegister,
                     child: _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(context.primaryTextColor),
                             ),
                           )
                         : const Text('Create Account'),
@@ -376,10 +377,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Already have an account? ',
                       style: TextStyle(
-                        color: AppTheme.secondaryTextColor,
+                        color: context.secondaryTextColor,
                       ),
                     ),
                     TextButton(
