@@ -777,6 +777,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                   title,
                   style: AppTheme.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
