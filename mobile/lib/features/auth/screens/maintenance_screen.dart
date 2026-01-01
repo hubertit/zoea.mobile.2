@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_extensions.dart';
 import '../../../core/services/health_check_service.dart';
 
 /// Beautiful maintenance/offline screen shown when backend is unavailable
@@ -57,14 +58,16 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
         context: context,
         barrierDismissible: false,
         builder: (context) => Center(
-          child: Container(
-            padding: const EdgeInsets.all(AppTheme.spacing24),
-            decoration: BoxDecoration(
-              color: AppTheme.backgroundColor,
-              borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
-            ),
-            child: const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+          child: Builder(
+            builder: (context) => Container(
+              padding: const EdgeInsets.all(AppTheme.spacing24),
+              decoration: BoxDecoration(
+                color: context.backgroundColor,
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
+              ),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
+              ),
             ),
           ),
         ),
@@ -102,7 +105,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -123,15 +126,15 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppTheme.primaryColor.withOpacity(0.2),
-                          AppTheme.primaryColor.withOpacity(0.1),
+                          context.primaryColorTheme.withOpacity(0.2),
+                          context.primaryColorTheme.withOpacity(0.1),
                         ],
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.cloud_off_rounded,
                       size: 64,
-                      color: AppTheme.primaryColor,
+                      color: context.primaryColorTheme,
                     ),
                   ),
                   
@@ -142,7 +145,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                     'We\'ll Be Right Back!',
                     style: AppTheme.headlineMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryTextColor,
+                      color: context.primaryTextColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -153,7 +156,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                       Text(
                         'Our systems are currently undergoing maintenance to serve you better. We\'ll be back online shortly.',
                         style: AppTheme.bodyLarge.copyWith(
-                          color: AppTheme.secondaryTextColor,
+                          color: context.secondaryTextColor,
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,
@@ -166,7 +169,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                     children: [
                       Expanded(
                         child: Divider(
-                          color: AppTheme.dividerColor.withOpacity(0.3),
+                          color: context.dividerColor.withOpacity(0.3),
                           thickness: 1,
                         ),
                       ),
@@ -177,12 +180,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                         child: Icon(
                           Icons.favorite,
                           size: 16,
-                          color: AppTheme.primaryColor.withOpacity(0.5),
+                          color: context.primaryColorTheme.withOpacity(0.5),
                         ),
                       ),
                       Expanded(
                         child: Divider(
-                          color: AppTheme.dividerColor.withOpacity(0.3),
+                          color: context.dividerColor.withOpacity(0.3),
                           thickness: 1,
                         ),
                       ),
@@ -197,8 +200,8 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                     child: ElevatedButton(
                       onPressed: _retryConnection,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: context.primaryColorTheme,
+                        foregroundColor: context.primaryTextColor,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.spacing16,
                         ),
@@ -212,13 +215,13 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.refresh, size: 20),
+                          Icon(Icons.refresh, size: 20, color: context.primaryTextColor),
                           const SizedBox(width: AppTheme.spacing8),
                           Text(
                             'Try Again',
                             style: AppTheme.bodyLarge.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: context.primaryTextColor,
                             ),
                           ),
                         ],
@@ -232,7 +235,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                   Text(
                     'Need help? Contact us at support@zoea.africa',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
