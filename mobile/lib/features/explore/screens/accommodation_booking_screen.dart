@@ -87,6 +87,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Book Your Stay',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
       ),
@@ -165,6 +166,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                   'Kigali Marriott Hotel',
                   style: AppTheme.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -207,6 +209,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Select Dates',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -262,6 +265,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                   : 'Select date',
               style: AppTheme.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
+                color: context.primaryTextColor,
               ),
             ),
           ],
@@ -278,6 +282,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Guests',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -341,6 +346,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Rooms',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -409,6 +415,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Price Breakdown',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -486,6 +493,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           'Special Requests (Optional)',
           style: AppTheme.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 16),
