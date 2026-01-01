@@ -775,7 +775,10 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Text(
                   eventName,
-                  style: AppTheme.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTheme.titleMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -929,7 +932,10 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Text(
                   listingName,
-                  style: AppTheme.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTheme.titleMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
