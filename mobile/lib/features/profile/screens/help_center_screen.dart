@@ -93,11 +93,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         decoration: InputDecoration(
           hintText: 'Search help articles...',
           hintStyle: AppTheme.bodyMedium.copyWith(
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             Icons.search,
-            color: AppTheme.secondaryTextColor,
+            color: context.secondaryTextColor,
           ),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
@@ -105,9 +105,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     _searchController.clear();
                     setState(() {});
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.clear,
-                    color: AppTheme.secondaryTextColor,
+                    color: context.secondaryTextColor,
                   ),
                 )
               : null,
@@ -224,15 +224,15 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -396,15 +396,15 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   Text(
                     subtitle,
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
+                      color: context.secondaryTextColor,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -522,9 +522,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
               size: 20,
             ),
           ],
@@ -579,7 +579,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           Text(
             label,
             style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
+              color: context.secondaryTextColor,
             ),
           ),
           Text(
