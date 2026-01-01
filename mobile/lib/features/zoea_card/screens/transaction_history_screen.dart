@@ -14,10 +14,10 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: const Text('Transaction History'),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
       ),
       body: Center(
@@ -27,7 +27,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
             const Icon(
               Icons.history,
               size: 64,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
             ),
             const SizedBox(height: AppTheme.spacing16),
             Text(
@@ -38,7 +38,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
             const Text(
               'View your payment and transaction history',
               style: TextStyle(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),

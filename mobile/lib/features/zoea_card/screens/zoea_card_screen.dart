@@ -14,10 +14,10 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: const Text('Zoea Card'),
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         actions: [
           IconButton(
@@ -33,7 +33,7 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
             const Icon(
               Icons.credit_card,
               size: 64,
-              color: AppTheme.primaryColor,
+              color: context.primaryColorTheme,
             ),
             const SizedBox(height: AppTheme.spacing16),
             Text(
@@ -44,7 +44,7 @@ class _ZoeaCardScreenState extends ConsumerState<ZoeaCardScreen> {
             const Text(
               'Your digital wallet for seamless payments',
               style: TextStyle(
-                color: AppTheme.secondaryTextColor,
+                color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
