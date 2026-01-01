@@ -326,7 +326,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     ),
                     const Spacer(),
                     if (review['helpfulCount'] > 0) ...[
-                      const Icon(
+                      Icon(
                         Icons.thumb_up_outlined,
                         size: 14,
                         color: context.secondaryTextColor,
@@ -481,8 +481,8 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
               Navigator.pop(context);
               // TODO: Navigate to edit review
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Edit review feature coming soon'),
+                SnackBar(
+                  content: const Text('Edit review feature coming soon'),
                   backgroundColor: context.primaryColorTheme,
                 ),
               );
