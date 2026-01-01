@@ -28,7 +28,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       appBar: AppBar(
         title: Text(
           'Help Center',
-          style: AppTheme.titleLarge,
+          style: AppTheme.titleLarge.copyWith(
+            color: context.primaryTextColor,
+          ),
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -133,6 +135,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'Quick Help',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -218,6 +221,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     title,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -257,6 +261,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'Popular Topics',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -312,6 +317,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'Contact Support',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -390,6 +396,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     title,
                     style: AppTheme.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -421,6 +428,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'Frequently Asked Questions',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -504,6 +512,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 title,
                 style: AppTheme.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
+                  color: context.primaryTextColor,
                 ),
               ),
             ),
@@ -541,6 +550,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'App Information',
           style: AppTheme.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
+            color: context.primaryTextColor,
           ),
         ),
         const SizedBox(height: 12),
@@ -586,6 +596,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             value,
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
+              color: context.primaryTextColor,
             ),
           ),
         ],
@@ -824,6 +835,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                         faq['question']!,
                         style: AppTheme.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
+                          color: context.primaryTextColor,
                         ),
                       ),
                       children: [
