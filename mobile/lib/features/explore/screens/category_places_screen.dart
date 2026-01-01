@@ -1211,7 +1211,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     );
   }
   
-  Widget _buildRatingChip(context,BuildContext context, String label, double value, double? selectedValue, Function(double) onSelected) {
+  Widget _buildRatingChip(BuildContext ctx, String label, double value, double? selectedValue, Function(double) onSelected) {
     final isSelected = selectedValue == value;
     return FilterChip(
       label: Text(label),
