@@ -37,14 +37,14 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: context.backgroundColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
           onPressed: () => context.go('/explore'),
           icon: const Icon(Icons.chevron_left, size: 32),
           style: IconButton.styleFrom(
-            foregroundColor: AppTheme.primaryTextColor,
+            foregroundColor: context.primaryTextColor,
           ),
         ),
         title: Text(
@@ -171,7 +171,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: context.backgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -223,7 +223,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         });
         Navigator.pop(context);
       },
-      activeColor: AppTheme.primaryColor,
+      activeColor: context.primaryColorTheme,
     );
   }
 
@@ -238,7 +238,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         });
         Navigator.pop(context);
       },
-      activeColor: AppTheme.primaryColor,
+      activeColor: context.primaryColorTheme,
     );
   }
 
