@@ -103,9 +103,9 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.successColor.withOpacity(0.1),
+        color: context.successColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.successColor.withOpacity(0.3)),
+        border: Border.all(color: context.successColor.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -119,14 +119,14 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           const Icon(
             Icons.check_circle,
             size: 64,
-            color: AppTheme.successColor,
+            color: context.successColor,
           ),
           const SizedBox(height: 16),
           Text(
             'Reservation Confirmed!',
             style: AppTheme.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppTheme.successColor,
+              color: context.successColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -150,7 +150,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                 'Booking #${widget.bookingNumber}',
                 style: AppTheme.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.successColor,
+                  color: context.successColor,
                 ),
               ),
             ),
