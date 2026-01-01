@@ -280,9 +280,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ),
           title: Text(
             'Dining',
-            style: AppTheme.headlineMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
+              ),
           ),
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -301,9 +302,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ),
           title: Text(
             'Dining',
-            style: AppTheme.headlineMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+              style: AppTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
+              ),
           ),
         ),
         body: Center(
@@ -901,9 +903,10 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                 CheckboxListTile(
                   title: Text(
                     'Featured Only',
-                    style: AppTheme.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                style: AppTheme.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: context.primaryTextColor,
+                ),
                   ),
                   subtitle: Text(
                     'Show only featured listings',
