@@ -57,27 +57,40 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // Wait for splash duration
-    await Future.delayed(
+    // Start the timer for minimum splash duration
+    final splashTimer = Future.delayed(
       const Duration(milliseconds: AppConfig.splashDuration),
     );
     
+    // Run auth checks in parallel with splash timer
+    final authCheckFuture = _performAuthChecks();
+    
+    // Wait for both the splash duration AND auth checks to complete
+    await Future.wait([splashTimer, authCheckFuture]);
+    
     if (!mounted) return;
     
+    // Navigate based on the result from auth checks
+    final navigationPath = await authCheckFuture;
+    if (mounted && navigationPath != null) {
+      context.go(navigationPath);
+    }
+  }
+
+  /// Perform all authentication and health checks
+  /// Returns the navigation path to go to
+  Future<String?> _performAuthChecks() async {
     // First, check backend health
     final isHealthy = await HealthCheckService.checkHealthWithRetry(
       maxRetries: 2,
       retryDelay: const Duration(seconds: 1),
     );
     
-    if (!mounted) return;
+    if (!mounted) return null;
     
     if (!isHealthy) {
       // Backend is down, show maintenance screen
-      if (mounted) {
-        context.go('/maintenance');
-      }
-      return;
+      return '/maintenance';
     }
     
     // Wait for auth provider to finish initializing (loading user from storage)
@@ -90,18 +103,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       }
       await Future.delayed(const Duration(milliseconds: 100));
       attempts++;
-      if (!mounted) return;
+      if (!mounted) return null;
     }
     
-    if (!mounted) return;
+    if (!mounted) return null;
     
-      // Check if user is logged in (has tokens stored)
-      final authNotifier = ref.read(authProvider.notifier);
-      final isLoggedIn = await authNotifier.isUserLoggedIn();
-      
-      if (!mounted) return;
-      
-      // Navigate based on auth state
+    // Check if user is logged in (has tokens stored)
+    final authNotifier = ref.read(authProvider.notifier);
+    final isLoggedIn = await authNotifier.isUserLoggedIn();
+    
+    if (!mounted) return null;
+    
+    // Navigate based on auth state
     if (isLoggedIn) {
       // Increment session count for prompt timing
       try {
@@ -123,7 +136,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       try {
         final isComplete = await ref.read(isMandatoryDataCompleteProvider.future);
         
-        if (!mounted) return;
+        if (!mounted) return null;
         
         if (!isComplete) {
           // For existing users (4,500+), try silent inference first
@@ -134,41 +147,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             // Check again after enrichment
             final isCompleteAfterEnrichment = await ref.read(isMandatoryDataCompleteProvider.future);
             
-            if (!mounted) return;
+            if (!mounted) return null;
             
             if (!isCompleteAfterEnrichment) {
               // Still incomplete, redirect to onboarding data screen
-              if (mounted) {
-                context.go('/onboarding-data');
-              }
-              return;
+              return '/onboarding-data';
             }
           } catch (e) {
             // If enrichment fails, redirect to onboarding
-            if (mounted) {
-              context.go('/onboarding-data');
-            }
-            return;
+            return '/onboarding-data';
           }
         }
       } catch (e) {
         // If check fails, still allow navigation to explore
         // (graceful degradation - don't block user)
-        if (mounted) {
-          context.go('/explore');
-        }
-        return;
+        return '/explore';
       }
       
       // Mandatory data is complete, go to explore
-      if (mounted) {
-        context.go('/explore');
-      }
+      return '/explore';
     } else {
       // Not logged in (no tokens), go to login screen
-      if (mounted) {
-        context.go('/login');
-      }
+      return '/login';
     }
   }
 
