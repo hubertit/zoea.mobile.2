@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/reviews_provider.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -246,7 +247,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                 children: [
                                   Text(
                                     place['name'],
-                                    style: AppTheme.headlineMedium.copyWith(
+                                    style: context.headlineMedium.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: context.primaryTextColor,
                                     ),
@@ -272,7 +273,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                         const SizedBox(width: 4),
                                         Text(
                                           'Verified',
-                                          style: AppTheme.bodySmall.copyWith(
+                                          style: context.bodySmall.copyWith(
                                             color: context.primaryColorTheme,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -294,7 +295,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                               ),
                               child: Text(
                                 place['category'],
-                                style: AppTheme.bodyMedium.copyWith(
+                                style: context.bodyMedium.copyWith(
                                   color: context.primaryColorTheme,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -314,7 +315,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             Expanded(
                               child: Text(
                                 place['location'],
-                                style: AppTheme.bodyLarge.copyWith(
+                                style: context.bodyLarge.copyWith(
                                   color: context.secondaryTextColor,
                                 ),
                               ),
@@ -332,7 +333,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             const SizedBox(width: 6),
                             Text(
                               place['rating'].toString(),
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: context.primaryTextColor,
                               ),
@@ -340,14 +341,14 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             const SizedBox(width: 8),
                             Text(
                               '(${place['reviewCount']} reviews)',
-                              style: AppTheme.bodyMedium.copyWith(
+                              style: context.bodyMedium.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
                             const Spacer(),
                             Text(
                               place['priceRange'],
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -458,7 +459,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
         children: [
           Text(
             'About',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -466,7 +467,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           const SizedBox(height: 12),
           Text(
             place['description'],
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               height: 1.6,
               color: context.primaryTextColor,
             ),
@@ -474,7 +475,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           const SizedBox(height: 24),
           Text(
             'Features',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -495,7 +496,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                 ),
                 child: Text(
                   feature,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
@@ -506,7 +507,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
           const SizedBox(height: 24),
           Text(
             'Opening Hours',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -520,7 +521,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                     width: 80,
                     child: Text(
                       hours['day'],
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w500,
                         color: context.primaryTextColor,
                       ),
@@ -528,7 +529,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   ),
                   Text(
                     hours['time'],
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -572,7 +573,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             children: [
               Text(
                 category['name'],
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -623,7 +624,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           children: [
                             Text(
                               item['name'],
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: context.primaryTextColor,
                               ),
@@ -631,7 +632,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             const SizedBox(height: 4),
                             Text(
                               item['description'],
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.secondaryTextColor,
                                 height: 1.3,
                               ),
@@ -653,7 +654,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                     ),
                                     child: Text(
                                       'Veg',
-                                      style: AppTheme.bodySmall.copyWith(
+                                      style: context.bodySmall.copyWith(
                                         color: Colors.green,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -672,7 +673,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                     ),
                                     child: Text(
                                       'Spicy',
-                                      style: AppTheme.bodySmall.copyWith(
+                                      style: context.bodySmall.copyWith(
                                         color: Colors.red,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -687,7 +688,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                       // Price
                       Text(
                         item['price'],
-                        style: AppTheme.bodyLarge.copyWith(
+                        style: context.bodyLarge.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
@@ -738,7 +739,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                       children: [
                         Text(
                           review['name'],
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -755,7 +756,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             const SizedBox(width: 8),
                             Text(
                               review['date'],
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -769,7 +770,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
               const SizedBox(height: 12),
               Text(
                 review['comment'],
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   height: 1.4,
                   color: context.primaryTextColor,
                 ),
@@ -1736,7 +1737,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Title
           Text(
             'Write a Review',
-            style: AppTheme.headlineMedium.copyWith(
+            style: context.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -1746,7 +1747,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Rating selection
           Text(
             'How was your experience?',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -1779,7 +1780,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Review text field
           Text(
             'Tell us about your experience',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -1791,7 +1792,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             maxLines: 4,
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
-              hintStyle: AppTheme.bodyMedium.copyWith(
+              hintStyle: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
@@ -1836,7 +1837,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
                     )
                   : Text(
                       'Submit Review',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
