@@ -156,11 +156,9 @@ export default function TourSchedulesPage() {
       sortable: false,
       render: (_: any, row: TourSchedule) => (
         <div>
-          {tour?.pricePerPerson ? (
-            <p className="text-sm text-gray-500">
-              {tour?.pricePerPerson?.toLocaleString()} {tour?.currency || 'USD'} (default)
-            </p>
-          )}
+          <p className="text-sm text-gray-500">
+            {tour?.pricePerPerson?.toLocaleString() || 'N/A'} {tour?.currency || 'USD'}
+          </p>
         </div>
       ),
     },

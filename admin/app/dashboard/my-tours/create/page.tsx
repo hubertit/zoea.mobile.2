@@ -48,8 +48,8 @@ export default function CreateTourPage() {
 
   const fetchCategories = async () => {
     try {
-      const data = await CategoriesAPI.listCategories({ type: 'tour' });
-      setCategories(data.data || []);
+      const data = await CategoriesAPI.listCategories();
+      setCategories(data || []);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
@@ -58,8 +58,8 @@ export default function CreateTourPage() {
   const fetchLocations = async () => {
     try {
       const [countriesData, citiesData] = await Promise.all([
-        LocationsAPI.listCountries(),
-        LocationsAPI.listCities(),
+        LocationsAPI.getCountries(),
+        LocationsAPI.getCities(),
       ]);
       setCountries(countriesData || []);
       setCities(citiesData || []);
