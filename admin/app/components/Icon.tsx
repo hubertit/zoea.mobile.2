@@ -111,4 +111,5 @@ export {
   faWifi,
   faServer,
   faPrint,
+  faUtensils,
 } from '@fortawesome/free-solid-svg-icons';

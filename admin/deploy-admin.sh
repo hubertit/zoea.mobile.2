@@ -12,10 +12,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-SERVER_PRIMARY="root@172.16.40.61"
-SERVER_BACKUP="root@172.16.40.62"
+SERVER_PRIMARY="root@159.198.65.38"
+SERVER_BACKUP="root@159.198.65.38"
 REMOTE_DIR="/root/zoea-admin"
-ADMIN_PORT="${ADMIN_PORT:-3002}"
+ADMIN_PORT="${ADMIN_PORT:-3010}"
 API_BASE="${NEXT_PUBLIC_API_BASE:-http://172.16.40.61:3000/api}"
 
 echo -e "${GREEN}========================================${NC}"
@@ -26,7 +26,7 @@ echo -e "${GREEN}========================================${NC}"
 check_server() {
     local server=$1
     echo -e "${YELLOW}Checking connection to $server...${NC}"
-    if ssh -o ConnectTimeout=5 "$server" "echo 'Connected'" &> /dev/null; then
+    if sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no "$server" "echo 'Connected'" &> /dev/null; then
         echo -e "${GREEN}✓ Connected to $server${NC}"
         return 0
     else
@@ -85,8 +85,8 @@ echo -e "${GREEN}✓ Deployment package created${NC}"
 
 # Step 3: Sync to server
 echo -e "\n${YELLOW}Step 3: Syncing to server...${NC}"
-ssh "$SERVER" "mkdir -p $REMOTE_DIR"
-rsync -avz --delete "$DEPLOY_DIR/" "$SERVER:$REMOTE_DIR/"
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no "$SERVER" "mkdir -p $REMOTE_DIR"
+sshpass -p 'K1xrU3OT0Kjz671daI' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" "$DEPLOY_DIR/" "$SERVER:$REMOTE_DIR/"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}✗ Sync failed${NC}"
@@ -100,12 +100,12 @@ rm -rf "$DEPLOY_DIR"
 
 # Step 4: Deploy on server
 echo -e "\n${YELLOW}Step 4: Deploying on server...${NC}"
-ssh "$SERVER" <<'ENDSSH'
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no "$SERVER" <<'ENDSSH'
 cd /root/zoea-admin
 
 # Check if port is already in use
-if netstat -tulpn | grep -q ":3002 "; then
-    echo "Port 3002 is in use. Stopping existing container..."
+if netstat -tulpn | grep -q ":3010 "; then
+    echo "Port 3010 is in use. Stopping existing container..."
     docker compose -f docker-compose.admin.yml down
 fi
 
