@@ -65,6 +65,7 @@ import { AssistantModule } from './modules/assistant/assistant.module';
     OrdersModule,
     IntegrationsModule,
     AssistantModule,
+    CountriesModule,
   ],
 })
 export class AppModule {}

@@ -54,6 +54,7 @@ export class OpenAIService {
     userMessage: string,
     conversationHistory: ChatMessage[] = [],
     location?: { lat: number; lng: number },
+    countryCode?: string,
   ): Promise<ChatResponse> {
     if (!this.openai) {
       await this.initializeOpenAI();
@@ -68,7 +69,7 @@ export class OpenAIService {
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: this.getSystemPrompt(),
+        content: this.getSystemPrompt(countryCode),
       },
       ...conversationHistory,
       {
@@ -168,6 +169,22 @@ export class OpenAIService {
   }
 
   /**
+   * Get country name from ISO code
+   */
+  private getCountryName(code?: string): string {
+    if (!code) return 'Rwanda';
+    
+    const countryMap: Record<string, string> = {
+      'RW': 'Rwanda',
+      'KE': 'Kenya',
+      'UG': 'Uganda',
+      'TZ': 'Tanzania',
+    };
+    
+    return countryMap[code.toUpperCase()] || 'Rwanda';
+  }
+
+  /**
    * Clean response text by removing image markdown syntax
    * Images are shown as cards, not in the text
    */
@@ -184,8 +201,9 @@ export class OpenAIService {
     return cleaned;
   }
 
-  private getSystemPrompt(): string {
-    return `You are Zoea, a friendly and knowledgeable AI assistant for Zoea Africa - a travel and discovery app for Rwanda.
+  private getSystemPrompt(countryCode?: string): string {
+    const countryName = this.getCountryName(countryCode);
+    return `You are Zoea, a friendly and knowledgeable AI assistant for Zoea Africa - a travel and discovery app for ${countryName}.
 
 Your role:
 - Help users discover places, tours, products, and services in Rwanda

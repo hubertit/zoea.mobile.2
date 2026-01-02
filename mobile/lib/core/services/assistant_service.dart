@@ -12,6 +12,7 @@ class AssistantService {
     required String message,
     String? conversationId,
     Map<String, double>? location,
+    String? countryCode,
   }) async {
     try {
       final dio = await _getDio();
@@ -25,6 +26,7 @@ class AssistantService {
             'lat': location['lat'],
             'lng': location['lng'],
           },
+          if (countryCode != null) 'countryCode': countryCode,
         },
       );
 

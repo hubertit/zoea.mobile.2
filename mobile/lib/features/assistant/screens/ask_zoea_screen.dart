@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/assistant_provider.dart';
+import '../../../core/providers/country_provider.dart';
 
 class AskZoeaScreen extends ConsumerStatefulWidget {
   const AskZoeaScreen({super.key});
@@ -79,9 +80,12 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
 
     try {
       final service = ref.read(assistantServiceProvider);
+      final selectedCountry = ref.read(selectedCountryProvider).value;
+      
       final response = await service.sendMessage(
         message: text,
         conversationId: _currentConversationId,
+        countryCode: selectedCountry?.code2,
       );
 
       // Update conversation ID if new

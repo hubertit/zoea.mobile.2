@@ -115,6 +115,7 @@ export class AssistantService {
       message,
       conversationHistory,
       location,
+      chatDto.countryCode,
     );
 
     // Save assistant message

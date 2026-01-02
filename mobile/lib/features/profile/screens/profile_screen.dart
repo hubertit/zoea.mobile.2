@@ -8,6 +8,7 @@ import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/providers/theme_provider.dart';
+import '../../../core/providers/country_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -1126,23 +1127,70 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           color: context.primaryColorTheme,
           size: 20,
         ) : null,
-        onTap: () {
-          setState(() {
-            _selectedCountry = name;
-          });
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Country changed to $name',
-                style: context.bodyMedium.copyWith(color: context.primaryTextColor),
-              ),
-              backgroundColor: context.primaryColorTheme,
-            ),
-          );
+        onTap: () async {
+          // Map country name to code
+          final countryCode = _getCountryCode(name);
+          
+          try {
+            // Get country from API by code
+            final countriesService = ref.read(countriesServiceProvider);
+            final country = await countriesService.getCountryByCode(countryCode);
+            
+            if (country != null) {
+              // Save country selection
+              await ref.read(selectedCountryProvider.notifier).selectCountry(country);
+              
+              setState(() {
+                _selectedCountry = name;
+              });
+              
+              if (mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Country changed to $name. Content will be filtered accordingly.',
+                      style: context.bodyMedium.copyWith(color: Colors.white),
+                    ),
+                    backgroundColor: context.successColor,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              }
+            }
+          } catch (e) {
+            if (mounted) {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Failed to change country. Please try again.',
+                    style: context.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  backgroundColor: context.errorColor,
+                ),
+              );
+            }
+          }
         },
       ),
     );
+  }
+
+  /// Map country name to ISO 2-letter code
+  String _getCountryCode(String name) {
+    switch (name) {
+      case 'Rwanda':
+        return 'RW';
+      case 'Kenya':
+        return 'KE';
+      case 'Uganda':
+        return 'UG';
+      case 'Tanzania':
+        return 'TZ';
+      default:
+        return 'RW'; // Default to Rwanda
+    }
   }
 
   Widget _buildLocationOption(String name, String description, bool isSelected) {

@@ -37,5 +37,13 @@ export class ChatDto {
   @ValidateNested()
   @Type(() => LocationDto)
   location?: LocationDto;
+
+  @ApiPropertyOptional({ 
+    description: 'Country code to filter content (ISO 2-letter code)',
+    example: 'RW'
+  })
+  @IsOptional()
+  @IsString()
+  countryCode?: string;
 }
 
