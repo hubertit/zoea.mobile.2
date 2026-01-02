@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
@@ -49,7 +50,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         ),
         title: Text(
           'Shopping',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -74,7 +75,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
           labelColor: context.primaryColorTheme,
           unselectedLabelColor: context.secondaryTextColor,
           indicatorColor: context.primaryColorTheme,
-          labelStyle: AppTheme.bodyMedium.copyWith(
+          labelStyle: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
           tabs: const [
@@ -150,14 +151,14 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
             const SizedBox(height: 16),
             Text(
               'No $category found',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Try adjusting your filters or check back later',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -183,7 +184,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
           children: [
             Text(
               'Filter by',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -196,7 +197,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
             const SizedBox(height: 20),
             Text(
               'Sort by',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),

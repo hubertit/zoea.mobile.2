@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class NightlifeScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
         ),
         title: Text(
           'Nightlife',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -68,7 +69,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
           indicatorColor: context.primaryColorTheme,
           labelColor: context.primaryColorTheme,
           unselectedLabelColor: context.secondaryTextColor,
-          labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
+          labelStyle: context.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
           labelPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -108,14 +109,14 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             const SizedBox(height: 16),
             Text(
               'No nightlife venues found',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Check back later for new venues',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -174,7 +175,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             children: [
             Text(
               'Filter Nightlife',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -183,7 +184,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             // Price Range Filter
             Text(
               'Price Range',
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -204,7 +205,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             // Rating Filter
             Text(
               'Minimum Rating',
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -224,7 +225,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             // Features Filter
             Text(
               'Features',
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -264,7 +265,9 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,
-                      foregroundColor: context.primaryTextColor,
+                      foregroundColor: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.primaryColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply Filters'),
@@ -298,7 +301,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
             children: [
             Text(
               'Sort Nightlife',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -335,7 +338,9 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,
-                      foregroundColor: context.primaryTextColor,
+                      foregroundColor: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.primaryColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply'),
@@ -354,7 +359,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
     return FilterChip(
       label: Text(
         label,
-        style: AppTheme.bodySmall.copyWith(
+        style: context.bodySmall.copyWith(
           color: isSelected ? Theme.of(context).colorScheme.onPrimary : context.primaryTextColor,
           fontWeight: FontWeight.w500,
         ),
@@ -400,7 +405,7 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
               Expanded(
                 child: Text(
                   label,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   ),

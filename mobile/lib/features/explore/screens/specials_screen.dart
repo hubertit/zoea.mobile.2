@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class SpecialsScreen extends StatelessWidget {
   const SpecialsScreen({super.key});
@@ -24,7 +25,7 @@ class SpecialsScreen extends StatelessWidget {
         ),
         title: Text(
           'Special Offers',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -74,7 +75,7 @@ class SpecialsScreen extends StatelessWidget {
                     ),
                     child: Text(
                       special['badge'],
-                      style: AppTheme.labelSmall.copyWith(
+                      style: context.labelSmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
@@ -85,7 +86,7 @@ class SpecialsScreen extends StatelessWidget {
                   // Title
                   Text(
                     special['title'],
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                     maxLines: 2,
@@ -96,7 +97,7 @@ class SpecialsScreen extends StatelessWidget {
                   // Description
                   Text(
                     special['description'],
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     maxLines: 2,
@@ -112,7 +113,7 @@ class SpecialsScreen extends StatelessWidget {
                         children: [
                           Text(
                             special['originalPrice'],
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                               decoration: TextDecoration.lineThrough,
                             ),
@@ -120,7 +121,7 @@ class SpecialsScreen extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             special['discountedPrice'],
-                            style: AppTheme.titleMedium.copyWith(
+                            style: context.titleMedium.copyWith(
                               color: context.primaryColorTheme,
                               fontWeight: FontWeight.w700,
                             ),
@@ -136,7 +137,7 @@ class SpecialsScreen extends StatelessWidget {
                         ),
                         child: Text(
                           special['discount'],
-                          style: AppTheme.labelSmall.copyWith(
+                          style: context.labelSmall.copyWith(
                             color: context.successColor,
                             fontWeight: FontWeight.w600,
                           ),

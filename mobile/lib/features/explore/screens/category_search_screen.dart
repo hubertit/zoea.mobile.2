@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -60,7 +61,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
         ),
         title: Text(
           'Search ${_getCategoryTitle()}',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -87,7 +88,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               autofocus: true,
               decoration: InputDecoration(
                 hintText: _getSearchHint(),
-                hintStyle: AppTheme.bodyMedium.copyWith(
+                hintStyle: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 prefixIcon: const Icon(Icons.search, size: 20),
@@ -229,7 +230,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 child: FilterChip(
                   label: Text(
                     subCategory['label']!,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: isSelected ? context.primaryTextColor : context.primaryTextColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -272,7 +273,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           return Center(
             child: Text(
               'Category not found',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -357,14 +358,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 const SizedBox(height: 16),
                 Text(
                   'Failed to load listings',
-                  style: AppTheme.headlineSmall.copyWith(
+                  style: context.headlineSmall.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   error.toString(),
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
@@ -396,14 +397,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             const SizedBox(height: 16),
             Text(
               'Failed to load category',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -518,7 +519,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       Expanded(
                         child: Text(
                           name,
-                          style: AppTheme.headlineSmall.copyWith(
+                          style: context.headlineSmall.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -534,7 +535,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                         ),
                         child: Text(
                           'Tour Operator',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -554,7 +555,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       Expanded(
                         child: Text(
                           locationName,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -572,14 +573,14 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       const SizedBox(width: 4),
                       Text(
                         rating.toStringAsFixed(1),
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '($reviews reviews)',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -589,7 +590,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                     const SizedBox(height: 12),
                     Text(
                       description,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         height: 1.4,
                       ),
                       maxLines: 2,
@@ -620,7 +621,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             _searchQuery.isEmpty 
                 ? 'Search for ${_getCategoryTitle().toLowerCase()}'
                 : 'No results found',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -629,7 +630,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             _searchQuery.isEmpty
                 ? _getSearchSuggestions()
                 : 'Try different keywords or categories',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -671,7 +672,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             children: [
               Text(
                 'Filter ${_getCategoryTitle()}',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -681,7 +682,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               // Price Range Filter
               Text(
                 'Price Range',
-                style: AppTheme.titleMedium.copyWith(
+                style: context.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -698,7 +699,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               // Rating Filter
               Text(
                 'Minimum Rating',
-                style: AppTheme.titleMedium.copyWith(
+                style: context.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -719,7 +720,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               // Features Filter
               Text(
                 'Features',
-                style: AppTheme.titleMedium.copyWith(
+                style: context.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -753,7 +754,9 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.primaryColorTheme,
-                        foregroundColor: context.primaryTextColor,
+                        foregroundColor: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryColor
+                            : Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Apply Filters'),
@@ -857,7 +860,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             children: [
               Text(
                 'Sort ${_getCategoryTitle()}',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -894,7 +897,9 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.primaryColorTheme,
-                        foregroundColor: context.primaryTextColor,
+                        foregroundColor: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryColor
+                            : Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: const Text('Apply'),
@@ -913,7 +918,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
     return FilterChip(
       label: Text(
         label,
-        style: AppTheme.bodySmall.copyWith(
+        style: context.bodySmall.copyWith(
           color: isSelected ? context.primaryTextColor : context.primaryTextColor,
           fontWeight: FontWeight.w500,
         ),
@@ -959,7 +964,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               Expanded(
                 child: Text(
                   label,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   ),
