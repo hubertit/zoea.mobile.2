@@ -184,6 +184,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             }
 
             return RefreshIndicator(
+              color: context.primaryColorTheme,
+              backgroundColor: context.cardColor,
               onRefresh: () async {
                 ref.invalidate(
                   bookingsProvider(

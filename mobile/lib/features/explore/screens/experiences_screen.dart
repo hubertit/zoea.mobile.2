@@ -134,6 +134,8 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(
               toursProvider(
@@ -323,6 +325,8 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(
               toursProvider(

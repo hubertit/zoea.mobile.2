@@ -97,6 +97,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },
@@ -159,6 +161,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },
@@ -221,6 +225,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },

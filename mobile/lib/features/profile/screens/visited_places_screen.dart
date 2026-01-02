@@ -146,6 +146,8 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(myContentViewsProvider(params));
           },

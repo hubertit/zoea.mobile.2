@@ -193,6 +193,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final trendingAsync = ref.watch(trendingSearchesProvider);
 
     return RefreshIndicator(
+      color: context.primaryColorTheme,
+      backgroundColor: context.cardColor,
       onRefresh: () async {
         ref.invalidate(searchHistoryProvider);
         ref.invalidate(trendingSearchesProvider);

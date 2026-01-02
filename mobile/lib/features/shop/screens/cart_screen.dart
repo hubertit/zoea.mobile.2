@@ -68,6 +68,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             children: [
               Expanded(
                 child: RefreshIndicator(
+                  color: context.primaryColorTheme,
+                  backgroundColor: context.cardColor,
                   onRefresh: () async {
                     ref.invalidate(cartProvider);
                   },

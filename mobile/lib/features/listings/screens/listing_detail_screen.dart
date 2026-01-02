@@ -1051,6 +1051,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         return Stack(
           children: [
             RefreshIndicator(
+              color: context.primaryColorTheme,
+              backgroundColor: context.cardColor,
               onRefresh: () async {
                 ref.invalidate(
                   listingReviewsProvider(

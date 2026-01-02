@@ -432,6 +432,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(
               listingsProvider(

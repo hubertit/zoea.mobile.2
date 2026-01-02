@@ -101,6 +101,8 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
           }
 
           return RefreshIndicator(
+            color: context.primaryColorTheme,
+            backgroundColor: context.cardColor,
             onRefresh: () async {
               setState(() {
                 _currentPage = 1; // Reset to first page on refresh

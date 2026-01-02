@@ -222,6 +222,8 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(myReviewsProvider(params));
           },

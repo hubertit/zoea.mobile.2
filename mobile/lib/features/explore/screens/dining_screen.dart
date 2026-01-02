@@ -388,6 +388,8 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(
               listingsProvider(

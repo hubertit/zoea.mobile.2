@@ -81,6 +81,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           }
 
           return RefreshIndicator(
+            color: context.primaryColorTheme,
+            backgroundColor: context.cardColor,
             onRefresh: () async {
               ref.invalidate(
                 notificationsProvider(

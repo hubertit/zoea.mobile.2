@@ -1003,6 +1003,8 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         return Stack(
           children: [
             RefreshIndicator(
+              color: context.primaryColorTheme,
+              backgroundColor: context.cardColor,
               onRefresh: () async {
                 ref.invalidate(listingReviewsProvider(ListingReviewsParams(
                   listingId: listingId,

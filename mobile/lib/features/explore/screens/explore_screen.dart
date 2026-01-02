@@ -193,6 +193,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       ),
       body: SafeArea(
         child: RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             // Refresh all data on explore screen
             ref.invalidate(categoriesProvider);

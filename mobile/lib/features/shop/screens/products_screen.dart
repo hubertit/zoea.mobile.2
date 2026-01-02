@@ -98,6 +98,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           }
 
           return RefreshIndicator(
+            color: context.primaryColorTheme,
+            backgroundColor: context.cardColor,
             onRefresh: () async {
               ref.invalidate(productsProvider(params));
               if (widget.listingId != null) {

@@ -314,6 +314,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             }
             
             return RefreshIndicator(
+              color: context.primaryColorTheme,
+              backgroundColor: context.cardColor,
               onRefresh: () async {
                 ref.invalidate(
                   listingsProvider(

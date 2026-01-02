@@ -163,6 +163,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     final miceEvents = _getMockMiceEvents();
     
     return RefreshIndicator(
+      color: context.primaryColorTheme,
+      backgroundColor: context.cardColor,
       onRefresh: () async {
         // MICE events are mock data, just refresh the UI
         setState(() {});
@@ -399,6 +401,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     }
 
     return RefreshIndicator(
+      color: context.primaryColorTheme,
+      backgroundColor: context.cardColor,
       onRefresh: () async {
         final eventsNotifier = ref.read(eventsProvider.notifier);
         switch (eventsState.currentTab) {

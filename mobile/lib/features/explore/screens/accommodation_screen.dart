@@ -319,6 +319,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         }
 
         return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
           onRefresh: () async {
             ref.invalidate(
               listingsProvider(

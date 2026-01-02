@@ -96,6 +96,8 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
           }
 
           return RefreshIndicator(
+            color: context.primaryColorTheme,
+            backgroundColor: context.cardColor,
             onRefresh: () async {
               ref.invalidate(servicesProvider(params));
             },
