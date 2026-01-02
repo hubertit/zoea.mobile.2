@@ -81,7 +81,7 @@ class AppConfig {
   static const int qrCodeErrorCorrectionLevel = 3;
 
   // Animation Durations
-  static const int splashDuration = 3500; // 3.5 seconds
+  static const int splashDuration = 5000; // 5 seconds
   static const int pageTransitionDuration = 300; // 300 milliseconds
   static const int cardAnimationDuration = 200; // 200 milliseconds
 

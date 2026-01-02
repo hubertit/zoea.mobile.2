@@ -267,21 +267,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  
-                  // App Name
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Text(
-                      'Zoea Africa',
-                      style: context.titleLarge.copyWith(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 32),
                   
                   // Tagline
                   FadeTransition(
@@ -289,8 +275,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: Text(
                       'Discover Rwanda Like Never Before',
                       style: context.bodyMedium.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withOpacity(0.95),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -304,6 +293,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Version number
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Text(
+                      'v${AppConfig.appVersion}',
+                      style: context.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 12,
                       ),
                     ),
                   ),
