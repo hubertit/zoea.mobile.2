@@ -407,14 +407,41 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
             child: Column(
               crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isUser
-                        ? context.primaryColorTheme
-                        : context.backgroundColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                Stack(
+                  children: [
+                    // Chat bubble tail
+                    Positioned(
+                      bottom: 0,
+                      left: isUser ? null : -6,
+                      right: isUser ? -6 : null,
+                      child: CustomPaint(
+                        size: const Size(20, 20),
+                        painter: _ChatBubbleTailPainter(
+                          color: isUser
+                              ? (context.isDarkMode 
+                                  ? context.primaryColorTheme.withOpacity(0.9)
+                                  : context.primaryColorTheme)
+                              : context.cardColor,
+                          isUser: isUser,
+                        ),
+                      ),
+                    ),
+                    // Chat bubble content
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isUser
+                            ? (context.isDarkMode 
+                                ? context.primaryColorTheme.withOpacity(0.9)
+                                : context.primaryColorTheme)
+                            : context.cardColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(16),
+                          topRight: const Radius.circular(16),
+                          bottomLeft: Radius.circular(isUser ? 16 : 4),
+                          bottomRight: Radius.circular(isUser ? 4 : 16),
+                        ),
+                      ),
                   child: isUser
                       ? Text(
                           text,
@@ -471,6 +498,8 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
                           ),
                           selectable: true,
                         ),
+                    ),
+                  ],
                 ),
                 
                 // Cards
@@ -616,22 +645,44 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: context.backgroundColor,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildDot(0),
-                const SizedBox(width: 4),
-                _buildDot(1),
-                const SizedBox(width: 4),
-                _buildDot(2),
-              ],
-            ),
+          Stack(
+            children: [
+              // Chat bubble tail
+              Positioned(
+                bottom: 0,
+                left: -6,
+                child: CustomPaint(
+                  size: const Size(20, 20),
+                  painter: _ChatBubbleTailPainter(
+                    color: context.cardColor,
+                    isUser: false,
+                  ),
+                ),
+              ),
+              // Typing indicator bubble
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: context.cardColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                    bottomLeft: Radius.circular(4),
+                    bottomRight: Radius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildDot(0),
+                    const SizedBox(width: 4),
+                    _buildDot(1),
+                    const SizedBox(width: 4),
+                    _buildDot(2),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -870,5 +921,54 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
       return '${date.day}/${date.month}/${date.year}';
     }
   }
+}
+
+/// Custom painter for chat bubble tail
+class _ChatBubbleTailPainter extends CustomPainter {
+  final Color color;
+  final bool isUser;
+
+  _ChatBubbleTailPainter({
+    required this.color,
+    required this.isUser,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+
+    if (isUser) {
+      // Tail pointing to the right
+      path.moveTo(0, 0);
+      path.lineTo(size.width * 0.7, 0);
+      path.quadraticBezierTo(
+        size.width,
+        size.height * 0.3,
+        size.width,
+        size.height,
+      );
+      path.lineTo(0, 0);
+    } else {
+      // Tail pointing to the left
+      path.moveTo(size.width, 0);
+      path.lineTo(size.width * 0.3, 0);
+      path.quadraticBezierTo(
+        0,
+        size.height * 0.3,
+        0,
+        size.height,
+      );
+      path.lineTo(size.width, 0);
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
