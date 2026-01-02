@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/notifications_provider.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
@@ -42,7 +43,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         ),
         title: Text(
           'Notifications',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -60,7 +61,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   )
                 : Text(
                     'Mark all read',
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
@@ -211,7 +212,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         Expanded(
                           child: Text(
                             title,
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               fontWeight: isRead
                                   ? FontWeight.w500
                                   : FontWeight.w600,
@@ -223,7 +224,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                         Text(
                           timeText,
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -234,7 +235,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     // Message
                     Text(
                       body,
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                       maxLines: 2,
@@ -253,7 +254,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                         child: Text(
                           actionText,
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -290,14 +291,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           const SizedBox(height: 24),
           Text(
             'No Notifications',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'You don\'t have any notifications yet',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -322,14 +323,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             const SizedBox(height: 16),
             Text(
               'Failed to load notifications',
-              style: AppTheme.titleLarge.copyWith(
+              style: context.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceAll('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,

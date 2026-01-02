@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/providers/auth_provider.dart';
@@ -168,7 +169,9 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                       onPressed: _isSaving ? null : _handleSave,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.primaryColorTheme,
-                        foregroundColor: context.primaryTextColor,
+                        foregroundColor: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryColor
+                            : Colors.white,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.spacing16,
                         ),
@@ -190,7 +193,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                             )
                           : Text(
                               'Save Changes',
-                              style: AppTheme.labelLarge.copyWith(
+                              style: context.labelLarge.copyWith(
                                 color: context.backgroundColor,
                               ),
                             ),
@@ -216,7 +219,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                         Expanded(
                           child: Text(
                             'Your data is used only to personalize your experience. You can update or remove it anytime.',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -250,13 +253,13 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
               children: [
                 Text(
                   'Profile Completion',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   '$percentage%',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryColorTheme,
                   ),
@@ -276,7 +279,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
             const SizedBox(height: AppTheme.spacing8),
             Text(
               'Complete your profile to get better recommendations',
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -305,7 +308,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     children: [
                       Text(
                         title,
-                        style: AppTheme.headlineSmall.copyWith(
+                        style: context.headlineSmall.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -322,7 +325,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   const SizedBox(height: AppTheme.spacing4),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),

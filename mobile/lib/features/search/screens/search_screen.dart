@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/search_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 
@@ -104,7 +105,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           autofocus: true,
           decoration: InputDecoration(
             hintText: 'Search events, places, experiences...',
-            hintStyle: AppTheme.bodyMedium.copyWith(
+            hintStyle: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             border: InputBorder.none,
@@ -112,7 +113,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             focusedBorder: InputBorder.none,
             contentPadding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
           ),
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
           onChanged: (value) {
@@ -208,7 +209,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               children: [
                 Text(
                   'Recent Searches',
-                  style: AppTheme.headlineSmall.copyWith(
+                  style: context.headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -220,7 +221,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPressed: () => _showClearHistoryDialog(),
                       child: Text(
                         'Clear',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.primaryColorTheme,
                         ),
                       ),
@@ -239,7 +240,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
                       'No recent searches',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -263,7 +264,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
                       'Sign in to see your search history',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -274,7 +275,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     'Failed to load recent searches',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.errorColor,
                     ),
                   ),
@@ -287,7 +288,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             // Popular searches
             Text(
               'Popular Searches',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -301,7 +302,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
                       'No popular searches available',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -323,7 +324,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   'Failed to load popular searches',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.errorColor,
                   ),
                 ),
@@ -354,14 +355,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           const SizedBox(height: 16),
           Text(
             'No results found',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Try searching with different keywords',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -394,14 +395,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           const SizedBox(height: 16),
           Text(
             'Search failed',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               color: context.errorColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             error.toString().replaceFirst('Exception: ', ''),
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -514,7 +515,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
         title: Text(
           name,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -528,7 +529,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             if (location.isNotEmpty)
               Text(
                 location,
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 maxLines: 1,
@@ -545,7 +546,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 const SizedBox(width: 4),
                 Text(
                   typeLabel,
-                  style: AppTheme.labelSmall.copyWith(
+                  style: context.labelSmall.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -559,7 +560,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   const SizedBox(width: 2),
                   Text(
                     rating.toStringAsFixed(1),
-                    style: AppTheme.labelSmall.copyWith(
+                    style: context.labelSmall.copyWith(
                       color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
@@ -635,14 +636,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
         title: Text(
           query,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
         trailing: timeAgo != null
             ? Text(
                 timeAgo,
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: context.secondaryTextColor,
                 ),
               )
@@ -671,7 +672,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
         title: Text(
           search,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -695,18 +696,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       builder: (context) => AlertDialog(
         title: Text(
           'Clear Search History',
-          style: AppTheme.titleMedium,
+          style: context.titleMedium,
         ),
         content: Text(
           'Are you sure you want to clear all your search history?',
-          style: AppTheme.bodyMedium,
+          style: context.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -718,7 +719,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             },
             child: Text(
               'Clear',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.errorColor,
                 fontWeight: FontWeight.w600,
               ),
@@ -743,7 +744,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         SnackBar(
           content: Text(
             'Search history cleared',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.primaryTextColor,
             ),
           ),
@@ -758,7 +759,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         SnackBar(
           content: Text(
             'Failed to clear search history: ${e.toString().replaceFirst('Exception: ', '')}',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.primaryTextColor,
             ),
           ),

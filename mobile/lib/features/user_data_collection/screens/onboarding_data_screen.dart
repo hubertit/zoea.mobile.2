@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/services/data_inference_service.dart';
@@ -141,14 +142,14 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing24),
           Text(
             'Where are you from?',
-            style: AppTheme.displayMedium.copyWith(
+            style: context.displayMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
           const SizedBox(height: AppTheme.spacing8),
           Text(
             'Help us personalize your experience',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
@@ -189,14 +190,14 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing24),
           Text(
             'Are you a resident or visitor?',
-            style: AppTheme.displayMedium.copyWith(
+            style: context.displayMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
           const SizedBox(height: AppTheme.spacing8),
           Text(
             'This helps us show you relevant content',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
@@ -274,7 +275,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.headlineMedium.copyWith(
+                    style: context.headlineMedium.copyWith(
                       color: isSelected
                           ? context.primaryColorTheme
                           : context.primaryTextColor,
@@ -284,7 +285,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                   const SizedBox(height: AppTheme.spacing4),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -321,14 +322,14 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing24),
           Text(
             'What brings you to Rwanda?',
-            style: AppTheme.displayMedium.copyWith(
+            style: context.displayMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
           const SizedBox(height: AppTheme.spacing8),
           Text(
             'Select your primary purpose',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
@@ -368,14 +369,14 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing24),
           Text(
             'What language do you prefer?',
-            style: AppTheme.displayMedium.copyWith(
+            style: context.displayMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
           const SizedBox(height: AppTheme.spacing8),
           Text(
             'You can change this anytime in settings',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
@@ -416,14 +417,14 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing24),
           Text(
             'Help us improve',
-            style: AppTheme.displayMedium.copyWith(
+            style: context.displayMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
           const SizedBox(height: AppTheme.spacing8),
           Text(
             'Allow analytics to help us personalize your experience',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ).animate().fadeIn(duration: 300.ms, delay: 200.ms),
@@ -452,7 +453,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                 Expanded(
                   child: Text(
                     'I agree to share analytics data to improve recommendations',
-                    style: AppTheme.bodyMedium,
+                    style: context.bodyMedium,
                   ),
                 ),
               ],
@@ -461,7 +462,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           const SizedBox(height: AppTheme.spacing16),
           Text(
             'You can change this anytime in settings',
-            style: AppTheme.bodySmall.copyWith(
+            style: context.bodySmall.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -484,7 +485,9 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
               onPressed: _isLoading ? null : (canContinue ? _handleContinue : null),
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryColorTheme,
-                foregroundColor: context.primaryTextColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryColor
+                    : Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.spacing24,
                   vertical: AppTheme.spacing16,
@@ -505,7 +508,7 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
                     )
                   : Text(
                       _currentStep == 4 ? 'Complete' : 'Continue',
-                      style: AppTheme.labelLarge.copyWith(
+                      style: context.labelLarge.copyWith(
                         color: context.backgroundColor,
                       ),
                     ),
@@ -514,12 +517,10 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
           if (_currentStep > 0)
             TextButton(
               onPressed: _isLoading ? null : _handleBack,
-              child: Text(
-                'Back',
-                style: AppTheme.bodyMedium.copyWith(
-                  color: context.secondaryTextColor,
-                ),
+              style: TextButton.styleFrom(
+                foregroundColor: context.secondaryTextColor,
               ),
+              child: const Text('Back'),
             ),
         ],
       ),

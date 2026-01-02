@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/listings_provider.dart';
 
 class ListingsScreen extends ConsumerStatefulWidget {
@@ -43,7 +44,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
       appBar: AppBar(
         title: Text(
           widget.type != null ? widget.type!.toUpperCase() : 'Listings',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -83,14 +84,14 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'No listings found',
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Try adjusting your filters',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -157,14 +158,14 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
               const SizedBox(height: 16),
               Text(
                 'Failed to load listings',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -285,7 +286,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                     // Title
                     Text(
                       name,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -307,7 +308,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                           Expanded(
                             child: Text(
                               address,
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                               maxLines: 1,
@@ -335,7 +336,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 rating.toStringAsFixed(1),
-                                style: AppTheme.bodySmall.copyWith(
+                                style: context.bodySmall.copyWith(
                                   fontWeight: FontWeight.w500,
                                   color: context.primaryTextColor,
                                 ),
@@ -344,7 +345,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                                 const SizedBox(width: 4),
                                 Text(
                                   '($reviewCount)',
-                                  style: AppTheme.bodySmall.copyWith(
+                                  style: context.bodySmall.copyWith(
                                     color: context.secondaryTextColor,
                                   ),
                                 ),
@@ -356,7 +357,7 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
                         if (minPrice != null)
                           Text(
                             '$currency ${minPrice.toString()}',
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               color: context.primaryColorTheme,
                               fontWeight: FontWeight.w600,
                             ),

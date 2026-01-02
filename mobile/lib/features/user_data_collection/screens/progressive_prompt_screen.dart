@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../widgets/age_range_selector.dart';
@@ -123,7 +124,7 @@ class _ProgressivePromptScreenState
             // Title
             Text(
               _title,
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -133,7 +134,7 @@ class _ProgressivePromptScreenState
             // Question
             Text(
               _question,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -149,12 +150,10 @@ class _ProgressivePromptScreenState
                 Expanded(
                   child: TextButton(
                     onPressed: _isLoading ? null : _handleSkip,
-                    child: Text(
-                      'Maybe later',
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: context.secondaryTextColor,
-                      ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.secondaryTextColor,
                     ),
+                    child: const Text('Maybe later'),
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacing12),
@@ -164,7 +163,9 @@ class _ProgressivePromptScreenState
                     onPressed: _isLoading || !_canSave ? null : _handleSave,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,
-                      foregroundColor: context.primaryTextColor,
+                      foregroundColor: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.primaryColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(
                         vertical: AppTheme.spacing16,
                       ),
@@ -186,7 +187,7 @@ class _ProgressivePromptScreenState
                           )
                         : Text(
                             'Save',
-                            style: AppTheme.labelLarge.copyWith(
+                            style: context.labelLarge.copyWith(
                               color: context.backgroundColor,
                             ),
                           ),
