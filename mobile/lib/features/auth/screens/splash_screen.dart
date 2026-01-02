@@ -10,6 +10,8 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/providers/theme_provider.dart';
+import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/providers/health_check_provider.dart';
 import '../../../core/services/data_inference_service.dart';
 import '../../../core/services/health_check_service.dart';
 import '../../../core/models/user.dart';
@@ -57,6 +59,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _checkAuthAndNavigate() async {
+    // Initialize connectivity and health checks silently in the background
+    // This prevents the banner from flashing after splash screen
+    final connectivityInitFuture = _initializeConnectivityCheck();
+    
     // Start the timer for minimum splash duration
     final splashTimer = Future.delayed(
       const Duration(milliseconds: AppConfig.splashDuration),
@@ -65,8 +71,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // Run auth checks in parallel with splash timer
     final authCheckFuture = _performAuthChecks();
     
-    // Wait for both the splash duration AND auth checks to complete
-    await Future.wait([splashTimer, authCheckFuture]);
+    // Wait for splash duration, auth checks, AND connectivity initialization
+    await Future.wait([
+      splashTimer,
+      authCheckFuture,
+      connectivityInitFuture,
+    ]);
     
     if (!mounted) return;
     
@@ -74,6 +84,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final navigationPath = await authCheckFuture;
     if (mounted && navigationPath != null) {
       context.go(navigationPath);
+    }
+  }
+
+  /// Initialize connectivity and health checks silently
+  Future<void> _initializeConnectivityCheck() async {
+    try {
+      // Force initial connectivity check
+      await ref.read(connectivityProvider.notifier).checkConnectivity();
+      
+      // Give it a moment to complete
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Also do initial health check if we have connectivity
+      final hasInternet = ref.read(hasInternetProvider);
+      if (hasInternet) {
+        await ref.read(healthCheckProvider.notifier).checkHealth();
+      }
+    } catch (e) {
+      // Silently fail - don't block navigation
     }
   }
 

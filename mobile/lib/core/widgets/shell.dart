@@ -20,6 +20,7 @@ class Shell extends ConsumerStatefulWidget {
 
 class _ShellState extends ConsumerState<Shell> {
   bool _hasShownMaintenanceScreen = false;
+  bool _isInitialLoad = true;
 
   @override
   void initState() {
@@ -28,6 +29,15 @@ class _ShellState extends ConsumerState<Shell> {
     // Start periodic health checks when app shell is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(healthCheckProvider.notifier).startPeriodicChecks();
+      
+      // After initial grace period, allow warnings to show
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isInitialLoad = false;
+          });
+        }
+      });
     });
   }
 
@@ -39,6 +49,9 @@ class _ShellState extends ConsumerState<Shell> {
     ref.listen<ConnectivityState>(
       connectivityProvider,
       (previous, next) {
+        // Skip notifications during initial load
+        if (_isInitialLoad) return;
+        
         // If device loses internet
         if (previous?.isConnected == true && next.isDisconnected) {
           _showNoInternetWarning(next);
@@ -55,6 +68,9 @@ class _ShellState extends ConsumerState<Shell> {
     ref.listen<BackendHealthState>(
       healthCheckProvider,
       (previous, next) {
+        // Skip notifications during initial load
+        if (_isInitialLoad) return;
+        
         final hasInternet = ref.read(hasInternetProvider);
         
         // Only show backend warnings if we have internet
@@ -98,11 +114,11 @@ class _ShellState extends ConsumerState<Shell> {
     return Scaffold(
       body: Column(
         children: [
-          // No internet banner (higher priority)
-          if (isOffline)
+          // No internet banner (higher priority) - only show after initial load
+          if (!_isInitialLoad && isOffline)
             _buildNoInternetBanner(connectivityState)
-          // Backend offline warning banner (only show if internet is available)
-          else if (shouldShowBackendWarning && !_hasShownMaintenanceScreen)
+          // Backend offline warning banner (only show if internet is available and after initial load)
+          else if (!_isInitialLoad && shouldShowBackendWarning && !_hasShownMaintenanceScreen)
             _buildBackendOfflineBanner(healthState),
           // Main content
           Expanded(child: widget.child),
