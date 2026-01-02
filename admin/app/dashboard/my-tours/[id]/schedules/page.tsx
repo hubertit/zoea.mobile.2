@@ -24,7 +24,6 @@ export default function TourSchedulesPage() {
     date: '',
     startTime: '',
     availableSpots: '',
-    priceOverride: '',
     isAvailable: true,
   });
 
@@ -65,7 +64,7 @@ export default function TourSchedulesPage() {
         date: formData.date,
         startTime: formData.startTime || undefined,
         availableSpots: parseInt(formData.availableSpots),
-        priceOverride: formData.priceOverride ? parseFloat(formData.priceOverride) : undefined,
+        // priceOverride removed from API
         isAvailable: formData.isAvailable,
       };
 
@@ -103,7 +102,6 @@ export default function TourSchedulesPage() {
       date: '',
       startTime: '',
       availableSpots: '',
-      priceOverride: '',
       isAvailable: true,
     });
   };
@@ -116,7 +114,6 @@ export default function TourSchedulesPage() {
       date: scheduleDate.toISOString().split('T')[0],
       startTime: startTime,
       availableSpots: schedule.availableSpots.toString(),
-      priceOverride: schedule.priceOverride?.toString() || '',
       isAvailable: schedule.isAvailable ?? true,
     });
     setShowModal(true);
@@ -147,11 +144,9 @@ export default function TourSchedulesPage() {
       render: (_: any, row: TourSchedule) => (
         <div>
           <p className="text-sm text-gray-900">
-            {row.availableSpots - (row.bookedSpots || 0)} / {row.availableSpots} spots
+            {row.availableSpots} spots available
           </p>
-          {row.bookedSpots && row.bookedSpots > 0 && (
-            <p className="text-xs text-gray-500">{row.bookedSpots} booked</p>
-          )}
+          <p className="text-xs text-gray-500">Total capacity: {row.availableSpots}</p>
         </div>
       ),
     },
@@ -161,11 +156,7 @@ export default function TourSchedulesPage() {
       sortable: false,
       render: (_: any, row: TourSchedule) => (
         <div>
-          {row.priceOverride ? (
-            <p className="font-medium text-gray-900">
-              {row.priceOverride.toLocaleString()} {tour?.currency || 'USD'}
-            </p>
-          ) : (
+          {tour?.pricePerPerson ? (
             <p className="text-sm text-gray-500">
               {tour?.pricePerPerson?.toLocaleString()} {tour?.currency || 'USD'} (default)
             </p>
@@ -279,13 +270,10 @@ export default function TourSchedulesPage() {
             required
             min="1"
           />
-          <Input
-            label="Price Override (Optional)"
-            type="number"
-            value={formData.priceOverride}
-            onChange={(e) => setFormData({ ...formData, priceOverride: e.target.value })}
-            placeholder={`Default: ${tour?.pricePerPerson?.toLocaleString()} ${tour?.currency || 'USD'}`}
-          />
+          {/* Price Override removed from API */}
+          <div className="text-sm text-gray-600">
+            Default Price: {tour?.pricePerPerson?.toLocaleString()} {tour?.currency || 'USD'} per person
+          </div>
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
