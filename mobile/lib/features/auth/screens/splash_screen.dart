@@ -280,6 +280,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Zoea logo at top
+                  Image.asset(
+                    AppAssets.logoWhite,
+                    height: 40,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 24),
                   // Bold headline - line 1
                   const Text(
                     'Discover Rwanda',
@@ -309,27 +316,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       fontSize: 16,
                       height: 1.5,
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  // "Powered by" section
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Powered by',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Image.asset(
-                        AppAssets.logoWhite,
-                        height: 35,
-                        fit: BoxFit.contain,
-                      ),
-                    ],
                   ),
                 ],
               ),
