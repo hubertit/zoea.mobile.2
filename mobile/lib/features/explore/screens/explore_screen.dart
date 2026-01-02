@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/fade_in_image.dart' show FadeInNetworkImage;
 import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -287,7 +288,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           // Location
               Text(
                 'Kigali',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
               fontSize: 11,
@@ -303,7 +304,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               Flexible(
                 child: Text(
                   '25°',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                   fontWeight: FontWeight.w700,
                     color: context.primaryTextColor,
                     fontSize: 18,
@@ -327,7 +328,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               ),
               Text(
                         '10%',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                           color: context.grey600,
                           fontSize: 8,
                         ),
@@ -379,7 +380,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               Flexible(
                 child: Text(
                   'USD / RWF',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                     fontSize: 10.8,
@@ -391,7 +392,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               // Percentage change
               Text(
                 '-0.0080%',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: Colors.red[600],
                   fontSize: 7.2,
                   fontWeight: FontWeight.w500,
@@ -409,7 +410,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               Flexible(
                 child: Text(
                   '1,444.33',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: context.primaryTextColor,
                     fontSize: 18.48,
@@ -465,7 +466,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             // Title
               Text(
               'Quick Actions',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
                 fontSize: 10,
@@ -526,7 +527,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             // Title
             Text(
               'Quick Actions',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -551,7 +552,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       SnackBar(
                         content: Text(
                           'Emergency SOS activated',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: Colors.white,
                           ),
                         ),
@@ -607,7 +608,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             SnackBar(
                               content: Text(
                                 'Finding nearby pharmacies...',
-                                style: AppTheme.bodyMedium.copyWith(
+                                style: context.bodyMedium.copyWith(
                                   color: Colors.white,
                                 ),
                               ),
@@ -625,7 +626,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             SnackBar(
                               content: Text(
                                 'Connecting to roadside assistance...',
-                                style: AppTheme.bodyMedium.copyWith(
+                                style: context.bodyMedium.copyWith(
                                   color: Colors.white,
                                 ),
                               ),
@@ -746,7 +747,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             if (label != 'Visit Rwanda' && label != 'Irembo')
               Text(
                 label,
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: context.primaryTextColor,
                   fontWeight: FontWeight.w500,
                   fontSize: 11,
@@ -786,7 +787,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             children: [
               Text(
                 'Categories',
-                style: AppTheme.headlineMedium.copyWith(
+                style: context.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -797,7 +798,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 },
                 child: Text(
                   'View More',
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
@@ -846,7 +847,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               children: [
                 Text(
                   'Categories',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -891,7 +892,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         children: [
           Text(
             'Categories',
-            style: AppTheme.headlineMedium.copyWith(
+            style: context.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -985,7 +986,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             const SizedBox(height: 6),
             Text(
               name,
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryTextColor,
                 fontSize: 11,
@@ -1083,7 +1084,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             const SizedBox(height: 8),
             Text(
               label,
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryTextColor,
               ),
@@ -1108,7 +1109,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               children: [
                 Text(
                   'Happening',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -1156,7 +1157,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       const SizedBox(height: 8),
                       Text(
                         'Failed to load events',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.errorColor,
                         ),
                       ),
@@ -1179,7 +1180,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       const SizedBox(height: 8),
             Text(
                         'No events today',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                 color: context.secondaryTextColor,
                         ),
                       ),
@@ -1370,7 +1371,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     children: [
                       Text(
                         eventDetails.name,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
@@ -1381,7 +1382,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       const SizedBox(height: 4),
                       Text(
                         timeText,
-                        style: AppTheme.labelSmall.copyWith(
+                        style: context.labelSmall.copyWith(
                           color: Colors.white.withOpacity(0.8),
                           fontWeight: FontWeight.w500,
                         ),
@@ -1464,7 +1465,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   children: [
                     Text(
                       title,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
@@ -1474,7 +1475,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: Colors.white.withOpacity(0.9),
                       ),
                       maxLines: 1,
@@ -1483,7 +1484,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     const SizedBox(height: 4),
                     Text(
                       time,
-                      style: AppTheme.labelSmall.copyWith(
+                      style: context.labelSmall.copyWith(
                         color: Colors.white.withOpacity(0.8),
                         fontWeight: FontWeight.w500,
                       ),
@@ -1532,7 +1533,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             // Title
             Text(
               'All Categories',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -1560,7 +1561,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
                           'No categories available',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -1598,7 +1599,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           padding: const EdgeInsets.all(20.0),
                           child: Text(
                             'No categories available',
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -1627,7 +1628,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         children: [
                           Text(
                             'Failed to load categories',
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               color: context.errorColor,
                             ),
                           ),
@@ -1700,7 +1701,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             const SizedBox(height: 6),
             Text(
               name,
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.primaryTextColor,
                 fontWeight: FontWeight.w500,
                 fontSize: 11,
@@ -1744,7 +1745,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             const SizedBox(height: 8),
             Text(
               label,
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.primaryTextColor, // Match quick actions text color
                 fontWeight: FontWeight.w500,
                 fontSize: 11,
@@ -1772,7 +1773,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               children: [
                 Text(
                   'Recommend',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -1802,7 +1803,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     return Center(
                       child: Text(
                         'No featured listings',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -1826,7 +1827,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 error: (error, stack) => Center(
                   child: Text(
                     'Failed to load recommendations',
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.errorColor,
                     ),
                   ),
@@ -1925,7 +1926,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       ),
                       child: Text(
                         category,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
@@ -1957,7 +1958,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             const SizedBox(width: 2),
                             Text(
                               rating.toStringAsFixed(1),
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: Colors.white,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
@@ -1978,7 +1979,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 children: [
                   Text(
                     name,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                       color: context.primaryTextColor,
                     ),
@@ -1989,7 +1990,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   if (address.isNotEmpty)
                     Text(
                       address,
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                       maxLines: 1,
@@ -2002,7 +2003,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       Expanded(
                         child: Text(
                           category,
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -2136,7 +2137,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               children: [
                 Text(
                   'Near Me',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -2166,7 +2167,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         'No listings available',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -2195,7 +2196,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     'Failed to load listings',
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.errorColor,
                     ),
                   ),
@@ -2278,7 +2279,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     // Title
                     Text(
                       name,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -2299,7 +2300,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         Expanded(
                           child: Text(
                             address,
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                             maxLines: 1,
@@ -2315,7 +2316,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           ),
                           child: Text(
                             category,
-                            style: AppTheme.labelSmall.copyWith(
+                            style: context.labelSmall.copyWith(
                               color: context.primaryColorTheme,
                               fontWeight: FontWeight.w500,
                             ),
@@ -2390,7 +2391,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           children: [
             Text(
               'Special Offers',
-              style: AppTheme.headlineMedium.copyWith(
+              style: context.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -2401,7 +2402,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               },
               child: Text(
                 'View All',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: context.primaryColorTheme,
                   fontWeight: FontWeight.w500,
                 ),
@@ -2458,7 +2459,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     ),
                     child: Text(
                       special['badge'],
-                      style: AppTheme.labelSmall.copyWith(
+                      style: context.labelSmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
@@ -2469,7 +2470,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   // Title
                   Text(
                     special['title'],
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       fontWeight: FontWeight.w700,
                       color: context.primaryTextColor,
                     ),
@@ -2481,7 +2482,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   // Description
                   Text(
                     special['description'],
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     maxLines: 2,
@@ -2497,7 +2498,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         children: [
                           Text(
                             special['originalPrice'],
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                               decoration: TextDecoration.lineThrough,
                             ),
@@ -2505,7 +2506,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           const SizedBox(width: 8),
                           Text(
                             special['discountedPrice'],
-                            style: AppTheme.titleMedium.copyWith(
+                            style: context.titleMedium.copyWith(
                               color: context.primaryColorTheme,
                               fontWeight: FontWeight.w700,
                             ),
@@ -2521,7 +2522,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         ),
                         child: Text(
                           special['discount'],
-                          style: AppTheme.labelSmall.copyWith(
+                          style: context.labelSmall.copyWith(
                             color: context.successColor, // Success color is intentional
                             fontWeight: FontWeight.w600,
                           ),
