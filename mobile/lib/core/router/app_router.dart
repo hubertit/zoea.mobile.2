@@ -76,20 +76,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     }
   });
   
-  // Set initial location based on auth state - skip splash if already logged in
-  final initialLocation = isLoggedIn ? '/explore' : '/splash';
+  // Always start with splash screen - let splash handle navigation based on auth state
+  final initialLocation = '/splash';
   
   final router = GoRouter(
     refreshListenable: refreshNotifier,
     initialLocation: initialLocation,
     redirect: (context, state) {
-      // If user is logged in, never allow navigation to splash - redirect to explore
-      if (isLoggedIn && state.matchedLocation == '/splash') {
-        return '/explore';
-      }
-      
-      // Don't redirect from splash screen if user is not logged in - let it handle navigation
-      if (!isLoggedIn && state.matchedLocation == '/splash') {
+      // Always allow splash screen on initial load - it will handle navigation after showing for full duration
+      if (state.matchedLocation == '/splash') {
         return null;
       }
       
