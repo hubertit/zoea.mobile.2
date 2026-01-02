@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/products_provider.dart';
 import '../../../core/services/cart_service.dart';
 import '../../../core/config/app_config.dart';
@@ -96,14 +97,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
               const SizedBox(height: 16),
               Text(
                 'Failed to load product',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -207,7 +208,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                           Expanded(
                             child: Text(
                               product.name,
-                              style: AppTheme.headlineMedium.copyWith(
+                              style: context.headlineMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: context.primaryTextColor,
                               ),
@@ -222,7 +223,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                               ),
                               child: Text(
                                 'Featured',
-                                style: AppTheme.bodySmall.copyWith(
+                                style: context.bodySmall.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -234,7 +235,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                         const SizedBox(height: 8),
                         Text(
                           product.shortDescription!,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -244,7 +245,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                         children: [
                           Text(
                             '${AppConfig.currencySymbol} ${currentPrice.toStringAsFixed(0)}',
-                            style: AppTheme.headlineMedium.copyWith(
+                            style: context.headlineMedium.copyWith(
                               fontWeight: FontWeight.bold,
                               color: context.primaryColorTheme,
                             ),
@@ -253,7 +254,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                             const SizedBox(width: 12),
                             Text(
                               '${AppConfig.currencySymbol} ${compareAtPrice.toStringAsFixed(0)}',
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 color: context.secondaryTextColor,
                                 decoration: TextDecoration.lineThrough,
                               ),
@@ -268,7 +269,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                                 ),
                                 child: Text(
                                   '-$discountPercent%',
-                                  style: AppTheme.bodySmall.copyWith(
+                                  style: context.bodySmall.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -290,7 +291,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                             const SizedBox(width: 4),
                             Text(
                               product.rating.toStringAsFixed(1),
-                              style: AppTheme.bodyMedium.copyWith(
+                              style: context.bodyMedium.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: context.primaryTextColor,
                               ),
@@ -298,7 +299,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                             const SizedBox(width: 8),
                             Text(
                               '(${product.reviewCount} ${product.reviewCount == 1 ? 'review' : 'reviews'})',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -318,7 +319,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                       children: [
                         Text(
                           'Select Variant',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -358,7 +359,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                       children: [
                         Text(
                           'Description',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -366,7 +367,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                         const SizedBox(height: 8),
                         Text(
                           product.description!,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.primaryTextColor,
                             height: 1.5,
                           ),
@@ -385,7 +386,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                       children: [
                         Text(
                           'Tags',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -398,7 +399,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                             return Chip(
                               label: Text(tag),
                               backgroundColor: context.grey100,
-                              labelStyle: AppTheme.bodySmall.copyWith(
+                              labelStyle: context.bodySmall.copyWith(
                                 color: context.primaryTextColor,
                               ),
                             );
@@ -525,7 +526,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               '$_selectedQuantity',
-              style: AppTheme.bodyLarge.copyWith(
+              style: context.bodyLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),

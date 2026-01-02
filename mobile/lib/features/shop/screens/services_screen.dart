@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/services_provider.dart';
 import '../../../core/config/app_config.dart';
 
@@ -66,7 +67,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
         ),
         title: Text(
           widget.listingId != null ? 'Services' : 'Services',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -109,7 +110,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                       children: [
                         Text(
                           '$total ${total == 1 ? 'service' : 'services'}',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -121,7 +122,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                               children: [
                                 Text(
                                   'Sort: ${_getSortLabel(_selectedSort!)}',
-                                  style: AppTheme.bodySmall.copyWith(
+                                  style: context.bodySmall.copyWith(
                                     color: context.primaryColorTheme,
                                   ),
                                 ),
@@ -232,7 +233,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                         Expanded(
                           child: Text(
                             name,
-                            style: AppTheme.bodyLarge.copyWith(
+                            style: context.bodyLarge.copyWith(
                               fontWeight: FontWeight.w600,
                               color: context.primaryTextColor,
                             ),
@@ -250,7 +251,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                             ),
                             child: Text(
                               'Featured',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
@@ -263,7 +264,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                       const SizedBox(height: 4),
                       Text(
                         description,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 2,
@@ -275,7 +276,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                       children: [
                         Text(
                           '${AppConfig.currencySymbol} ${basePrice.toStringAsFixed(0)}',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.bold,
                             color: context.primaryColorTheme,
                           ),
@@ -284,7 +285,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                           const SizedBox(width: 4),
                           Text(
                             '/${_getPriceUnitLabel(priceUnit)}',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -303,7 +304,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                           const SizedBox(width: 4),
                           Text(
                             '${durationMinutes} min',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -320,7 +321,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                         ),
                         child: Text(
                           !isAvailable ? 'Unavailable' : 'Inactive',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.errorColor,
                             fontWeight: FontWeight.w600,
                           ),
@@ -352,14 +353,14 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
             const SizedBox(height: 16),
             Text(
               'No services found',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Try adjusting your filters or search',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -398,14 +399,14 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
             const SizedBox(height: 16),
             Text(
               'Failed to load services',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -495,7 +496,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
             children: [
               Text(
                 'Filter Services',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.primaryTextColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -565,7 +566,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
       children: [
         Text(
           title,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -605,7 +606,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
           children: [
             Text(
               'Sort By',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.primaryTextColor,
                 fontWeight: FontWeight.bold,
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/menus_provider.dart';
 import '../../../core/models/menu.dart';
 import 'menu_detail_screen.dart';
@@ -42,7 +43,7 @@ class _MenusScreenState extends ConsumerState<MenusScreen> {
         ),
         title: Text(
           'Menu',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -126,14 +127,14 @@ class _MenusScreenState extends ConsumerState<MenusScreen> {
             const SizedBox(height: 16),
             Text(
               'No menu available',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'This restaurant hasn\'t added a menu yet',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -159,14 +160,14 @@ class _MenusScreenState extends ConsumerState<MenusScreen> {
             const SizedBox(height: 16),
             Text(
               'Failed to load menu',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,

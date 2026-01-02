@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/event.dart';
 import 'package:intl/intl.dart';
 
@@ -94,7 +95,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Text(
               'Event Calendar',
-              style: AppTheme.titleLarge.copyWith(
+              style: context.titleLarge.copyWith(
                 color: context.primaryTextColor,
               ),
             ),
@@ -178,7 +179,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: AppTheme.titleLarge.copyWith(
+                titleTextStyle: context.titleLarge.copyWith(
                   color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
@@ -210,11 +211,11 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 headerMargin: const EdgeInsets.only(bottom: 8),
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: AppTheme.bodySmall.copyWith(
+                weekdayStyle: context.bodySmall.copyWith(
                   color: context.secondaryTextColor,
                   fontWeight: FontWeight.w500,
                 ),
-                weekendStyle: AppTheme.bodySmall.copyWith(
+                weekendStyle: context.bodySmall.copyWith(
                   color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
@@ -259,7 +260,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 children: [
                   Text(
                     'Events on ${DateFormat('MMM dd, yyyy').format(_selectedDay!)}',
-                    style: AppTheme.titleSmall.copyWith(
+                    style: context.titleSmall.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
@@ -350,7 +351,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                     Flexible(
                       child: Text(
                         event.event.name,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 9,
                           color: context.primaryTextColor,
@@ -371,7 +372,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                         Expanded(
                           child: Text(
                             event.event.locationName,
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                               fontSize: 7,
                             ),
@@ -392,7 +393,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                         const SizedBox(width: 2),
                         Text(
                           DateFormat('HH:mm').format(event.event.startDate),
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                             fontSize: 7,
                           ),
@@ -438,7 +439,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                 children: [
                   Text(
                     'Events on ${DateFormat('MMM dd, yyyy').format(day)}',
-                    style: AppTheme.titleLarge.copyWith(
+                    style: context.titleLarge.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
@@ -494,14 +495,14 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   children: [
                     Text(
                       DateFormat('HH:mm').format(event.event.startDate),
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryColorTheme,
                       ),
                     ),
                     Text(
                       DateFormat('HH:mm').format(event.event.endDate),
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.primaryColorTheme,
                       ),
                     ),
@@ -516,7 +517,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   children: [
                     Text(
                       event.event.name,
-                      style: AppTheme.titleSmall.copyWith(
+                      style: context.titleSmall.copyWith(
                         color: context.primaryTextColor,
                       ),
                       maxLines: 2,
@@ -534,7 +535,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                         Expanded(
                           child: Text(
                             event.event.locationName,
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                             maxLines: 1,
@@ -547,7 +548,7 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                       const SizedBox(height: 4),
                       Text(
                         'From ${_formatPrice(event.event.tickets.first.price)} ${event.event.tickets.first.currency}',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),

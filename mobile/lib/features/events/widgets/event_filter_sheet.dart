@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/event_filter.dart';
 import 'package:intl/intl.dart';
 
@@ -68,7 +69,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
               children: [
                 Text(
                   'Filter Events',
-                  style: AppTheme.titleLarge.copyWith(
+                  style: context.titleLarge.copyWith(
                     color: context.primaryTextColor,
                   ),
                 ),
@@ -132,7 +133,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Search',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -163,7 +164,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Category',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -206,7 +207,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Date Range',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -296,7 +297,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Price Range',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -330,7 +331,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Location',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -361,7 +362,7 @@ class _EventFilterSheetState extends State<EventFilterSheet> {
       children: [
         Text(
           'Options',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),

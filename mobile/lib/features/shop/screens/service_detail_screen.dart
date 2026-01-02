@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/services_provider.dart';
 import '../../../core/services/services_service.dart';
 import '../../../core/config/app_config.dart';
@@ -103,14 +104,14 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 'Failed to load service',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -207,7 +208,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                           Expanded(
                             child: Text(
                               service.name,
-                              style: AppTheme.headlineMedium.copyWith(
+                              style: context.headlineMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: context.primaryTextColor,
                               ),
@@ -222,7 +223,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                               ),
                               child: Text(
                                 'Featured',
-                                style: AppTheme.bodySmall.copyWith(
+                                style: context.bodySmall.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -234,7 +235,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                         const SizedBox(height: 8),
                         Text(
                           service.shortDescription!,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -244,7 +245,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                         children: [
                           Text(
                             priceLabel,
-                            style: AppTheme.headlineMedium.copyWith(
+                            style: context.headlineMedium.copyWith(
                               fontWeight: FontWeight.bold,
                               color: context.primaryColorTheme,
                             ),
@@ -263,7 +264,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                             const SizedBox(width: 8),
                             Text(
                               'Duration: ${service.durationMinutes} minutes',
-                              style: AppTheme.bodyMedium.copyWith(
+                              style: context.bodyMedium.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -288,7 +289,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                               const SizedBox(width: 8),
                               Text(
                                 'Service is currently unavailable',
-                                style: AppTheme.bodyMedium.copyWith(
+                                style: context.bodyMedium.copyWith(
                                   color: context.errorColor,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -310,7 +311,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                       children: [
                         Text(
                           'Description',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -318,7 +319,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                         const SizedBox(height: 8),
                         Text(
                           service.description!,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.primaryTextColor,
                             height: 1.5,
                           ),
@@ -337,7 +338,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                       children: [
                         Text(
                           'Tags',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -350,7 +351,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                             return Chip(
                               label: Text(tag),
                               backgroundColor: context.grey100,
-                              labelStyle: AppTheme.bodySmall.copyWith(
+                              labelStyle: context.bodySmall.copyWith(
                                 color: context.primaryTextColor,
                               ),
                             );
@@ -435,7 +436,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
               children: [
                 Text(
                   'Book Service',
-                  style: AppTheme.headlineSmall.copyWith(
+                  style: context.headlineSmall.copyWith(
                     color: context.primaryTextColor,
                     fontWeight: FontWeight.bold,
                   ),
@@ -501,7 +502,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                           _selectedDate != null
                               ? DateFormat('MMM dd, yyyy').format(_selectedDate!)
                               : 'Select Date *',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: _selectedDate != null
                                 ? context.primaryTextColor
                                 : context.secondaryTextColor,
@@ -538,7 +539,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                           _selectedTime != null
                               ? _selectedTime!.format(context)
                               : 'Select Time *',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: _selectedTime != null
                                 ? context.primaryTextColor
                                 : context.secondaryTextColor,

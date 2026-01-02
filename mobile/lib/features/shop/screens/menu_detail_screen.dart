@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/menus_provider.dart';
 import '../../../core/services/cart_service.dart';
 import '../../../core/config/app_config.dart';
@@ -66,14 +67,14 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 'Failed to load menu',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -111,7 +112,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
           ),
           title: Text(
             menu.name,
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.bold,
               color: context.primaryTextColor,
             ),
@@ -128,7 +129,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               ),
               child: Text(
                 menu.description!,
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.primaryTextColor,
                 ),
               ),
@@ -190,7 +191,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
             child: Center(
               child: Text(
                 'No items in this category',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
               ),
@@ -291,7 +292,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                         Expanded(
                           child: Text(
                             item.name,
-                            style: AppTheme.bodyLarge.copyWith(
+                            style: context.bodyLarge.copyWith(
                               fontWeight: FontWeight.w600,
                               color: context.primaryTextColor,
                             ),
@@ -307,7 +308,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                             ),
                             child: Text(
                               'Popular',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
@@ -324,7 +325,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                             ),
                             child: Text(
                               'Chef\'s Special',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
@@ -337,7 +338,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                       const SizedBox(height: 4),
                       Text(
                         item.description!,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 2,
@@ -352,7 +353,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                           return Chip(
                             label: Text(tag),
                             backgroundColor: context.grey100,
-                            labelStyle: AppTheme.bodySmall.copyWith(
+                            labelStyle: context.bodySmall.copyWith(
                               fontSize: 10,
                               color: context.primaryTextColor,
                             ),
@@ -368,7 +369,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                       children: [
                         Text(
                           '${AppConfig.currencySymbol} ${item.price.toStringAsFixed(0)}',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.bold,
                             color: context.primaryColorTheme,
                           ),
@@ -377,7 +378,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                           const SizedBox(width: 8),
                           Text(
                             '${AppConfig.currencySymbol} ${item.compareAtPrice!.toStringAsFixed(0)}',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                               decoration: TextDecoration.lineThrough,
                             ),
@@ -386,7 +387,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                             const SizedBox(width: 4),
                             Text(
                               '-$discountPercent%',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.errorColor,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -424,7 +425,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                 Expanded(
                   child: Text(
                     item.name,
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       fontWeight: FontWeight.bold,
                       color: context.primaryTextColor,
                     ),
@@ -440,7 +441,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 item.description!,
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.primaryTextColor,
                 ),
               ),
@@ -450,7 +451,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               children: [
                 Text(
                   '${AppConfig.currencySymbol} ${item.price.toStringAsFixed(0)}',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: context.primaryColorTheme,
                   ),
@@ -459,7 +460,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                   const SizedBox(width: 12),
                   Text(
                     '${AppConfig.currencySymbol} ${item.compareAtPrice!.toStringAsFixed(0)}',
-                    style: AppTheme.bodyLarge.copyWith(
+                    style: context.bodyLarge.copyWith(
                       color: context.secondaryTextColor,
                       decoration: TextDecoration.lineThrough,
                     ),
@@ -471,7 +472,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 'Dietary Information',
-                style: AppTheme.bodyLarge.copyWith(
+                style: context.bodyLarge.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -492,7 +493,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
               const SizedBox(height: 16),
               Text(
                 'Allergens',
-                style: AppTheme.bodyLarge.copyWith(
+                style: context.bodyLarge.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -505,7 +506,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                   return Chip(
                     label: Text(allergen),
                     backgroundColor: context.errorColor.withOpacity(0.1),
-                    labelStyle: AppTheme.bodySmall.copyWith(
+                    labelStyle: context.bodySmall.copyWith(
                       color: context.errorColor,
                     ),
                   );
