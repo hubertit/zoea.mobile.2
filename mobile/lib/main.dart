@@ -6,6 +6,7 @@ import 'core/router/app_router.dart';
 import 'core/config/app_config.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/providers/user_data_collection_provider.dart';
+import 'core/providers/health_check_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,9 +41,17 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     
-    // Upload analytics batch when app goes to background
+    // Handle app going to background
     if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
       _uploadAnalyticsBatch();
+      // Pause health checks to save battery and network
+      ref.read(healthCheckProvider.notifier).pause();
+    }
+    
+    // Handle app coming to foreground
+    if (state == AppLifecycleState.resumed) {
+      // Resume health checks
+      ref.read(healthCheckProvider.notifier).resume();
     }
   }
 
