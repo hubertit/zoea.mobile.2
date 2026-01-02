@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import 'fade_in_image.dart' show FadeInNetworkImage;
 
 class PlaceCard extends StatelessWidget {
@@ -116,7 +117,7 @@ class PlaceCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           name,
-                          style: AppTheme.headlineSmall.copyWith(
+                          style: context.headlineSmall.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -133,7 +134,7 @@ class PlaceCard extends StatelessWidget {
                         ),
                         child: Text(
                           category,
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -153,7 +154,7 @@ class PlaceCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           location,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -171,7 +172,7 @@ class PlaceCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         rating.toString(),
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
                           color: context.primaryTextColor,
                         ),
@@ -179,14 +180,14 @@ class PlaceCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         '($reviews reviews)',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
                       const Spacer(),
                       Text(
                         priceRange,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w500,
                         ),

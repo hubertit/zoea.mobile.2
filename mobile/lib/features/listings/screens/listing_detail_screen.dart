@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -116,14 +117,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 16),
             Text(
               'Failed to load listing',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -373,7 +374,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                                 Expanded(
                                   child: Text(
                                     name,
-                                    style: AppTheme.headlineMedium.copyWith(
+                                    style: context.headlineMedium.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: context.primaryTextColor,
                                     ),
@@ -401,7 +402,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                                         const SizedBox(width: 4),
                                         Text(
                                           'Verified',
-                                          style: AppTheme.bodySmall.copyWith(
+                                          style: context.bodySmall.copyWith(
                                             color: context.primaryColorTheme,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -427,7 +428,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                           Expanded(
                             child: Text(
                               address,
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -446,7 +447,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                             const SizedBox(width: 6),
                             Text(
                               rating.toStringAsFixed(1),
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: context.primaryTextColor,
                               ),
@@ -454,7 +455,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                             const SizedBox(width: 8),
                             Text(
                               '($reviewCount reviews)',
-                              style: AppTheme.bodyMedium.copyWith(
+                              style: context.bodyMedium.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -463,7 +464,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                           if (minPrice != null)
                             Text(
                               '$currency ${minPrice.toString()}${maxPrice != null ? ' - ${maxPrice.toString()}' : ''}',
-                              style: AppTheme.bodyLarge.copyWith(
+                              style: context.bodyLarge.copyWith(
                                 color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -578,14 +579,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           if (displayDescription.isNotEmpty) ...[
             Text(
               'About',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               displayDescription,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 height: 1.6,
                 color: context.secondaryTextColor,
               ),
@@ -596,7 +597,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           // Location Section
           Text(
             'Location',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -614,7 +615,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               Expanded(
                 child: Text(
                   locationText,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -625,7 +626,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           if (operatingHours != null) ...[
             Text(
               'Opening Hours',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -646,7 +647,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       width: 100,
                       child:                       Text(
                         day[0].toUpperCase() + day.substring(1),
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
                           color: context.primaryTextColor,
                         ),
@@ -654,7 +655,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     ),
                     Text(
                       isClosed ? 'Closed' : '$open - $close',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: isClosed
                             ? context.errorColor
                             : context.secondaryTextColor,
@@ -669,7 +670,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           if (contactPhone != null || contactEmail != null || website != null) ...[
             Text(
               'Contact Information',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -689,7 +690,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     Expanded(
                       child: Text(
                         contactPhone,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.primaryTextColor,
                         ),
                       ),
@@ -711,7 +712,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     Expanded(
                       child: Text(
                         contactEmail,
-                        style: AppTheme.bodyMedium,
+                        style: context.bodyMedium,
                       ),
                     ),
                   ],
@@ -746,7 +747,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         },
                         child: Text(
                           website,
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.primaryColorTheme,
                             decoration: TextDecoration.underline,
                           ),
@@ -809,14 +810,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               const SizedBox(height: 16),
               Text(
                 'No amenities listed',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Amenities information will be available soon',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -865,7 +866,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   children: [
                     Text(
                       category[0].toUpperCase() + category.substring(1),
-                      style: AppTheme.headlineSmall.copyWith(
+                      style: context.headlineSmall.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -958,7 +959,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               children: [
                 Text(
                   name,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w600,
                   ),
@@ -966,7 +967,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 if (description != null && description.isNotEmpty)
                   Text(
                     description,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                       fontSize: 11,
                     ),
@@ -1012,14 +1013,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   const SizedBox(height: 16),
                   Text(
                     'No reviews yet',
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Be the first to review this place!',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -1032,7 +1033,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     label: const Text('Write Review'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,
-                      foregroundColor: context.primaryTextColor,
+                      foregroundColor: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.primaryColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,
@@ -1107,14 +1110,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               const SizedBox(height: 16),
               Text(
                 'Failed to load reviews',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.errorColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString().replaceFirst('Exception: ', ''),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -1202,7 +1205,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 child: userImage == null
                     ? Text(
                         userName.isNotEmpty ? userName[0].toUpperCase() : 'A',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           color: context.primaryTextColor,
                         ),
@@ -1216,7 +1219,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   children: [
                     Text(
                       userName,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -1234,7 +1237,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         const SizedBox(width: 8),
                         Text(
                           dateText,
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -1249,7 +1252,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 8),
             Text(
               title,
-              style: AppTheme.titleSmall.copyWith(
+              style: context.titleSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -1259,7 +1262,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 12),
             Text(
               content,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 height: 1.4,
                 color: context.primaryTextColor,
               ),
@@ -1277,7 +1280,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 const SizedBox(width: 4),
                 Text(
                   '$helpfulCount helpful',
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -1352,7 +1355,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       const SizedBox(height: 16),
                       Text(
                         'No products available',
-                        style: AppTheme.bodyLarge.copyWith(
+                        style: context.bodyLarge.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -1361,6 +1364,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         onPressed: () {
                           context.push('/products?listingId=$listingId');
                         },
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.primaryColorTheme,
+                        ),
                         child: const Text('View All Products'),
                       ),
                     ],
@@ -1383,14 +1389,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     ),
                     title: Text(
                       product['name'] as String? ?? 'Unknown',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
                     ),
                     subtitle: Text(
                       '${AppConfig.currencySymbol} ${((product['basePrice'] ?? product['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
@@ -1419,7 +1425,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   const SizedBox(height: 16),
                   Text(
                     'Failed to load products',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.errorColor,
                     ),
                   ),
@@ -1432,6 +1438,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         limit: 20,
                       )));
                     },
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.primaryColorTheme,
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],
@@ -1482,7 +1491,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       const SizedBox(height: 16),
                       Text(
                         'No services available',
-                        style: AppTheme.bodyLarge.copyWith(
+                        style: context.bodyLarge.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -1491,6 +1500,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         onPressed: () {
                           context.push('/services?listingId=$listingId');
                         },
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.primaryColorTheme,
+                        ),
                         child: const Text('View All Services'),
                       ),
                     ],
@@ -1513,14 +1525,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     ),
                     title: Text(
                       service['name'] as String? ?? 'Unknown',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
                     ),
                     subtitle: Text(
                       '${AppConfig.currencySymbol} ${((service['basePrice'] ?? service['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
@@ -1549,7 +1561,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   const SizedBox(height: 16),
                   Text(
                     'Failed to load services',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.errorColor,
                     ),
                   ),
@@ -1562,6 +1574,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                         limit: 20,
                       )));
                     },
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.primaryColorTheme,
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],
@@ -1601,7 +1616,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 const SizedBox(height: 16),
                 Text(
                   'No menu available',
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -1610,6 +1625,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   onPressed: () {
                     context.push('/menus/$listingId');
                   },
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
+                  ),
                   child: const Text('View Menu'),
                 ),
               ],
@@ -1635,7 +1653,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   const SizedBox(height: 16),
                   Text(
                     'Menu is empty',
-                    style: AppTheme.bodyLarge.copyWith(
+                    style: context.bodyLarge.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -1659,14 +1677,14 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 ),
                 title: Text(
                   item.name,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
                 ),
                 subtitle: Text(
                   '${AppConfig.currencySymbol} ${item.price.toStringAsFixed(0)}',
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1697,7 +1715,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               const SizedBox(height: 16),
               Text(
                 '${menus.length} menus available',
-                style: AppTheme.bodyLarge.copyWith(
+                style: context.bodyLarge.copyWith(
                   color: context.primaryTextColor,
                 ),
               ),
@@ -1725,7 +1743,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             const SizedBox(height: 16),
             Text(
               'Failed to load menu',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.errorColor,
               ),
             ),
@@ -1734,6 +1752,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               onPressed: () {
                 ref.invalidate(menusByListingProvider(listingId));
               },
+              style: TextButton.styleFrom(
+                foregroundColor: context.primaryColorTheme,
+              ),
               child: const Text('Retry'),
             ),
           ],
@@ -1911,12 +1932,11 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               ),
             ),
             const SizedBox(width: 8),
-            // Order Now button - links to Vuba Vuba app via in-app webview
+            // Order Now button - deep links to Vuba Vuba app
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () {
-                  // Deep link to Vuba Vuba app using web URL format
-                  // Format: https://www.vv.rw/merchant/{merchant-slug}
+                onPressed: () async {
+                  // Deep link to Vuba Vuba app
                   // Try to get merchant slug from listing, fallback to listing slug or name
                   final merchant = listing['merchant'] as Map<String, dynamic>?;
                   final merchantSlug = merchant?['slug'] as String?;
@@ -1926,15 +1946,68 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   // Use merchant slug if available, otherwise use listing slug, or generate from name
                   String merchantIdentifier = merchantSlug ?? 
                       listingSlug ?? 
-                      (listingName?.toLowerCase().replaceAll(' ', '-').replaceAll(RegExp(r'[^a-z0-9-]'), '') ?? '');
+                      (listingName?.toLowerCase().replaceAll(' ', '-').replaceAll(RegExp(r'[^a-z0-9-]'), '') ?? 'meze-fresh');
                   
-                  // Vuba Vuba URL - open in in-app webview
-                  final vubaVubaUrl = 'https://www.vv.rw/merchant/$merchantIdentifier';
+                  // Ensure we have a valid merchant identifier
+                  if (merchantIdentifier.isEmpty) {
+                    merchantIdentifier = 'meze-fresh'; // Fallback for testing
+                  }
                   
-                  // Navigate to webview screen
-                  context.push(
-                    '/webview?url=${Uri.encodeComponent(vubaVubaUrl)}&title=${Uri.encodeComponent(listingName ?? 'Vuba Vuba')}',
-                  );
+                  // Try deep link first (custom scheme)
+                  final deepLinkUrl = 'vubavuba://merchant/$merchantIdentifier';
+                  final universalLinkUrl = 'https://www.vv.rw/merchant/$merchantIdentifier';
+                  
+                  debugPrint('Order Now: Trying deep link: $deepLinkUrl');
+                  
+                  try {
+                    // First, try custom scheme deep link
+                    final deepLinkUri = Uri.parse(deepLinkUrl);
+                    if (await canLaunchUrl(deepLinkUri)) {
+                      final launched = await launchUrl(
+                        deepLinkUri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                      if (launched) {
+                        debugPrint('Order Now: Successfully opened Vuba Vuba app via deep link');
+                        return;
+                      }
+                    }
+                  } catch (e) {
+                    debugPrint('Order Now: Deep link failed: $e');
+                  }
+                  
+                  // If deep link fails, try universal link
+                  try {
+                    debugPrint('Order Now: Trying universal link: $universalLinkUrl');
+                    final universalUri = Uri.parse(universalLinkUrl);
+                    if (await canLaunchUrl(universalUri)) {
+                      // Try to launch as external app (will open Vuba Vuba if installed)
+                      final launched = await launchUrl(
+                        universalUri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                      if (launched) {
+                        debugPrint('Order Now: Successfully opened via universal link');
+                        return;
+                      }
+                    }
+                  } catch (e) {
+                    debugPrint('Order Now: Universal link failed: $e');
+                  }
+                  
+                  // Fallback to webview if app is not installed
+                  debugPrint('Order Now: Falling back to webview: $universalLinkUrl');
+                  if (context.mounted) {
+                    context.push(
+                      Uri(
+                        path: '/webview',
+                        queryParameters: {
+                          'url': universalLinkUrl,
+                          'title': listingName ?? 'Vuba Vuba',
+                        },
+                      ).toString(),
+                    );
+                  }
                 },
                 icon: const Icon(Icons.shopping_cart, size: 18),
                 label: const Text('Order Now'),
@@ -1974,7 +2047,9 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               label: const Text('Contact'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryColorTheme,
-                foregroundColor: Colors.white,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryColor
+                    : Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -2059,7 +2134,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Title
           Text(
             'Write a Review',
-            style: AppTheme.headlineMedium.copyWith(
+            style: context.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -2069,7 +2144,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Rating selection
           Text(
             'How was your experience?',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -2102,7 +2177,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           // Review text field
           Text(
             'Tell us about your experience',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -2112,12 +2187,12 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
           TextField(
             controller: _reviewController,
             maxLines: 4,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.primaryTextColor,
             ),
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
-              hintStyle: AppTheme.bodyMedium.copyWith(
+              hintStyle: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
@@ -2146,7 +2221,9 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
               onPressed: _isSubmitting ? null : _submitReview,
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryColorTheme,
-                foregroundColor: context.primaryTextColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryColor
+                    : Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -2164,7 +2241,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
                     )
                   : Text(
                       'Submit Review',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),

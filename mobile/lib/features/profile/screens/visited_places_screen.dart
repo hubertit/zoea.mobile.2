@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/content_views_provider.dart';
 
 class VisitedPlacesScreen extends ConsumerStatefulWidget {
@@ -50,7 +51,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
       appBar: AppBar(
         title: Text(
           'Places Visited',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -175,14 +176,14 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             const SizedBox(height: 16),
             Text(
               'Failed to load places',
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -224,14 +225,14 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           const SizedBox(height: 24),
           Text(
             'No Places Visited',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Start exploring Rwanda to build your\nvisited places collection',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -249,7 +250,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             ),
             child: Text(
               'Explore Places',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
@@ -363,7 +364,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                         const SizedBox(width: 4),
                         Text(
                           'Viewed',
-                          style: AppTheme.labelSmall.copyWith(
+                          style: context.labelSmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                           ),
@@ -384,7 +385,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                     ),
                     child: Text(
                       categoryName,
-                      style: AppTheme.labelSmall.copyWith(
+                      style: context.labelSmall.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -403,7 +404,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                 // Place Name
                 Text(
                   contentName,
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 2,
@@ -422,7 +423,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                     Expanded(
                       child: Text(
                         contentLocation,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
@@ -444,7 +445,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                       const SizedBox(width: 8),
                       Text(
                         'Viewed on ${dateFormat.format(visitDate)}',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -463,14 +464,14 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
                       const SizedBox(width: 4),
                       Text(
                         rating.toStringAsFixed(1),
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '($reviewCount ${reviewCount == 1 ? 'review' : 'reviews'})',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),

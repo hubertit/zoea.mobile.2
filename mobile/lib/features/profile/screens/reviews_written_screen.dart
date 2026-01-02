@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/reviews_provider.dart';
 
 class ReviewsWrittenScreen extends ConsumerStatefulWidget {
@@ -62,7 +63,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
       appBar: AppBar(
         title: Text(
           'Reviews Written',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -85,7 +86,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                   autofocus: true,
                   decoration: InputDecoration(
                     hintText: 'Search reviews...',
-                    hintStyle: AppTheme.bodyMedium.copyWith(
+                    hintStyle: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     border: InputBorder.none,
@@ -101,7 +102,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                           )
                         : null,
                   ),
-                  style: AppTheme.bodyMedium,
+                  style: context.bodyMedium,
                 ),
               ),
             )
@@ -251,14 +252,14 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
             const SizedBox(height: 16),
             Text(
               'Failed to load reviews',
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -300,14 +301,14 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           const SizedBox(height: 24),
           Text(
             'No Reviews Written',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Share your experiences by writing\nreviews for places you\'ve visited',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -325,7 +326,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
             ),
             child: Text(
               'Explore Places',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
@@ -447,7 +448,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                     children: [
                       Text(
                         contentName,
-                        style: AppTheme.titleMedium.copyWith(
+                        style: context.titleMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -456,7 +457,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                       const SizedBox(height: 4),
                       Text(
                         contentSubtitle,
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
@@ -483,7 +484,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                       const SizedBox(width: 4),
                       Text(
                         rating.toStringAsFixed(0),
-                        style: AppTheme.labelSmall.copyWith(
+                        style: context.labelSmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -504,7 +505,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                 if (comment.isNotEmpty)
                   Text(
                     comment,
-                    style: AppTheme.bodyMedium,
+                    style: context.bodyMedium,
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -521,7 +522,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                       const SizedBox(width: 8),
                       Text(
                         'Reviewed on ${dateFormat.format(reviewDate)}',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -540,7 +541,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                       const SizedBox(width: 8),
                       Text(
                         '$helpfulCount ${helpfulCount == 1 ? 'person' : 'people'} found this helpful',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -578,7 +579,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                         icon: const Icon(Icons.visibility, size: 14),
                         label: Text(
                           'View Place',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -603,7 +604,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
                         icon: const Icon(Icons.edit, size: 14),
                         label: Text(
                           'Edit Review',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             fontWeight: FontWeight.w500,
                             color: Colors.white,
                           ),
@@ -783,7 +784,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
           // Title
           Text(
             'Edit Review',
-            style: AppTheme.headlineMedium.copyWith(
+            style: context.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -792,7 +793,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
           // Rating selection
           Text(
             'How was your experience?',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -824,7 +825,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
           // Review text field
           Text(
             'Tell us about your experience',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -835,7 +836,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
             maxLines: 4,
             decoration: InputDecoration(
               hintText: 'Share your thoughts about this place...',
-              hintStyle: AppTheme.bodyMedium.copyWith(
+              hintStyle: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               border: OutlineInputBorder(
@@ -880,7 +881,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
                     )
                   : Text(
                       'Update Review',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),

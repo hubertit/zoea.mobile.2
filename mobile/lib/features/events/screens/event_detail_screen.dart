@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/models/event.dart';
 import '../../../core/providers/favorites_provider.dart';
@@ -241,7 +242,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   // Event title
                   Text(
                     eventDetails.name,
-                    style: AppTheme.headlineMedium.copyWith(
+                    style: context.headlineMedium.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
@@ -258,7 +259,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       const SizedBox(width: 8),
                       Text(
                         dateFormat.format(startDate),
-                        style: AppTheme.titleMedium.copyWith(
+                        style: context.titleMedium.copyWith(
                           color: context.primaryTextColor,
                         ),
                       ),
@@ -276,7 +277,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       const SizedBox(width: 8),
                       Text(
                         '${timeFormat.format(startDate)} - ${timeFormat.format(endDate)}',
-                        style: AppTheme.titleMedium.copyWith(
+                        style: context.titleMedium.copyWith(
                           color: context.primaryTextColor,
                         ),
                       ),
@@ -297,7 +298,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       Expanded(
                         child: Text(
                           eventDetails.locationName,
-                          style: AppTheme.titleMedium.copyWith(
+                          style: context.titleMedium.copyWith(
                             color: context.primaryTextColor,
                           ),
                         ),
@@ -324,7 +325,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           children: [
                             Text(
                               'Organized by',
-                              style: AppTheme.bodySmall.copyWith(
+                              style: context.bodySmall.copyWith(
                                 color: context.secondaryTextColor,
                               ),
                             ),
@@ -332,7 +333,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                               children: [
                                 Text(
                                   event.owner.name,
-                                  style: AppTheme.titleMedium.copyWith(
+                                  style: context.titleMedium.copyWith(
                                     color: context.primaryTextColor,
                                   ),
                                 ),
@@ -356,14 +357,14 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   // Description
                   Text(
                     'About this event',
-                    style: AppTheme.titleLarge.copyWith(
+                    style: context.titleLarge.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     eventDetails.description,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
@@ -373,7 +374,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   if (eventDetails.eventContext?.name.isNotEmpty == true) ...[
                     Text(
                       'Category',
-                      style: AppTheme.titleLarge.copyWith(
+                      style: context.titleLarge.copyWith(
                         color: context.primaryTextColor,
                       ),
                     ),
@@ -387,7 +388,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       ),
                       child: Text(
                         eventDetails.eventContext!.name,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w500,
                         ),
@@ -434,7 +435,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   if (eventDetails.tickets.isNotEmpty) ...[
                     Text(
                       'Tickets',
-                      style: AppTheme.titleLarge.copyWith(
+                      style: context.titleLarge.copyWith(
                         color: context.primaryTextColor,
                       ),
                     ),
@@ -464,14 +465,14 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
         ),
         Text(
           label,
-          style: AppTheme.bodySmall.copyWith(
+          style: context.bodySmall.copyWith(
             color: context.secondaryTextColor,
           ),
         ),
@@ -497,7 +498,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 children: [
                   Text(
                     ticket.name,
-                    style: AppTheme.titleMedium.copyWith(
+                    style: context.titleMedium.copyWith(
                       color: context.primaryTextColor,
                     ),
                   ),
@@ -505,7 +506,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     const SizedBox(height: 4),
                     Text(
                       ticket.description!,
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -515,7 +516,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     children: [
                       Text(
                         '${_formatPrice(ticket.price)} ${ticket.currency}',
-                        style: AppTheme.titleLarge.copyWith(
+                        style: context.titleLarge.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
@@ -530,7 +531,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           ),
                           child: Text(
                             'Sold Out',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.errorColor,
                               fontWeight: FontWeight.w500,
                             ),
@@ -549,7 +550,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryColorTheme,
-                foregroundColor: context.primaryTextColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryColor // Dark text on light background in dark mode
+                    : Colors.white, // White text on dark background in light mode
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -594,14 +597,14 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   children: [
                     Text(
                       'From ${_formatPrice(cheapestTicket.price)} ${cheapestTicket.currency}',
-                      style: AppTheme.titleMedium.copyWith(
+                      style: context.titleMedium.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       'per person',
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -618,7 +621,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColorTheme,
-                  foregroundColor: context.primaryTextColor,
+                  foregroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.primaryColor // Dark text on light background in dark mode
+                      : Colors.white, // White text on dark background in light mode
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -713,7 +718,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   Expanded(
                     child: Text(
                       'Redirecting to Sinc',
-                      style: AppTheme.titleSmall.copyWith(
+                      style: context.titleSmall.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -725,7 +730,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               // Message
               Text(
                 'You are about to be redirected to our partner platform "Sinc" to purchase tickets for this event. Sinc is our trusted ticketing partner that handles secure event bookings and payments.',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: context.secondaryTextColor,
                   height: 1.3,
                 ),
@@ -762,7 +767,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       Expanded(
                         child: Text(
                           "Don't show again",
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                             fontSize: 12,
                           ),
@@ -778,16 +783,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               style: TextButton.styleFrom(
+                foregroundColor: context.secondaryTextColor,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text(
-                'Cancel',
-                style: AppTheme.bodySmall.copyWith(
-                  color: context.secondaryTextColor,
-                ),
-              ),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -800,7 +801,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryColorTheme,
-                foregroundColor: context.primaryTextColor,
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.primaryColor
+                    : Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -810,7 +813,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               ),
               child: Text(
                 'Continue',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),

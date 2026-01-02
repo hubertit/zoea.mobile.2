@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
@@ -157,14 +158,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         backgroundColor: context.backgroundColor,
         title: Text(
           'Unsaved Changes',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
         ),
         content: Text(
           'You have unsaved changes. Are you sure you want to leave?',
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -176,7 +177,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -185,7 +186,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               'Discard',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.errorColor,
                 fontWeight: FontWeight.w600,
               ),
@@ -227,7 +228,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       appBar: AppBar(
         title: Text(
           'Edit Profile',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -257,7 +258,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             onPressed: (_isLoading || _isSaving) ? null : _saveAll,
             child: Text(
               'Save',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w600,
               ),
@@ -278,10 +279,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             unselectedLabelColor: context.secondaryTextColor,
             indicatorColor: context.primaryColorTheme,
             indicatorSize: TabBarIndicatorSize.tab,
-            labelStyle: AppTheme.bodyMedium.copyWith(
+            labelStyle: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
-            unselectedLabelStyle: AppTheme.bodyMedium,
+            unselectedLabelStyle: context.bodyMedium,
             tabs: const [
               Tab(text: 'Basic Info'),
               Tab(text: 'Preferences'),
@@ -339,7 +340,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           Expanded(
             child: Text(
               'Profile Completion: $percentage%',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: badgeColor,
                 fontWeight: FontWeight.w600,
               ),
@@ -537,7 +538,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 children: [
                   Text(
                     title,
-                    style: AppTheme.titleMedium.copyWith(
+                    style: context.titleMedium.copyWith(
                       fontWeight: FontWeight.w600,
                       color: context.primaryTextColor,
                     ),
@@ -545,7 +546,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                   const SizedBox(height: AppTheme.spacing4),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -576,7 +577,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
-      style: AppTheme.titleMedium.copyWith(
+      style: context.titleMedium.copyWith(
         fontWeight: FontWeight.w600,
         color: context.primaryTextColor,
       ),
@@ -597,7 +598,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       children: [
         Text(
           label,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
             color: context.primaryTextColor,
           ),
@@ -608,10 +609,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           keyboardType: keyboardType,
           maxLines: maxLines,
           validator: validator,
-          style: AppTheme.bodyMedium,
+          style: context.bodyMedium,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTheme.bodyMedium.copyWith(
+            hintStyle: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             prefixIcon: Icon(
@@ -825,7 +826,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           backgroundColor: context.backgroundColor,
           title: Text(
             'Enter Password',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               color: context.primaryTextColor,
             ),
           ),
@@ -834,7 +835,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             children: [
               Text(
                 'Please enter your current password to update your email address.',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
               ),
@@ -872,7 +873,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               onPressed: isLoading ? null : () => Navigator.of(context).pop(),
               child: Text(
                 'Cancel',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
               ),
