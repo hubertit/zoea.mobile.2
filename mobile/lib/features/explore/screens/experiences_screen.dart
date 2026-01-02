@@ -257,15 +257,8 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
       priceRange: priceRange,
       category: categoryName.isNotEmpty ? categoryName : tourType,
       onTap: () {
-        // Navigate to tour detail - we'll need to create a tour detail screen
-        // For now, navigate to tour booking with tour info
-        context.push('/tour-booking', extra: {
-          'tourId': id,
-          'tourName': name,
-          'tourLocation': location,
-          'tourImage': imageUrl ?? '',
-          'tourRating': rating,
-        });
+        // Navigate to tour detail screen
+        context.push('/tour/$id');
       },
       onFavorite: () async {
         // Toggle favorite for tour

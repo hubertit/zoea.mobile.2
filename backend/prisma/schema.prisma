@@ -131,6 +131,7 @@ model User {
   country                                                           Country?                    @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   profileImage                                                      Media?                      @relation("ProfileImage", fields: [profileImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   zoeaCard                                                          ZoeaCard?
+  assistantConversations                                            AssistantConversation[]
 
   @@index([email], map: "idx_users_email")
   @@index([phoneNumber], map: "idx_users_phone")
@@ -2894,4 +2895,87 @@ enum order_item_type {
   product
   service
   menu_item
+}
+
+// ============================================
+// Integrations Module
+// ============================================
+
+model Integration {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String   @unique @db.VarChar(100) // 'openai', 'visit_rwanda', etc.
+  displayName String   @map("display_name") @db.VarChar(255)
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  config      Json     // flexible JSON config storage
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  
+  @@index([name])
+  @@index([isActive])
+  @@map("integrations")
+}
+
+// ============================================
+// AI Assistant Module (Ask Zoea)
+// ============================================
+
+model AssistantConversation {
+  id            String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId        String             @map("user_id") @db.Uuid
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String             @db.VarChar(255)
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastMessageAt DateTime           @default(now()) @map("last_message_at") @db.Timestamptz(6)
+  messages      AssistantMessage[]
+  
+  @@index([userId, lastMessageAt])
+  @@index([createdAt])
+  @@map("assistant_conversations")
+}
+
+model AssistantMessage {
+  id             String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  conversationId String                 @map("conversation_id") @db.Uuid
+  conversation   AssistantConversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           message_role           // 'user' | 'assistant'
+  text           String                 @db.Text
+  createdAt      DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  cards          AssistantMessageCard[]
+  
+  @@index([conversationId, createdAt])
+  @@map("assistant_messages")
+}
+
+model AssistantMessageCard {
+  id        String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  messageId String           @map("message_id") @db.Uuid
+  message   AssistantMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  type      card_type        // 'listing' | 'tour' | 'product' | 'service'
+  entityId  String           @map("entity_id") @db.Uuid
+  title     String           @db.VarChar(255)
+  subtitle  String?          @db.VarChar(500)
+  imageUrl  String?          @map("image_url") @db.Text
+  route     String           @db.VarChar(255)
+  params    Json             // navigation params
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  
+  @@index([messageId])
+  @@map("assistant_message_cards")
+}
+
+// ============================================
+// Enums for Assistant
+// ============================================
+
+enum message_role {
+  user
+  assistant
+}
+
+enum card_type {
+  listing
+  tour
+  product
+  service
 }

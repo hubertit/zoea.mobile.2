@@ -363,10 +363,10 @@ export class ToursController {
   @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this operator' })
   async getOperatorTours(
     @Param('operatorId') operatorId: string,
+    @Request() req,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('status') status?: string,
-    @Request() req,
   ) {
     // Verify operator ownership
     const hasAccess = await this.toursService.verifyOperatorAccess(operatorId, req.user.userId);

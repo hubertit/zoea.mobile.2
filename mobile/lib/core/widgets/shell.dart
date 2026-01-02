@@ -99,14 +99,16 @@ class _ShellState extends ConsumerState<Shell> {
     final shouldShowBackendWarning = ref.watch(shouldShowOfflineWarningProvider);
     final healthState = ref.watch(healthCheckProvider);
     
-    // Determine current index based on location (4 items now)
+    // Determine current index based on location (5 items now)
     int currentIndex = 0;
     if (location.startsWith('/events')) {
       currentIndex = 1;
-    } else if (location.startsWith('/accommodation')) {
+    } else if (location.startsWith('/ask-zoea')) {
       currentIndex = 2;
-    } else if (location.startsWith('/my-bookings')) {
+    } else if (location.startsWith('/accommodation')) {
       currentIndex = 3;
+    } else if (location.startsWith('/my-bookings')) {
+      currentIndex = 4;
     } else if (location.startsWith('/explore')) {
       currentIndex = 0;
     }
@@ -140,23 +142,28 @@ class _ShellState extends ConsumerState<Shell> {
           fontWeight: FontWeight.w400,
           color: context.secondaryTextColor,
         ),
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.explore_outlined),
             activeIcon: Icon(Icons.explore),
             label: 'Explore',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.event_outlined),
             activeIcon: Icon(Icons.event),
             label: 'Events',
           ),
           BottomNavigationBarItem(
+            icon: _AnimatedAskZoeaIcon(isActive: currentIndex == 2),
+            activeIcon: const Icon(Icons.smart_toy),
+            label: 'Ask Zoea',
+          ),
+          const BottomNavigationBarItem(
             icon: Icon(Icons.hotel_outlined),
             activeIcon: Icon(Icons.hotel),
             label: 'Stay',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.book_online_outlined),
             activeIcon: Icon(Icons.book_online),
             label: 'Bookings',
@@ -171,9 +178,12 @@ class _ShellState extends ConsumerState<Shell> {
               context.go('/events');
               break;
             case 2:
-              context.go('/accommodation');
+              context.go('/ask-zoea');
               break;
             case 3:
+              context.go('/accommodation');
+              break;
+            case 4:
               context.go('/my-bookings');
               break;
           }
@@ -435,5 +445,102 @@ class _ShellState extends ConsumerState<Shell> {
         context.go('/maintenance');
       }
     });
+  }
+}
+
+/// Animated Ask Zoea Icon with subtle pulse effect
+class _AnimatedAskZoeaIcon extends StatefulWidget {
+  final bool isActive;
+
+  const _AnimatedAskZoeaIcon({required this.isActive});
+
+  @override
+  State<_AnimatedAskZoeaIcon> createState() => _AnimatedAskZoeaIconState();
+}
+
+class _AnimatedAskZoeaIconState extends State<_AnimatedAskZoeaIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.15)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.15, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+    ]).animate(_controller);
+
+    _opacityAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.7, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.7)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+    ]).animate(_controller);
+
+    if (!widget.isActive) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedAskZoeaIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive != oldWidget.isActive) {
+      if (widget.isActive) {
+        _controller.stop();
+        _controller.reset();
+      } else {
+        _controller.repeat();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // If active, show static icon
+    if (widget.isActive) {
+      return const Icon(Icons.smart_toy_outlined);
+    }
+
+    // If inactive, show animated icon
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Opacity(
+            opacity: _opacityAnimation.value,
+            child: const Icon(Icons.smart_toy_outlined),
+          ),
+        );
+      },
+    );
   }
 }

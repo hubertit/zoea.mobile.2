@@ -123,12 +123,36 @@ class _EventCalendarSheetState extends State<EventCalendarSheet> {
                   color: context.primaryTextColor,
                 ),
                 selectedDecoration: BoxDecoration(
-                  color: context.primaryColorTheme,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: context.isDarkMode
+                        ? [
+                            const Color(0xFFFF6B35), // Vibrant orange
+                            const Color(0xFFF7931E), // Golden orange
+                            const Color(0xFFFFB627), // Warm gold
+                          ]
+                        : [
+                            const Color(0xFFFF8C42), // Lighter orange
+                            const Color(0xFFFFB347), // Peach orange
+                            const Color(0xFFFFC837), // Bright gold
+                          ],
+                  ),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.isDarkMode
+                          ? const Color(0xFFFF6B35).withOpacity(0.4)
+                          : const Color(0xFFFF8C42).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                selectedTextStyle: TextStyle(
-                  color: context.isDarkMode ? context.primaryTextColor : Colors.white, // White on selected circle is intentional
-                  fontWeight: FontWeight.w600,
+                selectedTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
                 todayDecoration: BoxDecoration(
                   color: context.primaryColorTheme.withOpacity(0.2),

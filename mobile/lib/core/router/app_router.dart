@@ -24,6 +24,8 @@ import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/explore/screens/dining_booking_screen.dart';
 import '../../features/explore/screens/dining_booking_confirmation_screen.dart';
 import '../../features/explore/screens/tour_booking_screen.dart';
+import '../../features/explore/screens/tour_detail_screen.dart';
+import '../../features/assistant/screens/ask_zoea_screen.dart';
 import '../../features/explore/screens/recommendations_screen.dart';
 import '../../features/explore/screens/category_places_screen.dart';
 import '../../features/events/screens/events_screen.dart';
@@ -208,6 +210,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/my-bookings',
             builder: (context, state) => const MyBookingsScreen(),
+          ),
+          GoRoute(
+            path: '/ask-zoea',
+            builder: (context, state) => const AskZoeaScreen(),
           ),
           GoRoute(
             path: '/profile',
@@ -519,6 +525,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             email: confirmationData?['email'] ?? '',
             specialRequests: confirmationData?['specialRequests'] ?? '',
           );
+        },
+      ),
+
+      // Tour Detail Route
+      GoRoute(
+        path: '/tour/:id',
+        builder: (context, state) {
+          final tourId = state.pathParameters['id']!;
+          return TourDetailScreen(tourId: tourId);
         },
       ),
 
