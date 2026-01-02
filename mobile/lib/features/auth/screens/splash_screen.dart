@@ -230,74 +230,88 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(
-      backgroundColor: context.backgroundColor,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo with animation
-              AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Image.asset(
-                  isDarkMode ? AppAssets.logoWhite : AppAssets.logoDark,
-                  height: 120,
-                  width: 120,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const SizedBox(height: 24),
-              
-              // App Name
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Text(
-                  'Zoea Africa',
-                  style: context.titleLarge.copyWith(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: context.primaryColorTheme,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              
-              // Tagline
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Text(
-                  'Discover Rwanda Like Never Before',
-                  style: context.bodyMedium.copyWith(
-                    color: context.secondaryTextColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 48),
-              
-              // Loading indicator
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(context.primaryColorTheme),
-                  ),
-                ),
-              ),
-            ],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background image
+          Image.asset(
+            AppAssets.splashBackground,
+            fit: BoxFit.cover,
           ),
-        ),
+          // Dark overlay for better text visibility
+          Container(
+            color: Colors.black.withOpacity(0.4),
+          ),
+          // Content
+          SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo with animation
+                  AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: ScaleTransition(
+                          scale: _scaleAnimation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Image.asset(
+                      AppAssets.logoWhite, // Always use white logo on dark background
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // App Name
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Text(
+                      'Zoea Africa',
+                      style: context.titleLarge.copyWith(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Tagline
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Text(
+                      'Discover Rwanda Like Never Before',
+                      style: context.bodyMedium.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  
+                  // Loading indicator
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
