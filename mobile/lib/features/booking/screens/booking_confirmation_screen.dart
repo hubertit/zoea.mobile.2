@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/bookings_provider.dart';
 
 class BookingConfirmationScreen extends ConsumerWidget {
@@ -25,7 +26,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'Booking Confirmation',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -153,7 +154,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             'Booking Confirmed!',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: AppTheme.successColor, // Success color is intentional
             ),
@@ -161,7 +162,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             'Your booking has been confirmed successfully',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -189,7 +190,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         children: [
           Text(
             'Booking Information',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -260,7 +261,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
               children: [
                 Text(
                   name,
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -277,7 +278,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         location,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 2,
@@ -307,7 +308,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         children: [
           Text(
             'Booking Details',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -392,7 +393,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         children: [
           Text(
             'Price Summary',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -440,7 +441,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             ),
             child: Text(
               'View My Bookings',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -461,7 +462,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             ),
             child: Text(
               'Continue Exploring',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryColorTheme,
               ),
@@ -487,7 +488,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               'Failed to load booking',
-              style: AppTheme.titleLarge.copyWith(
+              style: context.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -495,7 +496,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               error.toString().replaceAll('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -525,7 +526,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
           width: 120,
           child: Text(
             '$label:',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -533,7 +534,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
         Expanded(
           child: Text(
             value,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: valueColor ?? context.primaryTextColor,
             ),
@@ -557,14 +558,14 @@ class BookingConfirmationScreen extends ConsumerWidget {
       children: [
         Text(
           label,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: isTotal ? FontWeight.w600 : FontWeight.normal,
             color: isDiscount ? AppTheme.successColor : context.primaryTextColor, // Success color is intentional
           ),
         ),
         Text(
           '${isDiscount ? '-' : ''}$formattedAmount',
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: isTotal ? FontWeight.w600 : FontWeight.w500,
             color: isDiscount
                 ? AppTheme.successColor // Success color is intentional

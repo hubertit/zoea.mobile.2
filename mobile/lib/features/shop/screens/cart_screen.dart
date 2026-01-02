@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/cart_provider.dart';
 import '../../../core/services/cart_service.dart';
 import '../../../core/config/app_config.dart';
@@ -41,7 +42,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         ),
         title: Text(
           'Shopping Cart',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -153,7 +154,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   children: [
                     Text(
                       item.itemName,
-                      style: AppTheme.bodyLarge.copyWith(
+                      style: context.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -163,7 +164,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     const SizedBox(height: 4),
                     Text(
                       _getItemTypeLabel(item.itemType),
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -179,7 +180,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           const SizedBox(width: 4),
                           Text(
                             '${_formatDate(item.serviceBookingDate!)} at ${item.serviceBookingTime}',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -191,7 +192,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       children: [
                         Text(
                           '${AppConfig.currencySymbol} ${item.unitPrice.toStringAsFixed(0)}',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryColorTheme,
                           ),
@@ -199,14 +200,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         const SizedBox(width: 8),
                         Text(
                           '× ${item.quantity}',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
                         const Spacer(),
                         Text(
                           '${AppConfig.currencySymbol} ${item.totalPrice.toStringAsFixed(0)}',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.bold,
                             color: context.primaryTextColor,
                           ),
@@ -248,7 +249,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           '${item.quantity}',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -296,14 +297,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               children: [
                 Text(
                   'Total',
-                  style: AppTheme.headlineSmall.copyWith(
+                  style: context.headlineSmall.copyWith(
                     fontWeight: FontWeight.bold,
                     color: context.primaryTextColor,
                   ),
                 ),
                 Text(
                   '${AppConfig.currencySymbol} ${cart.totalAmount.toStringAsFixed(0)}',
-                  style: AppTheme.headlineMedium.copyWith(
+                  style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: context.primaryColorTheme,
                   ),
@@ -345,14 +346,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             const SizedBox(height: 16),
             Text(
               'Your cart is empty',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.primaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Add items to your cart to get started',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -385,14 +386,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             const SizedBox(height: 16),
             Text(
               'Failed to load cart',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.errorColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -552,13 +553,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 
   void _checkout() {
-    // TODO: Navigate to checkout screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Checkout screen coming soon'),
-        backgroundColor: context.primaryColorTheme,
-      ),
-    );
+    final cart = ref.read(cartProvider).valueOrNull;
+    if (cart == null || cart.items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Your cart is empty'),
+          backgroundColor: context.errorColor,
+        ),
+      );
+      return;
+    }
+
+    // Get listing ID from first cart item
+    final listingId = cart.items.first.product?['listingId'] ??
+        cart.items.first.service?['listingId'] ??
+        cart.items.first.menuItem?['listingId'];
+
+    context.push('/checkout${listingId != null ? '?listingId=$listingId' : ''}');
   }
 }
 
