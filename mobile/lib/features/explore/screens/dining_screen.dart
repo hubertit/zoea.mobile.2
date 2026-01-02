@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -187,7 +188,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             ),
             title: Text(
               _diningCategoryName ?? 'Dining',
-              style: AppTheme.headlineMedium.copyWith(
+              style: context.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -245,7 +246,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
               indicatorColor: context.primaryColorTheme,
               labelColor: context.primaryColorTheme,
               unselectedLabelColor: context.secondaryTextColor,
-              labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
+              labelStyle: context.bodySmall.copyWith(fontWeight: FontWeight.w600),
               isScrollable: true,
               tabAlignment: TabAlignment.start,
               labelPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -280,7 +281,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ),
           title: Text(
             'Dining',
-              style: AppTheme.headlineMedium.copyWith(
+              style: context.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -302,7 +303,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ),
           title: Text(
             'Dining',
-              style: AppTheme.headlineMedium.copyWith(
+              style: context.headlineMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -320,14 +321,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
               const SizedBox(height: 16),
               Text(
                 'Failed to load dining category',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   color: context.secondaryTextColor,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 error.toString(),
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   color: context.secondaryTextColor,
                 ),
                 textAlign: TextAlign.center,
@@ -457,14 +458,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             const SizedBox(height: 16),
             Text(
               'Failed to load listings',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -617,14 +618,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           const SizedBox(height: 16),
           Text(
             'No dining options found',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check back later for new dining options',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -768,7 +769,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                   children: [
                     Text(
                       'Filter Dining',
-                      style: AppTheme.headlineSmall.copyWith(
+                      style: context.headlineSmall.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -783,7 +784,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                 // Minimum Rating
                 Text(
                   'Minimum Rating',
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -829,7 +830,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                 // Price Range
                 Text(
                   'Price Range',
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -903,14 +904,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                 CheckboxListTile(
                   title: Text(
                     'Featured Only',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
                   color: context.primaryTextColor,
                 ),
                   ),
                   subtitle: Text(
                     'Show only featured listings',
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -979,7 +980,9 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: context.primaryColorTheme,
-                          foregroundColor: context.primaryTextColor,
+                          foregroundColor: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.primaryColor
+                              : Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Filters'),
@@ -1003,7 +1006,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
       onSelected: (_) => onSelected(value),
       selectedColor: context.primaryColorTheme.withOpacity(0.2),
       checkmarkColor: context.primaryColorTheme,
-      labelStyle: AppTheme.bodySmall.copyWith(
+      labelStyle: context.bodySmall.copyWith(
         color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
@@ -1038,7 +1041,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                   children: [
                     Text(
                       'Sort Dining',
-                      style: AppTheme.headlineSmall.copyWith(
+                      style: context.headlineSmall.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1142,7 +1145,9 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: context.primaryColorTheme,
-                          foregroundColor: context.primaryTextColor,
+                          foregroundColor: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.primaryColor
+                              : Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: const Text('Apply Sort'),
@@ -1163,7 +1168,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
     return ListTile(
       title: Text(
         label,
-        style: AppTheme.bodyMedium,
+        style: context.bodyMedium,
       ),
       trailing: isSelected ? Icon(Icons.check, color: context.primaryColorTheme) : null,
       onTap: () => onSelected(value),

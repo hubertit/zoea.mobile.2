@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -124,7 +125,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         ),
         title: Text(
           'Book Table',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -210,7 +211,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               children: [
                 Text(
                   widget.placeName,
-                  style: AppTheme.headlineSmall.copyWith(
+                  style: context.headlineSmall.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -227,7 +228,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     Expanded(
                       child: Text(
                         widget.placeLocation,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -245,7 +246,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     const SizedBox(width: 4),
                     Text(
                       widget.placeRating.toString(),
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.primaryTextColor,
                       ),
@@ -253,7 +254,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     const SizedBox(width: 8),
                     Text(
                       widget.priceRange,
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -287,7 +288,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Text(
             'Reservation Details',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -326,7 +327,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           children: [
             Text(
               label,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -335,7 +336,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               date != null
                   ? '${date.day}/${date.month}/${date.year}'
                   : 'Select date',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryTextColor,
               ),
@@ -354,7 +355,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
       children: [
         Text(
           'Available Times',
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.secondaryTextColor,
           ),
@@ -392,7 +393,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 ),
                 child: Text(
                   slot['time'] as String,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: isSelected 
                         ? Theme.of(context).colorScheme.onPrimary 
                         : isAvailable 
@@ -429,7 +430,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Text(
             'Number of Guests',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -448,7 +449,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               const SizedBox(width: 16),
               Text(
                 _guestCount.toString(),
-                style: AppTheme.headlineMedium.copyWith(
+                style: context.headlineMedium.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -488,7 +489,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Text(
             'Guest Information',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -582,7 +583,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         children: [
           Text(
             'Special Requests',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -640,7 +641,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               const SizedBox(width: 8),
               Text(
                 'Coupon Code',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -658,7 +659,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter coupon code',
-                    hintStyle: AppTheme.bodyMedium.copyWith(
+                    hintStyle: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     border: OutlineInputBorder(
@@ -697,7 +698,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 ),
                 child: Text(
                   'Apply',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -728,14 +729,14 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                       children: [
                         Text(
                           'Coupon Applied!',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                             color: AppTheme.successColor,
                           ),
                         ),
                         Text(
                           'You saved RWF ${_discountAmount.toStringAsFixed(0)}',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: AppTheme.successColor,
                           ),
                         ),
@@ -791,13 +792,13 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 children: [
                   Text(
                     'Total',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
                   Text(
                     'RWF ${_calculateTotalPrice().toStringAsFixed(0)}',
-                    style: AppTheme.headlineSmall.copyWith(
+                    style: context.headlineSmall.copyWith(
                       fontWeight: FontWeight.w600,
                       color: context.primaryTextColor,
                     ),
@@ -819,7 +820,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                 ),
                 child: Text(
                   'Confirm Booking',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -943,7 +944,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             // Title
             Text(
               'Confirm Booking',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -995,7 +996,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     ),
                     child: Text(
                       'Cancel',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w500,
                       ),
@@ -1107,7 +1108,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                           )
                         : Text(
                             'Confirm',
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                             ),
@@ -1133,7 +1134,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
           width: 80,
           child: Text(
             '$label:',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.grey[600],
             ),
@@ -1142,7 +1143,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         Expanded(
           child: Text(
             value,
-            style: AppTheme.bodyMedium,
+            style: context.bodyMedium,
           ),
         ),
       ],

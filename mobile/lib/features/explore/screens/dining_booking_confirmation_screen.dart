@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class DiningBookingConfirmationScreen extends ConsumerStatefulWidget {
   final String? bookingId;
@@ -57,7 +58,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         ),
         title: Text(
           'Booking Confirmation',
-          style: AppTheme.headlineMedium.copyWith(
+          style: context.headlineMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -125,7 +126,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           const SizedBox(height: 16),
           Text(
             'Reservation Confirmed!',
-            style: AppTheme.headlineMedium.copyWith(
+            style: context.headlineMedium.copyWith(
               fontWeight: FontWeight.w600,
               color: context.successColor,
             ),
@@ -133,7 +134,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           const SizedBox(height: 8),
           Text(
             'Your table has been reserved successfully',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -149,7 +150,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
               ),
               child: Text(
                 'Booking #${widget.bookingNumber}',
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.successColor,
                 ),
@@ -181,7 +182,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         children: [
           Text(
             'Reservation Details',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -231,7 +232,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         children: [
           Text(
             'Restaurant Information',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -273,7 +274,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         children: [
           Text(
             'Guest Information',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -321,7 +322,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         children: [
           Text(
             'Special Requests',
-            style: AppTheme.headlineSmall.copyWith(
+            style: context.headlineSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -329,7 +330,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
           const SizedBox(height: 16),
           Text(
             widget.specialRequests,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.primaryTextColor,
             ),
           ),
@@ -359,7 +360,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
               const SizedBox(width: 8),
               Text(
                 'Important Information',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.blue[700],
                 ),
@@ -372,7 +373,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
             '• If you need to cancel or modify your reservation, please call the restaurant directly\n'
             '• Late arrivals may result in table forfeiture\n'
             '• Dress code may apply - please check with the restaurant',
-            style: AppTheme.bodySmall.copyWith(
+            style: context.bodySmall.copyWith(
               color: Colors.blue[700],
             ),
           ),
@@ -396,7 +397,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         const SizedBox(width: 12),
         Text(
           '$label: ',
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.secondaryTextColor,
           ),
@@ -404,7 +405,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         Expanded(
           child: Text(
             value,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -443,7 +444,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                 ),
                 child: Text(
                   'Browse More',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -469,7 +470,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
                       )
                     : Text(
                         'View My Bookings',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),

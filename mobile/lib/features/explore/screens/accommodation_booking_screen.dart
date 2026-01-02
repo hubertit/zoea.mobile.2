@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/services/bookings_service.dart';
 import '../../../core/services/token_storage_service.dart';
 import '../../../core/providers/listings_provider.dart';
@@ -85,7 +86,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
         title: Text(
           'Book Your Stay',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -164,7 +165,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               children: [
                 Text(
                   'Kigali Marriott Hotel',
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -172,7 +173,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 const SizedBox(height: 4),
                 Text(
                   'Kacyiru, Kigali',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -187,7 +188,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     const SizedBox(width: 4),
                     Text(
                       '4.8 (1,247 reviews)',
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -207,7 +208,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       children: [
         Text(
           'Select Dates',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -254,7 +255,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           children: [
             Text(
               label,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -263,7 +264,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               date != null
                   ? '${date.day}/${date.month}/${date.year}'
                   : 'Select date',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryTextColor,
               ),
@@ -280,7 +281,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       children: [
         Text(
           'Guests',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -297,7 +298,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             children: [
               Text(
                 '$_guestCount guest${_guestCount > 1 ? 's' : ''}',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -344,7 +345,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       children: [
         Text(
           'Rooms',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -361,7 +362,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             children: [
               Text(
                 '$_roomCount room${_roomCount > 1 ? 's' : ''}',
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -413,7 +414,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       children: [
         Text(
           'Price Breakdown',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -433,11 +434,11 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 children: [
                   Text(
                     'RWF ${basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} × $_roomCount room${_roomCount > 1 ? 's' : ''}',
-                    style: AppTheme.bodyMedium,
+                    style: context.bodyMedium,
                   ),
                   Text(
                     'RWF ${totalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -449,11 +450,11 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 children: [
                   Text(
                     'Taxes & Fees',
-                    style: AppTheme.bodyMedium,
+                    style: context.bodyMedium,
                   ),
                   Text(
                     'RWF ${tax.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -465,13 +466,13 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 children: [
                   Text(
                     'Total',
-                    style: AppTheme.bodyLarge.copyWith(
+                    style: context.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     'RWF ${total.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                    style: AppTheme.bodyLarge.copyWith(
+                    style: context.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
                       color: context.primaryColorTheme,
                     ),
@@ -491,7 +492,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       children: [
         Text(
           'Special Requests (Optional)',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -508,12 +509,12 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
             maxLines: 3,
             decoration: InputDecoration(
               hintText: 'Any special requests or preferences...',
-              hintStyle: AppTheme.bodyMedium.copyWith(
+              hintStyle: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               border: InputBorder.none,
             ),
-            style: AppTheme.bodyMedium,
+            style: context.bodyMedium,
           ),
         ),
       ],
@@ -561,7 +562,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 )
               : Text(
                   'Continue to Payment',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -623,7 +624,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               const SizedBox(width: 8),
               Text(
                 'Selected Rooms',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryColorTheme,
                 ),
@@ -652,14 +653,14 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                       children: [
                         Text(
                           roomType['type'],
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           '${roomType['maxGuests']} guests • ${roomType['amenities']}',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.secondaryTextColor,
                           ),
                         ),
@@ -671,14 +672,14 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     children: [
                       Text(
                         'Qty: $quantity',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'RWF ${totalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           color: context.primaryColorTheme,
                         ),
@@ -722,7 +723,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               const SizedBox(width: 8),
               Text(
                 'Coupon Code',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -740,7 +741,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter coupon code',
-                    hintStyle: AppTheme.bodyMedium.copyWith(
+                    hintStyle: context.bodyMedium.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     border: OutlineInputBorder(
@@ -779,7 +780,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                 ),
                 child: Text(
                   'Apply',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -810,14 +811,14 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                       children: [
                         Text(
                           'Coupon Applied!',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w600,
                             color: AppTheme.successColor,
                           ),
                         ),
                         Text(
                           'You saved RWF ${_discountAmount.toStringAsFixed(0)}',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: AppTheme.successColor,
                           ),
                         ),
