@@ -213,7 +213,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                 );
               },
               child: ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   final item = filteredItems[index];

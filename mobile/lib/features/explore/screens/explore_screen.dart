@@ -189,7 +189,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(), // Enable pull-to-refresh even when content fits
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

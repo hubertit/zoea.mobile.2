@@ -177,7 +177,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         await Future.delayed(const Duration(milliseconds: 500));
       },
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         itemCount: miceEvents.length,
         itemBuilder: (context, index) {
           final event = miceEvents[index];
@@ -228,7 +228,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           ),
           // Event content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -321,7 +321,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   Widget _buildEventsList(EventsState eventsState) {
     if (eventsState.isLoading) {
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         itemCount: 5, // Show 5 skeleton cards
         itemBuilder: (context, index) {
           return _buildSkeletonEventCard();
@@ -425,7 +425,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
         await Future.delayed(const Duration(milliseconds: 500));
       },
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         itemCount: eventsState.events.length,
         itemBuilder: (context, index) {
           final event = eventsState.events[index];
@@ -479,7 +479,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           ),
           // Skeleton Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -660,7 +660,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           ),
           // Event Details
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

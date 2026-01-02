@@ -183,7 +183,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       onTap: _showSearchOptions,
       child: Container(
         margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
           color: context.cardColor,
           borderRadius: BorderRadius.circular(12),
@@ -340,7 +340,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             );
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: filteredListings.length,
             itemBuilder: (context, index) {
               final listing = filteredListings[index] as Map<String, dynamic>;
