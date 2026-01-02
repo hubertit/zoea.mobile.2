@@ -26,7 +26,7 @@ echo -e "${GREEN}========================================${NC}"
 check_server() {
     local server=$1
     echo -e "${YELLOW}Checking connection to $server...${NC}"
-    if sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no "$server" "echo 'Connected'" &> /dev/null; then
+    if sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$server" "echo 'Connected'" &> /dev/null; then
         echo -e "${GREEN}✓ Connected to $server${NC}"
         return 0
     else
@@ -51,57 +51,49 @@ else
     exit 1
 fi
 
-# Step 1: Build the admin panel locally
-echo -e "\n${YELLOW}Step 1: Building admin panel...${NC}"
-echo "Building with API base: $API_BASE"
-NEXT_PUBLIC_API_BASE="$API_BASE" npm run build
+# Step 1: Create deployment package (matching resolveit pattern - build on server)
+echo -e "\n${YELLOW}Step 1: Creating deployment package...${NC}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}✗ Build failed${NC}"
-    exit 1
-fi
-echo -e "${GREEN}✓ Build completed${NC}"
+# Create tarball excluding unnecessary files (like resolveit)
+tar --exclude='node_modules' --exclude='.next' --exclude='dist' \
+    --exclude='.git' --exclude='*.log' --exclude='.env*' \
+    --exclude='deploy-*' --exclude='admin-deploy.tar.gz' \
+    -czf /tmp/admin-deploy.tar.gz .
 
-# Step 2: Create deployment package
-echo -e "\n${YELLOW}Step 2: Creating deployment package...${NC}"
-DEPLOY_DIR="deploy-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$DEPLOY_DIR"
+# Step 2: Sync to server
+echo -e "\n${YELLOW}Step 2: Syncing to server...${NC}"
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "mkdir -p $REMOTE_DIR"
+sshpass -p 'K1xrU3OT0Kjz671daI' scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password /tmp/admin-deploy.tar.gz "$SERVER:/tmp/"
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "cd $REMOTE_DIR && rm -rf * && tar xzf /tmp/admin-deploy.tar.gz && rm /tmp/admin-deploy.tar.gz"
 
-# Copy necessary files
-cp -r .next "$DEPLOY_DIR/"
-cp -r public "$DEPLOY_DIR/"
-cp package*.json "$DEPLOY_DIR/"
-cp Dockerfile "$DEPLOY_DIR/"
-cp docker-compose.admin.yml "$DEPLOY_DIR/"
-
-# Create .env file for production
-cat > "$DEPLOY_DIR/.env.production" <<EOF
+# Create .env file on server (matching resolveit pattern)
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<EOF
+cd $REMOTE_DIR
+cat > .env.admin <<'ENVEOF'
+# Admin Panel Configuration
 ADMIN_PORT=$ADMIN_PORT
 NEXT_PUBLIC_API_BASE=$API_BASE
 NODE_ENV=production
+ENVEOF
 EOF
 
-echo -e "${GREEN}✓ Deployment package created${NC}"
-
-# Step 3: Sync to server
-echo -e "\n${YELLOW}Step 3: Syncing to server...${NC}"
-sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no "$SERVER" "mkdir -p $REMOTE_DIR"
-sshpass -p 'K1xrU3OT0Kjz671daI' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" "$DEPLOY_DIR/" "$SERVER:$REMOTE_DIR/"
+rm -f /tmp/admin-deploy.tar.gz
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}✗ Sync failed${NC}"
-    rm -rf "$DEPLOY_DIR"
     exit 1
 fi
 echo -e "${GREEN}✓ Files synced to server${NC}"
 
-# Clean up local deployment package
-rm -rf "$DEPLOY_DIR"
-
-# Step 4: Deploy on server
-echo -e "\n${YELLOW}Step 4: Deploying on server...${NC}"
-sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no "$SERVER" <<'ENDSSH'
+# Step 3: Deploy on server
+echo -e "\n${YELLOW}Step 3: Deploying on server...${NC}"
+sshpass -p 'K1xrU3OT0Kjz671daI' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<'ENDSSH'
 cd /root/zoea-admin
+
+# Ensure network exists (same pattern as resolveit)
+docker network create zoea-network 2>/dev/null || true
 
 # Check if port is already in use
 if netstat -tulpn | grep -q ":3010 "; then
@@ -109,12 +101,12 @@ if netstat -tulpn | grep -q ":3010 "; then
     docker compose -f docker-compose.admin.yml down
 fi
 
-# Build and start the container
+# Build and start the container (without --no-cache for better caching, like resolveit)
 echo "Building Docker image..."
-docker compose -f docker-compose.admin.yml build --no-cache
+docker compose -f docker-compose.admin.yml --env-file .env.admin build
 
 echo "Starting admin panel..."
-docker compose -f docker-compose.admin.yml up -d
+docker compose -f docker-compose.admin.yml --env-file .env.admin up -d
 
 # Wait for container to be healthy
 echo "Waiting for admin panel to be ready..."
@@ -143,8 +135,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Step 5: Health check
-echo -e "\n${YELLOW}Step 5: Running health check...${NC}"
+# Step 4: Health check
+echo -e "\n${YELLOW}Step 4: Running health check...${NC}"
 SERVER_IP=$(echo "$SERVER" | cut -d'@' -f2)
 sleep 5
 
