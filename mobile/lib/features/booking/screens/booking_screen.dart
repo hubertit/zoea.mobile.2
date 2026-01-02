@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/listings_provider.dart';
 
@@ -87,6 +86,34 @@ class BookingScreen extends ConsumerWidget {
           // Navigate to accommodation booking screen
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.pushReplacement('/accommodation/$listingId/book');
+          });
+        } else if (listingType == 'tour') {
+          // Navigate to tour booking screen
+          final images = listing['images'] as List? ?? [];
+          final primaryImage = images.isNotEmpty && images[0]['media'] != null
+              ? images[0]['media']['url']
+              : null;
+          final name = listing['name'] ?? 'Tour';
+          final address = listing['address'] ?? '';
+          final city = listing['city'] as Map<String, dynamic>?;
+          final cityName = city?['name'] as String? ?? '';
+          final location = address.isNotEmpty 
+              ? '$address${cityName.isNotEmpty ? ', $cityName' : ''}'
+              : cityName.isNotEmpty ? cityName : 'Location not available';
+          final rating = listing['rating'] != null
+              ? (listing['rating'] is String
+                  ? double.tryParse(listing['rating'])
+                  : listing['rating']?.toDouble())
+              : 0.0;
+          
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.pushReplacement('/tour-booking', extra: {
+              'listingId': listingId,
+              'tourName': name,
+              'tourLocation': location,
+              'tourImage': primaryImage ?? '',
+              'tourRating': rating ?? 0.0,
+            });
           });
         } else {
           // Unsupported listing type - show error

@@ -26,22 +26,23 @@ class AppTheme {
   
   // Dark Mode Colors - Based on primary color (0xFF181E29)
   // Using a sophisticated dark palette that complements the primary blue-gray
-  static const Color darkBackgroundColor = Color(0xFF0F1217); // Slightly lighter than pure black, with blue tint
-  static const Color darkSurfaceColor = Color(0xFF1A1D24); // Surface color with primary color influence
-  static const Color darkCardColor = Color(0xFF232730); // Card color - slightly lighter than surface
+  // Backgrounds are darker and closer to foreground for cleaner dark mode
+  static const Color darkBackgroundColor = Color(0xFF0A0D12); // Darker background, closer to foreground
+  static const Color darkSurfaceColor = Color(0xFF12151A); // Surface color - darker, closer to background
+  static const Color darkCardColor = Color(0xFF181C21); // Card color - slightly lighter than surface but still dark
   static const Color darkPrimaryTextColor = Color(0xFFF5F7FA); // Off-white for better readability
   static const Color darkSecondaryTextColor = Color(0xFF9CA3AF); // Muted grey for secondary text
-  static const Color darkDividerColor = Color(0xFF2D3239); // Divider with primary color influence
-  static const Color darkBorderColor = Color(0xFF2D3239);
+  static const Color darkDividerColor = Color(0xFF252A30); // Divider - darker, closer to background
+  static const Color darkBorderColor = Color(0xFF252A30);
   
-  // Dark Mode Grey Shades
-  static const Color darkGrey50 = Color(0xFF2D3239);
-  static const Color darkGrey100 = Color(0xFF3A3F47);
-  static const Color darkGrey200 = Color(0xFF4A4F57);
-  static const Color darkGrey300 = Color(0xFF5A5F67);
-  static const Color darkGrey400 = Color(0xFF6A6F77);
-  static const Color darkGrey500 = Color(0xFF8A8F97);
-  static const Color darkGrey600 = Color(0xFF9A9FA7);
+  // Dark Mode Grey Shades - Adjusted to be darker, closer to background
+  static const Color darkGrey50 = Color(0xFF1F2429); // Darker grey
+  static const Color darkGrey100 = Color(0xFF252A30); // Darker grey
+  static const Color darkGrey200 = Color(0xFF2D3239); // Darker grey
+  static const Color darkGrey300 = Color(0xFF3A3F47); // Darker grey
+  static const Color darkGrey400 = Color(0xFF4A4F57); // Darker grey
+  static const Color darkGrey500 = Color(0xFF6A6F77); // Medium grey
+  static const Color darkGrey600 = Color(0xFF8A8F97); // Lighter grey
   
   // Dark Mode Accent Colors (lighter versions for dark mode)
   static const Color darkSuccessColor = Color(0xFF00C973);

@@ -439,6 +439,112 @@ class BookingsService {
     }
   }
 
+  /// Create tour booking
+  Future<Map<String, dynamic>> createTourBooking({
+    String? listingId, // Optional - tours don't always have listings
+    required String tourId,
+    required String tourScheduleId,
+    required int guestCount,
+    int? adults,
+    int? children,
+    int? infants,
+    String? fullName,
+    String? contactNumber,
+    String? email,
+    String? specialRequests,
+    String? pickupLocation,
+    List<Map<String, dynamic>>? guests,
+  }) async {
+    try {
+      final dio = await _getDio();
+      
+      final data = <String, dynamic>{
+        'bookingType': 'tour',
+        'tourId': tourId,
+        'tourScheduleId': tourScheduleId,
+        'guestCount': guestCount,
+      };
+
+      if (listingId != null && listingId.isNotEmpty) {
+        data['listingId'] = listingId;
+      }
+
+      if (adults != null) data['adults'] = adults;
+      if (children != null) data['children'] = children;
+      if (infants != null) data['infants'] = infants;
+      if (pickupLocation != null && pickupLocation.isNotEmpty) {
+        data['pickupLocation'] = pickupLocation;
+      }
+      if (specialRequests != null && specialRequests.isNotEmpty) {
+        data['specialRequests'] = specialRequests;
+      }
+
+      // Build guests array from contact info or provided guests
+      final guestsList = <Map<String, dynamic>>[];
+      if (guests != null && guests.isNotEmpty) {
+        guestsList.addAll(guests);
+      } else if (fullName != null && fullName.isNotEmpty) {
+        guestsList.add({
+          'fullName': fullName,
+          if (email != null && email.isNotEmpty) 'email': email,
+          if (contactNumber != null && contactNumber.isNotEmpty) 'phone': contactNumber,
+          'isPrimary': true,
+        });
+      }
+      
+      if (guestsList.isNotEmpty) {
+        data['guests'] = guestsList;
+      }
+
+      final response = await dio.post(
+        AppConfig.bookingsEndpoint,
+        data: data,
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to create booking: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      String errorMessage = 'Failed to create booking.';
+      
+      if (e.response != null) {
+        final statusCode = e.response!.statusCode;
+        final message = e.response!.data?['message'] ?? e.response!.statusMessage;
+        
+        if (statusCode == 400) {
+          // Validation error - extract detailed message
+          final errorData = e.response!.data;
+          if (errorData is Map && errorData['message'] != null) {
+            if (errorData['message'] is List) {
+              errorMessage = (errorData['message'] as List).join(', ');
+            } else {
+              errorMessage = errorData['message'].toString();
+            }
+          } else {
+            errorMessage = message ?? 'Invalid booking data. Please check your input.';
+          }
+        } else if (statusCode == 401) {
+          errorMessage = 'Unauthorized. Please login again.';
+        } else if (statusCode == 409) {
+          errorMessage = 'Tour schedule not available. Please choose a different date/time.';
+        } else {
+          errorMessage = message ?? errorMessage;
+        }
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+                 e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Connection timeout. Please check your internet connection.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'No internet connection. Please check your network.';
+      }
+      
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('Error creating booking: $e');
+    }
+  }
+
   /// Confirm payment (TODO: Implement when payment feature is ready)
   /// For now, this is a placeholder
   Future<Map<String, dynamic>> confirmPayment({

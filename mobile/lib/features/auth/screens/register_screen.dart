@@ -359,7 +359,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(context.primaryTextColor),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.onPrimary,
+                              ),
                             ),
                           )
                         : const Text('Create Account'),
@@ -385,6 +387,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     TextButton(
                       onPressed: () => context.go('/login'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: context.primaryColorTheme,
+                      ),
                       child: const Text('Sign In'),
                     ),
                   ],

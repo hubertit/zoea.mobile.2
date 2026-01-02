@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers/favorites_provider.dart';
 
@@ -38,7 +39,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
       appBar: AppBar(
         title: Text(
           'Favorites',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,

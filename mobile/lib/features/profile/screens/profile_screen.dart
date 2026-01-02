@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_provider.dart';
 import '../../../core/providers/theme_provider.dart';
@@ -104,7 +105,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           'Profile',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,

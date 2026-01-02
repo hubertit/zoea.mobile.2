@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/widgets/place_card.dart';
 
 class RecommendationsScreen extends StatefulWidget {
@@ -42,9 +43,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         ),
         title: Text(
           'Recommendations',
-          style: AppTheme.headlineSmall.copyWith(
+          style: context.headlineSmall.copyWith(
             fontWeight: FontWeight.w600,
-            color: context.primaryTextColor,
           ),
         ),
         actions: [
@@ -66,7 +66,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
           indicatorColor: context.primaryColorTheme,
           labelColor: context.primaryColorTheme,
           unselectedLabelColor: context.secondaryTextColor,
-          labelStyle: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.w600),
+          labelStyle: context.bodySmall.copyWith(fontWeight: FontWeight.w600),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
           labelPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -112,14 +112,14 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
             const SizedBox(height: 16),
             Text(
               'No recommendations found',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Check back later for new recommendations',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),

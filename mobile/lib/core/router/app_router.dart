@@ -22,6 +22,7 @@ import '../../features/explore/screens/accommodation_booking_screen.dart';
 import '../../features/explore/screens/place_detail_screen.dart';
 import '../../features/explore/screens/dining_booking_screen.dart';
 import '../../features/explore/screens/dining_booking_confirmation_screen.dart';
+import '../../features/explore/screens/tour_booking_screen.dart';
 import '../../features/explore/screens/recommendations_screen.dart';
 import '../../features/explore/screens/category_places_screen.dart';
 import '../../features/events/screens/events_screen.dart';
@@ -38,6 +39,8 @@ import '../../features/shop/screens/services_screen.dart';
 import '../../features/shop/screens/service_detail_screen.dart';
 import '../../features/shop/screens/menus_screen.dart';
 import '../../features/shop/screens/cart_screen.dart';
+import '../../features/shop/screens/checkout_screen.dart';
+import '../../features/shop/screens/order_confirmation_screen.dart';
 import '../../features/booking/screens/booking_screen.dart';
 import '../../features/booking/screens/booking_confirmation_screen.dart';
 import '../../features/zoea_card/screens/zoea_card_screen.dart';
@@ -424,6 +427,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const CartScreen(),
       ),
       GoRoute(
+        path: '/checkout',
+        builder: (context, state) {
+          final listingId = state.uri.queryParameters['listingId'];
+          return CheckoutScreen(listingId: listingId);
+        },
+      ),
+      GoRoute(
+        path: '/order-confirmation/:orderId',
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId']!;
+          return OrderConfirmationScreen(orderId: orderId);
+        },
+      ),
+      GoRoute(
         path: '/accommodation/:accommodationId',
         builder: (context, state) {
           final accommodationId = state.pathParameters['accommodationId']!;
@@ -505,6 +522,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             phone: confirmationData?['phone'] ?? '',
             email: confirmationData?['email'] ?? '',
             specialRequests: confirmationData?['specialRequests'] ?? '',
+          );
+        },
+      ),
+
+      // Tour Booking Route
+      GoRoute(
+        path: '/tour-booking',
+        builder: (context, state) {
+          final bookingData = state.extra as Map<String, dynamic>?;
+          return TourBookingScreen(
+            listingId: bookingData?['listingId'] ?? '',
+            tourId: bookingData?['tourId'] as String?,
+            tourName: bookingData?['tourName'] as String?,
+            tourImage: bookingData?['tourImage'] as String?,
+            tourRating: bookingData?['tourRating']?.toDouble(),
+            tourLocation: bookingData?['tourLocation'] as String?,
           );
         },
       ),
