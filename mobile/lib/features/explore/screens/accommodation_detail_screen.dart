@@ -190,7 +190,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1214,9 +1214,9 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
           ],
         );
       },
-      loading: () => const Center(child: Padding(
+      loading: () => Center(child: Padding(
         padding: EdgeInsets.all(20),
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: context.primaryColorTheme),
       )),
       error: (error, stack) => Center(
         child: Padding(

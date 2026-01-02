@@ -35,7 +35,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
       backgroundColor: context.grey50,
       body: menuAsync.when(
         data: (menu) => _buildContent(menu),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -254,7 +254,7 @@ class _MenuDetailScreenState extends ConsumerState<MenuDetailScreen> {
                     width: 100,
                     height: 100,
                     color: context.grey100,
-                    child: const Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                   ),
                   errorWidget: (context, url, error) => Container(
                     width: 100,

@@ -70,7 +70,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: context.primaryColorTheme))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(AppTheme.spacing24),
               child: Column(

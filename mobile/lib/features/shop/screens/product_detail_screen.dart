@@ -65,7 +65,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
       backgroundColor: context.grey50,
       body: productAsync.when(
         data: (product) => _buildContent(product),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -172,7 +172,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: context.grey100,
-                        child: const Center(child: CircularProgressIndicator()),
+                        child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                       ),
                       errorWidget: (context, url, error) => Container(
                         color: context.grey100,

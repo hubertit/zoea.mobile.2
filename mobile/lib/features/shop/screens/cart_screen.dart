@@ -86,7 +86,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -121,7 +121,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     width: 80,
                     height: 80,
                     color: context.grey100,
-                    child: const Center(child: CircularProgressIndicator()),
+                    child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                   ),
                   errorWidget: (context, url, error) => Container(
                     width: 80,

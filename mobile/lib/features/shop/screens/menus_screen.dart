@@ -105,7 +105,7 @@ class _MenusScreenState extends ConsumerState<MenusScreen> {
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );

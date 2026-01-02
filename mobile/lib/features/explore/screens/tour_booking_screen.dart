@@ -464,7 +464,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
           ),
           const SizedBox(height: 16),
           if (_isLoadingSchedules)
-            const Center(child: CircularProgressIndicator())
+            Center(child: CircularProgressIndicator(color: context.primaryColorTheme))
           else if (_schedules.isEmpty)
             Text(
               'No available schedules',

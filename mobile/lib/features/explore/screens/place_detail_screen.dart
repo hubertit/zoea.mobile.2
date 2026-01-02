@@ -604,8 +604,8 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                             width: 60,
                             height: 60,
                             color: context.grey200,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
+                            child: Center(
+                              child: CircularProgressIndicator(color: context.primaryColorTheme),
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
@@ -817,8 +817,8 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
               color: context.grey200,
-              child: const Center(
-                child: CircularProgressIndicator(),
+              child: Center(
+                child: CircularProgressIndicator(color: context.primaryColorTheme),
               ),
             ),
             errorWidget: (context, url, error) => Container(

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import '../theme/theme_extensions.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
@@ -599,20 +600,20 @@ class _ListingDetailRouter extends ConsumerWidget {
         if (isAccommodation) {
           // Redirect to accommodation detail screen
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/accommodation/$listingId');
-          });
-          // Show loading while redirecting
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        
-        // Use regular listing detail screen for non-accommodation listings
-        return ListingDetailScreen(listingId: listingId);
-      },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+          context.go('/accommodation/$listingId');
+        });
+        // Show loading while redirecting
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
+        );
+      }
+      
+      // Use regular listing detail screen for non-accommodation listings
+      return ListingDetailScreen(listingId: listingId);
+    },
+    loading: () => Scaffold(
+      body: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
+    ),
       error: (error, stack) => ListingDetailScreen(listingId: listingId),
     );
   }

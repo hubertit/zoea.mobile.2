@@ -172,8 +172,8 @@ class SpecialsScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                   placeholder: (_, __) => Container(
                     color: context.dividerColor,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
+                    child: Center(
+                      child: CircularProgressIndicator(color: context.primaryColorTheme),
                     ),
                   ),
                   errorWidget: (_, __, ___) => Container(

@@ -155,7 +155,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -201,7 +201,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                         width: 120,
                         height: 120,
                         color: context.grey100,
-                        child: const Center(child: CircularProgressIndicator()),
+                        child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                       ),
                       errorWidget: (context, url, error) => Container(
                         width: 120,

@@ -292,7 +292,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
           ),
           body: _categoryId != null
               ? _buildListingsList()
-              : const Center(
+              : Center(
                   child: Text('Category not found'),
                 ),
         );
@@ -315,7 +315,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ),
           ),
         ),
-        body: const Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       ),
       error: (error, stack) => Scaffold(
         backgroundColor: context.grey50,
@@ -378,7 +378,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
 
   Widget _buildListingsList() {
     if (_categoryId == null) {
-      return const Center(child: Text('Category not found'));
+      return Center(child: Text('Category not found'));
     }
     
     final listingsAsync = ref.watch(
@@ -747,7 +747,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
                           placeholder: (context, url) => Container(
                             height: 200,
                             color: context.grey200,
-                            child: const Center(child: CircularProgressIndicator()),
+                            child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                           ),
                           errorWidget: (context, url, error) => Container(
                             height: 200,

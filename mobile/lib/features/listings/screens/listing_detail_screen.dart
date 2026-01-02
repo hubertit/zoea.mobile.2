@@ -88,7 +88,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
       backgroundColor: context.grey50,
       body: listingAsync.when(
         data: (listing) => _buildContent(listing),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -1097,7 +1097,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           ],
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -1414,7 +1414,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 },
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
             error: (error, stack) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1550,7 +1550,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 },
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
             error: (error, stack) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1732,7 +1732,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

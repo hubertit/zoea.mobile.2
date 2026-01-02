@@ -191,8 +191,8 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       width: 60,
                       height: 60,
                       color: context.dividerColor,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
+                      child: Center(
+                        child: CircularProgressIndicator(color: context.primaryColorTheme),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(

@@ -262,7 +262,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
           ),
           body: _diningCategoryId != null
               ? _buildDiningList()
-              : const Center(
+              : Center(
                   child: Text('Category not found'),
                 ),
         );
@@ -287,7 +287,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
               ),
           ),
         ),
-        body: const Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       ),
       error: (error, stack) => Scaffold(
         backgroundColor: context.grey50,
@@ -349,7 +349,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
 
   Widget _buildDiningList() {
     if (_categoryIdForListings == null) {
-      return const Center(child: Text('Category not found'));
+      return Center(child: Text('Category not found'));
     }
 
     // For Popular tab, fetch more listings to randomize from

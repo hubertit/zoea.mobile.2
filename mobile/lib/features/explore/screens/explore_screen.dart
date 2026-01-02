@@ -1621,7 +1621,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       }).toList(),
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                   error: (error, stack) => Center(
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),

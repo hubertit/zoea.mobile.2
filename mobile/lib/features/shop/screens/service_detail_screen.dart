@@ -72,7 +72,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
       backgroundColor: context.grey50,
       body: serviceAsync.when(
         data: (service) => _buildContent(service),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
         error: (error, stack) => _buildErrorState(error),
       ),
     );
@@ -172,7 +172,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: context.grey100,
-                        child: const Center(child: CircularProgressIndicator()),
+                        child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                       ),
                       errorWidget: (context, url, error) => Container(
                         color: context.grey100,

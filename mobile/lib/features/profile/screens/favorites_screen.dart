@@ -112,7 +112,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -176,7 +176,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -240,7 +240,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -300,8 +300,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               placeholder: (context, url) => Container(
                 height: 200,
                 color: context.dividerColor,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: Center(
+                  child: CircularProgressIndicator(color: context.primaryColorTheme),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
@@ -455,8 +455,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               placeholder: (context, url) => Container(
                 height: 200,
                 color: context.dividerColor,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: Center(
+                  child: CircularProgressIndicator(color: context.primaryColorTheme),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
@@ -591,8 +591,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               placeholder: (context, url) => Container(
                 height: 200,
                 color: context.dividerColor,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: Center(
+                  child: CircularProgressIndicator(color: context.primaryColorTheme),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
@@ -755,7 +755,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
               placeholder: (context, url) => Container(
                 height: 200,
                 color: context.dividerColor,
-                child: const Center(child: CircularProgressIndicator()),
+                child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 200,
@@ -907,7 +907,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     placeholder: (context, url) => Container(
                       height: 200,
                       color: context.dividerColor,
-                      child: const Center(child: CircularProgressIndicator()),
+                      child: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
                     ),
                     errorWidget: (context, url, error) => Container(
                       height: 200,

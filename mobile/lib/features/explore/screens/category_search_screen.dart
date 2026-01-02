@@ -345,8 +345,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
               ),
             );
           },
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          loading: () => Center(
+            child: CircularProgressIndicator(color: context.primaryColorTheme),
           ),
           error: (error, stack) => Center(
             child: Column(
@@ -384,8 +384,8 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           ),
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
+      loading: () => Center(
+        child: CircularProgressIndicator(color: context.primaryColorTheme),
       ),
       error: (error, stack) => Center(
         child: Column(

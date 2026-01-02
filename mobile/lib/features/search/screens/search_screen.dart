@@ -251,10 +251,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   children: history.map((item) => _buildRecentSearchItem(item)).toList(),
                 );
               },
-              loading: () => const Center(
+              loading: () => Center(
                 child: Padding(
                   padding: EdgeInsets.all(16),
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color: context.primaryColorTheme),
                 ),
               ),
               error: (error, stack) {
@@ -315,10 +315,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   children: limitedSearches.map((search) => _buildPopularSearchItem(search)).toList(),
                 );
               },
-              loading: () => const Center(
+              loading: () => Center(
                 child: Padding(
                   padding: EdgeInsets.all(16),
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color: context.primaryColorTheme),
                 ),
               ),
               error: (error, stack) => Padding(
@@ -338,8 +338,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Center(
+      child: CircularProgressIndicator(color: context.primaryColorTheme),
     );
   }
 
