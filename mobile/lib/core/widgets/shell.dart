@@ -83,7 +83,7 @@ class _ShellState extends ConsumerState<Shell> {
     final shouldShowBackendWarning = ref.watch(shouldShowOfflineWarningProvider);
     final healthState = ref.watch(healthCheckProvider);
     
-    // Determine current index based on location
+    // Determine current index based on location (4 items now)
     int currentIndex = 0;
     if (location.startsWith('/events')) {
       currentIndex = 1;
@@ -91,8 +91,6 @@ class _ShellState extends ConsumerState<Shell> {
       currentIndex = 2;
     } else if (location.startsWith('/my-bookings')) {
       currentIndex = 3;
-    } else if (location.startsWith('/profile')) {
-      currentIndex = 4;
     } else if (location.startsWith('/explore')) {
       currentIndex = 0;
     }
@@ -147,11 +145,6 @@ class _ShellState extends ConsumerState<Shell> {
             activeIcon: Icon(Icons.book_online),
             label: 'Bookings',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
         ],
         onTap: (index) {
           switch (index) {
@@ -166,9 +159,6 @@ class _ShellState extends ConsumerState<Shell> {
               break;
             case 3:
               context.go('/my-bookings');
-              break;
-            case 4:
-              context.go('/profile');
               break;
           }
         },

@@ -165,6 +165,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               );
             },
           ),
+          // Profile Icon
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () {
+              context.push('/profile');
+            },
+          ),
         ],
       ),
       body: SafeArea(

@@ -155,6 +155,12 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
             icon: const Icon(Icons.map),
             onPressed: _showMapView,
           ),
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () {
+              context.push('/profile');
+            },
+          ),
         ],
       ),
       body: Column(

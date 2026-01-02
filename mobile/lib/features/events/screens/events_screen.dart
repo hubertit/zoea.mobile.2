@@ -129,6 +129,12 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               _showSearchDialog(context);
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () {
+              context.push('/profile');
+            },
+          ),
         ],
                 bottom: TabBar(
                   controller: _tabController,

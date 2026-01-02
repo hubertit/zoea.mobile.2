@@ -74,7 +74,13 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               foregroundColor: context.primaryTextColor,
             ),
           ),
-          const SizedBox(width: 16),
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () {
+              context.push('/profile');
+            },
+          ),
+          const SizedBox(width: 8),
         ],
         bottom: TabBar(
           controller: _tabController,
