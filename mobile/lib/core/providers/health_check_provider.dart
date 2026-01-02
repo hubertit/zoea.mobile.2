@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/health_check_service.dart';
 import '../config/app_config.dart';
+import 'connectivity_provider.dart';
 
 /// Backend health status
 enum BackendHealthStatus {
@@ -50,6 +51,7 @@ class BackendHealthState {
 
 /// Notifier for managing backend health checks
 class HealthCheckNotifier extends StateNotifier<BackendHealthState> {
+  final Ref _ref;
   Timer? _periodicTimer;
   bool _isCheckingInProgress = false;
   bool _isEnabled = true;
@@ -59,7 +61,7 @@ class HealthCheckNotifier extends StateNotifier<BackendHealthState> {
   static const Duration checkIntervalOnFailure = Duration(seconds: 30); // Check every 30 seconds when unhealthy
   static const int maxConsecutiveFailuresBeforeAlert = 2; // Alert after 2 consecutive failures
 
-  HealthCheckNotifier()
+  HealthCheckNotifier(this._ref)
       : super(const BackendHealthState(
           status: BackendHealthStatus.unknown,
         ));
@@ -114,6 +116,18 @@ class HealthCheckNotifier extends StateNotifier<BackendHealthState> {
   Future<void> checkHealth() async {
     // Prevent concurrent checks
     if (_isCheckingInProgress) return;
+    
+    // Check if device has internet connectivity
+    final hasInternet = _ref.read(hasInternetProvider);
+    if (!hasInternet) {
+      // Skip health check if no internet - it's a connectivity issue, not a backend issue
+      state = state.copyWith(
+        status: BackendHealthStatus.unknown,
+        lastCheckTime: DateTime.now(),
+        errorMessage: 'No internet connection',
+      );
+      return;
+    }
     
     _isCheckingInProgress = true;
     
@@ -179,7 +193,7 @@ class HealthCheckNotifier extends StateNotifier<BackendHealthState> {
 /// Provider for backend health status
 final healthCheckProvider =
     StateNotifierProvider<HealthCheckNotifier, BackendHealthState>((ref) {
-  return HealthCheckNotifier();
+  return HealthCheckNotifier(ref);
 });
 
 /// Provider for checking if backend is healthy

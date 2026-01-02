@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../theme/theme_extensions.dart';
 import '../theme/text_theme_extensions.dart';
 import '../providers/health_check_provider.dart';
+import '../providers/connectivity_provider.dart';
 
 class Shell extends ConsumerStatefulWidget {
   final Widget child;
@@ -34,13 +35,34 @@ class _ShellState extends ConsumerState<Shell> {
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     
-    // Listen to health state changes
+    // Listen to connectivity state changes
+    ref.listen<ConnectivityState>(
+      connectivityProvider,
+      (previous, next) {
+        // If device loses internet
+        if (previous?.isConnected == true && next.isDisconnected) {
+          _showNoInternetWarning(next);
+        }
+        
+        // If device regains internet
+        if (previous?.isDisconnected == true && next.isConnected) {
+          _showInternetRestoredMessage();
+        }
+      },
+    );
+    
+    // Listen to health state changes (only when internet is available)
     ref.listen<BackendHealthState>(
       healthCheckProvider,
       (previous, next) {
+        final hasInternet = ref.read(hasInternetProvider);
+        
+        // Only show backend warnings if we have internet
+        if (!hasInternet) return;
+        
         // If backend becomes unhealthy after being healthy, show warning
         if (previous?.isHealthy == true && next.isUnhealthy) {
-          _showOfflineWarning();
+          _showBackendOfflineWarning();
         }
         
         // If backend has been unhealthy for too long, navigate to maintenance
@@ -56,7 +78,9 @@ class _ShellState extends ConsumerState<Shell> {
       },
     );
     
-    final shouldShowWarning = ref.watch(shouldShowOfflineWarningProvider);
+    final isOffline = ref.watch(isOfflineProvider);
+    final connectivityState = ref.watch(connectivityProvider);
+    final shouldShowBackendWarning = ref.watch(shouldShowOfflineWarningProvider);
     final healthState = ref.watch(healthCheckProvider);
     
     // Determine current index based on location
@@ -76,9 +100,12 @@ class _ShellState extends ConsumerState<Shell> {
     return Scaffold(
       body: Column(
         children: [
-          // Offline warning banner
-          if (shouldShowWarning && !_hasShownMaintenanceScreen)
-            _buildOfflineBanner(healthState),
+          // No internet banner (higher priority)
+          if (isOffline)
+            _buildNoInternetBanner(connectivityState)
+          // Backend offline warning banner (only show if internet is available)
+          else if (shouldShowBackendWarning && !_hasShownMaintenanceScreen)
+            _buildBackendOfflineBanner(healthState),
           // Main content
           Expanded(child: widget.child),
         ],
@@ -149,12 +176,12 @@ class _ShellState extends ConsumerState<Shell> {
     );
   }
 
-  Widget _buildOfflineBanner(BackendHealthState healthState) {
+  Widget _buildNoInternetBanner(ConnectivityState connectivityState) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: context.errorColor.withOpacity(0.9),
+        color: context.errorColor.withOpacity(0.95),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -170,6 +197,73 @@ class _ShellState extends ConsumerState<Shell> {
             const Icon(
               Icons.wifi_off,
               color: Colors.white,
+              size: 22,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'No Internet Connection',
+                    style: context.bodyMedium.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Check your WiFi or mobile data connection',
+                    style: context.bodySmall.copyWith(
+                      color: Colors.white.withOpacity(0.95),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: () {
+                ref.read(connectivityProvider.notifier).forceCheck();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                backgroundColor: Colors.white.withOpacity(0.2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackendOfflineBanner(BackendHealthState healthState) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.orange.withOpacity(0.9),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            const Icon(
+              Icons.cloud_off,
+              color: Colors.white,
               size: 20,
             ),
             const SizedBox(width: 12),
@@ -179,7 +273,7 @@ class _ShellState extends ConsumerState<Shell> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Connection Issue',
+                    'Service Issue',
                     style: context.bodyMedium.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -216,7 +310,7 @@ class _ShellState extends ConsumerState<Shell> {
     );
   }
 
-  void _showOfflineWarning() {
+  void _showNoInternetWarning(ConnectivityState state) {
     if (!mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(
@@ -227,13 +321,67 @@ class _ShellState extends ConsumerState<Shell> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Connection lost. Some features may be unavailable.',
+                'No internet connection. Please check your network settings.',
                 style: context.bodySmall.copyWith(color: Colors.white),
               ),
             ),
           ],
         ),
         backgroundColor: context.errorColor,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  void _showInternetRestoredMessage() {
+    if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.wifi, color: Colors.white, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Internet connection restored!',
+                style: context.bodySmall.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: context.successColor,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  void _showBackendOfflineWarning() {
+    if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.cloud_off, color: Colors.white, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Service temporarily unavailable. Retrying...',
+                style: context.bodySmall.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.orange,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 4),
         shape: RoundedRectangleBorder(
