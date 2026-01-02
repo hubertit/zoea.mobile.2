@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
@@ -99,7 +100,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
         ),
         title: Text(
           'New Password',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
       ),
       body: SafeArea(
@@ -124,7 +125,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 // Title
                 Text(
                   'Create New Password',
-                  style: AppTheme.displaySmall,
+                  style: context.displaySmall,
                   textAlign: TextAlign.center,
                 ),
                 
@@ -133,7 +134,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 // Description
                 Text(
                   'Enter your new password. Make sure it\'s strong and secure.',
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
@@ -237,7 +238,9 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                   onPressed: _isLoading ? null : _handleResetPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.primaryColorTheme,
-                    foregroundColor: context.primaryTextColor,
+                    foregroundColor: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.primaryColor
+                        : Colors.white,
                     padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.spacing16,
                     ),
@@ -257,7 +260,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                         )
                       : Text(
                           'Reset Password',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),

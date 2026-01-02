@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
@@ -261,7 +262,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 opacity: _fadeAnimation,
                 child: Text(
                   'Zoea Africa',
-                  style: AppTheme.titleLarge.copyWith(
+                  style: context.titleLarge.copyWith(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: context.primaryColorTheme,
@@ -275,7 +276,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 opacity: _fadeAnimation,
                 child: Text(
                   'Discover Rwanda Like Never Before',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:country_picker/country_picker.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/utils/phone_validator.dart';
 import '../../../core/utils/phone_input_formatter.dart';
@@ -54,7 +55,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       countryListTheme: CountryListThemeData(
         flagSize: 25,
         backgroundColor: context.surfaceColor,
-        textStyle: Theme.of(context).textTheme.bodyLarge!,
+        textStyle: context.bodyLarge.copyWith(
+          color: context.primaryTextColor,
+        ),
+        searchTextStyle: context.bodyMedium.copyWith(
+          color: context.primaryTextColor,
+        ),
         bottomSheetHeight: 500,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20.0),
@@ -63,10 +69,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         inputDecoration: InputDecoration(
           labelText: 'Search',
           hintText: 'Start typing to search',
-          prefixIcon: Icon(Icons.search, color: context.primaryTextColor),
+          prefixIcon: Icon(Icons.search, color: context.secondaryTextColor),
+          filled: true,
+          fillColor: context.backgroundColor,
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
             borderSide: BorderSide(
-              color: context.borderColor,
+              color: context.dividerColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: context.dividerColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: context.primaryColorTheme,
+              width: 2,
             ),
           ),
         ),
@@ -154,7 +176,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: AppTheme.spacing24),
                   Text(
                     'Welcome Back',
-                    style: AppTheme.displaySmall.copyWith(
+                    style: context.displaySmall.copyWith(
                       color: context.primaryTextColor,
                     ),
                     textAlign: TextAlign.center,
@@ -162,7 +184,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: AppTheme.spacing8),
                   Text(
                     'Sign in to continue',
-                    style: AppTheme.bodyLarge.copyWith(
+                    style: context.bodyLarge.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     textAlign: TextAlign.center,
@@ -213,7 +235,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   const SizedBox(width: AppTheme.spacing8),
                                   Text(
                                     'Phone',
-                                    style: AppTheme.bodyMedium.copyWith(
+                                    style: context.bodyMedium.copyWith(
                                       color: _isPhoneLogin 
                                           ? context.primaryTextColor
                                           : context.secondaryTextColor,
@@ -258,7 +280,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   const SizedBox(width: AppTheme.spacing8),
                                   Text(
                                     'Email',
-                                    style: AppTheme.bodyMedium.copyWith(
+                                    style: context.bodyMedium.copyWith(
                                       color: !_isPhoneLogin 
                                           ? context.primaryTextColor
                                           : context.secondaryTextColor,
@@ -339,12 +361,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 children: [
                                   Text(
                                     _selectedCountry.flagEmoji,
-                                    style: AppTheme.bodyLarge,
+                                    style: context.bodyLarge,
                                   ),
                                   const SizedBox(width: AppTheme.spacing4),
                                   Text(
                                     '+${_selectedCountry.phoneCode}',
-                                    style: AppTheme.bodyLarge,
+                                    style: context.bodyLarge,
                                   ),
                                   const SizedBox(width: AppTheme.spacing4),
                                   Icon(
@@ -370,7 +392,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 labelText: 'Phone Number',
                                 prefixIcon: const Icon(Icons.phone_outlined),
                                 hintText: '788606765',
-                                hintStyle: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
+                                hintStyle: context.bodySmall.copyWith(color: context.secondaryTextColor),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                                 ),
@@ -443,53 +465,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onPressed: () {
                         context.push('/auth/reset-password/request');
                       },
-                      child: Text(
-                        'Forgot Password?',
-                        style: AppTheme.bodyMedium.copyWith(
-                          color: context.primaryColorTheme,
-                        ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: context.primaryColorTheme,
                       ),
+                      child: const Text('Forgot Password?'),
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacing24),
                   // Login Button
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: context.primaryTextColor,
-                      padding: const EdgeInsets.symmetric(vertical: AppTheme.spacing16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  SizedBox(
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: AppTheme.spacing16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                        ),
+                        elevation: _isLoading ? 0 : 2,
                       ),
-                      elevation: _isLoading ? 0 : 2,
-                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (_isLoading) ...[
+                        if (_isLoading)
                           SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
+                              strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                context.primaryTextColor,
+                                Theme.of(context).colorScheme.onPrimary,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                        ],
-                        Text(
-                          _isLoading ? 'Signing In...' : 'Sign In',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                          )
+                        else
+                          const Text('Sign In'),
                       ],
                     ),
                   ),
+                ),
                   const SizedBox(height: AppTheme.spacing16),
                   // Register Link
                   Row(
@@ -497,7 +511,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Text(
                         'Don\'t have an account?',
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -505,6 +519,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onPressed: () {
                           context.go('/register');
                         },
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.primaryColorTheme,
+                        ),
                         child: const Text('Sign Up'),
                       ),
                     ],

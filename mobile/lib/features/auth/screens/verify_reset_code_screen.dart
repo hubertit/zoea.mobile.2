@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 
 class VerifyResetCodeScreen extends ConsumerStatefulWidget {
@@ -118,7 +119,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
         ),
         title: Text(
           'Verify Code',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
       ),
       body: SafeArea(
@@ -143,7 +144,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                 // Title
                 Text(
                   'Enter Reset Code',
-                  style: AppTheme.displaySmall,
+                  style: context.displaySmall,
                   textAlign: TextAlign.center,
                 ),
                 
@@ -152,7 +153,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                 // Description
                 Text(
                   'We sent a reset code to ${widget.identifier}',
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
@@ -175,7 +176,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         maxLength: 1,
-                        style: AppTheme.headlineMedium.copyWith(
+                        style: context.headlineMedium.copyWith(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                         ),
@@ -248,7 +249,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                       Expanded(
                         child: Text(
                           'Use code: 0000 for testing',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -285,7 +286,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                         )
                       : Text(
                           'Verify Code',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -302,7 +303,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                   },
                   child: Text(
                     'Resend Code',
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: context.primaryColorTheme,
                     ),
                   ),

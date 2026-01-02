@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/services/health_check_service.dart';
 
 /// Beautiful maintenance/offline screen shown when backend is unavailable
@@ -143,7 +144,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                   // Title
                   Text(
                     'We\'ll Be Right Back!',
-                    style: AppTheme.headlineMedium.copyWith(
+                    style: context.headlineMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: context.primaryTextColor,
                     ),
@@ -155,7 +156,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                       // Message
                       Text(
                         'Our systems are currently undergoing maintenance to serve you better. We\'ll be back online shortly.',
-                        style: AppTheme.bodyLarge.copyWith(
+                        style: context.bodyLarge.copyWith(
                           color: context.secondaryTextColor,
                           height: 1.5,
                         ),
@@ -201,7 +202,9 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                       onPressed: _retryConnection,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.primaryColorTheme,
-                        foregroundColor: context.primaryTextColor,
+                        foregroundColor: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.primaryColor
+                            : Colors.white,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.spacing16,
                         ),
@@ -219,7 +222,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                           const SizedBox(width: AppTheme.spacing8),
                           Text(
                             'Try Again',
-                            style: AppTheme.bodyLarge.copyWith(
+                            style: context.bodyLarge.copyWith(
                               fontWeight: FontWeight.w600,
                               color: context.primaryTextColor,
                             ),
@@ -234,7 +237,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen>
                   // Support info
                   Text(
                     'Need help? Contact us at support@zoea.africa',
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                     textAlign: TextAlign.center,

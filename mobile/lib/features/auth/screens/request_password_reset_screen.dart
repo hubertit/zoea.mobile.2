@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:country_picker/country_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/utils/phone_validator.dart';
 import '../../../core/utils/phone_input_formatter.dart';
@@ -50,7 +51,12 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
       countryListTheme: CountryListThemeData(
         flagSize: 25,
         backgroundColor: context.surfaceColor,
-        textStyle: Theme.of(context).textTheme.bodyLarge!,
+        textStyle: context.bodyLarge.copyWith(
+          color: context.primaryTextColor,
+        ),
+        searchTextStyle: context.bodyMedium.copyWith(
+          color: context.primaryTextColor,
+        ),
         bottomSheetHeight: 500,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20.0),
@@ -59,10 +65,26 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
         inputDecoration: InputDecoration(
           labelText: 'Search',
           hintText: 'Start typing to search',
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Icon(Icons.search, color: context.secondaryTextColor),
+          filled: true,
+          fillColor: context.backgroundColor,
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
             borderSide: BorderSide(
-              color: context.dividerColor.withOpacity(0.2),
+              color: context.dividerColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: context.dividerColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+            borderSide: BorderSide(
+              color: context.primaryColorTheme,
+              width: 2,
             ),
           ),
         ),
@@ -150,7 +172,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
         ),
         title: Text(
           'Reset Password',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
       ),
       body: SafeArea(
@@ -175,7 +197,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                 // Title
                 Text(
                   'Forgot Password?',
-                  style: AppTheme.displaySmall,
+                  style: context.displaySmall,
                   textAlign: TextAlign.center,
                 ),
                 
@@ -184,7 +206,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                 // Description
                 Text(
                   'Choose how you want to reset your password',
-                  style: AppTheme.bodyLarge.copyWith(
+                  style: context.bodyLarge.copyWith(
                     color: context.secondaryTextColor,
                   ),
                   textAlign: TextAlign.center,
@@ -236,7 +258,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                                 const SizedBox(width: AppTheme.spacing8),
                                 Text(
                                   'Phone',
-                                  style: AppTheme.bodyMedium.copyWith(
+                                  style: context.bodyMedium.copyWith(
                                     color: _isPhoneReset 
                                         ? context.primaryTextColor 
                                         : context.secondaryTextColor,
@@ -281,7 +303,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                                 const SizedBox(width: AppTheme.spacing8),
                                 Text(
                                   'Email',
-                                  style: AppTheme.bodyMedium.copyWith(
+                                  style: context.bodyMedium.copyWith(
                                     color: !_isPhoneReset 
                                         ? context.primaryTextColor 
                                         : context.secondaryTextColor,
@@ -331,12 +353,12 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                               children: [
                                 Text(
                                   _selectedCountry.flagEmoji,
-                                  style: AppTheme.bodyLarge,
+                                  style: context.bodyLarge,
                                 ),
                                 const SizedBox(width: AppTheme.spacing4),
                                 Text(
                                   '+${_selectedCountry.phoneCode}',
-                                  style: AppTheme.bodyLarge,
+                                  style: context.bodyLarge,
                                 ),
                                 const SizedBox(width: AppTheme.spacing4),
                                 Icon(
@@ -363,7 +385,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                               labelText: 'Phone Number',
                               prefixIcon: const Icon(Icons.phone_outlined),
                               hintText: '788606765',
-                              hintStyle: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
+                              hintStyle: context.bodySmall.copyWith(color: context.secondaryTextColor),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                               ),
@@ -441,7 +463,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                       Expanded(
                         child: Text(
                           'For testing, use reset code: 0000',
-                          style: AppTheme.bodySmall.copyWith(
+                          style: context.bodySmall.copyWith(
                             color: context.primaryColorTheme,
                             fontWeight: FontWeight.w500,
                           ),
@@ -458,7 +480,9 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                   onPressed: _isLoading ? null : _handleRequestReset,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.primaryColorTheme,
-                    foregroundColor: context.primaryTextColor,
+                    foregroundColor: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.primaryColor
+                        : Colors.white,
                     padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.spacing16,
                     ),
@@ -478,7 +502,7 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                         )
                       : Text(
                           'Send Reset Code',
-                          style: AppTheme.bodyLarge.copyWith(
+                          style: context.bodyLarge.copyWith(
                             fontWeight: FontWeight.w600,
                             color: context.primaryTextColor,
                           ),
@@ -490,12 +514,10 @@ class _RequestPasswordResetScreenState extends ConsumerState<RequestPasswordRese
                 // Back to Login
                 TextButton(
                   onPressed: () => context.pop(),
-                  child: Text(
-                    'Back to Login',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: context.primaryColorTheme,
-                    ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
                   ),
+                  child: const Text('Back to Login'),
                 ),
               ],
             ),
