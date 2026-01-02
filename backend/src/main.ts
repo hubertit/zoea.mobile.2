@@ -14,9 +14,16 @@ async function bootstrap() {
       crossOriginEmbedderPolicy: false,
     }),
   );
+  // CORS configuration - support multiple origins
+  const corsOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+    : '*';
+  
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: corsOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
   // Validation
