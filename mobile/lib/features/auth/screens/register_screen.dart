@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/providers/auth_provider.dart';
@@ -111,8 +110,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       'Create Account',
                       style: Theme.of(context).textTheme.displayMedium,
                       textAlign: TextAlign.center,
-                    ).animate().fadeIn(
-                      duration: 600.ms,
                     ),
                     const SizedBox(height: AppTheme.spacing8),
                     Text(
@@ -121,9 +118,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         color: context.secondaryTextColor,
                       ),
                       textAlign: TextAlign.center,
-                    ).animate().fadeIn(
-                      duration: 600.ms,
-                      delay: 200.ms,
                     ),
                   ],
                 ),
@@ -156,11 +150,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     }
                     return null;
                   },
-                ).animate().slideX(
-                  begin: -1,
-                  duration: 600.ms,
-                  delay: 400.ms,
-                  curve: Curves.easeOut,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing16),
@@ -195,11 +184,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     }
                     return null;
                   },
-                ).animate().slideX(
-                  begin: -1,
-                  duration: 600.ms,
-                  delay: 500.ms,
-                  curve: Curves.easeOut,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing16),
@@ -244,11 +228,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     }
                     return null;
                   },
-                ).animate().slideX(
-                  begin: -1,
-                  duration: 600.ms,
-                  delay: 600.ms,
-                  curve: Curves.easeOut,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing16),
@@ -294,11 +273,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     }
                     return null;
                   },
-                ).animate().slideX(
-                  begin: -1,
-                  duration: 600.ms,
-                  delay: 700.ms,
-                  curve: Curves.easeOut,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing16),
@@ -341,9 +315,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                   ],
-                ).animate().fadeIn(
-                  duration: 600.ms,
-                  delay: 800.ms,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing24),
@@ -366,11 +337,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           )
                         : const Text('Create Account'),
                   ),
-                ).animate().slideY(
-                  begin: 1,
-                  duration: 600.ms,
-                  delay: 900.ms,
-                  curve: Curves.easeOutBack,
                 ),
                 
                 const SizedBox(height: AppTheme.spacing24),
@@ -393,9 +359,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       child: const Text('Sign In'),
                     ),
                   ],
-                ).animate().fadeIn(
-                  duration: 600.ms,
-                  delay: 1000.ms,
                 ),
               ],
             ),
