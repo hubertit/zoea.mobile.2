@@ -419,7 +419,7 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
                         painter: _ChatBubbleTailPainter(
                           color: isUser
                               ? (context.isDarkMode 
-                                  ? context.primaryColorTheme.withOpacity(0.9)
+                                  ? const Color(0xFF2B5278)  // Match darker blue
                                   : context.primaryColorTheme)
                               : context.cardColor,
                           isUser: isUser,
@@ -432,14 +432,14 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
                       decoration: BoxDecoration(
                         color: isUser
                             ? (context.isDarkMode 
-                                ? context.primaryColorTheme.withOpacity(0.9)
+                                ? const Color(0xFF2B5278)  // Darker blue for dark mode
                                 : context.primaryColorTheme)
                             : context.cardColor,
                         borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(16),
-                          topRight: const Radius.circular(16),
-                          bottomLeft: Radius.circular(isUser ? 16 : 4),
-                          bottomRight: Radius.circular(isUser ? 4 : 16),
+                          topLeft: const Radius.circular(18),
+                          topRight: const Radius.circular(18),
+                          bottomLeft: Radius.circular(isUser ? 18 : 3),
+                          bottomRight: Radius.circular(isUser ? 3 : 18),
                         ),
                       ),
                   child: isUser
@@ -665,10 +665,10 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
                 decoration: BoxDecoration(
                   color: context.cardColor,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                    bottomLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(16),
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                    bottomLeft: Radius.circular(3),
+                    bottomRight: Radius.circular(18),
                   ),
                 ),
                 child: Row(
@@ -923,7 +923,7 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
   }
 }
 
-/// Custom painter for chat bubble tail
+/// Custom painter for iMessage-style chat bubble tail
 class _ChatBubbleTailPainter extends CustomPainter {
   final Color color;
   final bool isUser;
@@ -937,32 +937,45 @@ class _ChatBubbleTailPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..style = PaintingStyle.fill;
+      ..style = PaintingStyle.fill
+      ..strokeCap = StrokeCap.round;
 
     final path = Path();
 
     if (isUser) {
-      // Tail pointing to the right
+      // iMessage-style tail pointing to the right
       path.moveTo(0, 0);
-      path.lineTo(size.width * 0.7, 0);
+      path.lineTo(size.width - 2, 0);
       path.quadraticBezierTo(
-        size.width,
-        size.height * 0.3,
+        size.width - 1,
+        size.height * 0.5,
         size.width,
         size.height,
       );
-      path.lineTo(0, 0);
+      path.quadraticBezierTo(
+        size.width * 0.6,
+        size.height * 0.8,
+        0,
+        size.height * 0.2,
+      );
+      path.close();
     } else {
-      // Tail pointing to the left
+      // iMessage-style tail pointing to the left
       path.moveTo(size.width, 0);
-      path.lineTo(size.width * 0.3, 0);
+      path.lineTo(2, 0);
       path.quadraticBezierTo(
-        0,
-        size.height * 0.3,
+        1,
+        size.height * 0.5,
         0,
         size.height,
       );
-      path.lineTo(size.width, 0);
+      path.quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.8,
+        size.width,
+        size.height * 0.2,
+      );
+      path.close();
     }
 
     canvas.drawPath(path, paint);
