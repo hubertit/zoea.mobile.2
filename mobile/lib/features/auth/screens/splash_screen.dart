@@ -244,62 +244,71 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
           // Content
           SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Logo with animation
-                  AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: ScaleTransition(
-                          scale: _scaleAnimation,
-                          child: child,
+            child: Column(
+              children: [
+                // Main content - centered
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Logo with animation
+                        AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (context, child) {
+                            return FadeTransition(
+                              opacity: _fadeAnimation,
+                              child: ScaleTransition(
+                                scale: _scaleAnimation,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: Image.asset(
+                            AppAssets.logoWhite, // Always use white logo on dark background
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                      );
-                    },
-                    child: Image.asset(
-                      AppAssets.logoWhite, // Always use white logo on dark background
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.contain,
+                        const SizedBox(height: 32),
+                        
+                        // Tagline
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Text(
+                            'Discover Rwanda Like Never Before',
+                            style: context.bodyMedium.copyWith(
+                              color: Colors.white.withOpacity(0.95),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 48),
+                        
+                        // Loading indicator
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  
-                  // Tagline
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Text(
-                      'Discover Rwanda Like Never Before',
-                      style: context.bodyMedium.copyWith(
-                        color: Colors.white.withOpacity(0.95),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 48),
-                  
-                  // Loading indicator
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Version number
-                  FadeTransition(
+                ),
+                
+                // Version number at the very bottom
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: FadeTransition(
                     opacity: _fadeAnimation,
                     child: Text(
                       'v${AppConfig.appVersion}',
@@ -309,8 +318,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
