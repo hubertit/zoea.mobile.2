@@ -8,6 +8,7 @@ import '../../../core/constants/assets.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/user_data_collection_provider.dart';
 import '../../../core/providers/user_provider.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../../core/services/data_inference_service.dart';
 import '../../../core/services/health_check_service.dart';
 import '../../../core/models/user.dart';
@@ -225,6 +226,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       backgroundColor: context.backgroundColor,
       body: SafeArea(
@@ -245,7 +248,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   );
                 },
                 child: Image.asset(
-                  AppAssets.logoDark,
+                  isDarkMode ? AppAssets.logoWhite : AppAssets.logoDark,
                   height: 120,
                   width: 120,
                   fit: BoxFit.contain,

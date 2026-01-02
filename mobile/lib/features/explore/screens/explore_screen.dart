@@ -12,6 +12,7 @@ import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
@@ -117,6 +118,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
   @override
   Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       backgroundColor: context.grey50,
       appBar: AppBar(
@@ -131,7 +135,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             Container(
               padding: const EdgeInsets.only(bottom: 10),
               child: Image.asset(
-                AppAssets.logoDark,
+                isDarkMode ? AppAssets.logoWhite : AppAssets.logoDark,
                 height: 30,
               ),
             ),
@@ -580,7 +584,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   label: 'Book Tour',
                   onTap: () {
                     Navigator.pop(context);
-                    context.push('/explore/experiences');
+                    context.push('/experiences');
                   },
                 ),
                 _buildQuickActionItem(
@@ -714,14 +718,20 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               )
             // Use custom logo for Visit Rwanda
             else if (isCustomIcon && label == 'Visit Rwanda')
-              Image.asset(
-                'assets/images/visit-rwanda.png',
-                width: 44,
-                height: 44,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  icon,
-                  color: context.primaryColorTheme,
-                  size: 22,
+              ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  context.primaryColorTheme,
+                  BlendMode.srcIn,
+                ),
+                child: Image.asset(
+                  'assets/images/visit-rwanda.png',
+                  width: 44,
+                  height: 44,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    icon,
+                    color: context.primaryColorTheme,
+                    size: 22,
+                  ),
                 ),
               )
             else
@@ -845,10 +855,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   onPressed: () {
                     _showCategoriesBottomSheet(context);
                   },
-                  child: Text(
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
+                  ),
+                  child: const Text(
                     'View More',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: context.primaryColorTheme,
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1105,10 +1117,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   onPressed: () {
                     context.push('/events');
                   },
-                  child: Text(
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
+                  ),
+                  child: const Text(
                     'View More',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: context.primaryColorTheme,
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1622,6 +1636,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             onPressed: () {
                               ref.invalidate(categoriesProvider);
                             },
+                            style: TextButton.styleFrom(
+                              foregroundColor: context.primaryColorTheme,
+                            ),
                             child: const Text('Retry'),
                           ),
                         ],
@@ -1764,10 +1781,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   onPressed: () {
                     context.push('/recommendations');
                   },
-                  child: Text(
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
+                  ),
+                  child: const Text(
                     'View More',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: context.primaryColorTheme,
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -2126,10 +2145,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   onPressed: () {
                     context.push('/map');
                   },
-                  child: Text(
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.primaryColorTheme,
+                  ),
+                  child: const Text(
                     'View Map',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: context.primaryColorTheme,
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
