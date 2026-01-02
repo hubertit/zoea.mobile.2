@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting visit purpose (Leisure, Business, MICE)
@@ -95,7 +96,7 @@ class VisitPurposeSelector extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.headlineMedium.copyWith(
+                    style: context.headlineMedium.copyWith(
                       color: isSelected ? color : context.primaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
@@ -103,7 +104,7 @@ class VisitPurposeSelector extends StatelessWidget {
                   const SizedBox(height: AppTheme.spacing4),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),

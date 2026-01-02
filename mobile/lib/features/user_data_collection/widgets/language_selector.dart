@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 /// Widget for selecting language
 /// Auto-detects language and allows user to change
@@ -76,7 +77,7 @@ class LanguageSelector extends StatelessWidget {
                 children: [
                   Text(
                     _getLanguageName(code),
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       color: isSelected
                           ? context.primaryColorTheme
                           : context.primaryTextColor,
@@ -86,7 +87,7 @@ class LanguageSelector extends StatelessWidget {
                   if (_getLanguageNative(code) != _getLanguageName(code))
                     Text(
                       _getLanguageNative(code),
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: isSelected
                             ? context.primaryColorTheme.withOpacity(0.8)
                             : context.secondaryTextColor,
@@ -145,7 +146,7 @@ class LanguageSelector extends StatelessWidget {
           Expanded(
             child: Text(
               'We detected ${_getLanguageName(autoDetectedLanguage!)}',
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),

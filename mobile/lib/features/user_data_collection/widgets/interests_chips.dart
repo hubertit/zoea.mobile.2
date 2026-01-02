@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 /// Widget for selecting interests (multi-select)
 /// Uses chip-based selection with wrap layout
@@ -46,7 +47,7 @@ class InterestsChips extends StatelessWidget {
           ),
           label: Text(
             interest['name']!,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: isSelected
                   ? context.primaryColorTheme
                   : context.primaryTextColor,

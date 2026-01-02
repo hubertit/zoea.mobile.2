@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 /// Widget for selecting country of origin
 /// Uses standard country_picker package for consistency with app design patterns
@@ -50,10 +51,10 @@ class CountrySelector extends StatelessWidget {
       countryListTheme: CountryListThemeData(
         flagSize: 25,
         backgroundColor: context.backgroundColor,
-        textStyle: AppTheme.bodyLarge.copyWith(
+        textStyle: context.bodyLarge.copyWith(
           color: context.primaryTextColor,
         ),
-        searchTextStyle: AppTheme.bodyMedium.copyWith(
+        searchTextStyle: context.bodyMedium.copyWith(
           color: context.primaryTextColor,
         ),
         inputDecoration: InputDecoration(
@@ -141,7 +142,7 @@ class CountrySelector extends StatelessWidget {
                             : autoDetectedCountry != null
                                 ? '${_getCountryName(autoDetectedCountry)} (Detected)'
                                 : 'Select your country',
-                        style: AppTheme.bodyLarge.copyWith(
+                        style: context.bodyLarge.copyWith(
                           color: selectedCountry != null
                               ? context.primaryTextColor
                               : context.secondaryTextColor,
@@ -155,7 +156,7 @@ class CountrySelector extends StatelessWidget {
                           padding: const EdgeInsets.only(top: AppTheme.spacing4),
                           child: Text(
                             'Tap to change',
-                            style: AppTheme.bodySmall.copyWith(
+                            style: context.bodySmall.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -200,7 +201,7 @@ class CountrySelector extends StatelessWidget {
           Expanded(
             child: Text(
               'We detected ${_getCountryName(autoDetectedCountry)} ${_getCountryFlag(autoDetectedCountry)}',
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),

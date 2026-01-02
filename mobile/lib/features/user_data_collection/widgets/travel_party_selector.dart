@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/models/user.dart';
 
 /// Widget for selecting travel party
@@ -103,7 +104,7 @@ class TravelPartySelector extends StatelessWidget {
             const SizedBox(height: AppTheme.spacing8),
             Text(
               label,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: isSelected
                     ? context.primaryColorTheme
                     : context.primaryTextColor,
