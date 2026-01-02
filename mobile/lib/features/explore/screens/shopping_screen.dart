@@ -36,7 +36,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
         backgroundColor: context.backgroundColor,
         elevation: 0,

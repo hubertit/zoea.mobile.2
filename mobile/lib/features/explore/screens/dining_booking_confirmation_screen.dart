@@ -44,7 +44,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: context.grey50,
       appBar: AppBar(
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -168,7 +168,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200!),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -218,7 +218,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200!),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -260,7 +260,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200!),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -308,7 +308,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200!),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -421,7 +421,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
       decoration: BoxDecoration(
         color: context.backgroundColor,
         border: Border(
-          top: BorderSide(color: Colors.grey[200]!),
+          top: BorderSide(color: context.grey200!),
         ),
         boxShadow: [
           BoxShadow(

@@ -425,7 +425,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
           decoration: BoxDecoration(
             color: context.backgroundColor,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: context.grey200!),
           ),
           child: Column(
             children: [
@@ -641,9 +641,9 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: context.grey50,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[200]!),
+                border: Border.all(color: context.grey200!),
               ),
               child: Row(
                 children: [
@@ -701,7 +701,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: context.grey200!),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -746,11 +746,11 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderSide: BorderSide(color: context.grey300!),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderSide: BorderSide(color: context.grey300!),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),

@@ -552,7 +552,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             'No menu available for this place',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: context.grey400,
             ),
           ),
         ),
@@ -586,7 +586,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                     color: context.cardColor,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.grey[200]!,
+                      color: context.grey200!,
                       width: 1,
                     ),
                   ),
@@ -603,7 +603,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           placeholder: (context, url) => Container(
                             width: 60,
                             height: 60,
-                            color: Colors.grey[200],
+                            color: context.grey200,
                             child: const Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -611,7 +611,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                           errorWidget: (context, url, error) => Container(
                             width: 60,
                             height: 60,
-                            color: Colors.grey[200],
+                            color: context.grey200,
                             child: const Icon(Icons.restaurant, size: 30),
                           ),
                         ),
@@ -674,7 +674,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                                     child: Text(
                                       'Spicy',
                                       style: context.bodySmall.copyWith(
-                                        color: Colors.red,
+                                        color: context.errorColor,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -719,7 +719,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.grey[200]!,
+              color: context.grey200!,
               width: 1,
             ),
           ),
@@ -793,7 +793,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             'No photos available for this place',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: context.grey400,
             ),
           ),
         ),
@@ -816,13 +816,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
             imageUrl: photos[index],
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(
-              color: Colors.grey[200],
+              color: context.grey200,
               child: const Center(
                 child: CircularProgressIndicator(),
               ),
             ),
             errorWidget: (context, url, error) => Container(
-              color: Colors.grey[200],
+              color: context.grey200,
               child: const Icon(Icons.image, size: 50),
             ),
           ),
@@ -1727,7 +1727,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: context.grey300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -1768,7 +1768,7 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
                     index < _selectedRating ? Icons.star : Icons.star_border,
                     color: index < _selectedRating 
                         ? Colors.amber 
-                        : Colors.grey[400],
+                        : context.grey400,
                     size: 32,
                   ),
                 ),
@@ -1797,11 +1797,11 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300!),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300!),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

@@ -182,7 +182,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: Colors.red,
+                    color: context.errorColor,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -1338,7 +1338,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     color: context.grey300,
                     child: const Icon(
                       Icons.event,
-                      color: Colors.grey,
+                      color: context.grey400,
                       size: 40,
                     ),
                   ),
@@ -1431,7 +1431,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     color: context.grey300,
                     child: const Icon(
                       Icons.image,
-                      color: Colors.grey,
+                      color: context.grey400,
                       size: 40,
                     ),
                   );

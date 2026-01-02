@@ -772,7 +772,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
       decoration: BoxDecoration(
         color: context.backgroundColor,
         border: Border(
-          top: BorderSide(color: Colors.grey[200]!),
+          top: BorderSide(color: context.grey200!),
         ),
         boxShadow: [
           BoxShadow(
@@ -1136,7 +1136,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             '$label:',
             style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
+              color: context.grey600,
             ),
           ),
         ),
