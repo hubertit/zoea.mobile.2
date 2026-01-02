@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class HelpCenterScreen extends ConsumerStatefulWidget {
   const HelpCenterScreen({super.key});
@@ -28,7 +29,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       appBar: AppBar(
         title: Text(
           'Help Center',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -94,7 +95,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         controller: _searchController,
         decoration: InputDecoration(
           hintText: 'Search help articles...',
-          hintStyle: AppTheme.bodyMedium.copyWith(
+          hintStyle: context.bodyMedium.copyWith(
             color: context.secondaryTextColor,
           ),
           prefixIcon: Icon(
@@ -133,7 +134,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       children: [
         Text(
           'Quick Help',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -219,7 +220,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                       color: context.primaryTextColor,
                     ),
@@ -227,7 +228,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -259,7 +260,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       children: [
         Text(
           'Popular Topics',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -300,7 +301,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         ),
         child: Text(
           label,
-          style: AppTheme.bodySmall.copyWith(
+          style: context.bodySmall.copyWith(
             color: context.primaryColorTheme,
             fontWeight: FontWeight.w500,
           ),
@@ -315,7 +316,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       children: [
         Text(
           'Contact Support',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -394,7 +395,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                       color: context.primaryTextColor,
                     ),
@@ -402,7 +403,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -426,7 +427,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       children: [
         Text(
           'Frequently Asked Questions',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -510,7 +511,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             Expanded(
               child: Text(
                 title,
-                style: AppTheme.bodyMedium.copyWith(
+                style: context.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
                   color: context.primaryTextColor,
                 ),
@@ -524,7 +525,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ),
               child: Text(
                 '$count',
-                style: AppTheme.labelSmall.copyWith(
+                style: context.labelSmall.copyWith(
                   color: context.primaryColorTheme,
                   fontWeight: FontWeight.w600,
                 ),
@@ -548,7 +549,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       children: [
         Text(
           'App Information',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -588,13 +589,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         children: [
           Text(
             label,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
           Text(
             value,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: context.primaryTextColor,
             ),
@@ -631,7 +632,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             // Title
             Text(
               title,
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -643,7 +644,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               child: SingleChildScrollView(
                 child: Text(
                   content,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.primaryTextColor,
                   ),
                 ),
@@ -658,12 +659,14 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColorTheme,
+                  foregroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.primaryColor
+                      : Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(
+                child: const Text(
                   'Close',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: context.primaryTextColor,
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -705,7 +708,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             // Title
             Text(
               title,
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -715,7 +718,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             // Content
             Text(
               content,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.primaryTextColor,
               ),
             ),
@@ -733,7 +736,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     ),
                     child: Text(
                       'Close',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                         fontWeight: FontWeight.w500,
                       ),
@@ -750,7 +753,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       SnackBar(
                         content: Text(
                           '$title feature coming soon',
-                          style: AppTheme.bodyMedium.copyWith(
+                          style: context.bodyMedium.copyWith(
                             color: context.primaryTextColor,
                           ),
                         ),
@@ -760,12 +763,14 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,
+                      foregroundColor: Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.primaryColor
+                          : Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Contact',
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: context.primaryTextColor,
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -809,7 +814,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             // Title
             Text(
               title,
-              style: AppTheme.titleMedium.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -833,7 +838,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     child: ExpansionTile(
                       title: Text(
                         faq['question']!,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w500,
                           color: context.primaryTextColor,
                         ),
@@ -843,7 +848,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                           padding: const EdgeInsets.all(16),
                           child: Text(
                             faq['answer']!,
-                            style: AppTheme.bodyMedium.copyWith(
+                            style: context.bodyMedium.copyWith(
                               color: context.secondaryTextColor,
                             ),
                           ),
@@ -863,12 +868,14 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColorTheme,
+                  foregroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.primaryColor
+                      : Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(
+                child: const Text(
                   'Close',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: context.primaryTextColor,
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
                   ),
                 ),

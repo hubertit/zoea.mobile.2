@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class EventsAttendedScreen extends ConsumerStatefulWidget {
   const EventsAttendedScreen({super.key});
@@ -37,7 +38,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
       appBar: AppBar(
         title: Text(
           'Events Attended',
-          style: AppTheme.titleLarge,
+          style: context.titleLarge,
         ),
         backgroundColor: context.backgroundColor,
         elevation: 0,
@@ -134,7 +135,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           const SizedBox(height: 24),
           Text(
             'No Events Attended',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -142,7 +143,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           const SizedBox(height: 8),
           Text(
             'Start exploring events to build your\nattendance history',
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -152,7 +153,9 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
             onPressed: () => context.go('/events'),
             style: ElevatedButton.styleFrom(
               backgroundColor: context.primaryColorTheme,
-              foregroundColor: context.primaryTextColor,
+              foregroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? AppTheme.primaryColor
+                  : Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -160,7 +163,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
             ),
             child: Text(
               'Explore Events',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -242,7 +245,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         const SizedBox(width: 4),
                         Text(
                           'Attended',
-                          style: AppTheme.labelSmall.copyWith(
+                          style: context.labelSmall.copyWith(
                             color: context.primaryTextColor,
                             fontWeight: FontWeight.w600,
                           ),
@@ -263,7 +266,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                 // Event Name
                 Text(
                   event['name'] as String,
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -282,7 +285,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                     const SizedBox(width: 8),
                     Text(
                       dateFormat.format(startDate),
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -295,7 +298,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                     const SizedBox(width: 8),
                     Text(
                       timeFormat.format(startDate),
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -314,7 +317,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                     Expanded(
                       child: Text(
                         event['locationName'] as String,
-                        style: AppTheme.bodyMedium.copyWith(
+                        style: context.bodyMedium.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 1,

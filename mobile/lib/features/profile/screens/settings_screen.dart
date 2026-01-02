@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/theme_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -53,7 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: AppTheme.spacing4),
               Text(
                 label,
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: isSelected 
                       ? context.isDarkMode 
                           ? AppTheme.darkPrimaryTextColor
@@ -104,7 +105,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       const SizedBox(width: AppTheme.spacing12),
                       Text(
                         'Appearance',
-                        style: AppTheme.titleLarge.copyWith(
+                        style: context.titleLarge.copyWith(
                           color: context.primaryTextColor,
                         ),
                       ),
@@ -179,7 +180,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             children: [
                               Text(
                                 'Current Theme',
-                                style: AppTheme.bodySmall.copyWith(
+                                style: context.bodySmall.copyWith(
                                   color: context.secondaryTextColor,
                                 ),
                               ),
@@ -190,7 +191,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                     : themeMode == ThemeMode.light 
                                         ? 'Light Mode' 
                                         : 'System Default',
-                                style: AppTheme.bodyMedium.copyWith(
+                                style: context.bodyMedium.copyWith(
                                   color: context.primaryTextColor,
                                   fontWeight: FontWeight.w600,
                                 ),

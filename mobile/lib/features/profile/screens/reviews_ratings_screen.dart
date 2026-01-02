@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class ReviewsRatingsScreen extends ConsumerStatefulWidget {
   const ReviewsRatingsScreen({super.key});
@@ -36,7 +37,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
       appBar: AppBar(
         title: Text(
           'Reviews & Ratings',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -55,10 +56,10 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
           labelColor: context.primaryColorTheme,
           unselectedLabelColor: context.secondaryTextColor,
           indicatorColor: context.primaryColorTheme,
-          labelStyle: AppTheme.bodyMedium.copyWith(
+          labelStyle: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
           ),
-          unselectedLabelStyle: AppTheme.bodyMedium,
+          unselectedLabelStyle: context.bodyMedium,
           tabs: const [
             Tab(text: 'All Reviews'),
             Tab(text: 'This Year'),
@@ -211,7 +212,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     children: [
                       Text(
                         review['placeName'],
-                        style: AppTheme.titleMedium.copyWith(
+                        style: context.titleMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           color: context.primaryTextColor,
                         ),
@@ -221,7 +222,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       const SizedBox(height: 2),
                       Text(
                         review['placeLocation'],
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                         maxLines: 1,
@@ -249,7 +250,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       const SizedBox(width: 2),
                       Text(
                         review['rating'].toString(),
-                        style: AppTheme.labelSmall.copyWith(
+                        style: context.labelSmall.copyWith(
                           color: context.primaryColorTheme,
                           fontWeight: FontWeight.w600,
                         ),
@@ -270,7 +271,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                 // Review Text
                 Text(
                   review['reviewText'],
-                  style: AppTheme.bodyMedium,
+                  style: context.bodyMedium,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -323,7 +324,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                     const SizedBox(width: 4),
                     Text(
                       review['date'],
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -337,7 +338,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
                       const SizedBox(width: 4),
                       Text(
                         '${review['helpfulCount']} helpful',
-                        style: AppTheme.bodySmall.copyWith(
+                        style: context.bodySmall.copyWith(
                           color: context.secondaryTextColor,
                         ),
                       ),
@@ -424,7 +425,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             const SizedBox(height: 24),
             Text(
               title,
-              style: AppTheme.titleLarge.copyWith(
+              style: context.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -433,7 +434,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -464,20 +465,20 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
       builder: (context) => AlertDialog(
         title: Text(
           'Edit Review',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
         content: Text(
           'Edit your review for "${review['placeName']}"?',
-          style: AppTheme.bodyMedium,
+          style: context.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -495,7 +496,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
             },
             child: Text(
               'Edit',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),

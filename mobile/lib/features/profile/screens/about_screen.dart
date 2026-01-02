@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../core/theme/text_theme_extensions.dart';
 
 class AboutScreen extends ConsumerStatefulWidget {
   const AboutScreen({super.key});
@@ -20,7 +21,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       appBar: AppBar(
         title: Text(
           'About',
-          style: AppTheme.titleLarge.copyWith(
+          style: context.titleLarge.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -99,7 +100,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           // App Name
           Text(
             'Zoea',
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 32,
               color: context.primaryTextColor,
@@ -110,7 +111,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           // Tagline
           Text(
             'Discover Rwanda\'s Beauty',
-            style: AppTheme.bodyLarge.copyWith(
+            style: context.bodyLarge.copyWith(
               color: context.secondaryTextColor,
             ),
             textAlign: TextAlign.center,
@@ -126,7 +127,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             ),
             child: Text(
               'Version 1.0.0',
-              style: AppTheme.bodySmall.copyWith(
+              style: context.bodySmall.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w600,
               ),
@@ -143,7 +144,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       children: [
         Text(
           'App Information',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -217,7 +218,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           Expanded(
             child: Text(
               title,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryTextColor,
               ),
@@ -225,7 +226,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
           ),
           Text(
             value,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -248,7 +249,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       children: [
         Text(
           'Features',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -332,14 +333,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               children: [
                 Text(
                   title,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -357,7 +358,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       children: [
         Text(
           'Our Team',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -430,14 +431,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
               children: [
                 Text(
                   name,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   role,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w500,
                   ),
@@ -445,7 +446,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 const SizedBox(height: 2),
                 Text(
                   description,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: context.bodySmall.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -463,7 +464,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       children: [
         Text(
           'Legal',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -535,14 +536,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -566,7 +567,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       children: [
         Text(
           'Connect With Us',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -638,14 +639,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -669,14 +670,14 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       builder: (context) => AlertDialog(
         title: Text(
           title,
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
         content: SingleChildScrollView(
           child: Text(
             content,
-            style: AppTheme.bodyMedium.copyWith(
+            style: context.bodyMedium.copyWith(
               color: context.primaryTextColor,
             ),
           ),
@@ -686,7 +687,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Close',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
@@ -703,13 +704,13 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       builder: (context) => AlertDialog(
         title: Text(
           title,
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
         content: Text(
           content,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -718,7 +719,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Close',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -736,7 +737,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
             },
             child: Text(
               'Contact',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.primaryColorTheme,
                 fontWeight: FontWeight.w500,
               ),
