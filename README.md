@@ -156,25 +156,40 @@ Standard Flutter deployment process:
 
 ## Documentation
 
+**📚 [Complete Documentation Index](DOCUMENTATION_INDEX.md)** - Navigate all documentation easily
+
 Comprehensive documentation is available in the `/docs/` directory:
 
 ### Key Documentation Files
-- **[PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md)** - Complete project overview
-- **[FEATURES.md](docs/FEATURES.md)** - Feature breakdown by application
-- **[API_REFERENCE.md](docs/API_REFERENCE.md)** - Complete API endpoint reference
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture details
-- **[DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md)** - Development setup and guidelines
-- **[USER_FLOWS.md](docs/USER_FLOWS.md)** - User flow documentation
-- **[DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)** - Database schema documentation
+- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - Complete documentation navigation
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history across all apps
+- **[Project Overview](docs/01-project-overview/01-project-overview.md)** - Complete project overview
+- **[Features Breakdown](docs/01-project-overview/03-features.md)** - Feature breakdown by application
+- **[API Reference](docs/11-api-reference/01-api-overview.md)** - Complete API endpoint reference
+- **[Architecture](docs/02-architecture/01-system-architecture.md)** - System architecture details
+- **[Development Guide](docs/10-development/01-development-guide.md)** - Development setup and guidelines
+- **[User Flows](docs/12-features/02-user-flows.md)** - User flow documentation
+- **[Database Schema](docs/08-database/01-database-schema.md)** - Database schema documentation
+
+### Quick Start Guides
+- **[Mobile App Quick Start](mobile/QUICKSTART.md)** - Get mobile app running in 5 minutes ⚡
+- **[Backend API Quick Start](backend/QUICKSTART.md)** - Set up backend in 10 minutes ⚡
 
 ### Application-Specific Documentation
-- **Mobile App**: See `mobile/README.md`
-- **Backend API**: See `backend/README.md`
-- **Admin Dashboard**: See `admin/README.md`
+- **Mobile App**: [mobile/README.md](mobile/README.md)
+- **Backend API**: [backend/README.md](backend/README.md)
+- **Admin Dashboard**: [admin/README.md](admin/README.md)
+- **Merchant Mobile**: [merchant-mobile/README.md](merchant-mobile/README.md)
 
 ## Recent Updates
 
-### Latest Features (December 2024)
+### January 2025
+- ✅ **Dark Mode Support**: Complete dark mode implementation in mobile app
+- ✅ **Theme Persistence**: User theme preferences (Light/Dark/System) saved across sessions
+- ✅ **Theme-Aware UI**: All components and logos adapt to active theme
+- ✅ **Enhanced UX**: Improved contrast and readability in both light and dark modes
+
+### December 2024
 - ✅ **Sorting Functionality**: Dynamic sorting for listings (rating, name, price, date, popularity)
 - ✅ **Filtering**: Enhanced filters (rating, price range, featured status)
 - ✅ **Share Functionality**: Share listings, events, accommodations, and referral codes
@@ -182,6 +197,15 @@ Comprehensive documentation is available in the `/docs/` directory:
 - ✅ **Skeleton Loaders**: Improved loading states with shimmer effects
 - ✅ **HTML Entities Fix**: Fixed broken special characters in listings database
 - ✅ **Enhanced Swagger Docs**: Comprehensive API documentation
+
+## Changelog
+
+Detailed version history is available in the following files:
+- **[Platform Changelog](CHANGELOG.md)** - Overall platform changes
+- **[Mobile App Changelog](mobile/CHANGELOG.md)** - Mobile app specific changes
+- **[Backend Changelog](backend/CHANGELOG.md)** - API and backend changes
+- **[Merchant Mobile Changelog](merchant-mobile/CHANGELOG.md)** - Merchant app changes
+- **[Admin Dashboard Changelog](admin/CHANGELOG.md)** - Admin dashboard changes
 
 ## Project Location
 

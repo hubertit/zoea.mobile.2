@@ -52,6 +52,8 @@ mobile/
 
 ## Installation
 
+**New to the project?** Check out the [Quick Start Guide](QUICKSTART.md) for a fast 5-minute setup!
+
 ```bash
 cd mobile
 flutter pub get
@@ -241,8 +243,15 @@ See `/docs/` directory for comprehensive documentation:
 - `DEVELOPMENT_GUIDE.md` - Development guide
 - `API_REFERENCE.md` - API endpoint reference
 
-## Recent Updates (December 2024)
+## Recent Updates
 
+### January 2025
+- ✅ **Dark Mode Support**: Complete dark mode implementation with Light/Dark/System theme options
+- ✅ **Theme-Aware Logos**: Dynamic logo switching based on active theme
+- ✅ **Theme Persistence**: User theme preferences saved across app restarts
+- ✅ **Consistent Theming**: All UI components properly adapt to light/dark themes
+
+### December 2024
 - ✅ Implemented share functionality for all detail screens
 - ✅ Added search functionality for bookings
 - ✅ Implemented sorting for listings (9 sort options)
@@ -251,3 +260,7 @@ See `/docs/` directory for comprehensive documentation:
 - ✅ Fixed HTML entities in database listings
 - ✅ Reduced font sizes in stays tab search bar
 - ✅ Fixed all Flutter analyze errors and warnings
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and feature additions.

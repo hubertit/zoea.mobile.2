@@ -39,10 +39,14 @@ backend/
 
 ## Getting Started
 
+### Quick Start
+
+**New to the project?** Check out the [Quick Start Guide](QUICKSTART.md) for a fast setup!
+
 ### Prerequisites
 
 - Node.js v18+
-- PostgreSQL 14+
+- PostgreSQL 16+ with PostGIS
 - npm or pnpm
 
 ### Installation
@@ -191,8 +195,10 @@ docker-compose up --build -d
 
 ## Documentation
 
-See `/docs/` directory for comprehensive documentation:
-- `PROJECT_OVERVIEW.md` - Project overview
+- **[Quick Start Guide](QUICKSTART.md)** - Get started quickly
+- **[CHANGELOG](CHANGELOG.md)** - Version history and updates
+- **[API Reference](https://zoea-africa.qtsoftwareltd.com/api/docs)** - Swagger documentation
+- **[Full Documentation](../docs/05-backend/)** - Comprehensive backend docs
 - `FEATURES.md` - Feature breakdown
 - `USER_FLOWS.md` - User flows
 - `DEVELOPMENT_GUIDE.md` - Development guide

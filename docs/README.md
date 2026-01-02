@@ -109,6 +109,18 @@
 3. Set up your [Environment](./10-development/02-environment-setup.md)
 4. Check [Project Status](./01-project-overview/02-project-status.md) for current state
 
+### Quick Start Guides by Application
+- **[Mobile App Quick Start](../mobile/QUICKSTART.md)** - Get mobile app running in 5 minutes
+- **[Backend API Quick Start](../backend/QUICKSTART.md)** - Set up backend in 10 minutes
+- **[Main README](../README.md)** - Project overview and structure
+
+### Changelog & Version History
+- **[Platform Changelog](../CHANGELOG.md)** - Overall platform changes
+- **[Mobile Changelog](../mobile/CHANGELOG.md)** - Mobile app version history
+- **[Backend Changelog](../backend/CHANGELOG.md)** - API version history
+- **[Merchant Mobile Changelog](../merchant-mobile/CHANGELOG.md)** - Merchant app changes
+- **[Admin Changelog](../admin/CHANGELOG.md)** - Admin dashboard changes
+
 ### For Mobile Developers
 - [Mobile App Overview](./03-mobile/01-overview.md)
 - [Mobile Features](./03-mobile/03-features.md)
