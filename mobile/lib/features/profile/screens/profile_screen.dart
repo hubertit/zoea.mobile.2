@@ -133,6 +133,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               title: 'Account',
               items: [
                 _buildMenuItem(
+                  icon: Icons.notifications_outlined,
+                  title: 'Notifications',
+                  subtitle: 'Manage your notifications',
+                  onTap: () {
+                    context.push('/notifications');
+                  },
+                  showBadge: true, // Show unread badge
+                ),
+                _buildMenuItem(
                   icon: Icons.person_outline,
                   title: 'Edit Profile',
                   subtitle: 'Update your personal information',
@@ -553,6 +562,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    bool showBadge = false,
   }) {
     return InkWell(
       onTap: onTap,
@@ -561,17 +571,39 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: context.primaryColorTheme.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                icon,
-                color: context.primaryColorTheme,
-                size: 20,
-              ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: context.primaryColorTheme.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: context.primaryColorTheme,
+                    size: 20,
+                  ),
+                ),
+                // Show badge if enabled
+                if (showBadge)
+                  Positioned(
+                    right: -4,
+                    top: -4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: context.errorColor,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 8,
+                        minHeight: 8,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(width: 12),
             Expanded(

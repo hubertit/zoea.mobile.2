@@ -165,30 +165,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               );
             },
           ),
-          // Notifications Icon with Badge
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined),
-                onPressed: () {
-                  context.push('/notifications');
-                },
-              ),
-              // Small badge for unread notifications
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: context.errorColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
       body: SafeArea(
