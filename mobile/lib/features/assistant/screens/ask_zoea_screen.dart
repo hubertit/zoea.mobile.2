@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/theme/text_theme_extensions.dart';
@@ -43,6 +44,20 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
         );
       });
     }
+  }
+
+  /// Clean markdown text by removing image syntax since we show images as cards
+  String _cleanMarkdownText(String text) {
+    // Remove image markdown: ![alt](url)
+    String cleaned = text.replaceAll(RegExp(r'!\[([^\]]*)\]\([^\)]+\)'), '');
+    
+    // Remove multiple consecutive newlines
+    cleaned = cleaned.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+    
+    // Trim whitespace
+    cleaned = cleaned.trim();
+    
+    return cleaned;
   }
 
   Future<void> _sendMessage(String text) async {
@@ -400,13 +415,62 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
                         : context.backgroundColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text(
-                    text,
-                    style: context.bodyMedium.copyWith(
-                      color: isUser ? Colors.white : context.primaryTextColor,
-                      height: 1.4,
-                    ),
-                  ),
+                  child: isUser
+                      ? Text(
+                          text,
+                          style: context.bodyMedium.copyWith(
+                            color: Colors.white,
+                            height: 1.4,
+                          ),
+                        )
+                      : MarkdownBody(
+                          data: _cleanMarkdownText(text),
+                          styleSheet: MarkdownStyleSheet(
+                            p: context.bodyMedium.copyWith(
+                              color: context.primaryTextColor,
+                              height: 1.4,
+                            ),
+                            strong: context.bodyMedium.copyWith(
+                              color: context.primaryTextColor,
+                              fontWeight: FontWeight.bold,
+                              height: 1.4,
+                            ),
+                            em: context.bodyMedium.copyWith(
+                              color: context.primaryTextColor,
+                              fontStyle: FontStyle.italic,
+                              height: 1.4,
+                            ),
+                            listBullet: context.bodyMedium.copyWith(
+                              color: context.primaryTextColor,
+                            ),
+                            code: context.bodySmall.copyWith(
+                              color: context.primaryTextColor,
+                              backgroundColor: context.dividerColor,
+                              fontFamily: 'monospace',
+                            ),
+                            h1: context.titleLarge.copyWith(
+                              color: context.primaryTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            h2: context.titleMedium.copyWith(
+                              color: context.primaryTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            h3: context.bodyLarge.copyWith(
+                              color: context.primaryTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            blockquote: context.bodyMedium.copyWith(
+                              color: context.secondaryTextColor,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            a: context.bodyMedium.copyWith(
+                              color: context.primaryColorTheme,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          selectable: true,
+                        ),
                 ),
                 
                 // Cards

@@ -125,7 +125,7 @@ export class OpenAIService {
             max_tokens: 500,
           });
 
-          assistantText = followUpResponse.choices[0].message.content || '';
+          assistantText = this.cleanResponseText(followUpResponse.choices[0].message.content || '');
         } else if (functionName === 'getCategories') {
           const categories = await this.contentSearchService.getCategories();
           
@@ -146,11 +146,11 @@ export class OpenAIService {
             max_tokens: 500,
           });
 
-          assistantText = followUpResponse.choices[0].message.content || '';
+          assistantText = this.cleanResponseText(followUpResponse.choices[0].message.content || '');
         }
       } else {
         // No function call - just return the text response
-        assistantText = choice.message.content || '';
+        assistantText = this.cleanResponseText(choice.message.content || '');
       }
 
       // Generate suggestions
@@ -167,6 +167,23 @@ export class OpenAIService {
     }
   }
 
+  /**
+   * Clean response text by removing image markdown syntax
+   * Images are shown as cards, not in the text
+   */
+  private cleanResponseText(text: string): string {
+    // Remove image markdown: ![alt](url)
+    let cleaned = text.replace(/!\[([^\]]*)\]\([^\)]+\)/g, '');
+    
+    // Remove multiple consecutive newlines
+    cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+    
+    // Trim whitespace
+    cleaned = cleaned.trim();
+    
+    return cleaned;
+  }
+
   private getSystemPrompt(): string {
     return `You are Zoea, a friendly and knowledgeable AI assistant for Zoea Africa - a travel and discovery app for Rwanda.
 
@@ -179,6 +196,13 @@ Your role:
 - Use the searchContent function when users ask about places, tours, restaurants, hotels, products, or services
 - Provide helpful Rwanda travel information when no internal matches exist
 
+Formatting rules:
+- You can use **bold** for emphasis on important words
+- Use numbered lists (1. 2. 3.) when listing items
+- NEVER include images or image links in your response (images are shown automatically as cards)
+- NEVER use markdown image syntax like ![text](url)
+- Keep formatting simple and clean
+
 Tone:
 - Friendly and warm, but not overly casual
 - Professional but approachable
@@ -187,12 +211,18 @@ Tone:
 
 Example responses:
 User: "Find 5 restaurants in Kigali"
-You: "Here are 5 great restaurants in Kigali! Any specific cuisine or budget in mind?"
+You: "Here are some great places for lunch in Kigali:
+
+1. **Neza Haven Kigali** - Not just an accommodation but also known for its delightful dining options.
+
+2. **Taste Food Restaurant** - A go-to for delicious meals in a cozy setting.
+
+Would you like more options or details on these?"
 
 User: "What's the weather like in Rwanda?"
 You: "Rwanda has a pleasant climate year-round, with temperatures around 20-25°C. The dry seasons (June-September and December-February) are ideal for visiting. Planning a trip?"
 
-Remember: Be helpful, be brief, be human.`;
+Remember: Be helpful, be brief, be human. Never include image URLs in your text.`;
   }
 
   private getFunctions() {
