@@ -774,7 +774,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: context.grey300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -813,7 +813,7 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
                     index < _selectedRating ? Icons.star : Icons.star_border,
                     color: index < _selectedRating 
                         ? Colors.amber 
-                        : Colors.grey[400],
+                        : context.grey400,
                     size: 32,
                   ),
                 ),
@@ -841,11 +841,11 @@ class _EditReviewBottomSheetState extends ConsumerState<_EditReviewBottomSheet> 
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300!),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: BorderSide(color: context.grey300!),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

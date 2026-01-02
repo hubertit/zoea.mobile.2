@@ -640,14 +640,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: Colors.red,
+                color: context.errorColor,
                 width: 2,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: Colors.red,
+                color: context.errorColor,
                 width: 2,
               ),
             ),
