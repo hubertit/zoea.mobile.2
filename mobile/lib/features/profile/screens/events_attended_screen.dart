@@ -106,7 +106,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
@@ -121,7 +121,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: context.dividerColor,
               shape: BoxShape.circle,
@@ -259,7 +259,7 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           ),
           // Event Details
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -373,7 +373,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         children: [
           // Personal Information
           _buildSectionHeader('Personal Information'),

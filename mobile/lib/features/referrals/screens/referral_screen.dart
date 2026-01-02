@@ -37,7 +37,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,7 +124,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.grey50,
             borderRadius: BorderRadius.circular(12),
@@ -412,7 +412,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.cardColor,
             borderRadius: BorderRadius.circular(12),

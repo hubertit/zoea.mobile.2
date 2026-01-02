@@ -45,7 +45,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -198,7 +198,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Container(
@@ -373,7 +373,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Container(
@@ -492,7 +492,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Container(
@@ -556,7 +556,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
         ),
         const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.cardColor,
             borderRadius: BorderRadius.circular(12),
@@ -611,7 +611,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       isScrollControlled: true,
       backgroundColor: context.backgroundColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -687,7 +687,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       isScrollControlled: true,
       backgroundColor: context.backgroundColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -793,7 +793,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
       isScrollControlled: true,
       backgroundColor: context.backgroundColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -845,7 +845,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       ),
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(12),
                           child: Text(
                             faq['answer']!,
                             style: context.bodyMedium.copyWith(

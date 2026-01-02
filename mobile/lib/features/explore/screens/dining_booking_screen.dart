@@ -132,7 +132,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -168,7 +168,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildPlaceInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -270,7 +270,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildBookingDetailsSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -317,7 +317,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
@@ -412,7 +412,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildGuestSelection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -471,7 +471,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildContactSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -565,7 +565,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildSpecialRequests() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -615,7 +615,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
 
   Widget _buildCouponSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -768,7 +768,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                     _email.isNotEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         border: Border(
@@ -923,7 +923,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
       isScrollControlled: true,
       backgroundColor: context.backgroundColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -953,7 +953,7 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
             
             // Booking details
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.grey50,
                 borderRadius: BorderRadius.circular(12),

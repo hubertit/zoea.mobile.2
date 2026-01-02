@@ -46,7 +46,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
           final listingName = listing?['name'] as String? ?? 'Unknown';
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             child: Column(
               children: [
                 // Success Icon
@@ -86,7 +86,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 
                 // Order Details Card
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: context.cardColor,
                     borderRadius: BorderRadius.circular(16),

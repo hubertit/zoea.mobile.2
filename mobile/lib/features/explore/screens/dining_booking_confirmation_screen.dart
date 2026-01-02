@@ -65,7 +65,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -103,7 +103,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildSuccessHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.successColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -164,7 +164,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildBookingDetails() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -214,7 +214,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildRestaurantInfo() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -256,7 +256,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildGuestInfo() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -304,7 +304,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildSpecialRequests() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -341,7 +341,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildImportantNotes() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.blue[50],
         borderRadius: BorderRadius.circular(12),
@@ -417,7 +417,7 @@ class _DiningBookingConfirmationScreenState extends ConsumerState<DiningBookingC
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         border: Border(

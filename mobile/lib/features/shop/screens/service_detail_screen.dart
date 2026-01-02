@@ -198,7 +198,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
               children: [
                 Container(
                   color: context.cardColor,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -304,7 +304,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -331,7 +331,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -367,7 +367,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.cardColor,
           boxShadow: [
@@ -428,7 +428,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +488,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border.all(color: context.grey300),
                       borderRadius: BorderRadius.circular(8),
@@ -525,7 +525,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       border: Border.all(color: context.grey300),
                       borderRadius: BorderRadius.circular(8),

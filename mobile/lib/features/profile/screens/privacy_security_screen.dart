@@ -48,7 +48,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         children: [
           // Privacy Settings Section
           _buildSectionHeader('Privacy Settings'),
@@ -685,7 +685,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
       isScrollControlled: true,
       backgroundColor: context.cardColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.cardColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -719,7 +719,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             
             // Content
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
@@ -973,7 +973,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
       isScrollControlled: true,
       backgroundColor: context.cardColor,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.cardColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -1037,7 +1037,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             
             // Privacy note
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.primaryColorTheme.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
@@ -1096,7 +1096,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
     required String purpose,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.dividerColor,
         borderRadius: BorderRadius.circular(12),

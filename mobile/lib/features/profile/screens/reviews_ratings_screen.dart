@@ -94,7 +94,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: reviews.length,
       itemBuilder: (context, index) {
         final review = reviews[index];
@@ -121,7 +121,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: thisYearReviews.length,
       itemBuilder: (context, index) {
         final review = thisYearReviews[index];
@@ -148,7 +148,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: helpfulReviews.length,
       itemBuilder: (context, index) {
         final review = helpfulReviews[index];
@@ -176,7 +176,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 // Place Image
@@ -411,7 +411,7 @@ class _ReviewsRatingsScreenState extends ConsumerState<ReviewsRatingsScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.primaryColorTheme.withOpacity(0.1),
                 shape: BoxShape.circle,

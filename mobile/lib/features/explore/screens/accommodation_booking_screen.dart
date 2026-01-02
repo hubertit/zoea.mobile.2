@@ -93,7 +93,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,7 +124,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
 
   Widget _buildAccommodationCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -245,7 +245,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
@@ -288,7 +288,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
@@ -352,7 +352,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
@@ -421,7 +421,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.backgroundColor,
             borderRadius: BorderRadius.circular(8),
@@ -499,7 +499,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
         ),
         const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             border: Border.all(color: context.grey300),
             borderRadius: BorderRadius.circular(8),
@@ -523,7 +523,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         boxShadow: [
@@ -598,7 +598,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
 
   Widget _buildSelectedRoomsSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -697,7 +697,7 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
 
   Widget _buildCouponSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         borderRadius: BorderRadius.circular(12),

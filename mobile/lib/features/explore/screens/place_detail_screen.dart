@@ -236,7 +236,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
                   // Place Info
                   Container(
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -396,7 +396,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
       ),
       bottomNavigationBar: Container(
         color: context.backgroundColor,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             if (_shouldShowReserveButton(place['category'])) ...[
@@ -453,7 +453,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
 
   Widget _buildOverviewTab(Map<String, dynamic> place) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -562,7 +562,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     final menuCategories = menuData as List<Map<String, dynamic>>;
     
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       itemCount: menuCategories.length,
       itemBuilder: (context, categoryIndex) {
         final category = menuCategories[categoryIndex];
@@ -581,7 +581,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
               ...category['items'].map<Widget>((item) {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: context.cardColor,
                     borderRadius: BorderRadius.circular(12),
@@ -708,13 +708,13 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     final reviews = _getMockReviews();
     
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       itemCount: reviews.length,
       itemBuilder: (context, index) {
         final review = reviews[index];
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.backgroundColor,
             borderRadius: BorderRadius.circular(12),
@@ -801,7 +801,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     }
     
     return GridView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 12,

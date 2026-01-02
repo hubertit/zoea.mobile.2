@@ -79,7 +79,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     final imageUrl = primaryImage?['url'] as String?;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -179,7 +179,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     required String bookingType,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -297,7 +297,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
 
   Widget _buildBookingDetailsCard(BuildContext context, Map<String, dynamic> booking, String bookingType) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -382,7 +382,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
     final discountAmount = _parseNumericValue(booking['discountAmount']);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -476,7 +476,7 @@ class BookingConfirmationScreen extends ConsumerWidget {
   Widget _buildErrorState(BuildContext context, WidgetRef ref, Object error) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

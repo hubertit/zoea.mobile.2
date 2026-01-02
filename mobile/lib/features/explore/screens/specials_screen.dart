@@ -32,7 +32,7 @@ class SpecialsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         itemCount: _getAllSpecials().length,
         itemBuilder: (context, index) {
           final special = _getAllSpecials()[index];
@@ -62,7 +62,7 @@ class SpecialsScreen extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -352,7 +352,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
       loading: () => _buildSkeletonLoader(),
       error: (error, stack) => Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -439,7 +439,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
 
   Widget _buildSkeletonLoader() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: 5,
       itemBuilder: (context, index) {
         return _buildSkeletonAccommodationCard();
@@ -651,7 +651,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
               ),
               // Content skeleton
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1071,7 +1071,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           ),
           // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1194,7 +1194,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
           maxHeight: MediaQuery.of(context).size.height * 0.9,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1455,7 +1455,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1535,7 +1535,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           border: Border.all(color: context.grey300),
           borderRadius: BorderRadius.circular(8),
@@ -1588,7 +1588,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1644,7 +1644,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1855,7 +1855,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1953,7 +1953,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

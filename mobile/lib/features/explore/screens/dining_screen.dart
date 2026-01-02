@@ -407,14 +407,14 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             );
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: listings.length + (!_isPopularTab && _currentPage < totalPages ? 1 : 0),
             itemBuilder: (context, index) {
               // Load more indicator (only for non-popular tabs)
               if (!_isPopularTab && index == listings.length) {
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -639,7 +639,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
 
   Widget _buildSkeletonLoader() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: 5,
       itemBuilder: (context, index) {
         return AnimatedBuilder(
@@ -686,7 +686,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
                   ),
                   // Content skeleton
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -760,7 +760,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1032,7 +1032,7 @@ class _DiningScreenState extends ConsumerState<DiningScreen>
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

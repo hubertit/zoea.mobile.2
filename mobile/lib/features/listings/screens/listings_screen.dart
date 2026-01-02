@@ -120,13 +120,13 @@ class _ListingsScreenState extends ConsumerState<ListingsScreen> {
               await Future.delayed(const Duration(milliseconds: 500));
             },
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               itemCount: listings.length + (_currentPage < totalPages ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == listings.length) {
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {

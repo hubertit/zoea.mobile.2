@@ -146,7 +146,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                   ),
                 Expanded(
                   child: GridView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.75,
@@ -430,7 +430,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: ElevatedButton(
           onPressed: () {
             setState(() {
@@ -478,7 +478,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       ),
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -588,7 +588,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

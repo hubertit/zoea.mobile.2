@@ -81,7 +81,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
         children: [
           // Search Bar
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             color: context.backgroundColor,
             child: TextField(
               controller: _searchController,
@@ -330,7 +330,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
                 );
               },
               child: ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 itemCount: listings.length,
                 itemBuilder: (context, index) {
                   final listing = listings[index] as Map<String, dynamic>;
@@ -512,7 +512,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
             ),
             // Operator content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -667,7 +667,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           maxHeight: MediaQuery.of(context).size.height * 0.8,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -855,7 +855,7 @@ class _CategorySearchScreenState extends ConsumerState<CategorySearchScreen> {
           maxHeight: MediaQuery.of(context).size.height * 0.6,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

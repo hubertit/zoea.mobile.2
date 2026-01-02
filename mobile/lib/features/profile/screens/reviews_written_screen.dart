@@ -228,7 +228,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
             ref.invalidate(myReviewsProvider(params));
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: filteredReviews.length,
             itemBuilder: (context, index) {
               final review = filteredReviews[index];
@@ -289,7 +289,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: context.dividerColor,
               shape: BoxShape.circle,
@@ -395,7 +395,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
         children: [
           // Place Header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: context.dividerColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -499,7 +499,7 @@ class _ReviewsWrittenScreenState extends ConsumerState<ReviewsWrittenScreen>
           ),
           // Review Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

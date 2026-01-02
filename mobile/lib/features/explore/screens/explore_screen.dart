@@ -492,7 +492,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       isScrollControlled: true,
       backgroundColor: context.grey50,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1498,7 +1498,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       isScrollControlled: true,
       backgroundColor: context.grey50, // Match quick actions background
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2151,7 +2151,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 if (listings.isEmpty) {
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       child: Text(
                         'No listings available',
                         style: context.bodyMedium.copyWith(
@@ -2180,7 +2180,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               ),
               error: (error, stack) => Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Text(
                     'Failed to load listings',
                     style: context.bodySmall.copyWith(
@@ -2433,7 +2433,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

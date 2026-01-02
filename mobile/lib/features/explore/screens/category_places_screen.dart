@@ -451,14 +451,14 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             );
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: listings.length + (_currentPage < totalPages ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == listings.length) {
                 // Load more indicator
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -852,7 +852,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ),
             // Content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -974,7 +974,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1248,7 +1248,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1400,7 +1400,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
 
   Widget _buildSkeletonLoader() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: 5,
       itemBuilder: (context, index) {
         if (_isAccommodation) {
@@ -1474,7 +1474,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               ),
               // Content skeleton
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1676,7 +1676,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               ),
               // Content skeleton
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

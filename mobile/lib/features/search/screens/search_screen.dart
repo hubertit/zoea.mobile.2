@@ -200,7 +200,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ref.invalidate(trendingSearchesProvider);
       },
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -374,7 +374,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildSearchResults(List<Map<String, dynamic>> results) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: results.length,
       itemBuilder: (context, index) {
         final result = results[index];

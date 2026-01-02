@@ -150,7 +150,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
             );
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: tours.length,
             itemBuilder: (context, index) {
               final tour = tours[index];
@@ -332,7 +332,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
             );
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: operators.length,
             itemBuilder: (context, index) {
               final operator = operators[index];
@@ -504,7 +504,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
             ),
             // Business details
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -663,7 +663,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -718,7 +718,7 @@ class _ExperiencesScreenState extends ConsumerState<ExperiencesScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

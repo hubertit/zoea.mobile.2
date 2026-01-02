@@ -106,7 +106,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: shoppingPlaces.length,
       itemBuilder: (context, index) {
         final place = shoppingPlaces[index];
@@ -177,7 +177,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

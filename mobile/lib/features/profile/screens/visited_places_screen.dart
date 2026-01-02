@@ -152,7 +152,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
             ref.invalidate(myContentViewsProvider(params));
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: filteredViews.length,
             itemBuilder: (context, index) {
               final view = filteredViews[index];
@@ -213,7 +213,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: context.dividerColor,
               shape: BoxShape.circle,
@@ -399,7 +399,7 @@ class _VisitedPlacesScreenState extends ConsumerState<VisitedPlacesScreen>
           ),
           // Place Details
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -477,7 +477,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
 
     return Container(
       color: context.cardColor,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -615,7 +615,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
 
   Widget _buildOverviewTab(Map<String, dynamic> accommodation) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -749,7 +749,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.grey50,
         borderRadius: BorderRadius.circular(12),
@@ -810,7 +810,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
         );
       },
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -846,7 +846,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
               }),
             ] else ...[
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: context.grey100,
                     borderRadius: BorderRadius.circular(12),
@@ -871,7 +871,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     final amenities = listing['amenities'] as List? ?? [];
     
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -920,7 +920,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
             }),
           ] else ...[
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.grey100,
                 borderRadius: BorderRadius.circular(12),
@@ -1112,7 +1112,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                     
                     return Container(
                       margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: context.grey50,
                         borderRadius: BorderRadius.circular(12),
@@ -1220,7 +1220,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
       )),
       error: (error, stack) => Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'Failed to load reviews: ${error.toString()}',
             style: context.bodyMedium.copyWith(
@@ -1266,7 +1266,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     if (images.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'No photos available',
             style: context.bodyMedium.copyWith(
@@ -1278,7 +1278,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     }
     
     return GridView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 12,
@@ -1310,7 +1310,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
 
   Widget _buildBottomBar(Map<String, dynamic> accommodation) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         boxShadow: [
@@ -1458,7 +1458,7 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),

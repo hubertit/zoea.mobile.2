@@ -198,7 +198,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
               children: [
                 Container(
                   color: context.cardColor,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -312,7 +312,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -352,7 +352,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -379,7 +379,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     color: context.cardColor,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -415,7 +415,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen>
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.cardColor,
           boxShadow: [

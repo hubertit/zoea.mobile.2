@@ -231,7 +231,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -291,7 +291,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
     final currency = _selectedTour?['currency'] ?? 'RWF';
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -405,7 +405,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildTourSelection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -447,7 +447,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildScheduleSelection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -506,7 +506,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildGuestSelection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -587,7 +587,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildContactSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -646,7 +646,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildPickupLocationSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -679,7 +679,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
 
   Widget _buildSpecialRequests() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -714,7 +714,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
     final currency = _selectedTour?['currency'] ?? 'RWF';
     
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -820,7 +820,7 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
         _contactNumber.isNotEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.backgroundColor,
         boxShadow: [

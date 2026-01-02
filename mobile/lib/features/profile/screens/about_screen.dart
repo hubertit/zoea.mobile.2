@@ -37,7 +37,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -206,7 +206,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     required String value,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
           Icon(
@@ -311,7 +311,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     required String subtitle,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
           Container(
@@ -408,7 +408,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
     required String description,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
           Container(
@@ -521,7 +521,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Icon(
@@ -624,7 +624,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Icon(

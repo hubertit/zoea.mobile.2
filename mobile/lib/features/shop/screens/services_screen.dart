@@ -141,7 +141,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
                   ),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     itemCount: services.length + (_currentPage < totalPages ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == services.length) {
@@ -442,7 +442,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: ElevatedButton(
           onPressed: () {
             setState(() {
@@ -490,7 +490,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
       ),
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -600,7 +600,7 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

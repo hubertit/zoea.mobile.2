@@ -74,7 +74,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ref.invalidate(cartProvider);
                   },
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       return _buildCartItemCard(cart.items[index]);
@@ -278,7 +278,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildBottomBar(Cart cart) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.cardColor,
         boxShadow: [

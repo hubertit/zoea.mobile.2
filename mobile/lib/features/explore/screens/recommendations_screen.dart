@@ -129,7 +129,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: places.length,
       itemBuilder: (context, index) {
         final place = places[index];
@@ -252,7 +252,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
           maxHeight: MediaQuery.of(context).size.height * 0.6,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,7 +358,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
           maxHeight: MediaQuery.of(context).size.height * 0.6,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

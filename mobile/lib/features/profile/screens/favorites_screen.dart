@@ -103,7 +103,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: favorites.length,
             itemBuilder: (context, index) {
               final favorite = favorites[index];
@@ -167,7 +167,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: eventFavorites.length,
             itemBuilder: (context, index) {
               final favorite = eventFavorites[index];
@@ -231,7 +231,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 100)));
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: placeFavorites.length,
             itemBuilder: (context, index) {
               final favorite = placeFavorites[index];
@@ -314,7 +314,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           
           // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -469,7 +469,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           
           // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -605,7 +605,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           
           // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -765,7 +765,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -922,7 +922,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1109,7 +1109,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: context.primaryColorTheme.withOpacity(0.1),
                 shape: BoxShape.circle,

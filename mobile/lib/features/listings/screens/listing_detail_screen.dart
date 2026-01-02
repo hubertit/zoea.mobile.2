@@ -362,7 +362,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 // Listing Info
                 Container(
                   color: context.cardColor,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -571,7 +571,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
             : '';
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -798,7 +798,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     if (amenityList.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -839,7 +839,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1001,7 +1001,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
         if (reviews.isEmpty) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -1100,7 +1100,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
       loading: () => Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
       error: (error, stack) => Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -1377,7 +1377,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               }
               
               return ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   final product = products[index];
@@ -1513,7 +1513,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
               }
               
               return ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 itemCount: services.length,
                 itemBuilder: (context, index) {
                   final service = services[index];
@@ -1665,7 +1665,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
           }
           
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -1769,7 +1769,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     if (images.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Text(
             'No photos available',
             style: TextStyle(
@@ -1782,7 +1782,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 12,

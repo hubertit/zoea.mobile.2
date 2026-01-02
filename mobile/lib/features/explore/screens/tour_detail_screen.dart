@@ -201,7 +201,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
               children: [
                 // Title and Basic Info
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(12),
                   color: context.backgroundColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +304,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // Short Description
                 if (shortDescription.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Text(
                       shortDescription,
@@ -320,7 +320,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // Price Section
                 if (pricePerPerson != null)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -359,7 +359,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // Description
                 if (description.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +388,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // What's Included
                 if (includes.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,7 +432,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // What's Not Included
                 if (excludes.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,7 +476,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // Requirements
                 if (requirements.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -520,7 +520,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                 // Languages
                 if (languages.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(12),
                     color: context.backgroundColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -562,7 +562,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.backgroundColor,
           boxShadow: [
