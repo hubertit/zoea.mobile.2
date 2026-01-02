@@ -227,8 +227,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -238,88 +236,116 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             AppAssets.splashBackground,
             fit: BoxFit.cover,
           ),
-          // Dark overlay for better text visibility
+          // Gradient overlay - transparent at center to darker at bottom
           Container(
-            color: Colors.black.withOpacity(0.4),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.4),
+                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(0.8),
+                ],
+              ),
+            ),
           ),
-          // Content
-          SafeArea(
-            child: Column(
-              children: [
-                // Main content - centered
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Logo with animation
-                        AnimatedBuilder(
-                          animation: _animationController,
-                          builder: (context, child) {
-                            return FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: ScaleTransition(
-                                scale: _scaleAnimation,
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: Image.asset(
-                            AppAssets.logoWhite, // Always use white logo on dark background
-                            height: 120,
-                            width: 120,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        
-                        // Tagline
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Text(
-                            'Discover Rwanda Like Never Before',
-                            style: context.bodyMedium.copyWith(
-                              color: Colors.white.withOpacity(0.95),
-                              fontSize: 18,
+          // Circular progress indicator at top
+          Positioned(
+            top: 200,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: const SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Content at bottom
+          Positioned(
+            bottom: 60,
+            left: 24,
+            right: 24,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Bold headline - line 1
+                  const Text(
+                    'Discover Rwanda',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                  ),
+                  // Bold headline - line 2
+                  const Text(
+                    'Like Never Before',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Description text
+                  Text(
+                    'Explore stunning destinations, authentic experiences, and hidden gems across the Land of a Thousand Hills.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.95),
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  // "Powered by" section
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Powered by',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
-                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        const SizedBox(height: 48),
-                        
-                        // Loading indicator
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
+                          const SizedBox(height: 8),
+                          Image.asset(
+                            AppAssets.logoWhite,
+                            height: 35,
+                            fit: BoxFit.contain,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                // Version number at the very bottom
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Text(
-                      'v${AppConfig.appVersion}',
-                      style: context.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: 12,
+                        ],
                       ),
-                    ),
+                      const Spacer(),
+                      // Version number
+                      Text(
+                        'v${AppConfig.appVersion}',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
