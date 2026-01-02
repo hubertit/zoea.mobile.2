@@ -1336,7 +1336,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   placeholderColor: context.grey300,
                   errorWidget: Container(
                     color: context.grey300,
-                    child: const Icon(
+                    child: Icon(
                       Icons.event,
                       color: context.grey400,
                       size: 40,
@@ -1429,7 +1429,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: context.grey300,
-                    child: const Icon(
+                    child: Icon(
                       Icons.image,
                       color: context.grey400,
                       size: 40,

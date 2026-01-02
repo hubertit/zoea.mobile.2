@@ -115,7 +115,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
+            Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
@@ -177,7 +177,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
+            Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
@@ -239,7 +239,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
+            Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',

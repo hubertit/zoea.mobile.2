@@ -545,7 +545,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
   Widget _buildMenuTab(Map<String, dynamic> place) {
     final menuData = place['menu'];
     if (menuData == null) {
-      return const Center(
+      return Center(
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Text(
@@ -786,7 +786,7 @@ class _PlaceDetailScreenState extends ConsumerState<PlaceDetailScreen>
     final photos = place['photos'] as List<String>? ?? [];
     
     if (photos.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Text(
