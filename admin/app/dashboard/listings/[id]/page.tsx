@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, CategoriesAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
+import { ListingsAPI, CategoriesAPI, CountriesAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
 import Icon, { 
   faArrowLeft, 
   faEdit, 
@@ -83,6 +83,8 @@ export default function ListingDetailPage() {
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [countries, setCountries] = useState<Array<{ id: string; name: string; code: string }>>([]);
+  const [cities, setCities] = useState<Array<{ id: string; name: string }>>([]);
 
   const [formData, setFormData] = useState({
     status: 'draft' as ListingStatus,
@@ -97,6 +99,8 @@ export default function ListingDetailPage() {
     description: '',
     type: '' as ListingType | '',
     categoryId: '',
+    countryId: '',
+    cityId: '',
     address: '',
     contactPhone: '',
     contactEmail: '',
@@ -132,6 +136,8 @@ export default function ListingDetailPage() {
           description: listingData.description || '',
           type: listingData.type || '',
           categoryId: listingData.categoryId || '',
+          countryId: listingData.countryId || '',
+          cityId: listingData.cityId || '',
           address: listingData.address || '',
           contactPhone: listingData.contactPhone || '',
           contactEmail: listingData.contactEmail || '',
@@ -165,8 +171,39 @@ export default function ListingDetailPage() {
         console.error('Failed to fetch categories:', error);
       }
     };
+    
+    const fetchCountries = async () => {
+      try {
+        const response = await CountriesAPI.getActiveCountries();
+        setCountries(response);
+      } catch (error) {
+        console.error('Failed to fetch countries:', error);
+      }
+    };
+    
     fetchCategories();
+    fetchCountries();
   }, []);
+
+  // Load cities when country changes
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!editFormData.countryId) {
+        setCities([]);
+        return;
+      }
+      
+      try {
+        const response = await CountriesAPI.getCitiesByCountry(editFormData.countryId);
+        setCities(response);
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+        setCities([]);
+      }
+    };
+    
+    fetchCities();
+  }, [editFormData.countryId]);
 
   const handleSaveStatus = async () => {
     if (!listingId) return;
@@ -204,6 +241,8 @@ export default function ListingDetailPage() {
         description: editFormData.description || undefined,
         type: editFormData.type || undefined,
         categoryId: editFormData.categoryId || undefined,
+        countryId: editFormData.countryId || undefined,
+        cityId: editFormData.cityId || undefined,
         address: editFormData.address || undefined,
         contactPhone: editFormData.contactPhone || undefined,
         contactEmail: editFormData.contactEmail || undefined,
@@ -543,6 +582,26 @@ export default function ListingDetailPage() {
               value={editFormData.categoryId}
               onChange={(e) => setEditFormData({ ...editFormData, categoryId: e.target.value })}
               options={[{ value: '', label: 'Select Category' }, ...categories.map((c) => ({ value: c.id, label: c.name }))]}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Select
+              label="Country"
+              value={editFormData.countryId}
+              onChange={(e) => {
+                setEditFormData({ ...editFormData, countryId: e.target.value, cityId: '' });
+              }}
+              options={[{ value: '', label: 'Select Country' }, ...countries.map((c) => ({ value: c.id, label: c.name }))]}
+              required
+            />
+
+            <Select
+              label="City"
+              value={editFormData.cityId}
+              onChange={(e) => setEditFormData({ ...editFormData, cityId: e.target.value })}
+              options={[{ value: '', label: 'Select City' }, ...cities.map((c) => ({ value: c.id, label: c.name }))]}
+              disabled={!editFormData.countryId}
             />
           </div>
 

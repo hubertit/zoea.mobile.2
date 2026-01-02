@@ -16,6 +16,7 @@ class SearchService {
     String? category,
     String? type,
     String? city,
+    String? countryId,
     double? latitude,
     double? longitude,
     double? radiusKm,
@@ -28,6 +29,7 @@ class SearchService {
       if (category != null) queryParams['category'] = category;
       if (type != null) queryParams['type'] = type;
       if (city != null) queryParams['city'] = city;
+      if (countryId != null) queryParams['countryId'] = countryId;
       if (latitude != null) queryParams['latitude'] = latitude;
       if (longitude != null) queryParams['longitude'] = longitude;
       if (radiusKm != null) queryParams['radius'] = radiusKm;
@@ -80,6 +82,7 @@ class SearchService {
     String? category,
     String? type,
     String? city,
+    String? countryId,
     double? latitude,
     double? longitude,
     double? radiusKm,
@@ -90,6 +93,7 @@ class SearchService {
         category: category,
         type: type,
         city: city,
+        countryId: countryId,
         latitude: latitude,
         longitude: longitude,
         radiusKm: radiusKm,
@@ -109,6 +113,7 @@ class SearchService {
     required String query,
     String? category,
     String? city,
+    String? countryId,
     double? latitude,
     double? longitude,
     double? radiusKm,
@@ -118,6 +123,7 @@ class SearchService {
         query: query,
         category: category,
         city: city,
+        countryId: countryId,
         latitude: latitude,
         longitude: longitude,
         radiusKm: radiusKm,
@@ -137,6 +143,7 @@ class SearchService {
     required String query,
     String? category,
     String? city,
+    String? countryId,
     double? latitude,
     double? longitude,
     double? radiusKm,
@@ -146,6 +153,7 @@ class SearchService {
         query: query,
         category: category,
         city: city,
+        countryId: countryId,
         latitude: latitude,
         longitude: longitude,
         radiusKm: radiusKm,

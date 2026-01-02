@@ -12,6 +12,7 @@ class ListingsParams {
   final String? type;
   final String? category;
   final String? city;
+  final String? country;
   final String? search;
   final double? minPrice;
   final double? maxPrice;
@@ -26,6 +27,7 @@ class ListingsParams {
     this.type,
     this.category,
     this.city,
+    this.country,
     this.search,
     this.minPrice,
     this.maxPrice,
@@ -45,6 +47,7 @@ class ListingsParams {
           type == other.type &&
           category == other.category &&
           city == other.city &&
+          country == other.country &&
           search == other.search &&
           minPrice == other.minPrice &&
           maxPrice == other.maxPrice &&
@@ -60,6 +63,7 @@ class ListingsParams {
       type.hashCode ^
       category.hashCode ^
       city.hashCode ^
+      country.hashCode ^
       search.hashCode ^
       minPrice.hashCode ^
       maxPrice.hashCode ^
@@ -78,6 +82,7 @@ final listingsProvider = FutureProvider.family<Map<String, dynamic>, ListingsPar
     type: params.type,
     category: params.category,
     city: params.city,
+    country: params.country,
     search: params.search,
     minPrice: params.minPrice,
     maxPrice: params.maxPrice,
@@ -89,9 +94,9 @@ final listingsProvider = FutureProvider.family<Map<String, dynamic>, ListingsPar
 });
 
 /// Provider for featured listings
-final featuredListingsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+final featuredListingsProvider = FutureProvider.family<List<Map<String, dynamic>>, String?>((ref, countryId) async {
   final listingsService = ref.watch(listingsServiceProvider);
-  return await listingsService.getFeaturedListings();
+  return await listingsService.getFeaturedListings(countryId: countryId);
 });
 
 /// Parameters for nearby listings query

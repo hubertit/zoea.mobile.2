@@ -59,8 +59,9 @@ export class ListingsController {
     description: 'Retrieve featured listings sorted by rating. Featured listings are prioritized and displayed first.'
   })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Maximum number of listings to return (default: 10)' })
-  async getFeatured(@Query('limit') limit?: string) {
-    return this.listingsService.getFeatured(limit ? +limit : 10);
+  @ApiQuery({ name: 'countryId', required: false, type: String, description: 'Filter by country UUID' })
+  async getFeatured(@Query('limit') limit?: string, @Query('countryId') countryId?: string) {
+    return this.listingsService.getFeatured(limit ? +limit : 10, countryId);
   }
 
   @Get('nearby')

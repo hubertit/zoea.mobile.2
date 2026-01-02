@@ -164,9 +164,14 @@ export class ListingsService {
     return this.findAll({ ...params, type, status: 'active' });
   }
 
-  async getFeatured(limit = 10) {
+  async getFeatured(limit = 10, countryId?: string) {
     return this.prisma.listing.findMany({
-      where: { isFeatured: true, status: 'active', deletedAt: null },
+      where: { 
+        isFeatured: true, 
+        status: 'active', 
+        deletedAt: null,
+        ...(countryId && { countryId }),
+      },
       take: limit,
       include: {
         category: { select: { id: true, name: true, icon: true } },

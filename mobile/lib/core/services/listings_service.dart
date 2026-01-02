@@ -14,6 +14,7 @@ class ListingsService {
     String? type,
     String? category,
     String? city,
+    String? country,
     String? search,
     double? minPrice,
     double? maxPrice,
@@ -30,6 +31,7 @@ class ListingsService {
       if (type != null) queryParams['type'] = type;
       if (category != null) queryParams['categoryId'] = category; // Backend expects categoryId
       if (city != null) queryParams['cityId'] = city; // Backend expects cityId
+      if (country != null) queryParams['countryId'] = country; // Backend expects countryId
       if (search != null) queryParams['search'] = search;
       if (minPrice != null) queryParams['minPrice'] = minPrice;
       if (maxPrice != null) queryParams['maxPrice'] = maxPrice;
@@ -75,9 +77,15 @@ class ListingsService {
   }
 
   /// Get featured listings
-  Future<List<Map<String, dynamic>>> getFeaturedListings() async {
+  Future<List<Map<String, dynamic>>> getFeaturedListings({String? countryId}) async {
     try {
-      final response = await _dio.get('${AppConfig.listingsEndpoint}/featured');
+      final queryParams = <String, dynamic>{};
+      if (countryId != null) queryParams['countryId'] = countryId;
+      
+      final response = await _dio.get(
+        '${AppConfig.listingsEndpoint}/featured',
+        queryParameters: queryParams.isEmpty ? null : queryParams,
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;

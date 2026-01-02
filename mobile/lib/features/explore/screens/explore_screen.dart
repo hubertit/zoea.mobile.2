@@ -14,6 +14,7 @@ import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
 import '../../../core/providers/theme_provider.dart';
+import '../../../core/providers/country_provider.dart';
 import '../../../core/models/event.dart';
 import '../../../core/constants/assets.dart';
 import '../../../core/config/app_config.dart';
@@ -1748,7 +1749,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildRecommendSection() {
     return Consumer(
       builder: (context, ref, child) {
-        final featuredAsync = ref.watch(featuredListingsProvider);
+        final selectedCountry = ref.watch(selectedCountryProvider).value;
+        final featuredAsync = ref.watch(featuredListingsProvider(selectedCountry?.id));
         
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
