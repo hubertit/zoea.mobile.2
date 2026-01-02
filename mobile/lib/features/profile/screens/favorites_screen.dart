@@ -56,11 +56,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           labelColor: context.primaryColorTheme,
           unselectedLabelColor: context.secondaryTextColor,
           indicatorColor: context.primaryColorTheme,
-          labelStyle: AppTheme.bodyMedium.copyWith(
+          labelStyle: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
             color: context.primaryTextColor,
           ),
-          unselectedLabelStyle: AppTheme.bodyMedium,
+          unselectedLabelStyle: context.bodyMedium,
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'Events'),
@@ -115,16 +115,16 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
-              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+              style: context.headlineSmall.copyWith(color: context.errorColor),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+              style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -177,16 +177,16 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
-              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+              style: context.headlineSmall.copyWith(color: context.errorColor),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+              style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -239,16 +239,16 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const Icon(Icons.error_outline, size: 64, color: context.errorColor),
             const SizedBox(height: 16),
             Text(
               'Failed to load favorites',
-              style: AppTheme.headlineSmall.copyWith(color: AppTheme.errorColor),
+              style: context.headlineSmall.copyWith(color: context.errorColor),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString().replaceFirst('Exception: ', ''),
-              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+              style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -323,7 +323,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   ),
                   child: Text(
                     isEvent ? 'Event' : 'Place',
-                    style: AppTheme.labelSmall.copyWith(
+                    style: context.labelSmall.copyWith(
                       color: isEvent ? context.primaryColorTheme : context.successColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -334,7 +334,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Title
                 Text(
                   item['name'],
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -346,7 +346,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Subtitle
                 Text(
                   item['location'],
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -363,7 +363,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       isEvent ? item['date'] : item['category'],
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -470,7 +470,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Title
                 Text(
                   event['name'],
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -482,7 +482,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Location
                 Text(
                   event['location'],
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -499,7 +499,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       event['date'],
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -606,7 +606,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Title
                 Text(
                   place['name'],
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -618,7 +618,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 // Location
                 Text(
                   place['location'],
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -635,7 +635,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       place['category'],
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -771,7 +771,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   ),
                   child: Text(
                     'Event',
-                    style: AppTheme.labelSmall.copyWith(
+                    style: context.labelSmall.copyWith(
                       color: context.primaryColorTheme,
                       fontWeight: FontWeight.w500,
                     ),
@@ -780,7 +780,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Text(
                   eventName,
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -790,7 +790,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 4),
                 Text(
                   location,
-                  style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+                  style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -799,7 +799,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       dateText,
-                      style: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
+                      style: context.bodySmall.copyWith(color: context.secondaryTextColor),
                     ),
                   ],
                 ),
@@ -928,7 +928,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   ),
                   child: Text(
                     'Place',
-                    style: AppTheme.labelSmall.copyWith(
+                    style: context.labelSmall.copyWith(
                       color: context.successColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -937,7 +937,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 8),
                 Text(
                   listingName,
-                  style: AppTheme.titleMedium.copyWith(
+                  style: context.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
                   ),
@@ -947,7 +947,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                 const SizedBox(height: 4),
                 Text(
                   address,
-                  style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+                  style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -956,7 +956,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     const SizedBox(width: 4),
                     Text(
                       category,
-                      style: AppTheme.bodySmall.copyWith(color: context.secondaryTextColor),
+                      style: context.bodySmall.copyWith(color: context.secondaryTextColor),
                     ),
                   ],
                 ),
@@ -1031,18 +1031,18 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
       builder: (context) => AlertDialog(
         title: Text(
           'Remove from Favorites',
-          style: AppTheme.titleMedium,
+          style: context.titleMedium,
         ),
         content: Text(
           'Are you sure you want to remove "$itemName" from your favorites?',
-          style: AppTheme.bodyMedium,
+          style: context.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(color: context.secondaryTextColor),
+              style: context.bodyMedium.copyWith(color: context.secondaryTextColor),
             ),
           ),
           TextButton(
@@ -1078,8 +1078,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             },
             child: Text(
               'Remove',
-              style: AppTheme.bodyMedium.copyWith(
-                color: AppTheme.errorColor,
+              style: context.bodyMedium.copyWith(
+                color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -1117,7 +1117,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             const SizedBox(height: 24),
             Text(
               title,
-              style: AppTheme.titleLarge.copyWith(
+              style: context.titleLarge.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -1126,7 +1126,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
               textAlign: TextAlign.center,
@@ -1157,18 +1157,18 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
       builder: (context) => AlertDialog(
         title: Text(
           'Remove from Favorites',
-          style: AppTheme.titleMedium,
+          style: context.titleMedium,
         ),
         content: Text(
           'Are you sure you want to remove "${item['name']}" from your favorites?',
-          style: AppTheme.bodyMedium,
+          style: context.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -1186,7 +1186,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
             },
             child: Text(
               'Remove',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),

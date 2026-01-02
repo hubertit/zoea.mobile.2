@@ -6,7 +6,7 @@ import { MerchantPortalAPI, type MerchantListing, type Business, MediaAPI } from
 import { toast } from '@/app/components/Toaster';
 import { Button, Modal, Input, Select, Textarea, Breadcrumbs, StatusBadge, ConfirmDialog } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
-import Icon, { faArrowLeft, faEdit, faBox, faCheckCircle, faImage, faPlus, faTrash } from '@/app/components/Icon';
+import Icon, { faArrowLeft, faEdit, faBox, faCheckCircle, faImage, faPlus, faTrash, faCalendar } from '@/app/components/Icon';
 import { faBed, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { CategoriesAPI } from '@/src/lib/api';
 
@@ -706,6 +706,116 @@ export default function ListingDetailPage() {
           )}
         </div>
       )}
+
+      {/* Shop Section */}
+      <div className="bg-white border border-gray-200 rounded-sm p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Icon icon={faBox} /> Shop Management
+          </h2>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">
+              Shop Mode: {listing.isShopEnabled ? (
+                <StatusBadge status="active" />
+              ) : (
+                <StatusBadge status="inactive" />
+              )}
+            </span>
+            {!editMode && (
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={faEdit}
+                onClick={() => {
+                  setEditMode(true);
+                  // Enable shop mode in form data if not already set
+                  if (!listing.isShopEnabled) {
+                    // This will be handled in the shop settings section
+                  }
+                }}
+              >
+                Configure Shop
+              </Button>
+            )}
+          </div>
+        </div>
+        {listing.isShopEnabled ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <Button
+                variant="ghost"
+                onClick={() => router.push(`/dashboard/my-listings/${listingId}/products?businessId=${businessId}`)}
+                className="h-auto p-4 flex flex-col items-start"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon icon={faBox} />
+                  <span className="font-semibold">Products</span>
+                </div>
+                <p className="text-sm text-gray-600 text-left">Manage products and inventory</p>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => router.push(`/dashboard/my-listings/${listingId}/services?businessId=${businessId}`)}
+                className="h-auto p-4 flex flex-col items-start"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon icon={faCalendar} />
+                  <span className="font-semibold">Services</span>
+                </div>
+                <p className="text-sm text-gray-600 text-left">Manage bookable services</p>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => router.push(`/dashboard/my-listings/${listingId}/menus?businessId=${businessId}`)}
+                className="h-auto p-4 flex flex-col items-start"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon icon={faUtensils as any} />
+                  <span className="font-semibold">Menus</span>
+                </div>
+                <p className="text-sm text-gray-600 text-left">Manage menus and menu items</p>
+              </Button>
+            </div>
+            <div className="mt-4">
+              <Button
+                variant="ghost"
+                onClick={() => router.push(`/dashboard/my-orders?businessId=${businessId}&listingId=${listingId}`)}
+                className="w-full"
+              >
+                View All Orders for This Listing
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-600 mb-4">Shop mode is disabled for this listing</p>
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!businessId) return;
+                try {
+                  await MerchantPortalAPI.updateShopSettings(businessId, listingId, {
+                    isShopEnabled: true,
+                    shopSettings: {
+                      acceptsOnlineOrders: true,
+                      deliveryEnabled: false,
+                      pickupEnabled: true,
+                      dineInEnabled: false,
+                    },
+                  });
+                  toast.success('Shop mode enabled successfully');
+                  fetchListing();
+                } catch (error: any) {
+                  console.error('Failed to enable shop mode:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to enable shop mode');
+                }
+              }}
+            >
+              Enable Shop Mode
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* Tables Section (Restaurants) */}
       {listing?.type === 'restaurant' && (

@@ -259,7 +259,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
             children: [
               Text(
                 'Filter Recommendations',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -269,7 +269,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
               // Rating Filter
               Text(
                 'Minimum Rating',
-                style: AppTheme.titleMedium.copyWith(
+                style: context.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -290,7 +290,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
               // Features Filter
               Text(
                 'Features',
-                style: AppTheme.titleMedium.copyWith(
+                style: context.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -365,7 +365,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
             children: [
               Text(
                 'Sort Recommendations',
-                style: AppTheme.headlineSmall.copyWith(
+                style: context.headlineSmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.primaryTextColor,
                 ),
@@ -395,7 +395,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
       },
       selectedColor: context.primaryColorTheme.withOpacity(0.2),
       checkmarkColor: context.primaryColorTheme,
-      labelStyle: AppTheme.bodySmall.copyWith(
+      labelStyle: context.bodySmall.copyWith(
         color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
       ),
     );
@@ -405,7 +405,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     return ListTile(
       title: Text(
         label,
-        style: AppTheme.bodyMedium.copyWith(
+        style: context.bodyMedium.copyWith(
           color: context.primaryTextColor,
         ),
       ),

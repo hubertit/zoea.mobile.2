@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ToursService } from './tours.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateTourDto, UpdateTourDto } from './dto/tour.dto';
+import { CreateTourScheduleDto, UpdateTourScheduleDto } from './dto/tour-schedule.dto';
+import { Prisma } from '@prisma/client';
 
 @ApiTags('Tours')
 @Controller('tours')
@@ -118,12 +120,13 @@ export class ToursController {
 
   @Get(':id/schedules')
   @ApiOperation({ 
-    summary: 'Get available schedules for a tour',
-    description: 'Retrieves available tour schedules within a date range. Useful for displaying booking options and checking availability. Returns schedules with available slots and pricing.'
+    summary: 'Get schedules for a tour',
+    description: 'Retrieves tour schedules within a date range. Useful for displaying booking options and checking availability. Returns schedules with available slots and pricing.'
   })
   @ApiParam({ name: 'id', type: String, description: 'Tour UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
   @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Filter schedules starting from this date', example: '2024-12-31T00:00:00Z' })
   @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Filter schedules ending before this date', example: '2025-01-31T23:59:59Z' })
+  @ApiQuery({ name: 'includeUnavailable', required: false, type: Boolean, description: 'Include unavailable schedules (for management)', example: false })
   @ApiResponse({ 
     status: 200, 
     description: 'Tour schedules retrieved successfully',
@@ -134,10 +137,12 @@ export class ToursController {
         properties: {
           id: { type: 'string' },
           tourId: { type: 'string' },
-          startDate: { type: 'string' },
-          endDate: { type: 'string' },
-          availableSlots: { type: 'number', example: 10 },
-          price: { type: 'number', example: 1500 }
+          date: { type: 'string' },
+          startTime: { type: 'string' },
+          availableSpots: { type: 'number', example: 10 },
+          bookedSpots: { type: 'number', example: 5 },
+          priceOverride: { type: 'number', example: 1500 },
+          isAvailable: { type: 'boolean', example: true }
         }
       }
     }
@@ -147,12 +152,75 @@ export class ToursController {
     @Param('id') id: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
+    @Query('includeUnavailable') includeUnavailable?: string,
   ) {
     return this.toursService.getSchedules(
       id,
       startDate ? new Date(startDate) : undefined,
       endDate ? new Date(endDate) : undefined,
+      includeUnavailable === 'true',
     );
+  }
+
+  @Post(':id/schedules')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ 
+    summary: 'Create a tour schedule',
+    description: 'Creates a new schedule for a tour. Requires authentication and ownership of the tour.'
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Tour UUID' })
+  @ApiBody({ type: CreateTourScheduleDto })
+  @ApiResponse({ status: 201, description: 'Schedule created successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to create schedules for this tour' })
+  @ApiResponse({ status: 404, description: 'Tour not found' })
+  async createSchedule(
+    @Param('id') tourId: string,
+    @Request() req,
+    @Body() data: CreateTourScheduleDto,
+  ) {
+    return this.toursService.createSchedule(req.user.userId, tourId, data);
+  }
+
+  @Put('schedules/:scheduleId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ 
+    summary: 'Update a tour schedule',
+    description: 'Updates an existing tour schedule. Requires authentication and ownership of the tour.'
+  })
+  @ApiParam({ name: 'scheduleId', type: String, description: 'Schedule UUID' })
+  @ApiBody({ type: UpdateTourScheduleDto })
+  @ApiResponse({ status: 200, description: 'Schedule updated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to update this schedule' })
+  @ApiResponse({ status: 404, description: 'Schedule not found' })
+  async updateSchedule(
+    @Param('scheduleId') scheduleId: string,
+    @Request() req,
+    @Body() data: UpdateTourScheduleDto,
+  ) {
+    return this.toursService.updateSchedule(req.user.userId, scheduleId, data);
+  }
+
+  @Delete('schedules/:scheduleId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ 
+    summary: 'Delete a tour schedule',
+    description: 'Deletes a tour schedule. Requires authentication and ownership of the tour. Cannot delete schedules with existing bookings.'
+  })
+  @ApiParam({ name: 'scheduleId', type: String, description: 'Schedule UUID' })
+  @ApiResponse({ status: 200, description: 'Schedule deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to delete this schedule' })
+  @ApiResponse({ status: 404, description: 'Schedule not found' })
+  async deleteSchedule(
+    @Param('scheduleId') scheduleId: string,
+    @Request() req,
+  ) {
+    return this.toursService.deleteSchedule(req.user.userId, scheduleId);
   }
 
   @Post()
@@ -177,8 +245,34 @@ export class ToursController {
   })
   @ApiResponse({ status: 400, description: 'Bad request - Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
-  async create(@Body() data: CreateTourDto) {
-    return this.toursService.create(data);
+  async create(@Request() req, @Body() data: CreateTourDto) {
+    return this.toursService.create(req.user.userId, {
+      operator: { connect: { id: data.operatorId } },
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      shortDescription: data.shortDescription,
+      type: data.type,
+      category: data.categoryId ? { connect: { id: data.categoryId } } : undefined,
+      country: data.countryId ? { connect: { id: data.countryId } } : undefined,
+      city: data.cityId ? { connect: { id: data.cityId } } : undefined,
+      startLocationName: data.startLocationName,
+      endLocationName: data.endLocationName,
+      durationDays: data.durationDays,
+      durationHours: data.durationHours,
+      pricePerPerson: data.pricePerPerson,
+      currency: data.currency || 'USD',
+      groupDiscountPercentage: data.groupDiscountPercentage,
+      minGroupSize: data.minGroupSize,
+      maxGroupSize: data.maxGroupSize,
+      includes: data.includes || [],
+      excludes: data.excludes || [],
+      requirements: data.requirements || [],
+      difficultyLevel: data.difficultyLevel,
+      languages: data.languages || ['en'],
+      itinerary: data.itinerary,
+      status: 'draft',
+    });
   }
 
   @Put(':id')
@@ -199,8 +293,28 @@ export class ToursController {
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to update this tour' })
   @ApiResponse({ status: 404, description: 'Tour not found' })
-  async update(@Param('id') id: string, @Body() data: UpdateTourDto) {
-    return this.toursService.update(id, data);
+  async update(@Param('id') id: string, @Request() req, @Body() data: UpdateTourDto) {
+    const updateData: Prisma.TourUpdateInput = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.shortDescription !== undefined) updateData.shortDescription = data.shortDescription;
+    if (data.type !== undefined) updateData.type = data.type;
+    if (data.categoryId !== undefined) updateData.category = data.categoryId ? { connect: { id: data.categoryId } } : { disconnect: true };
+    if (data.durationDays !== undefined) updateData.durationDays = data.durationDays;
+    if (data.durationHours !== undefined) updateData.durationHours = data.durationHours;
+    if (data.pricePerPerson !== undefined) updateData.pricePerPerson = data.pricePerPerson;
+    if (data.currency !== undefined) updateData.currency = data.currency;
+    if (data.groupDiscountPercentage !== undefined) updateData.groupDiscountPercentage = data.groupDiscountPercentage;
+    if (data.maxGroupSize !== undefined) updateData.maxGroupSize = data.maxGroupSize;
+    if (data.minGroupSize !== undefined) updateData.minGroupSize = data.minGroupSize;
+    if (data.difficultyLevel !== undefined) updateData.difficultyLevel = data.difficultyLevel;
+    if (data.languages !== undefined) updateData.languages = data.languages;
+    if (data.includes !== undefined) updateData.includes = data.includes;
+    if (data.excludes !== undefined) updateData.excludes = data.excludes;
+    if (data.requirements !== undefined) updateData.requirements = data.requirements;
+    if (data.itinerary !== undefined) updateData.itinerary = data.itinerary;
+    return this.toursService.update(id, req.user.userId, updateData);
   }
 
   @Delete(':id')
@@ -225,8 +339,46 @@ export class ToursController {
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
   @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to delete this tour' })
   @ApiResponse({ status: 404, description: 'Tour not found' })
-  async delete(@Param('id') id: string) {
-    return this.toursService.delete(id);
+  async delete(@Param('id') id: string, @Request() req) {
+    return this.toursService.delete(id, req.user.userId);
+  }
+
+  @Get('operator/:operatorId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ 
+    summary: 'Get tours for an operator',
+    description: 'Retrieves all tours for a specific tour operator. Requires authentication and ownership of the operator profile.'
+  })
+  @ApiParam({ name: 'operatorId', type: String, description: 'Tour operator profile UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiQuery({ name: 'status', required: false, type: String, description: 'Filter by status', example: 'active' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Tours retrieved successfully',
+    schema: { type: 'object' }
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing token' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Not authorized to access this operator' })
+  async getOperatorTours(
+    @Param('operatorId') operatorId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('status') status?: string,
+    @Request() req,
+  ) {
+    // Verify operator ownership
+    const hasAccess = await this.toursService.verifyOperatorAccess(operatorId, req.user.userId);
+    if (!hasAccess) {
+      throw new ForbiddenException('You do not have permission to access this operator');
+    }
+
+    return this.toursService.findByOperator(operatorId, {
+      page: page ? +page : 1,
+      limit: limit ? +limit : 20,
+      status,
+    });
   }
 }
 

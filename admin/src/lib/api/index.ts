@@ -2,6 +2,7 @@
 export * from './client';
 export * from './dashboard';
 export * from './users';
+export * from './tours';
 export * from './listings';
 export * from './events';
 // Export bookings with explicit exports to avoid PaymentStatus conflict

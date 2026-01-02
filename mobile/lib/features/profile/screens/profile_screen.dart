@@ -348,14 +348,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 Text(
                   user?.fullName ?? 'User',
-                  style: AppTheme.titleLarge.copyWith(
+                  style: context.titleLarge.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   user?.email ?? '',
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: context.bodyMedium.copyWith(
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -369,7 +369,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     child: Text(
                       'Verified Traveler',
-                      style: AppTheme.labelSmall.copyWith(
+                      style: context.labelSmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w500,
                       ),
@@ -488,7 +488,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: AppTheme.titleLarge.copyWith(
+            style: context.titleLarge.copyWith(
               fontWeight: FontWeight.w600,
               color: context.primaryTextColor,
             ),
@@ -496,14 +496,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 2),
           Text(
             title,
-            style: AppTheme.bodySmall.copyWith(
+            style: context.bodySmall.copyWith(
               color: context.primaryTextColor,
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
             subtitle,
-            style: AppTheme.labelSmall.copyWith(
+            style: context.labelSmall.copyWith(
               color: context.secondaryTextColor,
             ),
           ),
@@ -521,7 +521,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       children: [
         Text(
           title,
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: context.primaryTextColor,
           ),
@@ -580,7 +580,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.w500,
                       color: context.primaryTextColor,
                     ),
@@ -588,7 +588,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTheme.bodySmall.copyWith(
+                    style: context.bodySmall.copyWith(
                       color: context.secondaryTextColor,
                     ),
                   ),
@@ -636,7 +636,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     Text(
                       'Theme',
-                      style: AppTheme.bodyMedium.copyWith(
+                      style: context.bodyMedium.copyWith(
                         fontWeight: FontWeight.w500,
                         color: context.primaryTextColor,
                       ),
@@ -648,7 +648,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           : themeMode == ThemeMode.light 
                               ? 'Light Mode' 
                               : 'System Default',
-                      style: AppTheme.bodySmall.copyWith(
+                      style: context.bodySmall.copyWith(
                         color: context.secondaryTextColor,
                       ),
                     ),
@@ -737,7 +737,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: AppTheme.bodySmall.copyWith(
+                style: context.bodySmall.copyWith(
                   color: isSelected 
                       ? context.isDarkMode 
                           ? context.primaryTextColor
@@ -761,13 +761,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         backgroundColor: context.cardColor,
         title: Text(
           'Sign Out',
-          style: AppTheme.titleMedium.copyWith(
+          style: context.titleMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
         content: Text(
           'Are you sure you want to sign out?',
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             color: context.primaryTextColor,
           ),
         ),
@@ -776,7 +776,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.secondaryTextColor,
               ),
             ),
@@ -794,7 +794,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
             child: Text(
               'Sign Out',
-              style: AppTheme.bodyMedium.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.errorColor,
                 fontWeight: FontWeight.w500,
               ),
@@ -832,7 +832,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // Title
             Text(
               'Select Currency',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -880,7 +880,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // Title
             Text(
               'Select Country',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -928,7 +928,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // Title
             Text(
               'Select Location',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -976,7 +976,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // Title
             Text(
               'Select Language',
-              style: AppTheme.headlineSmall.copyWith(
+              style: context.headlineSmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.primaryTextColor,
               ),
@@ -1011,14 +1011,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: ListTile(
         title: Text(
           code,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           name,
-          style: AppTheme.bodySmall.copyWith(
+          style: context.bodySmall.copyWith(
             color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
@@ -1042,7 +1042,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Currency changed to $code',
-                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                    style: context.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
                   backgroundColor: context.primaryColorTheme,
                 ),
@@ -1054,7 +1054,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Failed to update currency: ${e.toString().replaceFirst('Exception: ', '')}',
-                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                    style: context.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
                   backgroundColor: context.errorColor,
                 ),
@@ -1084,7 +1084,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         title: Text(
           name,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
@@ -1103,7 +1103,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             SnackBar(
               content: Text(
                 'Country changed to $name',
-                style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                style: context.bodyMedium.copyWith(color: context.primaryTextColor),
               ),
               backgroundColor: context.primaryColorTheme,
             ),
@@ -1131,14 +1131,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         title: Text(
           name,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           description,
-          style: AppTheme.bodySmall.copyWith(
+          style: context.bodySmall.copyWith(
             color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
@@ -1156,7 +1156,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             SnackBar(
               content: Text(
                 'Location changed to $name',
-                style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                style: context.bodyMedium.copyWith(color: context.primaryTextColor),
               ),
               backgroundColor: context.primaryColorTheme,
             ),
@@ -1180,14 +1180,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: ListTile(
         title: Text(
           name,
-          style: AppTheme.bodyMedium.copyWith(
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: isSelected ? context.primaryColorTheme : context.primaryTextColor,
           ),
         ),
         subtitle: Text(
           nativeName,
-          style: AppTheme.bodySmall.copyWith(
+          style: context.bodySmall.copyWith(
             color: isSelected ? context.primaryColorTheme : context.secondaryTextColor,
           ),
         ),
@@ -1212,7 +1212,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Language changed to $name',
-                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                    style: context.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
                   backgroundColor: context.primaryColorTheme,
                 ),
@@ -1224,7 +1224,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 SnackBar(
                   content: Text(
                     'Failed to update language: ${e.toString().replaceFirst('Exception: ', '')}',
-                    style: AppTheme.bodyMedium.copyWith(color: context.primaryTextColor),
+                    style: context.bodyMedium.copyWith(color: context.primaryTextColor),
                   ),
                   backgroundColor: context.errorColor,
                 ),

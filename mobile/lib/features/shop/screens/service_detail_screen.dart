@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/services_provider.dart';

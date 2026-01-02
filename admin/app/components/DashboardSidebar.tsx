@@ -369,6 +369,13 @@ export default function DashboardSidebar({ isOpen, onClose, onCollapsedChange }:
       href: '/dashboard/profile',
       roles: ['MERCHANT', 'merchant'],
     },
+    // Tour Operator-specific menus
+    {
+      icon: faRoute,
+      label: 'My Tours',
+      href: '/dashboard/my-tours',
+      roles: ['TOUR_OPERATOR', 'tour_operator'],
+    },
   ];
 
   const menuItems = allMenuItems.filter(item => {

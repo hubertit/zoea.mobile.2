@@ -41,6 +41,15 @@ export interface MerchantListing {
   status: ListingStatus;
   isFeatured: boolean;
   isVerified: boolean;
+  isShopEnabled?: boolean | null;
+  shopSettings?: {
+    acceptsOnlineOrders?: boolean;
+    deliveryEnabled?: boolean;
+    pickupEnabled?: boolean;
+    dineInEnabled?: boolean;
+    deliveryZones?: any;
+    paymentMethods?: string[];
+  } | null;
   minPrice?: number | null;
   maxPrice?: number | null;
   priceUnit?: string | null;
@@ -477,6 +486,324 @@ export const MerchantPortalAPI = {
 
   leavePromotion: async (businessId: string, promotionId: string): Promise<void> => {
     await apiClient.delete(`/merchants/businesses/${businessId}/promotions/${promotionId}/leave`);
+  },
+
+  // ============ PRODUCTS ============
+  getProducts: async (
+    listingId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+      search?: string;
+      category?: string;
+    }
+  ): Promise<{ data: any[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get('/products', { params: { listingId, ...params } });
+    return response.data;
+  },
+
+  getProduct: async (productId: string): Promise<any> => {
+    const response = await apiClient.get(`/products/${productId}`);
+    return response.data;
+  },
+
+  createProduct: async (data: {
+    listingId: string;
+    name: string;
+    slug?: string;
+    description?: string;
+    shortDescription?: string;
+    basePrice: number;
+    compareAtPrice?: number;
+    currency?: string;
+    costPrice?: number;
+    sku?: string;
+    trackInventory?: boolean;
+    inventoryQuantity?: number;
+    lowStockThreshold?: number;
+    allowBackorders?: boolean;
+    weight?: number;
+    dimensions?: any;
+    category?: string;
+    tags?: string[];
+    hasVariants?: boolean;
+    variantOptions?: any;
+    status?: string;
+    isFeatured?: boolean;
+    images?: string[];
+  }): Promise<any> => {
+    const response = await apiClient.post('/products', data);
+    return response.data;
+  },
+
+  updateProduct: async (productId: string, data: Partial<{
+    name: string;
+    description: string;
+    shortDescription: string;
+    basePrice: number;
+    compareAtPrice: number;
+    currency: string;
+    costPrice: number;
+    sku: string;
+    trackInventory: boolean;
+    inventoryQuantity: number;
+    lowStockThreshold: number;
+    allowBackorders: boolean;
+    weight: number;
+    dimensions: any;
+    category: string;
+    tags: string[];
+    hasVariants: boolean;
+    variantOptions: any;
+    status: string;
+    isFeatured: boolean;
+    images: string[];
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/products/${productId}`, data);
+    return response.data;
+  },
+
+  deleteProduct: async (productId: string): Promise<void> => {
+    await apiClient.delete(`/products/${productId}`);
+  },
+
+  // ============ SERVICES ============
+  getServices: async (
+    listingId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+      search?: string;
+      category?: string;
+    }
+  ): Promise<{ data: any[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get('/services', { params: { listingId, ...params } });
+    return response.data;
+  },
+
+  getService: async (serviceId: string): Promise<any> => {
+    const response = await apiClient.get(`/services/${serviceId}`);
+    return response.data;
+  },
+
+  createService: async (data: {
+    listingId: string;
+    name: string;
+    slug?: string;
+    description?: string;
+    shortDescription?: string;
+    basePrice: number;
+    priceUnit?: string;
+    currency?: string;
+    duration?: number;
+    durationUnit?: string;
+    category?: string;
+    tags?: string[];
+    isAvailable?: boolean;
+    maxConcurrentBookings?: number;
+    requiresApproval?: boolean;
+    status?: string;
+    isFeatured?: boolean;
+    images?: string[];
+  }): Promise<any> => {
+    const response = await apiClient.post('/services', data);
+    return response.data;
+  },
+
+  updateService: async (serviceId: string, data: Partial<{
+    name: string;
+    description: string;
+    shortDescription: string;
+    basePrice: number;
+    priceUnit: string;
+    currency: string;
+    duration: number;
+    durationUnit: string;
+    category: string;
+    tags: string[];
+    isAvailable: boolean;
+    maxConcurrentBookings: number;
+    requiresApproval: boolean;
+    status: string;
+    isFeatured: boolean;
+    images: string[];
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/services/${serviceId}`, data);
+    return response.data;
+  },
+
+  deleteService: async (serviceId: string): Promise<void> => {
+    await apiClient.delete(`/services/${serviceId}`);
+  },
+
+  // ============ MENUS ============
+  getMenus: async (listingId: string): Promise<any[]> => {
+    const response = await apiClient.get('/menus', { params: { listingId } });
+    return response.data;
+  },
+
+  getMenu: async (menuId: string): Promise<any> => {
+    const response = await apiClient.get(`/menus/${menuId}`);
+    return response.data;
+  },
+
+  createMenu: async (data: {
+    listingId: string;
+    name: string;
+    description?: string;
+    availableDays?: string[];
+    startTime?: string;
+    endTime?: string;
+    isActive?: boolean;
+    isDefault?: boolean;
+    sortOrder?: number;
+  }): Promise<any> => {
+    const response = await apiClient.post('/menus', data);
+    return response.data;
+  },
+
+  updateMenu: async (menuId: string, data: Partial<{
+    name: string;
+    description: string;
+    availableDays: string[];
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
+    isDefault: boolean;
+    sortOrder: number;
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/menus/${menuId}`, data);
+    return response.data;
+  },
+
+  deleteMenu: async (menuId: string): Promise<void> => {
+    await apiClient.delete(`/menus/${menuId}`);
+  },
+
+  // ============ MENU CATEGORIES ============
+  getMenuCategories: async (menuId: string): Promise<any[]> => {
+    const response = await apiClient.get(`/menus/${menuId}/categories`);
+    return response.data;
+  },
+
+  createMenuCategory: async (menuId: string, data: {
+    name: string;
+    description?: string;
+    sortOrder?: number;
+  }): Promise<any> => {
+    const response = await apiClient.post(`/menus/${menuId}/categories`, data);
+    return response.data;
+  },
+
+  updateMenuCategory: async (menuId: string, categoryId: string, data: Partial<{
+    name: string;
+    description: string;
+    sortOrder: number;
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/menus/${menuId}/categories/${categoryId}`, data);
+    return response.data;
+  },
+
+  deleteMenuCategory: async (menuId: string, categoryId: string): Promise<void> => {
+    await apiClient.delete(`/menus/${menuId}/categories/${categoryId}`);
+  },
+
+  // ============ MENU ITEMS ============
+  createMenuItem: async (menuId: string, data: {
+    categoryId: string;
+    name: string;
+    description?: string;
+    shortDescription?: string;
+    price: number;
+    currency?: string;
+    isAvailable?: boolean;
+    isVegetarian?: boolean;
+    isVegan?: boolean;
+    isGlutenFree?: boolean;
+    allergens?: string[];
+    calories?: number;
+    images?: string[];
+    sortOrder?: number;
+  }): Promise<any> => {
+    const response = await apiClient.post(`/menus/${menuId}/items`, data);
+    return response.data;
+  },
+
+  updateMenuItem: async (menuId: string, itemId: string, data: Partial<{
+    categoryId: string;
+    name: string;
+    description: string;
+    shortDescription: string;
+    price: number;
+    currency: string;
+    isAvailable: boolean;
+    isVegetarian: boolean;
+    isVegan: boolean;
+    isGlutenFree: boolean;
+    allergens: string[];
+    calories: number;
+    images: string[];
+    sortOrder: number;
+  }>): Promise<any> => {
+    const response = await apiClient.put(`/menus/${menuId}/items/${itemId}`, data);
+    return response.data;
+  },
+
+  deleteMenuItem: async (menuId: string, itemId: string): Promise<void> => {
+    await apiClient.delete(`/menus/${menuId}/items/${itemId}`);
+  },
+
+  // ============ ORDERS ============
+  getOrders: async (
+    businessId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+      fulfillmentType?: string;
+      listingId?: string;
+      orderNumber?: string;
+    }
+  ): Promise<{ data: any[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const response = await apiClient.get(`/orders/merchant/${businessId}`, { params });
+    return response.data;
+  },
+
+  getOrder: async (orderId: string): Promise<any> => {
+    const response = await apiClient.get(`/orders/${orderId}`);
+    return response.data;
+  },
+
+  updateOrderStatus: async (orderId: string, data: {
+    status?: string;
+    fulfillmentStatus?: string;
+    internalNotes?: string;
+  }): Promise<any> => {
+    const response = await apiClient.patch(`/orders/${orderId}/status`, data);
+    return response.data;
+  },
+
+  cancelOrder: async (orderId: string, data?: { reason?: string }): Promise<any> => {
+    const response = await apiClient.post(`/orders/${orderId}/cancel`, data || {});
+    return response.data;
+  },
+
+  // ============ SHOP SETTINGS ============
+  updateShopSettings: async (businessId: string, listingId: string, data: {
+    isShopEnabled?: boolean;
+    shopSettings?: {
+      acceptsOnlineOrders?: boolean;
+      deliveryEnabled?: boolean;
+      pickupEnabled?: boolean;
+      dineInEnabled?: boolean;
+      deliveryZones?: any;
+      paymentMethods?: string[];
+    };
+  }): Promise<MerchantListing> => {
+    const response = await apiClient.put<MerchantListing>(`/merchants/businesses/${businessId}/listings/${listingId}`, data);
+    return response.data;
   },
 };
 
