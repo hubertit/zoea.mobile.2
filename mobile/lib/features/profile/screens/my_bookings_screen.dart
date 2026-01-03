@@ -20,6 +20,8 @@ class MyBookingsScreen extends ConsumerStatefulWidget {
 class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late AnimationController _shimmerController;
+  late Animation<double> _shimmerAnimation;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -27,6 +29,25 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    
+    // Shimmer animation controller
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    // Start shimmer animation
+    _shimmerController.repeat();
+    
+    // Shimmer animation
+    _shimmerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _shimmerController,
+      curve: Curves.easeInOut,
+    ));
+    
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
@@ -37,6 +58,7 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _shimmerController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -227,10 +249,12 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
               ),
             );
           },
-          loading: () => Center(
-            child: CircularProgressIndicator(
-              color: context.primaryColorTheme,
-            ),
+          loading: () => ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return _buildBookingCardSkeleton();
+            },
           ),
           error: (error, stack) => Center(
             child: Column(
@@ -271,10 +295,12 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
           ),
         );
       },
-      loading: () => Center(
-        child: CircularProgressIndicator(
-          color: context.primaryColorTheme,
-        ),
+      loading: () => ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return _buildBookingCardSkeleton();
+        },
       ),
       error: (error, stack) => Center(
         child: Column(
@@ -872,12 +898,336 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
       case 'completed':
         return Colors.blue; // Blue for completed is intentional
       case 'cancelled':
-        return context.errorColor;
+        return Colors.red[700] ?? Colors.red; // More vibrant red for visibility
       case 'checked_in':
         return Colors.green; // Green for checked in is intentional
       default:
         return context.secondaryTextColor;
     }
+  }
+
+  Widget _buildBookingCardSkeleton() {
+    return AnimatedBuilder(
+      animation: _shimmerAnimation,
+      builder: (context, child) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: context.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: context.isDarkMode 
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image skeleton
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.grey300,
+                            context.grey200,
+                            context.grey300,
+                          ],
+                          stops: [
+                            0.0,
+                            _shimmerAnimation.value,
+                            1.0,
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Status badge skeleton
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        height: 24,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: context.grey400,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    // Booking ID skeleton
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Container(
+                        height: 20,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Booking Details skeleton
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name skeleton
+                    Container(
+                      height: 20,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.grey300,
+                        borderRadius: BorderRadius.circular(4),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.grey300,
+                            context.grey200,
+                            context.grey300,
+                          ],
+                          stops: [
+                            0.0,
+                            _shimmerAnimation.value,
+                            1.0,
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 20,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: context.grey300,
+                        borderRadius: BorderRadius.circular(4),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.grey300,
+                            context.grey200,
+                            context.grey300,
+                          ],
+                          stops: [
+                            0.0,
+                            _shimmerAnimation.value,
+                            1.0,
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Date skeleton
+                    Row(
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          height: 14,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            borderRadius: BorderRadius.circular(4),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.grey200,
+                                context.grey100,
+                                context.grey200,
+                              ],
+                              stops: [
+                                0.0,
+                                _shimmerAnimation.value,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Location skeleton
+                    Row(
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          height: 14,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            borderRadius: BorderRadius.circular(4),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.grey200,
+                                context.grey100,
+                                context.grey200,
+                              ],
+                              stops: [
+                                0.0,
+                                _shimmerAnimation.value,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Booked on skeleton
+                    Row(
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          height: 14,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            borderRadius: BorderRadius.circular(4),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.grey200,
+                                context.grey100,
+                                context.grey200,
+                              ],
+                              stops: [
+                                0.0,
+                                _shimmerAnimation.value,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Price and guest count skeleton
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 18,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: context.grey300,
+                            borderRadius: BorderRadius.circular(4),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.grey300,
+                                context.grey200,
+                                context.grey300,
+                              ],
+                              stops: [
+                                0.0,
+                                _shimmerAnimation.value,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 18,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: context.grey200,
+                            borderRadius: BorderRadius.circular(4),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                context.grey200,
+                                context.grey100,
+                                context.grey200,
+                              ],
+                              stops: [
+                                0.0,
+                                _shimmerAnimation.value,
+                                1.0,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Action button skeleton
+                    Container(
+                      height: 40,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.grey200,
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.grey200,
+                            context.grey100,
+                            context.grey200,
+                          ],
+                          stops: [
+                            0.0,
+                            _shimmerAnimation.value,
+                            1.0,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   List<Map<String, dynamic>> _filterItems(

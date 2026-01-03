@@ -106,6 +106,11 @@ export class FavoritesService {
         where: { id: data.listingId },
         data: { favoriteCount: { increment: 1 } },
       });
+    } else if (data.tourId) {
+      await this.prisma.tour.update({
+        where: { id: data.tourId },
+        data: { favoriteCount: { increment: 1 } },
+      });
     }
 
     return favorite;
@@ -133,6 +138,11 @@ export class FavoritesService {
     if (data.listingId) {
       await this.prisma.listing.update({
         where: { id: data.listingId },
+        data: { favoriteCount: { decrement: 1 } },
+      });
+    } else if (data.tourId) {
+      await this.prisma.tour.update({
+        where: { id: data.tourId },
         data: { favoriteCount: { decrement: 1 } },
       });
     }

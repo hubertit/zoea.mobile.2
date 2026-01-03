@@ -43,7 +43,17 @@ async function bootstrap() {
     .setTitle('Zoea API')
     .setDescription('Zoea Platform API Documentation')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .addTag('Health', 'Health check and system status endpoints')
     .addTag('Auth', 'Authentication and authorization endpoints')
     .addTag('Users', 'User profile and preferences management')
@@ -73,6 +83,9 @@ async function bootstrap() {
     .addTag('Admin - Events', 'Admin event management endpoints')
     .addTag('Admin - Payments', 'Admin payment and transaction management')
     .addTag('Admin - Notifications', 'Admin notification management endpoints')
+    .addTag('Admin - Reviews', 'Admin review moderation and management endpoints')
+    .addTag('Integrations', 'Third-party integrations and external service connections')
+    .addTag('Assistant (Ask Zoea)', 'AI assistant chat and conversation endpoints')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
@@ -109,6 +122,9 @@ async function bootstrap() {
           'Admin - Events',
           'Admin - Payments',
           'Admin - Notifications',
+          'Admin - Reviews',
+          'Integrations',
+          'Assistant (Ask Zoea)',
         ];
         const indexA = tagOrder.indexOf(a);
         const indexB = tagOrder.indexOf(b);

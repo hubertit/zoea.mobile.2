@@ -180,12 +180,15 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
     final difficultyLevel = tour['difficultyLevel'] as String?;
     final languages = (tour['languages'] as List?)?.cast<String>() ?? ['en'];
 
+    // Get actual tour ID (not slug)
+    final actualTourId = tour['id'] as String? ?? '';
+
     // Check if favorite
     final favoritesAsync = ref.watch(favoritesProvider(const FavoritesParams(page: 1, limit: 1000)));
     final isFavorite = favoritesAsync.maybeWhen(
       data: (favoritesData) {
         final favorites = (favoritesData['data'] as List?)?.cast<Map<String, dynamic>>() ?? [];
-        return favorites.any((fav) => fav['tourId'] == widget.tourId || fav['tour_id'] == widget.tourId);
+        return favorites.any((fav) => fav['tourId'] == actualTourId || fav['tour_id'] == actualTourId);
       },
       orElse: () => false,
     );
@@ -223,11 +226,13 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                   ),
                 ),
                 onPressed: () async {
+                  if (actualTourId.isEmpty) return;
+                  
                   final favoritesService = ref.read(favoritesServiceProvider);
                   if (isFavorite) {
-                    await favoritesService.removeFromFavorites(tourId: widget.tourId);
+                    await favoritesService.removeFromFavorites(tourId: actualTourId);
                   } else {
-                    await favoritesService.addTourToFavorites(widget.tourId);
+                    await favoritesService.addTourToFavorites(actualTourId);
                   }
                   ref.invalidate(favoritesProvider(const FavoritesParams(page: 1, limit: 1000)));
                 },
@@ -641,7 +646,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
           child: ElevatedButton(
             onPressed: () {
               context.push('/tour-booking', extra: {
-                'tourId': widget.tourId,
+                'tourId': actualTourId,
                 'tourName': name,
                 'tourLocation': location,
                 'tourImage': imageUrl ?? '',
