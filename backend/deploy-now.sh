@@ -8,6 +8,9 @@ set -e
 PRIMARY_SERVER="qt@172.16.40.61"
 BACKUP_SERVER="qt@172.16.40.60"
 PASSWORD="Easy2Use$"
+PRIMARY_ONLY="${PRIMARY_ONLY:-0}"
+BACKEND_DIR="~/zoea-backend"
+LOCAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Colors
 GREEN='\033[0;32m'
@@ -34,7 +37,24 @@ echo ""
 
 # Step 2: Sync to primary server
 echo -e "${YELLOW}📤 Step 2: Syncing to Primary Server (172.16.40.61)...${NC}"
-./scripts/sync-all-environments.sh
+if [ "$PRIMARY_ONLY" = "1" ] || [ "$PRIMARY_ONLY" = "true" ]; then
+  echo -e "${YELLOW}📤 PRIMARY_ONLY enabled: syncing ONLY to Primary Server...${NC}"
+  sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no "$PRIMARY_SERVER" "mkdir -p $BACKEND_DIR" || true
+  rsync -avz --progress \
+      -e "sshpass -p '$PASSWORD' ssh -o StrictHostKeyChecking=no" \
+      --exclude 'node_modules' \
+      --exclude 'dist' \
+      --exclude '.git' \
+      --exclude '.DS_Store' \
+      --exclude '*.log' \
+      --exclude '.env' \
+      --exclude 'coverage' \
+      --exclude '.nyc_output' \
+      "$LOCAL_DIR/" "$PRIMARY_SERVER:$BACKEND_DIR/" 2>&1 | tail -20
+  echo -e "${GREEN}✅ Primary Server synced successfully${NC}"
+else
+  ./scripts/sync-all-environments.sh
+fi
 echo ""
 
 # Step 3: Deploy on primary server
@@ -59,9 +79,13 @@ else
 fi
 echo ""
 
-# Step 4: Deploy on backup server
-echo -e "${YELLOW}🔄 Step 4: Deploying on Backup Server (172.16.40.60)...${NC}"
-sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no "$BACKUP_SERVER" << 'EOF'
+if [ "$PRIMARY_ONLY" = "1" ] || [ "$PRIMARY_ONLY" = "true" ]; then
+  echo -e "${YELLOW}⏭️  Skipping backup server deploy (PRIMARY_ONLY enabled)${NC}"
+  echo ""
+else
+  # Step 4: Deploy on backup server
+  echo -e "${YELLOW}🔄 Step 4: Deploying on Backup Server (172.16.40.60)...${NC}"
+  sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no "$BACKUP_SERVER" << 'EOF'
 cd ~/zoea-backend
 echo "Stopping containers..."
 docker-compose down
@@ -73,13 +97,14 @@ echo "Checking container status..."
 docker-compose ps
 EOF
 
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ Backup server deployed${NC}"
-else
-    echo -e "${RED}❌ Backup server deployment failed${NC}"
-    exit 1
+  if [ $? -eq 0 ]; then
+      echo -e "${GREEN}✅ Backup server deployed${NC}"
+  else
+      echo -e "${RED}❌ Backup server deployment failed${NC}"
+      exit 1
+  fi
+  echo ""
 fi
-echo ""
 
 # Step 5: Verification
 echo -e "${YELLOW}🔍 Step 5: Verifying deployment...${NC}"

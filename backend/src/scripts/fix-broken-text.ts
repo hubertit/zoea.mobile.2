@@ -83,14 +83,14 @@ async function main() {
       findMany: prisma.organizerProfile.findMany.bind(prisma.organizerProfile),
       update: prisma.organizerProfile.update.bind(prisma.organizerProfile),
       where: { deletedAt: null },
-      fields: ['organizationName', 'description', 'address', 'rejectionReason', 'revisionNotes'],
+      fields: ['organizationName', 'description', 'rejectionReason', 'revisionNotes'],
     },
     {
       name: 'TourOperatorProfile',
       findMany: prisma.tourOperatorProfile.findMany.bind(prisma.tourOperatorProfile),
       update: prisma.tourOperatorProfile.update.bind(prisma.tourOperatorProfile),
       where: { deletedAt: null },
-      fields: ['companyName', 'description', 'address', 'rejectionReason', 'revisionNotes'],
+      fields: ['companyName', 'description', 'rejectionReason', 'revisionNotes'],
     },
   ].filter((t) => (modelsFilter.length ? modelsFilter.includes(t.name) : true));
 
