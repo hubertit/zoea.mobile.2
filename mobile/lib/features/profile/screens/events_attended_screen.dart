@@ -151,12 +151,10 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => context.go('/events'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryColorTheme,
-              foregroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? AppTheme.primaryColor
-                  : Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryColor,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -357,11 +355,11 @@ class _EventsAttendedScreenState extends ConsumerState<EventsAttendedScreen>
                         },
                         icon: const Icon(Icons.favorite_border, size: 16),
                         label: const Text('Favorite'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: context.primaryTextColor,
-                          backgroundColor: context.primaryColorTheme,
-                          side: BorderSide(color: context.primaryColorTheme),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: AppTheme.primaryColor,
+                        side: BorderSide(color: AppTheme.primaryColor),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),

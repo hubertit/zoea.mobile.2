@@ -55,6 +55,16 @@ export class CreateListingDto {
   @IsString() @IsOptional()
   locationName?: string;
 
+  @ApiPropertyOptional({ example: -1.9403, description: 'Latitude for location coordinates' })
+  @IsNumber() @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  latitude?: number;
+
+  @ApiPropertyOptional({ example: 29.8739, description: 'Longitude for location coordinates' })
+  @IsNumber() @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  longitude?: number;
+
   @ApiPropertyOptional({ example: 50 })
   @IsNumber() @IsOptional()
   minPrice?: number;

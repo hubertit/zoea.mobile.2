@@ -236,12 +236,10 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                 // Reset Button
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleResetPassword,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.primaryColorTheme,
-                    foregroundColor: Theme.of(context).brightness == Brightness.dark
-                        ? AppTheme.primaryColor
-                        : Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.spacing16,
                     ),
                     shape: RoundedRectangleBorder(

@@ -483,12 +483,10 @@ class _OnboardingDataScreenState extends ConsumerState<OnboardingDataScreen> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isLoading ? null : (canContinue ? _handleContinue : null),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-                padding: const EdgeInsets.symmetric(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.spacing24,
                   vertical: AppTheme.spacing16,
                 ),

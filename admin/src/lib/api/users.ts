@@ -159,6 +159,41 @@ export const UsersAPI = {
   },
 
   /**
+   * Find user by phone number or email
+   * Returns the first matching user or null if not found
+   */
+  findByPhoneOrEmail: async (phoneNumber?: string, email?: string): Promise<User | null> => {
+    if (!phoneNumber && !email) return null;
+    
+    // Search for existing user by phone or email
+    const searchTerms: string[] = [];
+    if (phoneNumber) searchTerms.push(phoneNumber);
+    if (email) searchTerms.push(email);
+    
+    for (const search of searchTerms) {
+      try {
+        const response = await apiClient.get<ListUsersResponse>('/admin/users', { 
+          params: { search, limit: 1 } 
+        });
+        if (response.data.data.length > 0) {
+          const user = response.data.data[0];
+          // Verify it's an exact match
+          if (
+            (phoneNumber && user.phoneNumber === phoneNumber) ||
+            (email && user.email === email)
+          ) {
+            return user;
+          }
+        }
+      } catch (error) {
+        console.error('Error searching for user:', error);
+      }
+    }
+    
+    return null;
+  },
+
+  /**
    * Get user by ID
    */
   getUserById: async (id: string): Promise<User> => {

@@ -61,6 +61,16 @@ export class AdminCreateListingDto {
   @IsOptional()
   postalCode?: string;
 
+  @ApiPropertyOptional({ example: -1.9403, description: 'Latitude for location coordinates' })
+  @IsNumber()
+  @IsOptional()
+  latitude?: number;
+
+  @ApiPropertyOptional({ example: 29.8739, description: 'Longitude for location coordinates' })
+  @IsNumber()
+  @IsOptional()
+  longitude?: number;
+
   @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()

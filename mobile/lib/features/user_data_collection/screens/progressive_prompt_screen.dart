@@ -161,12 +161,10 @@ class _ProgressivePromptScreenState
                   flex: 2,
                   child: ElevatedButton(
                     onPressed: _isLoading || !_canSave ? null : _handleSave,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.primaryColor
-                          : Colors.white,
-                      padding: const EdgeInsets.symmetric(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
                         vertical: AppTheme.spacing16,
                       ),
                       shape: RoundedRectangleBorder(

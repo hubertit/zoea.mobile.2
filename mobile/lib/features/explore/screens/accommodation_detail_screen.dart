@@ -1077,10 +1077,8 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                           icon: const Icon(Icons.edit),
                           label: const Text('Write Review'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: context.primaryColorTheme,
-                            foregroundColor: Theme.of(context).brightness == Brightness.dark
-                                ? AppTheme.primaryColor
-                                : Colors.white,
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
                               vertical: 12,
@@ -1203,8 +1201,8 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                   onPressed: () {
                     _showReviewBottomSheet(listingId);
                   },
-                  backgroundColor: context.primaryColorTheme,
-                  icon: Icon(Icons.edit, color: Colors.white), // White on colored background is intentional
+                backgroundColor: AppTheme.primaryColor,
+                icon: Icon(Icons.edit, color: Colors.white), // White on colored background is intentional
                   label: Text(
                     'Write Review',
                     style: TextStyle(color: Colors.white),
@@ -1358,11 +1356,11 @@ class _AccommodationDetailScreenState extends ConsumerState<AccommodationDetailS
                 };
                 context.push('/accommodation/${widget.accommodationId}/book', extra: bookingData);
               } : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _selectedRooms.isNotEmpty 
-                    ? context.primaryColorTheme 
-                    : context.grey300,
-                shape: RoundedRectangleBorder(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _selectedRooms.isNotEmpty 
+                  ? AppTheme.primaryColor 
+                  : context.grey300,
+              shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1829,12 +1827,10 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _submitReview,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

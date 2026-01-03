@@ -201,6 +201,7 @@ export class MerchantsService {
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
         status: 'draft',
+        ...locationData,
       },
       include: {
         category: { select: { id: true, name: true } },

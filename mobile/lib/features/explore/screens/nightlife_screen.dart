@@ -263,12 +263,10 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.primaryColor
-                          : Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply Filters'),
                   ),
@@ -336,12 +334,10 @@ class _NightlifeScreenState extends ConsumerState<NightlifeScreen>
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.primaryColor
-                          : Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: const Text('Apply'),
                   ),

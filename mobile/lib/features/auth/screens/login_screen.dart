@@ -218,7 +218,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: _isPhoneLogin 
-                                    ? context.grey300 
+                                    ? (context.isDarkMode ? context.grey300 : context.grey300)
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                               ),
@@ -228,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icon(
                                     Icons.phone_outlined,
                                     color: _isPhoneLogin 
-                                        ? context.primaryTextColor
+                                        ? (context.isDarkMode ? Colors.white : context.primaryTextColor)
                                         : context.secondaryTextColor,
                                     size: 20,
                                   ),
@@ -237,7 +237,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     'Phone',
                                     style: context.bodyMedium.copyWith(
                                       color: _isPhoneLogin 
-                                          ? context.primaryTextColor
+                                          ? (context.isDarkMode ? Colors.white : context.primaryTextColor)
                                           : context.secondaryTextColor,
                                       fontWeight: _isPhoneLogin 
                                           ? FontWeight.w600 
@@ -263,7 +263,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: !_isPhoneLogin 
-                                    ? context.grey300 
+                                    ? (context.isDarkMode ? context.grey300 : context.grey300)
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                               ),
@@ -273,7 +273,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icon(
                                     Icons.email_outlined,
                                     color: !_isPhoneLogin 
-                                        ? context.primaryTextColor
+                                        ? (context.isDarkMode ? Colors.white : context.primaryTextColor)
                                         : context.secondaryTextColor,
                                     size: 20,
                                   ),
@@ -282,7 +282,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     'Email',
                                     style: context.bodyMedium.copyWith(
                                       color: !_isPhoneLogin 
-                                          ? context.primaryTextColor
+                                          ? (context.isDarkMode ? Colors.white : context.primaryTextColor)
                                           : context.secondaryTextColor,
                                       fontWeight: !_isPhoneLogin 
                                           ? FontWeight.w600 
@@ -484,26 +484,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         elevation: _isLoading ? 0 : 2,
                       ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (_isLoading)
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.onPrimary,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
-                            ),
-                          )
-                        else
-                          const Text('Sign In'),
-                      ],
+                            )
+                          : const Text('Sign In'),
                     ),
                   ),
-                ),
                   const SizedBox(height: AppTheme.spacing16),
                   // Register Link
                   Row(

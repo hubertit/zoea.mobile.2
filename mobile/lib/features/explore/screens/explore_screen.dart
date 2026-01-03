@@ -13,6 +13,7 @@ import '../../../core/providers/events_provider.dart';
 import '../../../core/providers/listings_provider.dart';
 import '../../../core/providers/categories_provider.dart';
 import '../../../core/providers/favorites_provider.dart';
+import '../../../core/providers/tours_provider.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/country_provider.dart';
 import '../../../core/models/event.dart';
@@ -214,8 +215,8 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 _buildNearMeSection(),
                 const SizedBox(height: 16),
                 
-                // Specials section (always visible)
-                _buildSpecialsSection(),
+                // Tour Packages section (always visible)
+                _buildTourPackagesSection(),
               ],
             ),
           ),
@@ -571,7 +572,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   label: 'Book Tour',
                   onTap: () {
                     Navigator.pop(context);
-                    context.push('/experiences');
+                    context.push('/tour-packages');
                   },
                 ),
                 _buildQuickActionItem(
@@ -2369,6 +2370,580 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
+  Widget _buildTourPackagesSection() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final toursAsync = ref.watch(toursProvider(const ToursParams(
+          page: 1,
+          limit: 5, // Show only 5 tours on explore screen
+          status: 'active',
+        )));
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Tour Packages',
+                  style: context.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: context.primaryTextColor,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.push('/tour-packages');
+                  },
+                  child: Text(
+                    'View All',
+                    style: context.bodySmall.copyWith(
+                      color: context.primaryColorTheme,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            toursAsync.when(
+              loading: () => ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return _buildTourCardSkeleton();
+                },
+              ),
+              error: (error, stack) => Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: context.errorColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: context.errorColor),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Failed to load tours',
+                        style: context.bodyMedium.copyWith(
+                          color: context.errorColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              data: (response) {
+                final tours = (response['data'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+                
+                if (tours.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: context.dividerColor.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.tour_outlined, color: context.secondaryTextColor),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'No tour packages available',
+                            style: context.bodyMedium.copyWith(
+                              color: context.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: tours.length,
+                  itemBuilder: (context, index) {
+                    final tour = tours[index];
+                    return _buildTourCard(tour);
+                  },
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTourCard(Map<String, dynamic> tour) {
+    final String title = tour['name'] ?? 'Untitled Tour';
+    final String description = tour['description'] ?? '';
+    
+    // Parse price safely
+    double? priceFrom;
+    try {
+      final priceValue = tour['pricePerPerson'];
+      if (priceValue != null) {
+        if (priceValue is num) {
+          priceFrom = priceValue.toDouble();
+        } else if (priceValue is String) {
+          priceFrom = double.tryParse(priceValue);
+        }
+      }
+    } catch (e) {
+      priceFrom = null;
+    }
+    
+    final String? coverImageUrl = tour['images']?[0]?['media']?['url'];
+    final String? difficulty = tour['difficultyLevel'];
+    
+    // Parse duration safely - handle both String and num types
+    int? duration;
+    final durationDaysValue = tour['durationDays'];
+    final durationHoursValue = tour['durationHours'];
+    
+    if (durationDaysValue != null) {
+      if (durationDaysValue is num) {
+        duration = durationDaysValue.toInt();
+      } else if (durationDaysValue is String) {
+        duration = int.tryParse(durationDaysValue);
+      }
+    } else if (durationHoursValue != null) {
+      if (durationHoursValue is num) {
+        duration = durationHoursValue.toInt();
+      } else if (durationHoursValue is String) {
+        duration = int.tryParse(durationHoursValue);
+      }
+    }
+    
+    final String? durationType = tour['durationDays'] != null ? 'day' : (tour['durationHours'] != null ? 'hour' : null);
+    final bool isFeatured = tour['isFeatured'] ?? false;
+
+    // Determine badge
+    String badge = 'TOUR';
+    if (isFeatured) {
+      badge = 'FEATURED';
+    } else if (difficulty != null) {
+      badge = difficulty.toUpperCase();
+    }
+
+    // Format price
+    final formatter = NumberFormat('#,###', 'en_US');
+    String priceText = 'From RWF ${priceFrom != null ? formatter.format(priceFrom) : '---'}';
+
+    // Format duration
+    String durationText = '';
+    if (duration != null && durationType != null) {
+      durationText = '$duration ${durationType}${duration > 1 ? 's' : ''}';
+    }
+
+    return GestureDetector(
+      onTap: () {
+        final slug = tour['slug'];
+        if (slug != null) {
+          context.push('/tour/$slug');
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: context.isDarkMode 
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Left content
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: context.primaryColorTheme.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        badge,
+                        style: context.labelSmall.copyWith(
+                          color: context.primaryColorTheme,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Title
+                    Text(
+                      title,
+                      style: context.headlineSmall.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: context.primaryTextColor,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    
+                    // Description
+                    Text(
+                      description,
+                      style: context.bodyMedium.copyWith(
+                        color: context.secondaryTextColor,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Duration (if available)
+                    if (durationText.isNotEmpty) ...[
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.schedule_outlined,
+                            size: 14,
+                            color: context.secondaryTextColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            durationText,
+                            style: context.bodySmall.copyWith(
+                              color: context.secondaryTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    
+                    // Price
+                    Text(
+                      priceText,
+                      style: context.titleMedium.copyWith(
+                        color: context.primaryColorTheme,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Right content - Image
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                  child: coverImageUrl != null
+                      ? FadeInNetworkImage(
+                          imageUrl: coverImageUrl,
+                          fit: BoxFit.cover,
+                          placeholderColor: context.dividerColor,
+                          errorWidget: Container(
+                            color: context.dividerColor,
+                            child: Icon(
+                              Icons.tour_outlined,
+                              color: context.secondaryTextColor,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          color: context.dividerColor,
+                          child: Icon(
+                            Icons.tour_outlined,
+                            color: context.secondaryTextColor,
+                          ),
+                        ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTourCardSkeleton() {
+    return AnimatedBuilder(
+      animation: _shimmerAnimation,
+      builder: (context, child) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: context.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: context.isDarkMode 
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Left content skeleton
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Badge skeleton
+                      Container(
+                        height: 20,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: context.grey300,
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey300,
+                              context.grey200,
+                              context.grey300,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      // Title skeleton
+                      Container(
+                        height: 18,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: context.grey300,
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey300,
+                              context.grey200,
+                              context.grey300,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 18,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          color: context.grey300,
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey300,
+                              context.grey200,
+                              context.grey300,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // Description skeleton
+                      Container(
+                        height: 14,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: context.grey200,
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey200,
+                              context.grey100,
+                              context.grey200,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        height: 14,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: context.grey200,
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey200,
+                              context.grey100,
+                              context.grey200,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      // Duration skeleton
+                      Row(
+                        children: [
+                          Container(
+                            height: 14,
+                            width: 14,
+                            decoration: BoxDecoration(
+                              color: context.grey200,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            height: 12,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: context.grey200,
+                              borderRadius: BorderRadius.circular(4),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  context.grey200,
+                                  context.grey100,
+                                  context.grey200,
+                                ],
+                                stops: [
+                                  0.0,
+                                  _shimmerAnimation.value,
+                                  1.0,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // Price skeleton
+                      Container(
+                        height: 20,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: context.grey300,
+                          borderRadius: BorderRadius.circular(4),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.grey300,
+                              context.grey200,
+                              context.grey300,
+                            ],
+                            stops: [
+                              0.0,
+                              _shimmerAnimation.value,
+                              1.0,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Right content - Image skeleton
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 140,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        context.grey300,
+                        context.grey200,
+                        context.grey300,
+                      ],
+                      stops: [
+                        0.0,
+                        _shimmerAnimation.value,
+                        1.0,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Keep old specials section commented out for now
+  /*
   Widget _buildSpecialsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2587,4 +3162,5 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       },
     ];
   }
+  */
 }

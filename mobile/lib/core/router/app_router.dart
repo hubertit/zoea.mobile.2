@@ -25,6 +25,7 @@ import '../../features/explore/screens/dining_booking_screen.dart';
 import '../../features/explore/screens/dining_booking_confirmation_screen.dart';
 import '../../features/explore/screens/tour_booking_screen.dart';
 import '../../features/explore/screens/tour_detail_screen.dart';
+import '../../features/explore/screens/tour_packages_screen.dart';
 import '../../features/assistant/screens/ask_zoea_screen.dart';
 import '../../features/explore/screens/recommendations_screen.dart';
 import '../../features/explore/screens/category_places_screen.dart';
@@ -374,6 +375,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/shopping',
         builder: (context, state) => const ShoppingScreen(),
+      ),
+
+      // Tour Packages Route
+      GoRoute(
+        path: '/tour-packages',
+        builder: (context, state) => const TourPackagesScreen(),
       ),
 
       // Shop Routes

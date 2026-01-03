@@ -167,11 +167,9 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isSaving ? null : _handleSave,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.primaryColorTheme,
-                        foregroundColor: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.primaryColor
-                            : Colors.white,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppTheme.spacing16,
                         ),

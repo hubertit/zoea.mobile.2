@@ -811,9 +811,10 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
               flex: 2,
               child: ElevatedButton(
                 onPressed: canBook ? _confirmBooking : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: canBook ? context.primaryColorTheme : context.grey300,
-                  shape: RoundedRectangleBorder(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: canBook ? AppTheme.primaryColor : context.grey300,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1093,9 +1094,10 @@ class _DiningBookingScreenState extends ConsumerState<DiningBookingScreen> {
                         }
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: _isLoading
                         ? const SizedBox(

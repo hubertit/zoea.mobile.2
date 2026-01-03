@@ -71,6 +71,8 @@ export interface CreateListingParams {
   districtId?: string;
   address?: string;
   postalCode?: string;
+  latitude?: number;
+  longitude?: number;
   minPrice?: number;
   maxPrice?: number;
   priceUnit?: PriceUnit;

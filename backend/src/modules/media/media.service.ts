@@ -1,8 +1,10 @@
-import { Injectable, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
+import { IntegrationsService } from '../integrations/integrations.service';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import { Readable } from 'stream';
+import sharp from 'sharp';
 
 interface CloudinaryAccount {
   name: string;
@@ -14,48 +16,97 @@ interface CloudinaryAccount {
 }
 
 @Injectable()
-export class MediaService {
+export class MediaService implements OnModuleInit {
   private readonly logger = new Logger(MediaService.name);
   private accounts: CloudinaryAccount[] = [];
 
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) {
-    this.loadAccounts();
+    private integrationsService: IntegrationsService,
+  ) {}
+
+  async onModuleInit() {
+    await this.loadAccounts();
   }
 
-  private loadAccounts() {
-    // Load accounts from environment variables
-    // Format: CLOUDINARY_ACCOUNTS=[{"name":"account1","cloudName":"xxx","apiKey":"xxx","apiSecret":"xxx","maxStorageGB":25}]
-    const accountsJson = this.configService.get<string>('CLOUDINARY_ACCOUNTS');
+  private async loadAccounts() {
+    this.logger.log('Loading Cloudinary accounts...');
     
-    if (accountsJson) {
-      try {
-        this.accounts = JSON.parse(accountsJson);
-        this.logger.log(`Loaded ${this.accounts.length} Cloudinary accounts`);
-      } catch (e) {
-        this.logger.error('Failed to parse CLOUDINARY_ACCOUNTS', e);
+    // First, try to load from database integration
+    try {
+      const cloudinaryIntegration = await this.integrationsService.getConfig<{
+        cloudName?: string;
+        apiKey?: string;
+        apiSecret?: string;
+        maxStorageGB?: number;
+        accounts?: CloudinaryAccount[];
+      }>('cloudinary');
+
+      this.logger.log(`Cloudinary integration from DB: ${cloudinaryIntegration ? 'found' : 'not found'}`);
+
+      if (cloudinaryIntegration) {
+        // Check if it's a single account or multiple accounts
+        if (cloudinaryIntegration.accounts && Array.isArray(cloudinaryIntegration.accounts)) {
+          // Multiple accounts
+          this.accounts = cloudinaryIntegration.accounts;
+          this.logger.log(`Loaded ${this.accounts.length} Cloudinary accounts from database integration`);
+        } else if (cloudinaryIntegration.cloudName && cloudinaryIntegration.apiKey && cloudinaryIntegration.apiSecret) {
+          // Single account - reset array to avoid duplicates on reload
+          this.accounts = [{
+            name: 'primary',
+            cloudName: cloudinaryIntegration.cloudName,
+            apiKey: cloudinaryIntegration.apiKey,
+            apiSecret: cloudinaryIntegration.apiSecret,
+            maxStorageGB: cloudinaryIntegration.maxStorageGB || 25,
+            isActive: true,
+          }];
+          this.logger.log(`Loaded Cloudinary account from database: cloud_name=${cloudinaryIntegration.cloudName}`);
+        } else {
+          this.logger.warn('Cloudinary integration found but missing required fields (cloudName, apiKey, apiSecret)');
+        }
+      }
+    } catch (error) {
+      this.logger.warn(`Cloudinary integration not found in database: ${error.message}`);
+    }
+
+    // Fallback to environment variables
+    if (this.accounts.length === 0) {
+      // Load accounts from environment variables
+      // Format: CLOUDINARY_ACCOUNTS=[{"name":"account1","cloudName":"xxx","apiKey":"xxx","apiSecret":"xxx","maxStorageGB":25}]
+      const accountsJson = this.configService.get<string>('CLOUDINARY_ACCOUNTS');
+      
+      if (accountsJson) {
+        try {
+          this.accounts = JSON.parse(accountsJson);
+          this.logger.log(`Loaded ${this.accounts.length} Cloudinary accounts from environment`);
+        } catch (e) {
+          this.logger.error('Failed to parse CLOUDINARY_ACCOUNTS', e);
+        }
+      }
+
+      // Fallback to single account config
+      if (this.accounts.length === 0) {
+        const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
+        const apiKey = this.configService.get<string>('CLOUDINARY_API_KEY');
+        const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET');
+
+        if (cloudName && apiKey && apiSecret) {
+          this.accounts.push({
+            name: 'primary',
+            cloudName,
+            apiKey,
+            apiSecret,
+            maxStorageGB: 25,
+            isActive: true,
+          });
+          this.logger.log('Loaded single Cloudinary account from env');
+        }
       }
     }
 
-    // Fallback to single account config
     if (this.accounts.length === 0) {
-      const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
-      const apiKey = this.configService.get<string>('CLOUDINARY_API_KEY');
-      const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET');
-
-      if (cloudName && apiKey && apiSecret) {
-        this.accounts.push({
-          name: 'primary',
-          cloudName,
-          apiKey,
-          apiSecret,
-          maxStorageGB: 25,
-          isActive: true,
-        });
-        this.logger.log('Loaded single Cloudinary account from env');
-      }
+      this.logger.warn('No Cloudinary accounts configured. Image uploads will fail.');
     }
   }
 
@@ -100,6 +151,18 @@ export class MediaService {
   }
 
   private async getAvailableAccount(): Promise<CloudinaryAccount | null> {
+    // Lazy load: if no accounts, try to reload from database
+    if (this.accounts.length === 0) {
+      this.logger.log('No Cloudinary accounts loaded, attempting to reload...');
+      await this.loadAccounts();
+    }
+
+    // Still no accounts after reload
+    if (this.accounts.length === 0) {
+      this.logger.error('No Cloudinary accounts available after reload attempt');
+      return null;
+    }
+
     const stats = await this.getAccountStats();
 
     // Find account with most available space that's under 90% usage
@@ -148,6 +211,121 @@ export class MediaService {
       mediaType = 'document';
     }
 
+    // Process image: compress and resize if needed
+    let processedBuffer = file.buffer;
+    let processedWidth = undefined;
+    let processedHeight = undefined;
+
+    if (mediaType === 'image') {
+      try {
+        // Check file size (1MB = 1048576 bytes)
+        const maxSizeBytes = 1024 * 1024; // 1MB
+        const needsCompression = file.size > maxSizeBytes;
+
+        if (needsCompression) {
+          this.logger.log(`Compressing image: ${file.originalname} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+          
+          // Get image metadata
+          const metadata = await sharp(file.buffer).metadata();
+          const originalWidth = metadata.width || 1920;
+          const originalHeight = metadata.height || 1080;
+
+          // Calculate target dimensions (max 1920px width, maintain aspect ratio)
+          let targetWidth = originalWidth;
+          let targetHeight = originalHeight;
+          if (originalWidth > 1920) {
+            targetWidth = 1920;
+            targetHeight = Math.round((1920 / originalWidth) * originalHeight);
+          }
+
+          // Compress with quality settings
+          // Start with quality 85, reduce if still too large
+          let quality = 85;
+          let attempts = 0;
+          const maxAttempts = 5;
+
+          // Detect input format (default to jpeg if unknown)
+          const inputFormat = metadata.format;
+          const isPng = inputFormat === 'png';
+          const isJpeg = inputFormat === 'jpeg' || inputFormat === 'jpg';
+          const isWebP = inputFormat === 'webp';
+          // If format is unknown, default to JPEG for better compression
+
+          while (attempts < maxAttempts) {
+            let sharpInstance = sharp(file.buffer)
+              .resize(targetWidth, targetHeight, {
+                fit: 'inside',
+                withoutEnlargement: true,
+              });
+
+            // Apply format-specific compression
+            if (isPng) {
+              sharpInstance = sharpInstance.png({ quality, compressionLevel: 9 });
+            } else if (isWebP) {
+              sharpInstance = sharpInstance.webp({ quality });
+            } else {
+              // Default to JPEG for jpeg, gif, and other formats
+              sharpInstance = sharpInstance.jpeg({ quality, mozjpeg: true });
+            }
+
+            processedBuffer = await sharpInstance.toBuffer();
+
+            // If under 1MB or quality is already low, stop
+            if (processedBuffer.length <= maxSizeBytes || quality <= 60) {
+              break;
+            }
+
+            // Reduce quality and try again
+            quality -= 10;
+            attempts++;
+          }
+
+          // Get final dimensions
+          const finalMetadata = await sharp(processedBuffer).metadata();
+          processedWidth = finalMetadata.width;
+          processedHeight = finalMetadata.height;
+
+          this.logger.log(
+            `Image compressed: ${file.originalname} -> ${(processedBuffer.length / 1024 / 1024).toFixed(2)}MB ` +
+            `(quality: ${quality}, size: ${processedWidth}x${processedHeight})`
+          );
+
+          // Final check: if still over 1MB, apply more aggressive compression
+          // Convert to JPEG for better compression
+          if (processedBuffer.length > maxSizeBytes) {
+            this.logger.warn(`Image still over 1MB after compression, applying aggressive compression`);
+            processedBuffer = await sharp(processedBuffer)
+              .resize(Math.round(targetWidth * 0.9), Math.round(targetHeight * 0.9), {
+                fit: 'inside',
+                withoutEnlargement: true,
+              })
+              .jpeg({ quality: 70, mozjpeg: true })
+              .toBuffer();
+          }
+
+          // Final validation
+          if (processedBuffer.length > maxSizeBytes) {
+            throw new BadRequestException(
+              `Image could not be compressed below 1MB. Original size: ${(file.size / 1024 / 1024).toFixed(2)}MB. ` +
+              `Please use a smaller image or reduce quality further.`
+            );
+          }
+        } else {
+          // Image is already under 1MB, but get dimensions for metadata
+          const metadata = await sharp(file.buffer).metadata();
+          processedWidth = metadata.width;
+          processedHeight = metadata.height;
+        }
+      } catch (error) {
+        if (error instanceof BadRequestException) {
+          throw error;
+        }
+        this.logger.error('Image processing failed, uploading original:', error);
+        // Fallback to original if processing fails
+        processedBuffer = file.buffer;
+      }
+    }
+
     // Upload to Cloudinary
     const folder = options.folder || `zoea/${options.category || 'uploads'}`;
     const uploadPreset = this.configService.get<string>('CLOUDINARY_UPLOAD_PRESET');
@@ -160,6 +338,11 @@ export class MediaService {
             resource_type: resourceType,
             public_id: `${Date.now()}_${file.originalname.replace(/\.[^/.]+$/, '')}`,
             ...(uploadPreset && { upload_preset: uploadPreset }),
+            // Add quality settings for Cloudinary
+            ...(mediaType === 'image' && {
+              quality: 'auto:good',
+              fetch_format: 'auto',
+            }),
           },
           (error, result) => {
             if (error) reject(error);
@@ -168,7 +351,7 @@ export class MediaService {
         );
 
         const readable = new Readable();
-        readable.push(file.buffer);
+        readable.push(processedBuffer);
         readable.push(null);
         readable.pipe(uploadStream);
       });
@@ -185,7 +368,7 @@ export class MediaService {
         });
       }
 
-      // Save to database
+      // Save to database (use processed dimensions if available)
       const media = await this.prisma.media.create({
         data: {
           url: result.secure_url,
@@ -196,10 +379,10 @@ export class MediaService {
           altText: options.altText,
           title: options.title,
           fileName: file.originalname,
-          fileSize: result.bytes,
+          fileSize: result.bytes, // Use Cloudinary's final size
           mimeType: file.mimetype,
-          width: result.width,
-          height: result.height,
+          width: processedWidth || result.width,
+          height: processedHeight || result.height,
           storageProvider: account.name,
           uploadedBy: userId,
         },

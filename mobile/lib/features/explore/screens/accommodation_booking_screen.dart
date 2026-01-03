@@ -324,10 +324,10 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                       });
                     } : null,
                     icon: const Icon(Icons.add),
-                    style: IconButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Colors.white,
-                      shape: const CircleBorder(),
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: const CircleBorder(),
                     ),
                   ),
                 ],
@@ -388,10 +388,10 @@ class _AccommodationBookingScreenState extends ConsumerState<AccommodationBookin
                       });
                     } : null,
                     icon: const Icon(Icons.add),
-                    style: IconButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Colors.white,
-                      shape: const CircleBorder(),
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: const CircleBorder(),
                     ),
                   ),
                 ],

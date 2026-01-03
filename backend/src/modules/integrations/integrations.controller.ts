@@ -31,7 +31,7 @@ export class IntegrationsController {
   constructor(private integrationsService: IntegrationsService) {}
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
     summary: 'Get all integrations',
     description: 'Retrieve all configured integrations. Admin only.'
@@ -46,24 +46,29 @@ export class IntegrationsController {
     return this.integrationsService.findAll();
   }
 
-  @Get(':id')
-  @Roles('admin')
+  @Get(':identifier')
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
-    summary: 'Get integration by ID',
-    description: 'Retrieve a specific integration by ID. Admin only.'
+    summary: 'Get integration by ID or name',
+    description: 'Retrieve a specific integration by ID (UUID) or name. Admin only.'
   })
-  @ApiParam({ name: 'id', description: 'Integration UUID' })
+  @ApiParam({ name: 'identifier', description: 'Integration UUID or name (e.g., "openai", "google_places")' })
   @ApiResponse({ 
     status: 200, 
     description: 'Integration retrieved successfully'
   })
   @ApiResponse({ status: 404, description: 'Integration not found' })
-  async findById(@Param('id') id: string) {
-    return this.integrationsService.findById(id);
+  async findByIdOrName(@Param('identifier') identifier: string) {
+    // Check if it's a UUID (contains hyphens) or a name
+    if (identifier.includes('-')) {
+      return this.integrationsService.findById(identifier);
+    } else {
+      return this.integrationsService.findByName(identifier);
+    }
   }
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
     summary: 'Create a new integration',
     description: 'Create a new integration configuration. Admin only.'
@@ -78,7 +83,7 @@ export class IntegrationsController {
   }
 
   @Put(':id')
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @ApiOperation({ 
     summary: 'Update an integration',
     description: 'Update an existing integration configuration. Admin only.'
@@ -97,7 +102,7 @@ export class IntegrationsController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ 
     summary: 'Delete an integration',

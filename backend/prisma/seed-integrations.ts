@@ -51,6 +51,60 @@ async function main() {
     },
   });
 
+  // Google Places API Integration
+  // Note: Set GOOGLE_PLACES_API_KEY environment variable before running this seed
+  const googlePlacesApiKey = process.env.GOOGLE_PLACES_API_KEY || '';
+  
+  await prisma.integration.upsert({
+    where: { name: 'google_places' },
+    update: {
+      config: {
+        apiKey: googlePlacesApiKey,
+      },
+      isActive: googlePlacesApiKey !== '',
+    },
+    create: {
+      name: 'google_places',
+      displayName: 'Google Places API',
+      description: 'Google Places API for address autocomplete and location services',
+      isActive: googlePlacesApiKey !== '',
+      config: {
+        apiKey: googlePlacesApiKey,
+      },
+    },
+  });
+
+  // Cloudinary Integration
+  // Note: Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET environment variables before running this seed
+  // Default values for Zoea account
+  const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME || 'dzcvbnvh3';
+  const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY || '752864623346824';
+  const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET || 'CceWTvKzJ1hTnZ81L80aps7neUc';
+  
+  await prisma.integration.upsert({
+    where: { name: 'cloudinary' },
+    update: {
+      config: {
+        cloudName: cloudinaryCloudName,
+        apiKey: cloudinaryApiKey,
+        apiSecret: cloudinaryApiSecret,
+      },
+      isActive: cloudinaryCloudName !== '' && cloudinaryApiKey !== '' && cloudinaryApiSecret !== '',
+    },
+    create: {
+      name: 'cloudinary',
+      displayName: 'Cloudinary',
+      description: 'Cloudinary for image and media storage and optimization',
+      isActive: cloudinaryCloudName !== '' && cloudinaryApiKey !== '' && cloudinaryApiSecret !== '',
+      config: {
+        cloudName: cloudinaryCloudName,
+        apiKey: cloudinaryApiKey,
+        apiSecret: cloudinaryApiSecret,
+        maxStorageGB: 25,
+      },
+    },
+  });
+
   console.log('Integrations seeded successfully!');
 }
 

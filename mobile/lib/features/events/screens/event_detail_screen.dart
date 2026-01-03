@@ -549,10 +549,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 _openTicketWebview(context, event.slug, eventName);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor // Dark text on light background in dark mode
-                    : Colors.white, // White text on dark background in light mode
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white, // White text for maximum contrast
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -621,9 +619,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColorTheme,
-                  foregroundColor: Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.primaryColor // Dark text on light background in dark mode
-                      : Colors.white, // White text on dark background in light mode
+                  foregroundColor: Colors.white, // White text for maximum contrast
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -800,10 +796,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 Navigator.of(context).pop(true);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

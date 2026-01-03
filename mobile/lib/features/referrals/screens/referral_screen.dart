@@ -173,9 +173,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
                 icon: Icon(Icons.copy, color: context.primaryTextColor),
                 style: IconButton.styleFrom(
                   backgroundColor: context.primaryColorTheme,
-                  foregroundColor: Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.primaryColor
-                      : Colors.white,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],
@@ -201,9 +199,7 @@ class _ReferralScreenState extends ConsumerState<ReferralScreen> {
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: context.primaryColorTheme,
-              foregroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? AppTheme.primaryColor
-                  : Colors.white,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),

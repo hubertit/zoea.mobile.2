@@ -6,6 +6,29 @@ import { Prisma } from '@prisma/client';
 export class ToursService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Transform tour data to convert Decimal fields to numbers
+   * Prisma returns Decimal as strings to preserve precision
+   */
+  private transformTourData(tour: any): any {
+    if (!tour) return tour;
+    
+    return {
+      ...tour,
+      pricePerPerson: tour.pricePerPerson ? Number(tour.pricePerPerson) : null,
+      groupDiscountPercentage: tour.groupDiscountPercentage ? Number(tour.groupDiscountPercentage) : null,
+      rating: tour.rating ? Number(tour.rating) : 0,
+      operator: tour.operator ? {
+        ...tour.operator,
+        averageRating: tour.operator.averageRating ? Number(tour.operator.averageRating) : 0,
+      } : undefined,
+      schedules: tour.schedules ? tour.schedules.map((schedule: any) => ({
+        ...schedule,
+        priceOverride: schedule.priceOverride ? Number(schedule.priceOverride) : null,
+      })) : undefined,
+    };
+  }
+
   async findAll(params: {
     page?: number;
     limit?: number;
@@ -58,8 +81,11 @@ export class ToursService {
       this.prisma.tour.count({ where }),
     ]);
 
+    // Transform tours to convert Decimal fields to numbers
+    const transformedTours = tours.map(tour => this.transformTourData(tour));
+
     return {
-      data: tours,
+      data: transformedTours,
       meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
     };
   }
@@ -101,7 +127,7 @@ export class ToursService {
     });
 
     if (!tour) throw new NotFoundException('Tour not found');
-    return tour;
+    return this.transformTourData(tour);
   }
 
   async findBySlug(slug: string) {
@@ -119,11 +145,11 @@ export class ToursService {
     });
 
     if (!tour) throw new NotFoundException('Tour not found');
-    return tour;
+    return this.transformTourData(tour);
   }
 
   async getFeatured(limit = 10) {
-    return this.prisma.tour.findMany({
+    const tours = await this.prisma.tour.findMany({
       where: { isFeatured: true, status: 'active', deletedAt: null },
       take: limit,
       include: {
@@ -132,6 +158,8 @@ export class ToursService {
       },
       orderBy: { rating: 'desc' },
     });
+
+    return tours.map(tour => this.transformTourData(tour));
   }
 
   async getSchedules(tourId: string, startDate?: Date, endDate?: Date, includeUnavailable = false) {

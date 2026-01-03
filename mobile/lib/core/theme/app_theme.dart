@@ -167,9 +167,9 @@ class AppTheme {
         onSurface: darkPrimaryTextColor,
         secondary: darkSecondaryTextColor,
         error: darkErrorColor,
-        onPrimary: darkPrimaryTextColor,
-        onSecondary: darkPrimaryTextColor,
-        onError: darkPrimaryTextColor,
+        onPrimary: Colors.white, // White text for maximum contrast on dark primary button
+        onSecondary: Colors.white,
+        onError: Colors.white,
       ),
       scaffoldBackgroundColor: darkBackgroundColor,
       textTheme: _buildDarkTextTheme(),
@@ -183,7 +183,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          foregroundColor: darkPrimaryTextColor,
+          foregroundColor: Colors.white, // Always white text for maximum contrast
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

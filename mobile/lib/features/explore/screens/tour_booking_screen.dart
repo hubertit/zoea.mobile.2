@@ -861,15 +861,15 @@ class _TourBookingScreenState extends ConsumerState<TourBookingScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: canBook && !_isLoading ? _bookTour : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColorTheme,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 0,
+              ),
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,

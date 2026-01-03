@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, CategoriesAPI, CountriesAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
+import { ListingsAPI, CategoriesAPI, CountriesAPI, MediaAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
+import apiClient from '@/src/lib/api/client';
 import Icon, { 
   faArrowLeft, 
   faEdit, 
@@ -14,6 +15,8 @@ import Icon, {
   faStar,
   faCheckCircle,
   faTimesCircle,
+  faImage,
+  faTimes,
 } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
 import { Button, Modal, Breadcrumbs } from '@/app/components';
@@ -102,6 +105,8 @@ export default function ListingDetailPage() {
     countryId: '',
     cityId: '',
     address: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
     contactPhone: '',
     contactEmail: '',
     website: '',
@@ -112,6 +117,10 @@ export default function ListingDetailPage() {
     isFeatured: false,
     isVerified: false,
   });
+  const [googlePlacesKey, setGooglePlacesKey] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<Array<{ id: string; url: string; isPrimary?: boolean }>>([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string; isPrimary?: boolean }>>([]);
 
   useEffect(() => {
     if (!listingId) {
@@ -139,6 +148,8 @@ export default function ListingDetailPage() {
           countryId: listingData.countryId || '',
           cityId: listingData.cityId || '',
           address: listingData.address || '',
+          latitude: (listingData as any).latitude,
+          longitude: (listingData as any).longitude,
           contactPhone: listingData.contactPhone || '',
           contactEmail: listingData.contactEmail || '',
           website: listingData.website || '',
@@ -149,6 +160,15 @@ export default function ListingDetailPage() {
           isFeatured: listingData.isFeatured || false,
           isVerified: listingData.isVerified || false,
         });
+        
+        // Load existing images if available
+        if ((listingData as any).images && Array.isArray((listingData as any).images)) {
+          setExistingImages((listingData as any).images.map((img: any) => ({
+            id: img.id || img.mediaId,
+            url: img.url || img.media?.url,
+            isPrimary: img.isPrimary || false,
+          })));
+        }
       } catch (error: any) {
         console.error('Failed to fetch listing:', error);
         toast.error(error?.message || 'Failed to load listing');
@@ -244,6 +264,8 @@ export default function ListingDetailPage() {
         countryId: editFormData.countryId || undefined,
         cityId: editFormData.cityId || undefined,
         address: editFormData.address || undefined,
+        latitude: editFormData.latitude,
+        longitude: editFormData.longitude,
         contactPhone: editFormData.contactPhone || undefined,
         contactEmail: editFormData.contactEmail || undefined,
         website: editFormData.website || undefined,
@@ -255,10 +277,28 @@ export default function ListingDetailPage() {
         isVerified: editFormData.isVerified,
       });
       
+      // Upload new images if any
+      if (uploadedImages.length > 0) {
+        try {
+          const imagePromises = uploadedImages.map((img, idx) =>
+            apiClient.post(`/listings/${listingId}/images`, {
+              merchantId: listing?.merchantId,
+              mediaId: img.id,
+              isPrimary: img.isPrimary || (existingImages.length === 0 && idx === 0),
+            })
+          );
+          await Promise.all(imagePromises);
+        } catch (imgError: any) {
+          console.error('Failed to add images:', imgError);
+          toast.error('Listing updated but failed to add some images');
+        }
+      }
+      
       // Refresh listing data
       const updatedListing = await ListingsAPI.getListingById(listingId);
       setListing(updatedListing);
       setEditModalOpen(false);
+      setUploadedImages([]);
       toast.success('Listing updated successfully');
     } catch (error: any) {
       console.error('Failed to update listing:', error);
@@ -534,6 +574,8 @@ export default function ListingDetailPage() {
               countryId: listing.countryId || '',
               cityId: listing.cityId || '',
               address: listing.address || '',
+              latitude: (listing as any).latitude,
+              longitude: (listing as any).longitude,
               contactPhone: listing.contactPhone || '',
               contactEmail: listing.contactEmail || '',
               website: listing.website || '',
@@ -544,6 +586,7 @@ export default function ListingDetailPage() {
               isFeatured: listing.isFeatured || false,
               isVerified: listing.isVerified || false,
             });
+            setUploadedImages([]);
           }
         }}
         title="Edit Listing"
@@ -607,11 +650,118 @@ export default function ListingDetailPage() {
             />
           </div>
 
-          <Input
-            label="Address"
-            value={editFormData.address}
-            onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Address (with Google Places)
+            </label>
+            <Input
+              value={editFormData.address}
+              onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+              placeholder="Start typing address..."
+              id="edit-listing-address-autocomplete"
+            />
+            {(editFormData.latitude && editFormData.longitude) && (
+              <p className="text-xs text-gray-500 mt-1">
+                Coordinates: {editFormData.latitude.toFixed(7)}, {editFormData.longitude.toFixed(7)}
+              </p>
+            )}
+          </div>
+
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Images
+            </label>
+            
+            {/* Existing Images */}
+            {existingImages.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">Existing Images:</p>
+                <div className="grid grid-cols-3 gap-4">
+                  {existingImages.map((img) => (
+                    <div key={img.id} className="relative">
+                      <img src={img.url} alt="Listing" className="w-full h-24 object-cover rounded-md" />
+                      {img.isPrimary && (
+                        <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">Primary</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New Images */}
+            {uploadedImages.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">New Images to Upload:</p>
+                <div className="grid grid-cols-3 gap-4">
+                  {uploadedImages.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img src={img.url} alt={`Preview ${index}`} className="w-full h-24 object-cover rounded-md" />
+                      <button
+                        type="button"
+                        onClick={() => setUploadedImages(uploadedImages.filter((_, i) => i !== index))}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs"
+                      >
+                        <Icon icon={faTimes} size="xs" />
+                      </button>
+                      {img.isPrimary && (
+                        <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">Primary</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={async (e) => {
+                const files = Array.from(e.target.files || []);
+                if (files.length === 0) return;
+                
+                // Validate file sizes (max 10MB before compression)
+                const maxSize = 10 * 1024 * 1024;
+                const invalidFiles = files.filter(f => f.size > maxSize);
+                if (invalidFiles.length > 0) {
+                  toast.error(
+                    `Some images are too large (max ${(maxSize / 1024 / 1024).toFixed(0)}MB). ` +
+                    `Large images: ${invalidFiles.map(f => f.name).join(', ')}`
+                  );
+                  return;
+                }
+                
+                setUploadingImage(true);
+                try {
+                  const uploadPromises = files.map(file => MediaAPI.upload({ file, category: 'listing' }));
+                  const uploaded = await Promise.all(uploadPromises);
+                  const newImages = uploaded.map((media, idx) => ({
+                    id: media.id,
+                    url: media.url,
+                    isPrimary: uploadedImages.length === 0 && existingImages.length === 0 && idx === 0,
+                  }));
+                  setUploadedImages([...uploadedImages, ...newImages]);
+                  toast.success(`${files.length} image(s) uploaded and compressed successfully`);
+                } catch (error: any) {
+                  console.error('Failed to upload images:', error);
+                  toast.error(error?.response?.data?.message || error?.message || 'Failed to upload images');
+                } finally {
+                  setUploadingImage(false);
+                }
+              }}
+              className="hidden"
+              id="edit-listing-image-upload"
+              disabled={uploadingImage}
+            />
+            <label
+              htmlFor="edit-listing-image-upload"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50"
+            >
+              <Icon icon={faImage} />
+              {uploadingImage ? 'Uploading & Compressing...' : 'Upload Images (max 10MB, auto-compressed to <1MB)'}
+            </label>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <Input
@@ -705,6 +855,8 @@ export default function ListingDetailPage() {
                     countryId: listing.countryId || '',
                     cityId: listing.cityId || '',
                     address: listing.address || '',
+                    latitude: (listing as any).latitude,
+                    longitude: (listing as any).longitude,
                     contactPhone: listing.contactPhone || '',
                     contactEmail: listing.contactEmail || '',
                     website: listing.website || '',
@@ -715,6 +867,7 @@ export default function ListingDetailPage() {
                     isFeatured: listing.isFeatured || false,
                     isVerified: listing.isVerified || false,
                   });
+                  setUploadedImages([]);
                 }
               }}
               disabled={saving}

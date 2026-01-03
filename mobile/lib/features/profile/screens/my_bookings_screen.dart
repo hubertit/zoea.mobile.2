@@ -313,12 +313,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-              ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+            ),
               child: const Text('Retry'),
             ),
           ],
@@ -390,12 +388,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => context.go('/explore'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -1798,12 +1794,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen>
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.primaryColorTheme,
-                            foregroundColor: Theme.of(context).brightness == Brightness.dark
-                                ? AppTheme.primaryColor
-                                : Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),

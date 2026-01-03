@@ -146,6 +146,14 @@ export class AdminListingsService {
   async createListing(dto: AdminCreateListingDto) {
     const slug = dto.slug || `${dto.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now().toString(36)}`;
 
+    // Build location if coordinates provided
+    let locationData: any = {};
+    if (dto.latitude && dto.longitude) {
+      locationData = {
+        location: Prisma.sql`ST_SetSRID(ST_MakePoint(${dto.longitude}, ${dto.latitude}), 4326)`,
+      };
+    }
+
     const created = await this.prisma.listing.create({
       data: {
         merchantId: dto.merchantId,
@@ -169,6 +177,7 @@ export class AdminListingsService {
         isFeatured: dto.isFeatured ?? false,
         isVerified: dto.isVerified ?? false,
         status: dto.status ?? 'active',
+        ...locationData,
       },
       select: {
         id: true,
@@ -186,6 +195,19 @@ export class AdminListingsService {
 
   async updateListing(id: string, dto: AdminUpdateListingDto) {
     await this.ensureListingExists(id);
+
+    // Build location update if coordinates provided
+    let locationUpdate: any = {};
+    if (dto.latitude !== undefined && dto.longitude !== undefined) {
+      if (dto.latitude && dto.longitude) {
+        locationUpdate = {
+          location: Prisma.sql`ST_SetSRID(ST_MakePoint(${dto.longitude}, ${dto.latitude}), 4326)`,
+        };
+      } else {
+        // If coordinates are explicitly set to null/undefined, clear location
+        locationUpdate = { location: null };
+      }
+    }
 
     const updated = await this.prisma.listing.update({
       where: { id },
@@ -211,6 +233,7 @@ export class AdminListingsService {
         isFeatured: dto.isFeatured,
         isVerified: dto.isVerified,
         status: dto.status,
+        ...locationUpdate,
       },
       select: { id: true },
     });

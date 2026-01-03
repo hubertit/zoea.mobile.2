@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
 import '../../../core/theme/text_theme_extensions.dart';
 import '../../../core/providers/tours_provider.dart';
@@ -23,7 +24,7 @@ class TourDetailScreen extends ConsumerStatefulWidget {
 class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final tourAsync = ref.watch(tourByIdProvider(widget.tourId));
+    final tourAsync = ref.watch(tourBySlugProvider(widget.tourId));
 
     return tourAsync.when(
       data: (tour) => _buildTourDetail(tour),
@@ -96,18 +97,81 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
         ? '$startLocationName${cityName.isNotEmpty ? ', $cityName' : ''}'
         : cityName;
 
-    final rating = (tour['rating'] as num?)?.toDouble() ?? 0.0;
-    final reviewCount = (tour['reviewCount'] as num?)?.toInt() ?? 
-                       (tour['review_count'] as num?)?.toInt() ?? 0;
+    // Parse rating safely - handle both String and num types
+    double rating = 0.0;
+    final ratingValue = tour['rating'];
+    if (ratingValue != null) {
+      if (ratingValue is num) {
+        rating = ratingValue.toDouble();
+      } else if (ratingValue is String) {
+        rating = double.tryParse(ratingValue) ?? 0.0;
+      }
+    }
     
-    final pricePerPerson = tour['pricePerPerson'] as num?;
+    // Parse reviewCount safely - handle both String and num types
+    int reviewCount = 0;
+    final reviewCountValue = tour['reviewCount'] ?? tour['review_count'];
+    if (reviewCountValue != null) {
+      if (reviewCountValue is num) {
+        reviewCount = reviewCountValue.toInt();
+      } else if (reviewCountValue is String) {
+        reviewCount = int.tryParse(reviewCountValue) ?? 0;
+      }
+    }
+    
+    // Parse price safely - handle both String and num types
+    double? pricePerPerson;
+    final priceValue = tour['pricePerPerson'];
+    if (priceValue != null) {
+      if (priceValue is num) {
+        pricePerPerson = priceValue.toDouble();
+      } else if (priceValue is String) {
+        pricePerPerson = double.tryParse(priceValue);
+      }
+    }
     final currency = tour['currency'] as String? ?? 'USD';
     
-    final durationDays = tour['durationDays'] as int?;
-    final durationHours = (tour['durationHours'] as num?)?.toDouble();
+    // Parse duration safely - handle both String and num types
+    int? durationDays;
+    final durationDaysValue = tour['durationDays'];
+    if (durationDaysValue != null) {
+      if (durationDaysValue is num) {
+        durationDays = durationDaysValue.toInt();
+      } else if (durationDaysValue is String) {
+        durationDays = int.tryParse(durationDaysValue);
+      }
+    }
     
-    final minGroupSize = tour['minGroupSize'] as int? ?? 1;
-    final maxGroupSize = tour['maxGroupSize'] as int? ?? 20;
+    double? durationHours;
+    final durationHoursValue = tour['durationHours'];
+    if (durationHoursValue != null) {
+      if (durationHoursValue is num) {
+        durationHours = durationHoursValue.toDouble();
+      } else if (durationHoursValue is String) {
+        durationHours = double.tryParse(durationHoursValue);
+      }
+    }
+    
+    // Parse group sizes safely - handle both String and num types
+    int minGroupSize = 1;
+    final minGroupSizeValue = tour['minGroupSize'];
+    if (minGroupSizeValue != null) {
+      if (minGroupSizeValue is num) {
+        minGroupSize = minGroupSizeValue.toInt();
+      } else if (minGroupSizeValue is String) {
+        minGroupSize = int.tryParse(minGroupSizeValue) ?? 1;
+      }
+    }
+    
+    int maxGroupSize = 20;
+    final maxGroupSizeValue = tour['maxGroupSize'];
+    if (maxGroupSizeValue != null) {
+      if (maxGroupSizeValue is num) {
+        maxGroupSize = maxGroupSizeValue.toInt();
+      } else if (maxGroupSizeValue is String) {
+        maxGroupSize = int.tryParse(maxGroupSizeValue) ?? 20;
+      }
+    }
     
     final includes = (tour['includes'] as List?)?.cast<String>() ?? [];
     final excludes = (tour['excludes'] as List?)?.cast<String>() ?? [];
@@ -336,7 +400,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '$currency ${pricePerPerson.toDouble().toStringAsFixed(0)}',
+                              '$currency ${pricePerPerson?.toStringAsFixed(0) ?? '0'}',
                               style: context.headlineSmall.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: context.primaryColorTheme,
@@ -585,7 +649,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryColorTheme,
+              backgroundColor: AppTheme.primaryColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(

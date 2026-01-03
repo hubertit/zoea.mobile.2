@@ -359,10 +359,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       onPressed: _reload,
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.primaryColorTheme,
-                        foregroundColor: context.primaryTextColor,
-                        padding: const EdgeInsets.symmetric(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,
                         ),

@@ -1031,12 +1031,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                     },
                     icon: const Icon(Icons.edit),
                     label: const Text('Write Review'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColorTheme,
-                      foregroundColor: Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.primaryColor
-                          : Colors.white,
-                      padding: const EdgeInsets.symmetric(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,
                       ),
@@ -1086,8 +1084,8 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                 onPressed: () {
                   _showReviewBottomSheet();
                 },
-                backgroundColor: context.primaryColorTheme,
-                icon: Icon(Icons.edit, color: context.primaryTextColor),
+              backgroundColor: AppTheme.primaryColor,
+              icon: Icon(Icons.edit, color: Colors.white),
                 label: Text(
                   'Write Review',
                   style: TextStyle(color: context.primaryTextColor),
@@ -2047,12 +2045,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   : null,
               icon: const Icon(Icons.phone, size: 18),
               label: const Text('Contact'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -2221,12 +2217,10 @@ class _ReviewBottomSheetState extends ConsumerState<_ReviewBottomSheet> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : _submitReview,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.primaryColor
-                    : Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
@@ -67,7 +68,13 @@ export class MediaController {
   @Post('upload')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 10 * 1024 * 1024, // Allow up to 10MB for initial upload (will be compressed to <1MB)
+      },
+    }),
+  )
   @ApiOperation({ 
     summary: 'Upload a single file',
     description: 'Uploads a single file (image, video, document, or audio) to cloud storage (Cloudinary). Supports images, videos, documents, and audio files. The file is automatically processed, optimized, and stored. Returns media metadata including URLs for accessing the file.'
@@ -139,6 +146,21 @@ export class MediaController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadMediaDto,
   ) {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
+    // Validate image files are not too large before processing
+    const isImage = file.mimetype.startsWith('image/');
+    const maxImageSize = 10 * 1024 * 1024; // 10MB max before compression
+    
+    if (isImage && file.size > maxImageSize) {
+      throw new BadRequestException(
+        `Image file is too large. Maximum size is ${(maxImageSize / 1024 / 1024).toFixed(0)}MB. ` +
+        `Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB. Please use a smaller image.`
+      );
+    }
+
     return this.mediaService.upload(file, req.user.id, {
       category: body.category,
       altText: body.altText,

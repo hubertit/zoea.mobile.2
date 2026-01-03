@@ -431,10 +431,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () => context.go('/profile/my-bookings'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryColorTheme,
-              foregroundColor: context.primaryTextColor,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryColor,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -506,10 +506,10 @@ class BookingConfirmationScreen extends ConsumerWidget {
               onPressed: () {
                 ref.invalidate(bookingByIdProvider(bookingId));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryColorTheme,
-                foregroundColor: context.primaryTextColor,
-              ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+            ),
               child: const Text('Retry'),
             ),
           ],

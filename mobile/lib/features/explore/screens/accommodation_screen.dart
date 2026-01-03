@@ -1505,7 +1505,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   // Apply search filters
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColorTheme,
+                  backgroundColor: AppTheme.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1686,7 +1686,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColorTheme,
+                  backgroundColor: AppTheme.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1906,10 +1906,8 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                       } : null,
                       icon: const Icon(Icons.add),
                       style: IconButton.styleFrom(
-                        backgroundColor: context.primaryColorTheme,
-                        foregroundColor: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.primaryColor
-                            : Colors.white,
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
                         shape: const CircleBorder(),
                       ),
                     ),
@@ -1925,7 +1923,7 @@ class _AccommodationScreenState extends ConsumerState<AccommodationScreen>
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColorTheme,
+                  backgroundColor: AppTheme.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

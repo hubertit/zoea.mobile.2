@@ -248,6 +248,8 @@ export class ListingsService {
     address?: string;
     postalCode?: string;
     locationName?: string;
+    latitude?: number;
+    longitude?: number;
     minPrice?: number;
     maxPrice?: number;
     currency?: string;
@@ -267,7 +269,15 @@ export class ListingsService {
     const existing = await this.prisma.listing.findUnique({ where: { slug } });
     if (existing) throw new BadRequestException('Slug already exists');
 
-    return this.prisma.listing.create({
+    // Build location if coordinates provided
+    let locationData: any = {};
+    if (data.latitude && data.longitude) {
+      locationData = {
+        location: Prisma.sql`ST_SetSRID(ST_MakePoint(${data.longitude}, ${data.latitude}), 4326)`,
+      };
+    }
+
+    const listing = await this.prisma.listing.create({
       data: {
         merchantId,
         name: data.name,
@@ -294,6 +304,7 @@ export class ListingsService {
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
         acceptsBookings: data.acceptsBookings ?? false,
+        ...locationData,
       },
       include: {
         category: true,
@@ -301,6 +312,8 @@ export class ListingsService {
         country: true,
       },
     });
+
+    return listing;
   }
 
   async update(id: string, merchantId: string, data: Partial<{

@@ -264,10 +264,10 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
                 // Verify Button
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleVerifyCode,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.primaryColorTheme,
-                    foregroundColor: context.primaryTextColor,
-                    padding: const EdgeInsets.symmetric(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.spacing16,
                     ),
                     shape: RoundedRectangleBorder(
