@@ -187,10 +187,20 @@ async function main() {
         if (rowChanged) {
           changed++;
           if (mode === 'apply') {
-            await target.update({
-              where: { id: row.id },
-              data,
-            });
+            try {
+              await target.update({
+                where: { id: row.id },
+                data,
+              });
+            } catch (error: any) {
+              // Skip errors related to missing columns (e.g., favorite_count)
+              if (error?.code === 'P2022' || error?.message?.includes('does not exist')) {
+                // eslint-disable-next-line no-console
+                console.warn(`⚠️  Skipping update for ${target.name} ${row.id}: ${error.message}`);
+                continue;
+              }
+              throw error;
+            }
           }
         }
       }
