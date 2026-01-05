@@ -34,6 +34,7 @@ import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/search/screens/search_screen.dart';
 import '../../features/events/screens/event_detail_screen.dart';
 import '../../core/models/event.dart';
+import '../../core/models/itinerary.dart';
 import '../../features/listings/screens/listing_detail_screen.dart';
 import '../../features/listings/screens/listings_screen.dart';
 import '../../features/listings/screens/webview_screen.dart';
@@ -62,6 +63,11 @@ import '../../features/profile/screens/help_center_screen.dart';
 import '../../features/profile/screens/about_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 import '../../features/referrals/screens/referral_screen.dart';
+import '../../features/itineraries/screens/itineraries_screen.dart';
+import '../../features/itineraries/screens/itinerary_create_screen.dart';
+import '../../features/itineraries/screens/itinerary_detail_screen.dart';
+import '../../features/itineraries/screens/add_from_favorites_screen.dart';
+import '../../features/itineraries/screens/add_from_recommendations_screen.dart';
 import '../widgets/shell.dart';
 import '../providers/auth_provider.dart';
 import '../providers/listings_provider.dart';
@@ -278,6 +284,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/referrals',
         builder: (context, state) => const ReferralScreen(),
+      ),
+
+      // Itinerary Routes
+      GoRoute(
+        path: '/itineraries',
+        builder: (context, state) => const ItinerariesScreen(),
+      ),
+      GoRoute(
+        path: '/itineraries/create',
+        builder: (context, state) {
+          final itinerary = state.extra as Itinerary?;
+          return ItineraryCreateScreen(itinerary: itinerary);
+        },
+      ),
+      GoRoute(
+        path: '/itineraries/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return ItineraryDetailScreen(itineraryId: id);
+        },
+      ),
+      GoRoute(
+        path: '/itineraries/add-from-favorites',
+        builder: (context, state) => const AddFromFavoritesScreen(),
+      ),
+      GoRoute(
+        path: '/itineraries/add-from-recommendations',
+        builder: (context, state) => const AddFromRecommendationsScreen(),
       ),
 
       // Profile Routes

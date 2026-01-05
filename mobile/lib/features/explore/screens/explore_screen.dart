@@ -121,7 +121,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeProvider);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(
@@ -152,7 +151,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               context.push('/search');
             },
           ),
-          // Rewards/Referral Icon with Orange Animation
+          // Rewards/Referral Icon with Orange Animation - Shows menu
           AnimatedBuilder(
             animation: _rewardsColorAnimation,
             builder: (context, child) {
@@ -162,7 +161,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   color: _rewardsColorAnimation.value,
                 ),
                 onPressed: () {
-                  context.push('/referrals');
+                  _showGiftBoxMenu(context);
                 },
               );
             },
@@ -3230,4 +3229,96 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     ];
   }
   */
+
+  void _showGiftBoxMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: context.secondaryTextColor.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Menu items
+            _buildGiftBoxMenuItem(
+              context: context,
+              icon: Icons.card_giftcard,
+              title: 'Refer & Earn',
+              subtitle: 'Invite friends and earn rewards',
+              onTap: () {
+                Navigator.pop(context);
+                context.push('/referrals');
+              },
+            ),
+            const Divider(height: 1),
+            _buildGiftBoxMenuItem(
+              context: context,
+              icon: Icons.route,
+              title: 'Itinerary Planning',
+              subtitle: 'Plan and share your trip',
+              onTap: () {
+                Navigator.pop(context);
+                context.push('/itineraries');
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGiftBoxMenuItem({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: context.primaryColorTheme.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          color: context.primaryColorTheme,
+          size: 24,
+        ),
+      ),
+      title: Text(
+        title,
+        style: context.titleMedium.copyWith(
+          fontWeight: FontWeight.w600,
+          color: context.primaryTextColor,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.bodySmall.copyWith(
+          color: context.secondaryTextColor,
+        ),
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: context.secondaryTextColor,
+      ),
+      onTap: onTap,
+    );
+  }
 }
