@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request, NotFoundException } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { ItinerariesService } from './itineraries.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateItineraryDto, UpdateItineraryDto, ItineraryQueryDto } from './dto/itinerary.dto';
@@ -30,16 +30,15 @@ export class ItinerariesController {
   }
 
   // Client-side only routes - must be BEFORE :id route to avoid matching
+  // Hidden from Swagger docs since these are client-side navigation routes
   @Get('add-from-favorites')
-  @ApiOperation({ summary: 'Not an API endpoint', description: 'This is a client-side route only' })
-  @ApiResponse({ status: 404, description: 'Not Found - This is a client-side route.' })
+  @ApiExcludeEndpoint()
   async addFromFavorites() {
     throw new NotFoundException('This is a client-side route. Use /favorites endpoint instead.');
   }
 
   @Get('add-from-recommendations')
-  @ApiOperation({ summary: 'Not an API endpoint', description: 'This is a client-side route only' })
-  @ApiResponse({ status: 404, description: 'Not Found - This is a client-side route.' })
+  @ApiExcludeEndpoint()
   async addFromRecommendations() {
     throw new NotFoundException('This is a client-side route. Use /listings/featured endpoint instead.');
   }
