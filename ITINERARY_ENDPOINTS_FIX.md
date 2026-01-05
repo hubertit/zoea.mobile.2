@@ -82,6 +82,46 @@ These backend routes exist only to return a helpful 404 if accidentally called a
 - ✅ Backup server (172.16.40.60)
 - ✅ Committed and pushed to Git
 
+## Additional Fix: Swagger Documentation
+After deployment, we discovered that these routes were still appearing in the Swagger/OpenAPI documentation at `/api/docs-json`, which could cause automated tools or monitoring systems to attempt calling them.
+
+### Solution
+Added `@ApiExcludeEndpoint()` decorator to both routes to hide them from Swagger documentation:
+
+```typescript
+import { ApiExcludeEndpoint } from '@nestjs/swagger';
+
+@Get('add-from-favorites')
+@ApiExcludeEndpoint()  // Hide from Swagger docs
+async addFromFavorites() {
+  throw new NotFoundException('This is a client-side route. Use /favorites endpoint instead.');
+}
+
+@Get('add-from-recommendations')
+@ApiExcludeEndpoint()  // Hide from Swagger docs
+async addFromRecommendations() {
+  throw new NotFoundException('This is a client-side route. Use /listings/featured endpoint instead.');
+}
+```
+
+### Verification
+Before fix - routes appeared in Swagger:
+```
+"/api/itineraries/add-from-favorites"
+"/api/itineraries/add-from-recommendations"
+```
+
+After fix - routes excluded from Swagger:
+```
+"/api/itineraries"
+"/api/itineraries/my"
+"/api/itineraries/shared/{token}"
+"/api/itineraries/{id}"
+"/api/itineraries/{id}/share"
+```
+
+Routes still function correctly (returning 404 with helpful message) but are no longer advertised in API documentation.
+
 ## Date
 January 5, 2026
 
