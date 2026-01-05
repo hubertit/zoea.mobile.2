@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
@@ -24,7 +25,8 @@ class TourDetailScreen extends ConsumerStatefulWidget {
 class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final tourAsync = ref.watch(tourBySlugProvider(widget.tourId));
+    // Try to load by ID first (for UUIDs), fallback to slug if it fails
+    final tourAsync = ref.watch(tourByIdProvider(widget.tourId));
 
     return tourAsync.when(
       data: (tour) => _buildTourDetail(tour),
@@ -405,7 +407,9 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '$currency ${pricePerPerson?.toStringAsFixed(0) ?? '0'}',
+                              pricePerPerson != null
+                                  ? '${NumberFormat('#,##0').format(pricePerPerson)} $currency'
+                                  : '0 $currency',
                               style: context.headlineSmall.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: context.primaryColorTheme,

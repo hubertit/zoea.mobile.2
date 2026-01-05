@@ -31,7 +31,13 @@ export class ListingsService {
       ...(type && { type: type as any }),
       ...(status && { status: status as any }),
       ...(cityId && { cityId }),
-      ...(countryId && { countryId }),
+      // Filter by country through city relation since countryId may not be populated on listings
+      ...(countryId && { 
+        OR: [
+          { countryId }, // Direct country ID if populated
+          { city: { countryId } }, // Through city relation
+        ]
+      }),
       ...(categoryId && { categoryId }),
       ...(merchantId && { merchantId }),
       ...(isFeatured !== undefined && { isFeatured }),
@@ -170,7 +176,13 @@ export class ListingsService {
         isFeatured: true, 
         status: 'active', 
         deletedAt: null,
-        ...(countryId && { countryId }),
+        // Filter by country through city relation since countryId may not be populated on listings
+        ...(countryId && { 
+          OR: [
+            { countryId }, // Direct country ID if populated
+            { city: { countryId } }, // Through city relation
+          ]
+        }),
       },
       take: limit,
       include: {

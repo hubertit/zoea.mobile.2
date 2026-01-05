@@ -532,8 +532,20 @@ class _AskZoeaScreenState extends ConsumerState<AskZoeaScreen> {
       child: InkWell(
         onTap: () {
           // Navigate based on route
-          final id = params['id'] as String;
-          context.push(route.replaceAll(':id', id));
+          // Handle route parameters - replace :paramName with actual values
+          String navigationPath = route;
+          params.forEach((key, value) {
+            if (value != null) {
+              navigationPath = navigationPath.replaceAll(':$key', value.toString());
+            }
+          });
+          
+          // Fallback: if route still has :id and we have an id param
+          if (navigationPath.contains(':id') && params['id'] != null) {
+            navigationPath = navigationPath.replaceAll(':id', params['id'].toString());
+          }
+          
+          context.push(navigationPath);
         },
         borderRadius: BorderRadius.circular(12),
         child: Container(

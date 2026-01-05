@@ -89,8 +89,19 @@ class _AddFromFavoritesScreenState extends ConsumerState<AddFromFavoritesScreen>
             itemCount: favorites.length,
             itemBuilder: (context, index) {
               final favorite = favorites[index] as Map<String, dynamic>;
-              final itemId = favorite['id'] as String? ?? '';
-              final type = favorite['type'] as String? ?? 'listing';
+              
+              // Extract the actual item and determine type
+              final item = _extractItem(favorite);
+              final itemId = item['id'] as String? ?? '';
+              
+              // Determine type based on which nested object exists
+              String type = 'listing';
+              if (favorite['event'] != null) {
+                type = 'event';
+              } else if (favorite['tour'] != null) {
+                type = 'tour';
+              }
+              
               final isSelected = _selectedItems.contains(itemId);
 
               return _buildFavoriteCard(favorite, itemId, type, isSelected);
@@ -130,9 +141,11 @@ class _AddFromFavoritesScreenState extends ConsumerState<AddFromFavoritesScreen>
   }
 
   Widget _buildFavoriteCard(Map<String, dynamic> favorite, String itemId, String type, bool isSelected) {
-    final name = favorite['name'] as String? ?? favorite['title'] as String? ?? 'Unknown';
-    final imageUrl = _getImageUrl(favorite);
-    final location = _getLocation(favorite);
+    // Extract the actual item from the favorite object
+    final item = _extractItem(favorite);
+    final name = item['name'] as String? ?? item['title'] as String? ?? 'Unknown';
+    final imageUrl = _getImageUrl(item);
+    final location = _getLocation(item);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -250,9 +263,26 @@ class _AddFromFavoritesScreenState extends ConsumerState<AddFromFavoritesScreen>
     );
   }
 
-  String? _getImageUrl(Map<String, dynamic> favorite) {
-    if (favorite['images'] != null && favorite['images'] is List) {
-      final images = favorite['images'] as List;
+  /// Extract the actual item (listing, event, or tour) from the favorite object
+  Map<String, dynamic> _extractItem(Map<String, dynamic> favorite) {
+    // Favorites API returns: { listing: {...}, event: {...}, tour: {...} }
+    if (favorite['listing'] != null) {
+      return favorite['listing'] as Map<String, dynamic>;
+    }
+    if (favorite['event'] != null) {
+      return favorite['event'] as Map<String, dynamic>;
+    }
+    if (favorite['tour'] != null) {
+      return favorite['tour'] as Map<String, dynamic>;
+    }
+    // Fallback to the favorite object itself (shouldn't happen)
+    return favorite;
+  }
+
+  String? _getImageUrl(Map<String, dynamic> item) {
+    // For listings and tours - check images array
+    if (item['images'] != null && item['images'] is List) {
+      final images = item['images'] as List;
       if (images.isNotEmpty) {
         final firstImage = images.first;
         if (firstImage is Map && firstImage['media'] != null) {
@@ -262,32 +292,51 @@ class _AddFromFavoritesScreenState extends ConsumerState<AddFromFavoritesScreen>
         }
       }
     }
-    if (favorite['image'] != null) {
-      return favorite['image'] as String;
+    // For events - check attachments array
+    if (item['attachments'] != null && item['attachments'] is List) {
+      final attachments = item['attachments'] as List;
+      if (attachments.isNotEmpty) {
+        final firstAttachment = attachments.first;
+        if (firstAttachment is Map && firstAttachment['media'] != null) {
+          return firstAttachment['media']['url'] ?? firstAttachment['media']['thumbnailUrl'];
+        }
+      }
     }
-    if (favorite['flyer'] != null) {
-      return favorite['flyer'] as String;
+    // Fallback to single image or flyer field
+    if (item['image'] != null) {
+      return item['image'] as String;
+    }
+    if (item['flyer'] != null) {
+      return item['flyer'] as String;
     }
     return null;
   }
 
-  String? _getLocation(Map<String, dynamic> favorite) {
-    if (favorite['location'] != null) {
-      return favorite['location'] as String;
+  String? _getLocation(Map<String, dynamic> item) {
+    // For listings - check address and city
+    if (item['address'] != null) {
+      return item['address'] as String;
     }
-    if (favorite['address'] != null) {
-      return favorite['address'] as String;
+    // For events - check locationName
+    if (item['locationName'] != null) {
+      return item['locationName'] as String;
     }
-    if (favorite['city'] != null) {
-      final city = favorite['city'];
+    // Check generic location field
+    if (item['location'] != null) {
+      return item['location'] as String;
+    }
+    // Check city
+    if (item['city'] != null) {
+      final city = item['city'];
       if (city is Map) {
         return city['name'] as String?;
       } else if (city is String) {
         return city;
       }
     }
-    if (favorite['venueName'] != null) {
-      return favorite['venueName'] as String;
+    // For events - check venueName
+    if (item['venueName'] != null) {
+      return item['venueName'] as String;
     }
     return null;
   }
@@ -312,20 +361,31 @@ class _AddFromFavoritesScreenState extends ConsumerState<AddFromFavoritesScreen>
     favoritesAsync.whenData((response) {
       final favorites = response['data'] as List? ?? [];
       final selectedFavorites = favorites.where((favorite) {
-        final itemId = favorite['id'] as String? ?? '';
+        final item = _extractItem(favorite as Map<String, dynamic>);
+        final itemId = item['id'] as String? ?? '';
         return _selectedItems.contains(itemId);
       }).toList();
 
       final results = selectedFavorites.map((favorite) {
-        final itemId = favorite['id'] as String? ?? '';
-        final type = favorite['type'] as String? ?? 'listing';
-        final name = favorite['name'] as String? ?? favorite['title'] as String? ?? 'Unknown';
+        final favoriteMap = favorite as Map<String, dynamic>;
+        final item = _extractItem(favoriteMap);
+        final itemId = item['id'] as String? ?? '';
+        
+        // Determine type
+        String type = 'listing';
+        if (favoriteMap['event'] != null) {
+          type = 'event';
+        } else if (favoriteMap['tour'] != null) {
+          type = 'tour';
+        }
+        
+        final name = item['name'] as String? ?? item['title'] as String? ?? 'Unknown';
         
         return {
           'id': itemId,
           'type': type,
           'name': name,
-          'metadata': favorite,
+          'metadata': item,  // Return the actual item, not the favorite wrapper
         };
       }).toList();
 

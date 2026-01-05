@@ -298,13 +298,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ItineraryCreateScreen(itinerary: itinerary);
         },
       ),
-      GoRoute(
-        path: '/itineraries/:id',
-        builder: (context, state) {
-          final id = state.pathParameters['id']!;
-          return ItineraryDetailScreen(itineraryId: id);
-        },
-      ),
+      // IMPORTANT: Specific routes MUST come BEFORE parameterized `:id` route
       GoRoute(
         path: '/itineraries/add-from-favorites',
         builder: (context, state) => const AddFromFavoritesScreen(),
@@ -312,6 +306,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/itineraries/add-from-recommendations',
         builder: (context, state) => const AddFromRecommendationsScreen(),
+      ),
+      // Parameterized route comes AFTER specific routes
+      GoRoute(
+        path: '/itineraries/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return ItineraryDetailScreen(itineraryId: id);
+        },
       ),
 
       // Profile Routes

@@ -1,6 +1,6 @@
 # Itinerary Endpoints Fix
 
-## Issue
+## Issue 1: Backend Route Ordering (FIXED)
 The mobile app was receiving 500 Internal Server errors when navigating to:
 - `/itineraries/add-from-favorites`
 - `/itineraries/add-from-recommendations`
@@ -22,7 +22,31 @@ expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-],
 found `r` at 6
 ```
 
-## Solution
+## Issue 2: Mobile App Route Ordering (FIXED - January 5, 2026)
+After fixing the backend, the mobile app was still making unwanted API calls to:
+- `GET /api/itineraries/add-from-recommendations` 
+- `GET /api/itineraries/add-from-favorites`
+
+These should be client-side navigation routes only, not API endpoints.
+
+### Root Cause
+The mobile app's `app_router.dart` had the SAME route ordering problem! The parameterized route `/itineraries/:id` was defined BEFORE the specific routes:
+
+```dart
+// WRONG ORDER:
+GoRoute(path: '/itineraries/:id', ...) // This matched first!
+GoRoute(path: '/itineraries/add-from-favorites', ...)
+GoRoute(path: '/itineraries/add-from-recommendations', ...)
+```
+
+When a user navigated to `/itineraries/add-from-recommendations`:
+1. GoRouter matched it to `/itineraries/:id` (with `id` = `"add-from-recommendations"`)
+2. This loaded `ItineraryDetailScreen`  
+3. `ItineraryDetailScreen` called the itinerary service to fetch itinerary with ID `"add-from-recommendations"`
+4. Service made API call: `GET /api/itineraries/add-from-recommendations`
+5. Backend returned 404 error: "This is a client-side route"
+
+## Solution - Backend
 Moved the specific routes BEFORE the parameterized `:id` route in `itineraries.controller.ts`:
 
 ```typescript
@@ -45,8 +69,43 @@ async addFromRecommendations() {
 async getItinerary(@Param('id') id: string) { ... }
 ```
 
+## Solution - Mobile App
+Moved the specific routes BEFORE the parameterized `:id` route in `mobile/lib/core/router/app_router.dart`:
+
+```dart
+// CORRECT ORDER:
+GoRoute(
+  path: '/itineraries',
+  builder: (context, state) => const ItinerariesScreen(),
+),
+GoRoute(
+  path: '/itineraries/create',
+  builder: (context, state) {
+    final itinerary = state.extra as Itinerary?;
+    return ItineraryCreateScreen(itinerary: itinerary);
+  },
+),
+// IMPORTANT: Specific routes MUST come BEFORE parameterized `:id` route
+GoRoute(
+  path: '/itineraries/add-from-favorites',
+  builder: (context, state) => const AddFromFavoritesScreen(),
+),
+GoRoute(
+  path: '/itineraries/add-from-recommendations',
+  builder: (context, state) => const AddFromRecommendationsScreen(),
+),
+// Parameterized route comes AFTER specific routes
+GoRoute(
+  path: '/itineraries/:id',
+  builder: (context, state) {
+    final id = state.pathParameters['id']!;
+    return ItineraryDetailScreen(itineraryId: id);
+  },
+),
+```
+
 ## Result
-Now the endpoints return proper 404 responses with clear messages instead of 500 errors:
+Now the endpoints return proper 404 responses with clear messages instead of 500 errors, and the mobile app correctly routes to the client-side screens without making unnecessary API calls:
 
 ```json
 {
@@ -71,11 +130,19 @@ All itinerary endpoints are working correctly:
 9. **GET /api/itineraries/add-from-recommendations** - Returns 404 with helpful message ✅
 
 ## Note
-`add-from-favorites` and `add-from-recommendations` are client-side navigation routes in the mobile app, not API endpoints. The mobile app uses:
-- `favoritesProvider` for favorites
-- `featuredListingsProvider` for recommendations
+`add-from-favorites` and `add-from-recommendations` are client-side navigation routes in the mobile app, not API endpoints.
 
-These backend routes exist only to return a helpful 404 if accidentally called as API endpoints.
+### How They Actually Work:
+1. **User clicks "Add from Favorites" or "Add from Recommendations"** in the itinerary create screen
+2. **Mobile app navigates** to `/itineraries/add-from-favorites` or `/itineraries/add-from-recommendations`
+3. **Screen displays** a list of favorites or featured listings using:
+   - `favoritesProvider` (calls `/api/favorites`)
+   - `featuredListingsProvider` (calls `/api/listings/featured`)
+4. **User selects items** from the list
+5. **Screen returns** the selected items back to the create screen
+6. **No API calls** to `/api/itineraries/add-from-*` should ever happen
+
+The backend routes exist only to return a helpful 404 message if something mistakenly tries to call them as API endpoints.
 
 ## Deployment
 - ✅ Primary server (172.16.40.61)
@@ -122,6 +189,10 @@ After fix - routes excluded from Swagger:
 
 Routes still function correctly (returning 404 with helpful message) but are no longer advertised in API documentation.
 
-## Date
-January 5, 2026
+## Summary
+This issue occurred in BOTH the backend AND the mobile app due to the same root cause: **route ordering**. In both routing systems (NestJS and GoRouter), specific routes must be defined BEFORE parameterized routes to avoid incorrect matches.
+
+## Dates
+- **Backend Fix**: January 5, 2026 (morning)
+- **Mobile App Fix**: January 5, 2026 (afternoon)
 
