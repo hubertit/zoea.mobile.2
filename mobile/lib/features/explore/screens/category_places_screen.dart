@@ -93,7 +93,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         .where((child) => child['isActive'] != false)
         .toList();
     
-    final tabCount = 2 + _subcategories.length; // All + Popular + subcategories
+    final tabCount = 1 + _subcategories.length; // All + subcategories
     
     // Dispose old controller if exists
     _tabController?.dispose();
@@ -102,7 +102,8 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
     _tabController = TabController(length: tabCount, vsync: this);
     _tabController!.addListener(() {
       // Don't handle tab change during initialization
-      if (!_isInitializingTabs && !_tabController!.indexIsChanging) {
+      if (!_isInitializingTabs) {
+        // Handle both during swipe (indexIsChanging) and after completion
         _handleTabChange(_tabController!.index);
       }
     });
@@ -127,13 +128,9 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
         // "All" tab - show listings from current parent category
         _selectedCategoryId = _currentParentCategoryId ?? _categoryId;
         _sortBy = null; // Reset sort for "All"
-      } else if (index == 1) {
-        // "Popular" tab - show popular listings from current parent category
-        _selectedCategoryId = _currentParentCategoryId ?? _categoryId;
-        _sortBy = 'popular';
       } else {
         // Subcategory tab - show listings from selected subcategory
-        final subcategoryIndex = index - 2;
+        final subcategoryIndex = index - 1;
         if (subcategoryIndex < _subcategories.length) {
           final subcategory = _subcategories[subcategoryIndex];
           final subcategoryId = subcategory['id'] as String?;
@@ -188,20 +185,27 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
 
     return categoryAsync.when(
       data: (categoryData) {
-        _categoryId = categoryData['id'] as String?;
-        _categoryName = categoryData['name'] as String?;
-        _isAccommodation = _isAccommodationCategory(_categoryName, widget.category);
+        final categoryId = categoryData['id'] as String?;
+        final categoryName = categoryData['name'] as String?;
+        final isAccommodation = _isAccommodationCategory(categoryName, widget.category);
+        
+        // Update category info
+        _categoryId = categoryId;
+        _categoryName = categoryName;
+        _isAccommodation = isAccommodation;
         
         // Extract children from category data
         final children = categoryData['children'] as List?;
         
         // Initialize tabs if not already done or if category changed
-        if (_tabController == null || _currentParentCategoryId != _categoryId) {
+        if (_tabController == null || _currentParentCategoryId != categoryId) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
-              _initializeTabs(children != null 
-                  ? List<Map<String, dynamic>>.from(children)
-                  : null);
+              setState(() {
+                _initializeTabs(children != null 
+                    ? List<Map<String, dynamic>>.from(children)
+                    : null);
+              });
             }
           });
         }
@@ -282,7 +286,6 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               labelPadding: const EdgeInsets.symmetric(horizontal: 16),
               tabs: [
                 const Tab(text: 'All'),
-                const Tab(text: 'Popular'),
                 ..._subcategories.map((subcategory) {
                   final name = subcategory['name'] as String? ?? 'Unknown';
                   return Tab(text: name);
@@ -290,11 +293,23 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
               ],
             ),
           ),
-          body: _categoryId != null
-              ? _buildListingsList()
-              : Center(
-                  child: Text('Category not found'),
-                ),
+          body: _categoryId != null && _tabController != null
+              ? TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // "All" tab
+                    _buildListingsListForTab(0),
+                    // Subcategory tabs
+                    ..._subcategories.asMap().entries.map((entry) {
+                      return _buildListingsListForTab(entry.key + 1);
+                    }),
+                  ],
+                )
+              : _categoryId == null
+                  ? Center(
+                      child: Text('Category not found'),
+                    )
+                  : _buildSkeletonLoader(), // Show skeleton while tabs initialize
         );
       },
       loading: () => Scaffold(
@@ -315,7 +330,7 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
             ),
           ),
         ),
-        body: Center(child: CircularProgressIndicator(color: context.primaryColorTheme)),
+        body: _buildSkeletonLoader(), // Show skeleton while loading category
       ),
       error: (error, stack) => Scaffold(
         backgroundColor: context.grey50,
@@ -375,6 +390,166 @@ class _CategoryPlacesScreenState extends ConsumerState<CategoryPlacesScreen>
 
   // Getter for the category ID to use for listings
   String? get _categoryIdForListings => _selectedCategoryId ?? _categoryId;
+
+  // Get category ID and sort for a specific tab index
+  Map<String, dynamic> _getTabParams(int tabIndex) {
+    if (tabIndex == 0) {
+      // "All" tab
+      return {
+        'categoryId': _currentParentCategoryId ?? _categoryId,
+        'sortBy': null,
+      };
+    } else {
+      // Subcategory tab
+      final subcategoryIndex = tabIndex - 1;
+      if (subcategoryIndex < _subcategories.length) {
+        final subcategory = _subcategories[subcategoryIndex];
+        return {
+          'categoryId': subcategory['id'] as String?,
+          'sortBy': null,
+        };
+      }
+    }
+    return {
+      'categoryId': _categoryId,
+      'sortBy': null,
+    };
+  }
+
+  Widget _buildListingsListForTab(int tabIndex) {
+    final tabParams = _getTabParams(tabIndex);
+    final categoryId = tabParams['categoryId'] as String?;
+    final sortBy = tabParams['sortBy'] as String?;
+    
+    if (categoryId == null) {
+      return Center(child: Text('Category not found'));
+    }
+    
+    final listingsAsync = ref.watch(
+      listingsProvider(
+        ListingsParams(
+          page: 1, // Start from page 1 for each tab
+          limit: _pageSize,
+          category: categoryId,
+          rating: _minRating,
+          minPrice: _minPrice,
+          maxPrice: _maxPrice,
+          isFeatured: _isFeatured,
+          sortBy: sortBy,
+        ),
+      ),
+    );
+
+    return listingsAsync.when(
+      data: (response) {
+        final listings = response['data'] as List? ?? [];
+        final meta = response['meta'] as Map<String, dynamic>?;
+        final totalPages = meta?['totalPages'] ?? 1;
+
+        if (listings.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.explore,
+                  size: 64,
+                  color: context.secondaryTextColor,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No ${_categoryName?.toLowerCase() ?? widget.category} found',
+                  style: context.headlineSmall.copyWith(
+                    color: context.secondaryTextColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Check back later for new listings',
+                  style: context.bodyMedium.copyWith(
+                    color: context.secondaryTextColor,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return RefreshIndicator(
+          color: context.primaryColorTheme,
+          backgroundColor: context.cardColor,
+          onRefresh: () async {
+            ref.invalidate(
+              listingsProvider(
+                ListingsParams(
+                  page: 1,
+                  limit: _pageSize,
+                  category: categoryId,
+                  rating: _minRating,
+                  minPrice: _minPrice,
+                  maxPrice: _maxPrice,
+                  isFeatured: _isFeatured,
+                  sortBy: sortBy,
+                ),
+              ),
+            );
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: listings.length,
+            itemBuilder: (context, index) {
+              final listing = listings[index] as Map<String, dynamic>;
+              if (_isAccommodation) {
+                return _buildAccommodationCard(listing);
+              } else {
+                return _buildRegularListingCard(listing);
+              }
+            },
+          ),
+        );
+      },
+      loading: () => _buildSkeletonLoader(),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: context.errorColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load listings',
+              style: context.headlineSmall.copyWith(
+                color: context.errorColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () {
+                ref.invalidate(
+                  listingsProvider(
+                    ListingsParams(
+                      page: 1,
+                      limit: _pageSize,
+                      category: categoryId,
+                      rating: _minRating,
+                      minPrice: _minPrice,
+                      maxPrice: _maxPrice,
+                      isFeatured: _isFeatured,
+                      sortBy: sortBy,
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildListingsList() {
     if (_categoryId == null) {

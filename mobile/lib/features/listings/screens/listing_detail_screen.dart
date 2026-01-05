@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_extensions.dart';
@@ -463,7 +464,22 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                           const Spacer(),
                           if (minPrice != null)
                             Text(
-                              '$currency ${minPrice.toString()}${maxPrice != null ? ' - ${maxPrice.toString()}' : ''}',
+                              () {
+                                final minPriceValue = minPrice is num ? minPrice.toDouble() : (minPrice is String ? double.tryParse(minPrice) : null);
+                                final maxPriceValue = maxPrice != null 
+                                    ? (maxPrice is num ? maxPrice.toDouble() : (maxPrice is String ? double.tryParse(maxPrice) : null))
+                                    : null;
+                                
+                                if (minPriceValue != null) {
+                                  final formattedMin = NumberFormat('#,##0').format(minPriceValue);
+                                  if (maxPriceValue != null) {
+                                    final formattedMax = NumberFormat('#,##0').format(maxPriceValue);
+                                    return '$formattedMin - $formattedMax $currency';
+                                  }
+                                  return '$formattedMin $currency';
+                                }
+                                return '$currency ${minPrice.toString()}${maxPrice != null ? ' - ${maxPrice.toString()}' : ''}';
+                              }(),
                               style: context.bodyLarge.copyWith(
                                 color: context.primaryColorTheme,
                                 fontWeight: FontWeight.w600,
@@ -1395,7 +1411,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       ),
                     ),
                     subtitle: Text(
-                      '${AppConfig.currencySymbol} ${((product['basePrice'] ?? product['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
+                      () {
+                        final price = ((product['basePrice'] ?? product['base_price'] ?? 0) as num).toDouble();
+                        return '${NumberFormat('#,##0').format(price)} ${AppConfig.currencySymbol}';
+                      }(),
                       style: context.bodySmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
@@ -1531,7 +1550,10 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                       ),
                     ),
                     subtitle: Text(
-                      '${AppConfig.currencySymbol} ${((service['basePrice'] ?? service['base_price'] ?? 0) as num).toDouble().toStringAsFixed(0)}',
+                      () {
+                        final price = ((service['basePrice'] ?? service['base_price'] ?? 0) as num).toDouble();
+                        return '${NumberFormat('#,##0').format(price)} ${AppConfig.currencySymbol}';
+                      }(),
                       style: context.bodySmall.copyWith(
                         color: context.primaryColorTheme,
                         fontWeight: FontWeight.w600,
@@ -1683,7 +1705,7 @@ class _ListingDetailScreenState extends ConsumerState<ListingDetailScreen>
                   ),
                 ),
                 subtitle: Text(
-                  '${AppConfig.currencySymbol} ${item.price.toStringAsFixed(0)}',
+                  '${NumberFormat('#,##0').format(item.price)} ${AppConfig.currencySymbol}',
                   style: context.bodySmall.copyWith(
                     color: context.primaryColorTheme,
                     fontWeight: FontWeight.w600,

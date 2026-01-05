@@ -22,7 +22,40 @@ class TourDetailScreen extends ConsumerStatefulWidget {
   ConsumerState<TourDetailScreen> createState() => _TourDetailScreenState();
 }
 
-class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
+class _TourDetailScreenState extends ConsumerState<TourDetailScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _shimmerController;
+  late Animation<double> _shimmerAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Shimmer animation controller
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    // Start shimmer animation
+    _shimmerController.repeat();
+    
+    // Shimmer animation
+    _shimmerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _shimmerController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Try to load by ID first (for UUIDs), fallback to slug if it fails
@@ -30,19 +63,7 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
 
     return tourAsync.when(
       data: (tour) => _buildTourDetail(tour),
-      loading: () => Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.chevron_left, size: 32),
-            onPressed: () => context.pop(),
-          ),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(
-            color: context.primaryColorTheme,
-          ),
-        ),
-      ),
+      loading: () => _buildSkeletonLoader(),
       error: (error, stack) => Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -675,6 +696,313 @@ class _TourDetailScreenState extends ConsumerState<TourDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSkeletonLoader() {
+    return Scaffold(
+      backgroundColor: context.grey50,
+      body: CustomScrollView(
+        slivers: [
+          // App Bar with Image Skeleton
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            leading: IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.chevron_left, color: Colors.white),
+              ),
+              onPressed: () => context.pop(),
+            ),
+            actions: [
+              IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.favorite_border, color: Colors.white),
+                ),
+                onPressed: () {},
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: AnimatedBuilder(
+                animation: _shimmerAnimation,
+                builder: (context, child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: context.grey300,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          context.grey300,
+                          context.grey200,
+                          context.grey300,
+                        ],
+                        stops: [
+                          0.0,
+                          _shimmerAnimation.value,
+                          1.0,
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // Content Skeleton
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title and Basic Info Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: double.infinity, height: 24),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: 200, height: 16),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _buildSkeletonBox(width: 60, height: 16),
+                          const SizedBox(width: 16),
+                          _buildSkeletonBox(width: 80, height: 16),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: 100, height: 28),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Short Description Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: double.infinity, height: 16),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: double.infinity, height: 16),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: 150, height: 16),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Price Section Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSkeletonBox(width: 100, height: 14),
+                          const SizedBox(height: 4),
+                          _buildSkeletonBox(width: 120, height: 20),
+                        ],
+                      ),
+                      _buildSkeletonBox(width: 100, height: 14),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Description Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: 120, height: 20),
+                      const SizedBox(height: 12),
+                      _buildSkeletonBox(width: double.infinity, height: 16),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: double.infinity, height: 16),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: double.infinity, height: 16),
+                      const SizedBox(height: 8),
+                      _buildSkeletonBox(width: 200, height: 16),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // What's Included Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: 130, height: 20),
+                      const SizedBox(height: 12),
+                      ...List.generate(3, (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            _buildSkeletonBox(width: 20, height: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildSkeletonBox(width: double.infinity, height: 16),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // What's Not Included Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: 150, height: 20),
+                      const SizedBox(height: 12),
+                      ...List.generate(2, (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            _buildSkeletonBox(width: 20, height: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildSkeletonBox(width: double.infinity, height: 16),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Requirements Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: 110, height: 20),
+                      const SizedBox(height: 12),
+                      ...List.generate(2, (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            _buildSkeletonBox(width: 20, height: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildSkeletonBox(width: double.infinity, height: 16),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Languages Skeleton
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  color: context.backgroundColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSkeletonBox(width: 150, height: 20),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(3, (index) => _buildSkeletonBox(width: 60, height: 28)),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 100), // Space for bottom button
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: context.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: _buildSkeletonBox(width: double.infinity, height: 48),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonBox({required double width, required double height}) {
+    return AnimatedBuilder(
+      animation: _shimmerAnimation,
+      builder: (context, child) {
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                context.grey300,
+                context.grey200,
+                context.grey300,
+              ],
+              stops: [
+                0.0,
+                _shimmerAnimation.value,
+                1.0,
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

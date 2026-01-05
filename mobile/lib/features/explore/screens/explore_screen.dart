@@ -607,17 +607,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         label: 'Pharmacy',
                         onTap: () {
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Finding nearby pharmacies...',
-                                style: context.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: context.primaryColorTheme,
-                            ),
-                          );
+                          context.push('/category/pharmacy');
                         },
                       ),
                       _buildQuickActionItem(
@@ -625,17 +615,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         label: 'Roadside Assistance',
                         onTap: () {
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Connecting to roadside assistance...',
-                                style: context.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: context.primaryColorTheme,
-                            ),
-                          );
+                          context.push('/category/roadside-assistance');
                         },
                       ),
                       _buildQuickActionItem(
@@ -2628,9 +2608,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
     return GestureDetector(
       onTap: () {
-        final slug = tour['slug'];
-        if (slug != null) {
-          context.push('/tour/$slug');
+        // Navigate to tour detail screen using ID
+        final tourId = tour['id'] as String?;
+        if (tourId != null) {
+          context.push('/tour/$tourId');
         }
       },
       child: Container(

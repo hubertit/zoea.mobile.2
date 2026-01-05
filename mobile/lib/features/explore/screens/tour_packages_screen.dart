@@ -218,10 +218,10 @@ class _TourPackagesScreenState extends ConsumerState<TourPackagesScreen>
 
     return GestureDetector(
       onTap: () {
-        // Navigate to tour detail screen
-        final slug = tour['slug'];
-        if (slug != null) {
-          context.push('/tour/$slug');
+        // Navigate to tour detail screen using ID
+        final tourId = tour['id'] as String?;
+        if (tourId != null) {
+          context.push('/tour/$tourId');
         }
       },
       child: Container(
