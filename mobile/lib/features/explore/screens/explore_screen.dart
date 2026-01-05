@@ -181,9 +181,26 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
           backgroundColor: context.cardColor,
           onRefresh: () async {
             // Refresh all data on explore screen
+            final selectedCountry = ref.read(selectedCountryProvider).value;
+            
+            // Invalidate all providers used on explore screen
             ref.invalidate(categoriesProvider);
             ref.invalidate(eventsProvider);
             ref.invalidate(listingsProvider);
+            
+            // Refresh featured listings (with country filter and without)
+            ref.invalidate(featuredListingsProvider(selectedCountry?.id));
+            ref.invalidate(featuredListingsProvider(null));
+            
+            // Refresh near me section (random listings)
+            ref.invalidate(randomListingsProvider(5));
+            
+            // Refresh tour packages
+            ref.invalidate(toursProvider(const ToursParams(
+              page: 1,
+              limit: 5,
+            )));
+            
             // Wait a bit for providers to refresh
             await Future.delayed(const Duration(milliseconds: 500));
           },
