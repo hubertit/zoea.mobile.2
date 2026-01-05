@@ -22,6 +22,7 @@ import { toast } from '@/app/components/Toaster';
 import { Button, Modal, Breadcrumbs } from '@/app/components';
 import Card, { CardHeader, CardBody } from '@/app/components/Card';
 import Select from '@/app/components/Select';
+import SearchableSelect from '@/app/components/SearchableSelect';
 import Input from '@/app/components/Input';
 import Textarea from '@/app/components/Textarea';
 import StatusBadge from '@/app/components/StatusBadge';
@@ -622,11 +623,16 @@ export default function ListingDetailPage() {
               options={[{ value: '', label: 'Select Type' }, ...TYPES.map((t) => ({ value: t.value, label: t.label }))]}
             />
 
-            <Select
+            <SearchableSelect
               label="Category"
               value={editFormData.categoryId}
-              onChange={(e) => setEditFormData({ ...editFormData, categoryId: e.target.value })}
-              options={[{ value: '', label: 'Select Category' }, ...categories.map((c) => ({ value: c.id, label: c.name }))]}
+              onChange={(value) => setEditFormData({ ...editFormData, categoryId: value })}
+              options={categories.map((c) => ({ 
+                value: c.id, 
+                label: c.name,
+                group: c.parent?.name || 'Main Category'
+              }))}
+              placeholder="Select Category"
             />
           </div>
 

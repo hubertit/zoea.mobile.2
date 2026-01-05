@@ -11,29 +11,29 @@ class ItineraryService {
   }
 
   /// Get all user itineraries
-  Future<Map<String, dynamic>> getItineraries({
+  Future<List<Itinerary>> getMyItineraries({
     int? page,
     int? limit,
-    String? search,
-    DateTime? startDate,
-    DateTime? endDate,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
       if (page != null) queryParams['page'] = page;
       if (limit != null) queryParams['limit'] = limit;
-      if (search != null) queryParams['search'] = search;
-      if (startDate != null) queryParams['startDate'] = startDate.toIso8601String();
-      if (endDate != null) queryParams['endDate'] = endDate.toIso8601String();
 
       final dio = await _getDio;
       final response = await dio.get(
-        AppConfig.itinerariesEndpoint,
+        '${AppConfig.itinerariesEndpoint}/my',
         queryParameters: queryParams.isEmpty ? null : queryParams,
       );
 
       if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
+        final data = response.data;
+        final itinerariesData = (data is Map && data['data'] != null) 
+            ? (data['data'] as List)
+            : (data is List ? data : []);
+        return (itinerariesData as List)
+            .map((json) => Itinerary.fromJson(json as Map<String, dynamic>))
+            .toList();
       } else {
         throw Exception('Failed to fetch itineraries: ${response.statusMessage}');
       }

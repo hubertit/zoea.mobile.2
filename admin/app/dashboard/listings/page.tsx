@@ -7,7 +7,7 @@ import { ListingsAPI, CategoriesAPI, MerchantsAPI, LocationsAPI, UsersAPI, Media
 import apiClient from '@/src/lib/api/client';
 import Icon, { faSearch, faPlus, faTimes, faBox, faTags, faChevronDown, faChevronUp, faImage } from '@/app/components/Icon';
 import { toast } from '@/app/components/Toaster';
-import { DataTable, Pagination, Button, Modal, Input, Select, Textarea, Breadcrumbs } from '@/app/components';
+import { DataTable, Pagination, Button, Modal, Input, Select, SearchableSelect, Textarea, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
@@ -1043,16 +1043,16 @@ export default function ListingsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
-              <Select
+              <SearchableSelect
+                label="Category"
                 value={formData.categoryId || ''}
-                onChange={(e) => setFormData({ ...formData, categoryId: e.target.value || undefined })}
-                options={[
-                  { value: '', label: 'Select category' },
-                  ...categories.map(c => ({ value: c.id, label: c.name })),
-                ]}
+                onChange={(value) => setFormData({ ...formData, categoryId: value || undefined })}
+                options={categories.map(c => ({ 
+                  value: c.id, 
+                  label: c.name,
+                  group: c.parent?.name || 'Main Category'
+                }))}
+                placeholder="Select category"
               />
             </div>
 

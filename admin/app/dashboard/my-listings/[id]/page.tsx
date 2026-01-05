@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { MerchantPortalAPI, type MerchantListing, type Business, MediaAPI } from '@/src/lib/api';
 import { toast } from '@/app/components/Toaster';
-import { Button, Modal, Input, Select, Textarea, Breadcrumbs, StatusBadge, ConfirmDialog } from '@/app/components';
+import { Button, Modal, Input, Select, SearchableSelect, Textarea, Breadcrumbs, StatusBadge, ConfirmDialog } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import Icon, { faArrowLeft, faEdit, faBox, faCheckCircle, faImage, faPlus, faTrash, faCalendar } from '@/app/components/Icon';
 import { faBed, faUtensils } from '@fortawesome/free-solid-svg-icons';
@@ -434,14 +434,16 @@ export default function ListingDetailPage() {
                     { value: 'boutique', label: 'Boutique' },
                   ]}
                 />
-                <Select
+                <SearchableSelect
                   label="Category"
                   value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  options={[
-                    { value: '', label: 'Select category' },
-                    ...categories.map(c => ({ value: c.id, label: c.name })),
-                  ]}
+                  onChange={(value) => setFormData({ ...formData, categoryId: value })}
+                  options={categories.map(c => ({ 
+                    value: c.id, 
+                    label: c.name,
+                    group: c.parent?.name || 'Main Category'
+                  }))}
+                  placeholder="Select category"
                 />
               </div>
             ) : (

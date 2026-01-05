@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ToursAPI } from '@/src/lib/api';
 import { toast } from '@/app/components/Toaster';
-import { Button, Input, Select, Textarea, Breadcrumbs } from '@/app/components';
+import { Button, Input, Select, SearchableSelect, Textarea, Breadcrumbs } from '@/app/components';
 import PageSkeleton from '@/app/components/PageSkeleton';
 import Icon, { faArrowLeft, faRoute } from '@/app/components/Icon';
 import { CategoriesAPI, LocationsAPI } from '@/src/lib/api';
@@ -176,14 +176,16 @@ export default function CreateTourPage() {
                 { value: 'safari', label: 'Safari' },
               ]}
             />
-            <Select
+            <SearchableSelect
               label="Category"
               value={formData.categoryId}
-              onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-              options={[
-                { value: '', label: 'Select category' },
-                ...categories.map(c => ({ value: c.id, label: c.name })),
-              ]}
+              onChange={(value) => setFormData({ ...formData, categoryId: value })}
+              options={categories.map(c => ({ 
+                value: c.id, 
+                label: c.name,
+                group: c.parent?.name || 'Main Category'
+              }))}
+              placeholder="Select category"
             />
           </div>
         </div>

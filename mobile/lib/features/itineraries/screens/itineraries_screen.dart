@@ -48,18 +48,10 @@ class _ItinerariesScreenState extends ConsumerState<ItinerariesScreen> {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final itinerariesAsync = ref.watch(itinerariesProvider(const ItinerariesParams(
-            page: 1,
-            limit: 50,
-          )));
+          final itinerariesAsync = ref.watch(myItinerariesProvider);
 
           return itinerariesAsync.when(
-            data: (response) {
-              final itinerariesData = response['data'] as List? ?? [];
-              final itineraries = itinerariesData
-                  .map((item) => Itinerary.fromJson(item as Map<String, dynamic>))
-                  .toList();
-
+            data: (itineraries) {
               if (itineraries.isEmpty) {
                 return _buildEmptyState();
               }
@@ -68,7 +60,7 @@ class _ItinerariesScreenState extends ConsumerState<ItinerariesScreen> {
                 color: context.primaryColorTheme,
                 backgroundColor: context.cardColor,
                 onRefresh: () async {
-                  ref.invalidate(itinerariesProvider(const ItinerariesParams(page: 1, limit: 50)));
+                  ref.invalidate(myItinerariesProvider);
                   await Future.delayed(const Duration(milliseconds: 500));
                 },
                 child: ListView.builder(
@@ -114,7 +106,7 @@ class _ItinerariesScreenState extends ConsumerState<ItinerariesScreen> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      ref.invalidate(itinerariesProvider(const ItinerariesParams(page: 1, limit: 50)));
+                      ref.invalidate(myItinerariesProvider);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColorTheme,

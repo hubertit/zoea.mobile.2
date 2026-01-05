@@ -206,7 +206,7 @@ class Itinerary {
       cityId: json['cityId'] as String?,
       countryId: json['countryId'] as String?,
       isPublic: json['isPublic'] as bool? ?? false,
-      isShared: json['isShared'] as bool? ?? false,
+      isShared: (json['shareToken'] as String?) != null,
       shareToken: json['shareToken'] as String?,
       items: items,
       metadata: json['metadata'] as Map<String, dynamic>?,

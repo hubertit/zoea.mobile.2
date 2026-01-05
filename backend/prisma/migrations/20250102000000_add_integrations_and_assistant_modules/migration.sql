@@ -1,8 +1,16 @@
--- CreateEnum
-CREATE TYPE "message_role" AS ENUM ('user', 'assistant');
+-- CreateEnum (only if not exists)
+DO $$ BEGIN
+    CREATE TYPE "message_role" AS ENUM ('user', 'assistant');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
--- CreateEnum
-CREATE TYPE "card_type" AS ENUM ('listing', 'tour', 'product', 'service');
+-- CreateEnum (only if not exists)
+DO $$ BEGIN
+    CREATE TYPE "card_type" AS ENUM ('listing', 'tour', 'product', 'service');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- CreateTable
 CREATE TABLE "integrations" (
