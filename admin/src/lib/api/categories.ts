@@ -22,6 +22,7 @@ export interface Category {
 
 export interface ListCategoriesParams {
   parentId?: string;
+  flat?: boolean;
 }
 
 export interface CreateCategoryParams {

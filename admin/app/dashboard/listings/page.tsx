@@ -134,7 +134,7 @@ export default function ListingsPage() {
     const fetchData = async () => {
         try {
           const [categoriesData, countriesData] = await Promise.all([
-            CategoriesAPI.listCategories(),
+            CategoriesAPI.listCategories({ flat: true }),
             CountriesAPI.getActiveCountries(),
           ]);
         setCategories(categoriesData);

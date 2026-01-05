@@ -15,9 +15,10 @@ export class CategoriesController {
   @Get()
   @ApiOperation({ 
     summary: 'Get all categories',
-    description: 'Retrieves all active categories. Supports hierarchical categories via parentId. Returns top-level categories by default, or subcategories if parentId is provided.'
+    description: 'Retrieves all active categories. Supports hierarchical categories via parentId. Returns top-level categories by default, or subcategories if parentId is provided. Use flat=true to get all categories in a flat list.'
   })
   @ApiQuery({ name: 'parentId', required: false, type: String, description: 'Filter by parent category ID to get subcategories', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiQuery({ name: 'flat', required: false, type: Boolean, description: 'Return all categories in a flat list (ignores parentId filter)', example: true })
   @ApiResponse({ 
     status: 200, 
     description: 'Categories retrieved successfully',
@@ -39,8 +40,8 @@ export class CategoriesController {
       }
     }
   })
-  async findAll(@Query('parentId') parentId?: string) {
-    return this.categoriesService.findAll(parentId);
+  async findAll(@Query('parentId') parentId?: string, @Query('flat') flat?: string) {
+    return this.categoriesService.findAll(parentId, flat === 'true');
   }
 
   @Get('amenities')

@@ -2,14 +2,15 @@
 
 This document tracks temporary changes made to the codebase that need to be reverted or updated in the future.
 
-## Near Me Section - Random Listings (Temporary)
+## Near Me Section - Random Restaurants (Temporary)
 
 **Date:** December 28, 2025  
+**Updated:** January 5, 2026  
 **Status:** Temporary - To be replaced with geolocation implementation
 
 ### Overview
 
-The "Near Me" section on the explore screen currently displays **10 random listings** instead of actual geolocation-based nearby listings. This is a temporary solution until proper geolocation functionality is implemented.
+The "Near Me" section on the explore screen currently displays **random restaurant listings** instead of actual geolocation-based nearby listings. This is a temporary solution until proper geolocation functionality is implemented.
 
 ### What Was Changed
 
@@ -18,13 +19,14 @@ The "Near Me" section on the explore screen currently displays **10 random listi
 1. **New Endpoint:** `GET /listings/random`
    - **File:** `backend/src/modules/listings/listings.controller.ts`
    - **Method:** `getRandom(@Query('limit') limit?: string)`
-   - Returns random active listings using PostgreSQL's `RANDOM()` function
+   - Returns random active **restaurant** listings using PostgreSQL's `RANDOM()` function
    - Default limit: 10 listings
+   - **Filter:** Only returns listings where `type = 'restaurant'`
 
 2. **New Service Method:** `getRandom(limit = 10)`
    - **File:** `backend/src/modules/listings/listings.service.ts`
-   - Uses `ORDER BY RANDOM()` in PostgreSQL to fetch random listings
-   - Filters by `status: 'active'` and `deletedAt: null`
+   - Uses `ORDER BY RANDOM()` in PostgreSQL to fetch random restaurant listings
+   - Filters by `status: 'active'`, `deletedAt: null`, and `type: 'restaurant'`
    - Includes full relations (category, city, images)
 
 #### Flutter Changes
@@ -48,7 +50,8 @@ The "Near Me" section on the explore screen currently displays **10 random listi
 
 - Geolocation functionality is not yet implemented
 - Users need to see listings in the "Near Me" section
-- Random listings provide a temporary solution to populate the section
+- Random restaurant listings provide a temporary solution to populate the section with relevant dining options
+- **Update (Jan 5, 2026):** Changed from all listing types to restaurants only to make the "Near Me" section more focused and relevant
 - Better user experience than showing an empty section
 
 ### How to Revert When Geolocation is Ready

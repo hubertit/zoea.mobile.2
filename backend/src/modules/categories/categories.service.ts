@@ -5,7 +5,31 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(parentId?: string) {
+  async findAll(parentId?: string, flat?: boolean) {
+    // If flat is true, return all categories regardless of parentId
+    if (flat) {
+      return this.prisma.category.findMany({
+        where: {
+          isActive: true,
+        },
+        include: {
+          parent: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+          _count: { select: { listings: true, tours: true } },
+        },
+        orderBy: [
+          { parentId: 'asc' }, // Parents first (null values first)
+          { sortOrder: 'asc' },
+        ],
+      });
+    }
+
+    // Otherwise, return hierarchical structure
     return this.prisma.category.findMany({
       where: {
         isActive: true,

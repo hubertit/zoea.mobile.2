@@ -924,7 +924,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildCountryOption('Rwanda', '🇷🇼', _selectedCountry == 'Rwanda'),
             _buildCountryOption('Kenya', '🇰🇪', _selectedCountry == 'Kenya'),
             _buildCountryOption('Uganda', '🇺🇬', _selectedCountry == 'Uganda'),
-            _buildCountryOption('Tanzania', '🇹🇿', _selectedCountry == 'Tanzania'),
+            _buildCountryOption('South Africa', '🇿🇦', _selectedCountry == 'South Africa'),
+            _buildCountryOption('Nigeria', '🇳🇬', _selectedCountry == 'Nigeria'),
             
             // Add bottom padding for safe area
             SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
@@ -1186,8 +1187,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         return 'KE';
       case 'Uganda':
         return 'UG';
-      case 'Tanzania':
-        return 'TZ';
+      case 'South Africa':
+        return 'ZA';
+      case 'Nigeria':
+        return 'NG';
       default:
         return 'RW'; // Default to Rwanda
     }

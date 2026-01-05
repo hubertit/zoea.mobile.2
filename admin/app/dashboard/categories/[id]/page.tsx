@@ -50,7 +50,7 @@ export default function CategoryDetailPage() {
       try {
         const [categoryData, allCategories] = await Promise.all([
           CategoriesAPI.getCategoryById(categoryId),
-          CategoriesAPI.listCategories(),
+          CategoriesAPI.listCategories({ flat: true }),
         ]);
         
         setCategory(categoryData);

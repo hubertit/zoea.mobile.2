@@ -84,10 +84,10 @@ export class ListingsController {
 
   @Get('random')
   @ApiOperation({ 
-    summary: 'Get random listings',
-    description: 'Retrieve random active listings. Useful for "Near Me" section when geolocation is not available. Only returns active listings.'
+    summary: 'Get random restaurant listings',
+    description: 'Retrieve random active restaurant listings. Used for "Near Me" section when geolocation is not available. Only returns active restaurant listings.'
   })
-  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Maximum number of listings to return (default: 10)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10, description: 'Maximum number of restaurant listings to return (default: 10)' })
   async getRandom(@Query('limit') limit?: string) {
     return this.listingsService.getRandom(limit ? +limit : 10);
   }

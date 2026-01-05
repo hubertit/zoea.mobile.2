@@ -48,7 +48,7 @@ export default function CreateTourPage() {
 
   const fetchCategories = async () => {
     try {
-      const data = await CategoriesAPI.listCategories();
+      const data = await CategoriesAPI.listCategories({ flat: true });
       setCategories(data || []);
     } catch (error) {
       console.error('Failed to fetch categories:', error);

@@ -48,7 +48,7 @@ export default function CreateListingPage() {
     try {
       const [businessData, categoriesData, countriesData] = await Promise.all([
         MerchantPortalAPI.getBusiness(businessId),
-        CategoriesAPI.listCategories(),
+        CategoriesAPI.listCategories({ flat: true }),
         LocationsAPI.getCountries(),
       ]);
       setBusiness(businessData);

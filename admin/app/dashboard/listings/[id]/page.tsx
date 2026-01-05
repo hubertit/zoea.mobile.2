@@ -184,7 +184,7 @@ export default function ListingDetailPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await CategoriesAPI.listCategories();
+        const response = await CategoriesAPI.listCategories({ flat: true });
         // CategoriesAPI.listCategories returns Category[] directly
         setCategories(Array.isArray(response) ? response : []);
       } catch (error) {

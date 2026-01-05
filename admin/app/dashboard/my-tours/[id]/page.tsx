@@ -96,7 +96,7 @@ export default function TourDetailPage() {
 
   const fetchCategories = async () => {
     try {
-      const data = await CategoriesAPI.listCategories();
+      const data = await CategoriesAPI.listCategories({ flat: true });
       // Filter for tour categories if needed
       setCategories(data || []);
     } catch (error) {

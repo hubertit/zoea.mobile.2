@@ -1751,6 +1751,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     return Consumer(
       builder: (context, ref, child) {
         final selectedCountry = ref.watch(selectedCountryProvider).value;
+        // Try with country filter first, if empty, fallback to all featured listings
         final featuredAsync = ref.watch(featuredListingsProvider(selectedCountry?.id));
         
         return Column(
@@ -1760,7 +1761,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Recommend',
+                  'Recommended',
                   style: context.headlineMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.primaryTextColor,
@@ -1788,11 +1789,41 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
               child: featuredAsync.when(
                 data: (listings) {
                   if (listings.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No featured listings',
-                        style: context.bodyMedium.copyWith(
-                          color: context.secondaryTextColor,
+                    // If no listings for selected country, try without country filter
+                    final allFeaturedAsync = ref.watch(featuredListingsProvider(null));
+                    return allFeaturedAsync.when(
+                      data: (allListings) {
+                        if (allListings.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No featured listings available',
+                              style: context.bodyMedium.copyWith(
+                                color: context.secondaryTextColor,
+                              ),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: allListings.length > 5 ? 5 : allListings.length,
+                          itemBuilder: (context, index) {
+                            return _buildRecommendCardFromData(allListings[index]);
+                          },
+                        );
+                      },
+                      loading: () => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          return _buildSkeletonRecommendCard();
+                        },
+                      ),
+                      error: (error, stack) => Center(
+                        child: Text(
+                          'No featured listings',
+                          style: context.bodyMedium.copyWith(
+                            color: context.secondaryTextColor,
+                          ),
                         ),
                       ),
                     );
@@ -1813,11 +1844,47 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                 error: (error, stack) => Center(
-                  child: Text(
-                    'Failed to load recommendations',
-                    style: context.bodySmall.copyWith(
-                      color: context.errorColor,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: context.errorColor,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Failed to load recommendations',
+                        style: context.bodyMedium.copyWith(
+                          color: context.errorColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          error.toString(),
+                          style: context.bodySmall.copyWith(
+                            color: context.secondaryTextColor,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton.icon(
+                        onPressed: () {
+                          ref.invalidate(featuredListingsProvider(selectedCountry?.id));
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Retry'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.primaryColorTheme,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
