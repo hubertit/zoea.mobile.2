@@ -551,17 +551,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   label: 'Emergency SOS',
                   onTap: () {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Emergency SOS activated',
-                          style: context.bodyMedium.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        backgroundColor: context.primaryColorTheme,
-                      ),
-                    );
+                    _showEmergencyNumbersBottomSheet();
                   },
                 ),
                 _buildQuickActionItem(
@@ -615,7 +605,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         label: 'Roadside Assistance',
                         onTap: () {
                           Navigator.pop(context);
-                          context.push('/category/roadside-assistance');
+                          context.push('/category/road-side');
                         },
                       ),
                       _buildQuickActionItem(
@@ -658,6 +648,160 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             
             // Add bottom padding for safe area
             SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEmergencyNumbersBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.grey50,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.grey300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Title
+            Text(
+              'Emergency Toll Free Numbers',
+              style: context.headlineSmall.copyWith(
+                fontWeight: FontWeight.w600,
+                color: context.primaryTextColor,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Emergency numbers grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.3,
+              children: [
+                _buildEmergencyNumberItem(
+                  icon: Icons.emergency,
+                  label: 'Emergency',
+                  number: '112',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.traffic,
+                  label: 'Traffic Accidents',
+                  number: '113',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.local_police,
+                  label: 'Abuse by Police Officer',
+                  number: '3511',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.gavel,
+                  label: 'Anti Corruption',
+                  number: '997',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.directions_boat,
+                  label: 'Maritime Problems',
+                  number: '110',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.badge,
+                  label: 'Driving License Queries',
+                  number: '118',
+                ),
+                _buildEmergencyNumberItem(
+                  icon: Icons.whatshot,
+                  label: 'Fire and Rescue',
+                  number: '111',
+                ),
+              ],
+            ),
+            
+            // Add bottom padding for safe area
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmergencyNumberItem({
+    required IconData icon,
+    required String label,
+    required String number,
+  }) {
+    return GestureDetector(
+      onTap: () async {
+        final Uri phoneUri = Uri(scheme: 'tel', path: number);
+        if (await canLaunchUrl(phoneUri)) {
+          await launchUrl(phoneUri);
+        } else {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              AppTheme.errorSnackBar(
+                message: 'Unable to make phone call',
+              ),
+            );
+          }
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: context.grey200,
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: context.primaryColorTheme,
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: context.bodySmall.copyWith(
+                color: context.primaryTextColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 10,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Call: $number',
+              style: context.bodySmall.copyWith(
+                color: context.primaryColorTheme,
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

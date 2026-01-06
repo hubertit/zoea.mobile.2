@@ -100,7 +100,19 @@ class CategoriesService {
       final response = await _dio.get('/categories/slug/$slug');
 
       if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
+        // Check if response data is null or empty
+        if (response.data == null || (response.data is String && (response.data as String).isEmpty)) {
+          throw Exception('Category not found.');
+        }
+        // Check if response.data is already a Map
+        if (response.data is Map) {
+          return response.data as Map<String, dynamic>;
+        }
+        // If it's a string, try to parse it as JSON
+        if (response.data is String) {
+          throw Exception('Invalid response format: ${response.data}');
+        }
+        throw Exception('Invalid response format: expected Map but got ${response.data.runtimeType}');
       } else {
         throw Exception('Failed to fetch category: ${response.statusMessage}');
       }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -143,7 +143,11 @@ export class CategoriesController {
   })
   @ApiResponse({ status: 404, description: 'Category not found' })
   async findBySlug(@Param('slug') slug: string) {
-    return this.categoriesService.findBySlug(slug);
+    const category = await this.categoriesService.findBySlug(slug);
+    if (!category) {
+      throw new NotFoundException(`Category with slug '${slug}' not found`);
+    }
+    return category;
   }
 
   @Put(':id')
