@@ -32,9 +32,13 @@ zoea2/
 ├── merchant-web/    # Merchant web portal (Next.js) - Future
 │   └── .git/        # Git repository (ready for remote)
 ├── docs/            # Documentation
+│   ├── notes/       # Development notes and fix summaries
+│   └── ...          # Organized documentation by topic
 ├── scripts/         # Shared scripts
-├── migration/       # Database migration scripts
-└── database/        # Database schemas and dumps
+├── database/        # Database schemas and scripts
+│   ├── scripts/     # SQL scripts for data operations
+│   └── ...          # Database schemas and dumps
+└── logs/            # Deployment and execution logs
 ```
 
 ## Applications
@@ -156,9 +160,13 @@ Standard Flutter deployment process:
 
 ## Documentation
 
-**📚 [Complete Documentation Index](DOCUMENTATION_INDEX.md)** - Navigate all documentation easily
+**📚 [Complete Documentation Index](docs/DOCUMENTATION_INDEX.md)** - Navigate all documentation easily
 
 Comprehensive documentation is available in the `/docs/` directory:
+
+### Project Organization
+- **[Development Notes](docs/notes/)** - Fix summaries, analysis documents, and development notes
+- **[Database Scripts](database/scripts/)** - SQL scripts for database operations
 
 ### Key Documentation Files
 - **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - Complete documentation navigation

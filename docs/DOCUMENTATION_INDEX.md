@@ -2,7 +2,7 @@
 
 **Complete documentation navigation for the Zoea platform**
 
-**Last Updated**: January 2, 2025
+**Last Updated**: January 6, 2025
 
 ---
 
@@ -128,6 +128,12 @@ The `docs/` folder contains detailed documentation organized by topic:
 ### [14. Troubleshooting](docs/14-troubleshooting/)
 - Common issues and solutions
 - Temporary changes log
+
+### [15. Development Notes](docs/notes/)
+- Fix summaries and change logs
+- Analysis documents
+- Presentation materials
+- Historical development notes
 
 ---
 
