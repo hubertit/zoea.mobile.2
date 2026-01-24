@@ -18,6 +18,15 @@ REMOTE_DIR="/root/zoea-admin"
 ADMIN_PORT="${ADMIN_PORT:-3010}"
 API_BASE="${NEXT_PUBLIC_API_BASE:-http://172.16.40.61:3000/api}"
 
+# Server password from environment variable (required for security)
+if [ -z "$DEPLOY_SERVER_PASSWORD" ]; then
+    echo -e "${RED}Error: DEPLOY_SERVER_PASSWORD environment variable is not set${NC}"
+    echo -e "${YELLOW}Please set it before running the deployment:${NC}"
+    echo "  export DEPLOY_SERVER_PASSWORD='your-password'"
+    exit 1
+fi
+SERVER_PASSWORD="$DEPLOY_SERVER_PASSWORD"
+
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Zoea Admin Panel Deployment${NC}"
 echo -e "${GREEN}========================================${NC}"
@@ -26,7 +35,7 @@ echo -e "${GREEN}========================================${NC}"
 check_server() {
     local server=$1
     echo -e "${YELLOW}Checking connection to $server...${NC}"
-    if sshpass -p 'QF87VtuYReX5v9p6e3' ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$server" "echo 'Connected'" &> /dev/null; then
+    if sshpass -p "$SERVER_PASSWORD" ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$server" "echo 'Connected'" &> /dev/null; then
         echo -e "${GREEN}✓ Connected to $server${NC}"
         return 0
     else
@@ -64,12 +73,12 @@ tar --exclude='node_modules' --exclude='.next' --exclude='dist' \
 
 # Step 2: Sync to server
 echo -e "\n${YELLOW}Step 2: Syncing to server...${NC}"
-sshpass -p 'QF87VtuYReX5v9p6e3' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "mkdir -p $REMOTE_DIR"
-sshpass -p 'QF87VtuYReX5v9p6e3' scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password /tmp/admin-deploy.tar.gz "$SERVER:/tmp/"
-sshpass -p 'QF87VtuYReX5v9p6e3' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "cd $REMOTE_DIR && rm -rf * && tar xzf /tmp/admin-deploy.tar.gz && rm /tmp/admin-deploy.tar.gz"
+sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "mkdir -p $REMOTE_DIR"
+sshpass -p "$SERVER_PASSWORD" scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password /tmp/admin-deploy.tar.gz "$SERVER:/tmp/"
+sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" "cd $REMOTE_DIR && rm -rf * && tar xzf /tmp/admin-deploy.tar.gz && rm /tmp/admin-deploy.tar.gz"
 
 # Create .env file on server (matching resolveit pattern)
-sshpass -p 'QF87VtuYReX5v9p6e3' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<EOF
+sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<EOF
 cd $REMOTE_DIR
 cat > .env.admin <<'ENVEOF'
 # Admin Panel Configuration
@@ -89,7 +98,7 @@ echo -e "${GREEN}✓ Files synced to server${NC}"
 
 # Step 3: Deploy on server
 echo -e "\n${YELLOW}Step 3: Deploying on server...${NC}"
-sshpass -p 'QF87VtuYReX5v9p6e3' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<'ENDSSH'
+sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password "$SERVER" <<'ENDSSH'
 cd /root/zoea-admin
 
 # Ensure network exists (same pattern as resolveit)
