@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ListingsAPI, CategoriesAPI, CountriesAPI, MediaAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit } from '@/src/lib/api';
+import { ListingsAPI, CategoriesAPI, CountriesAPI, MediaAPI, type Listing, type ListingStatus, type ListingType, type PriceUnit, type Category } from '@/src/lib/api';
 import apiClient from '@/src/lib/api/client';
 import Icon, { 
   faArrowLeft, 
@@ -86,7 +86,7 @@ export default function ListingDetailPage() {
   const [saving, setSaving] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [countries, setCountries] = useState<Array<{ id: string; name: string; code: string }>>([]);
   const [cities, setCities] = useState<Array<{ id: string; name: string }>>([]);
 
